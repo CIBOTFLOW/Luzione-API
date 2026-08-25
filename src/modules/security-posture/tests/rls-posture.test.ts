@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import {
+  type GlobalClientExposureRow,
   SENSITIVE_SERVER_ONLY_TABLES,
   evaluateRlsPosture,
   probeDeniedRead,
@@ -11,6 +12,13 @@ import {
   RLS_READBACK_FAILURE_CODES,
   classifyRlsReadbackError,
 } from "../readbackFailure";
+
+const protectedGlobalExposure: GlobalClientExposureRow = {
+  public_table_count: 10,
+  rls_disabled_client_accessible_count: 0,
+  rls_disabled_client_writable_count: 0,
+  rls_disabled_table_count: 0,
+};
 
 function protectedRows(): RlsPostureRow[] {
   return SENSITIVE_SERVER_ONLY_TABLES.map((table_name) => ({
@@ -24,7 +32,11 @@ function protectedRows(): RlsPostureRow[] {
 }
 
 test("P175 security posture passes only for the complete denied client surface", () => {
-  const result = evaluateRlsPosture({ clientDefaultPrivileges: false, rows: protectedRows() });
+  const result = evaluateRlsPosture({
+    clientDefaultPrivileges: false,
+    globalExposure: protectedGlobalExposure,
+    rows: protectedRows(),
+  });
   assert.equal(result.status, "PASS");
   assert.equal(result.expectedTableCount, 10);
   assert.deepEqual(result.violations, []);
@@ -34,7 +46,11 @@ test("known-bad grants, disabled RLS and unsafe future defaults fail closed", ()
   const rows = protectedRows();
   rows.find((row) => row.table_name === "secret_registry")!.anon_access = true;
   rows.find((row) => row.table_name === "auth_users")!.rls_enabled = false;
-  const result = evaluateRlsPosture({ clientDefaultPrivileges: true, rows });
+  const result = evaluateRlsPosture({
+    clientDefaultPrivileges: true,
+    globalExposure: protectedGlobalExposure,
+    rows,
+  });
   assert.equal(result.status, "FAIL");
   assert.deepEqual(result.violations, [
     { code: "RLS_DISABLED", table: "auth_users" },
@@ -44,9 +60,32 @@ test("known-bad grants, disabled RLS and unsafe future defaults fail closed", ()
 });
 
 test("an expected relation missing from catalog readback fails closed", () => {
-  const result = evaluateRlsPosture({ clientDefaultPrivileges: false, rows: protectedRows().slice(1) });
+  const result = evaluateRlsPosture({
+    clientDefaultPrivileges: false,
+    globalExposure: protectedGlobalExposure,
+    rows: protectedRows().slice(1),
+  });
   assert.equal(result.status, "FAIL");
   assert.deepEqual(result.violations, [{ code: "TABLE_MISSING", table: "auth_users" }]);
+});
+
+test("global public-table exposure fails the production gate", () => {
+  const result = evaluateRlsPosture({
+    clientDefaultPrivileges: false,
+    globalExposure: {
+      public_table_count: 546,
+      rls_disabled_client_accessible_count: 383,
+      rls_disabled_client_writable_count: 383,
+      rls_disabled_table_count: 383,
+    },
+    rows: protectedRows(),
+  });
+  assert.equal(result.status, "FAIL");
+  assert.deepEqual(result.violations, [
+    { code: "PUBLIC_RLS_DISABLED", count: 383, table: "<public schema>" },
+    { code: "CLIENT_ACCESS_TO_RLS_DISABLED_TABLE", count: 383, table: "<public schema>" },
+    { code: "CLIENT_WRITE_TO_RLS_DISABLED_TABLE", count: 383, table: "<public schema>" },
+  ]);
 });
 
 test("active probe accepts only PostgreSQL permission_denied", async () => {

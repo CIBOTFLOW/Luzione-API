@@ -6,6 +6,7 @@ import {
   SENSITIVE_SERVER_ONLY_TABLES,
   evaluateRlsPosture,
   probeDeniedRead,
+  type GlobalClientExposureRow,
   type RlsPostureRow,
   type RlsProbeResult,
 } from "@/modules/security-posture/rlsPosture";
@@ -40,6 +41,28 @@ export async function readRlsReadiness(options: { activeProbes?: boolean } = {})
             and privilege.grantee in (0::oid, 'anon'::regrole::oid, 'authenticated'::regrole::oid)
        ) as client_default_privileges`,
     );
+    const globalExposureResult = await client.query<GlobalClientExposureRow>(
+      `select count(*)::int as public_table_count,
+              count(*) filter (where not c.relrowsecurity)::int as rls_disabled_table_count,
+              count(*) filter (
+                where not c.relrowsecurity
+                  and (
+                    has_table_privilege('anon', c.oid, 'SELECT,INSERT,UPDATE,DELETE')
+                    or has_table_privilege('authenticated', c.oid, 'SELECT,INSERT,UPDATE,DELETE')
+                  )
+              )::int as rls_disabled_client_accessible_count,
+              count(*) filter (
+                where not c.relrowsecurity
+                  and (
+                    has_table_privilege('anon', c.oid, 'INSERT,UPDATE,DELETE')
+                    or has_table_privilege('authenticated', c.oid, 'INSERT,UPDATE,DELETE')
+                  )
+              )::int as rls_disabled_client_writable_count
+         from pg_class c
+         join pg_namespace n on n.oid = c.relnamespace
+        where n.nspname = 'public'
+          and c.relkind in ('r', 'p')`,
+    );
     const probes: RlsProbeResult[] = [];
     if (options.activeProbes) {
       for (const probe of ACTIVE_DENIAL_PROBES) probes.push(await probeDeniedRead(client, probe));
@@ -47,6 +70,12 @@ export async function readRlsReadiness(options: { activeProbes?: boolean } = {})
     return {
       ...evaluateRlsPosture({
         clientDefaultPrivileges: Boolean(defaultResult.rows[0]?.client_default_privileges),
+        globalExposure: globalExposureResult.rows[0] ?? {
+          public_table_count: 0,
+          rls_disabled_client_accessible_count: 0,
+          rls_disabled_client_writable_count: 0,
+          rls_disabled_table_count: 0,
+        },
         probes,
         rows: tableResult.rows,
       }),
