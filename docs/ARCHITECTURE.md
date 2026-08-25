@@ -35,3 +35,10 @@ The canonical Postgres records remain the existing P110/P111 tables. This reposi
 ## Supabase posture
 
 The service connects directly to Postgres for canonical P110/P111 records. If Supabase Data API endpoints are later added, use a dedicated exposed API schema, explicit grants and RLS. New secret keys (`sb_secret_*`) are server-only; legacy `service_role` keys are not introduced into new code.
+
+
+## Database security readiness
+
+`GET /api/v1/security/rls-readiness` is a service-authenticated, read-only contract over the canonical Postgres catalog. It verifies the first server-only control-plane boundary: ten credential, authentication, connector, service-client and migration relations must exist, have RLS enabled and grant no access to `anon` or `authenticated`. It also rejects unsafe default grants for future tables.
+
+The public health endpoint reports only aggregate pass/fail posture and returns 503 unless configuration and this RLS gate pass. Authorized callers may add `?activeProbes=true` to prove that `anon` and `authenticated` reads fail with PostgreSQL `42501 permission_denied`. No row values, credentials or connection details are returned.
