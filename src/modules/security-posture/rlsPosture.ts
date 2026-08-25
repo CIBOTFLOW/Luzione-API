@@ -25,6 +25,13 @@ export type RlsPostureRow = {
   table_name: string;
 };
 
+export type GlobalClientExposureRow = {
+  public_table_count: number;
+  rls_disabled_client_accessible_count: number;
+  rls_disabled_client_writable_count: number;
+  rls_disabled_table_count: number;
+};
+
 export type RlsProbeResult = {
   denied: boolean;
   errorCode?: string | null;
@@ -38,9 +45,13 @@ export type RlsViolation = {
     | "ACTIVE_DENIAL_PROBE_FAILED"
     | "ANON_PRIVILEGE_PRESENT"
     | "AUTHENTICATED_PRIVILEGE_PRESENT"
+    | "CLIENT_ACCESS_TO_RLS_DISABLED_TABLE"
     | "CLIENT_DEFAULT_PRIVILEGE_PRESENT"
+    | "CLIENT_WRITE_TO_RLS_DISABLED_TABLE"
+    | "PUBLIC_RLS_DISABLED"
     | "RLS_DISABLED"
     | "TABLE_MISSING";
+  count?: number;
   reason?: string;
   role?: string;
   table: string;
@@ -86,6 +97,7 @@ export async function probeDeniedRead(
 export function evaluateRlsPosture(input: {
   clientDefaultPrivileges: boolean;
   expectedTables?: readonly string[];
+  globalExposure: GlobalClientExposureRow;
   probes?: readonly RlsProbeResult[];
   rows: readonly RlsPostureRow[];
 }) {
@@ -109,6 +121,27 @@ export function evaluateRlsPosture(input: {
   if (input.clientDefaultPrivileges) {
     violations.push({ code: "CLIENT_DEFAULT_PRIVILEGE_PRESENT", table: "<future tables>" });
   }
+  if (input.globalExposure.rls_disabled_table_count > 0) {
+    violations.push({
+      code: "PUBLIC_RLS_DISABLED",
+      count: input.globalExposure.rls_disabled_table_count,
+      table: "<public schema>",
+    });
+  }
+  if (input.globalExposure.rls_disabled_client_accessible_count > 0) {
+    violations.push({
+      code: "CLIENT_ACCESS_TO_RLS_DISABLED_TABLE",
+      count: input.globalExposure.rls_disabled_client_accessible_count,
+      table: "<public schema>",
+    });
+  }
+  if (input.globalExposure.rls_disabled_client_writable_count > 0) {
+    violations.push({
+      code: "CLIENT_WRITE_TO_RLS_DISABLED_TABLE",
+      count: input.globalExposure.rls_disabled_client_writable_count,
+      table: "<public schema>",
+    });
+  }
   for (const probe of input.probes ?? []) {
     if (!probe.denied) {
       violations.push({
@@ -123,6 +156,7 @@ export function evaluateRlsPosture(input: {
   return {
     status: violations.length === 0 ? "PASS" as const : "FAIL" as const,
     expectedTableCount: expectedTables.length,
+    globalExposure: input.globalExposure,
     observedTableCount: input.rows.length,
     probes: input.probes ?? [],
     violations,
