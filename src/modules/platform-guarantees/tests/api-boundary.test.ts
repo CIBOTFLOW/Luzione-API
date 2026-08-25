@@ -27,6 +27,8 @@ test("mutations fail closed until command extraction is explicitly complete", ()
 });
 
 test("health output reports readiness without exposing secret material", () => {
+  assert.match(healthRoute, /ok:\s*ready/);
+  assert.match(healthRoute, /status:\s*ready \? 200 : 503/);
   assert.match(healthRoute, /databaseConfigured/);
   assert.match(healthRoute, /serviceTokenConfigured/);
   assert.match(healthRoute, /continuationSecretConfigured/);
