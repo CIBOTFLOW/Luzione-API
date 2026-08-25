@@ -1,6 +1,7 @@
 import { apiResponse, requestId } from "@/lib/api/http";
 import { runtimeConfig } from "@/lib/api/config";
 import { readRlsReadiness } from "@/lib/security-posture/readService";
+import { logRlsReadbackFailure } from "@/modules/security-posture/readbackFailure";
 
 export const dynamic = "force-dynamic";
 
@@ -9,11 +10,17 @@ export async function GET(request: Request) {
   const config = runtimeConfig();
   let security: Awaited<ReturnType<typeof readRlsReadiness>> | null = null;
   let securityReadbackError = false;
+  let securityReadbackErrorCode: string | null = null;
   if (config.databaseConfigured) {
     try {
       security = await readRlsReadiness();
-    } catch {
+    } catch (error) {
       securityReadbackError = true;
+      securityReadbackErrorCode = logRlsReadbackFailure({
+        error,
+        requestId: id,
+        route: "/api/v1/healthz",
+      }).failureCode;
     }
   }
   const securityReady = security?.status === "PASS";
@@ -47,6 +54,7 @@ export async function GET(request: Request) {
         status: security?.status ?? "UNAVAILABLE",
         violationCount: security?.violations.length ?? 1,
         readbackError: securityReadbackError,
+        readbackErrorCode: securityReadbackErrorCode,
       },
       mutations: config.mutationsEnabled ? "ENABLED" : "DISABLED_FAIL_CLOSED",
       externalEffectsAuthorized: false,

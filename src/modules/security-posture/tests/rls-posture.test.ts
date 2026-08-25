@@ -7,6 +7,10 @@ import {
   probeDeniedRead,
   type RlsPostureRow,
 } from "../rlsPosture";
+import {
+  RLS_READBACK_FAILURE_CODES,
+  classifyRlsReadbackError,
+} from "../readbackFailure";
 
 function protectedRows(): RlsPostureRow[] {
   return SENSITIVE_SERVER_ONLY_TABLES.map((table_name) => ({
@@ -67,6 +71,24 @@ test("active probe accepts only PostgreSQL permission_denied", async () => {
   ]);
 });
 
+test("readback failures are classified without returning raw connection details", () => {
+  assert.deepEqual(
+    classifyRlsReadbackError(Object.assign(new Error("Tenant or user not found"), { code: "XX000" })),
+    {
+      failureCode: RLS_READBACK_FAILURE_CODES.poolerTenantOrUserMissing,
+      providerCode: "XX000",
+    },
+  );
+  assert.deepEqual(classifyRlsReadbackError({ code: "28P01", message: "secret-bearing detail" }), {
+    failureCode: RLS_READBACK_FAILURE_CODES.authenticationFailed,
+    providerCode: "28P01",
+  });
+  assert.deepEqual(classifyRlsReadbackError({ code: "ENOTFOUND" }), {
+    failureCode: RLS_READBACK_FAILURE_CODES.dnsUnavailable,
+    providerCode: "ENOTFOUND",
+  });
+});
+
 test("API boundary authenticates full readback and public health exposes no secrets", () => {
   const route = readFileSync("src/app/api/v1/security/rls-readiness/route.ts", "utf8");
   const health = readFileSync("src/app/api/v1/healthz/route.ts", "utf8");
@@ -75,5 +97,6 @@ test("API boundary authenticates full readback and public health exposes no secr
   assert.match(route, /status: result\.status === "PASS" \? 200 : 503/);
   assert.match(health, /CONNECTED_RLS_GATE_PASS/);
   assert.match(health, /SECURITY_POSTURE_REQUIRED/);
+  assert.match(health, /readbackErrorCode/);
   assert.doesNotMatch(health, /DATABASE_URL|LUZIONE_API_SERVICE_TOKEN|PLATFORM_CONTINUATION_SECRET/);
 });
