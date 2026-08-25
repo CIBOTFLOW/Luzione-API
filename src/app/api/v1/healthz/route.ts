@@ -9,7 +9,7 @@ export async function GET(request: Request) {
   const ready = config.databaseConfigured && config.serviceTokenConfigured && config.continuationSecretConfigured;
   return apiResponse(
     {
-      ok: true,
+      ok: ready,
       service: "luzione-api",
       status: ready ? "READY_READ_ONLY" : "FOUNDATION_CONFIGURATION_REQUIRED",
       checks: {
