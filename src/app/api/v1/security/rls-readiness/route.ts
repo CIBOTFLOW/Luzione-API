@@ -1,13 +1,23 @@
 import { requireServiceActor } from "@/lib/api/actor";
 import { apiResponse, requestId } from "@/lib/api/http";
 import { readRlsReadiness } from "@/lib/security-posture/readService";
+import { logRlsReadbackFailure } from "@/modules/security-posture/readbackFailure";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   const id = requestId(request.headers);
+  let actor: ReturnType<typeof requireServiceActor>;
   try {
-    const actor = requireServiceActor(request.headers);
+    actor = requireServiceActor(request.headers);
+  } catch {
+    return apiResponse(
+      { ok: false, message: "Service authentication required." },
+      { requestId: id, status: 401 },
+    );
+  }
+
+  try {
     const url = new URL(request.url);
     const unsupported = [...url.searchParams.keys()].filter((key) => key !== "activeProbes");
     if (unsupported.length) {
@@ -33,10 +43,18 @@ export async function GET(request: Request) {
       { requestId: id, status: result.status === "PASS" ? 200 : 503 },
     );
   } catch (error) {
-    const message = error instanceof Error ? error.message : "RLS readiness read failed closed.";
+    const failure = logRlsReadbackFailure({
+      error,
+      requestId: id,
+      route: "/api/v1/security/rls-readiness",
+    });
     return apiResponse(
-      { ok: false, message },
-      { requestId: id, status: /authentication|tenant|actor/i.test(message) ? 401 : 503 },
+      {
+        ok: false,
+        message: "RLS readiness read failed closed.",
+        errorCode: failure.failureCode,
+      },
+      { requestId: id, status: 503 },
     );
   }
 }
