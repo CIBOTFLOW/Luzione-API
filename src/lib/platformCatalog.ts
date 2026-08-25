@@ -52,9 +52,9 @@ export const platformAreas: PlatformArea[] = [
     id: "access",
     label: "Access",
     summary: "Tenant, actor, roles, permissions, consent, suppression and service authority.",
-    owns: ["Tenant", "Actor", "Role", "Permission", "ServiceAccount", "Consent", "Suppression"],
-    apiRoutes: [],
-    status: "planned",
+    owns: ["Tenant", "Actor", "Role", "Permission", "ServiceAccount", "Consent", "Suppression", "RLSReadiness"],
+    apiRoutes: ["/api/v1/security/rls-readiness"],
+    status: "read-only",
   },
   {
     id: "reliability",
