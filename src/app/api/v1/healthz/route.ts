@@ -1,21 +1,52 @@
 import { apiResponse, requestId } from "@/lib/api/http";
 import { runtimeConfig } from "@/lib/api/config";
+import { readRlsReadiness } from "@/lib/security-posture/readService";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   const id = requestId(request.headers);
   const config = runtimeConfig();
-  const ready = config.databaseConfigured && config.serviceTokenConfigured && config.continuationSecretConfigured;
+  let security: Awaited<ReturnType<typeof readRlsReadiness>> | null = null;
+  let securityReadbackError = false;
+  if (config.databaseConfigured) {
+    try {
+      security = await readRlsReadiness();
+    } catch {
+      securityReadbackError = true;
+    }
+  }
+  const securityReady = security?.status === "PASS";
+  const ready = config.databaseConfigured
+    && config.serviceTokenConfigured
+    && config.continuationSecretConfigured
+    && securityReady;
+  const status = ready
+    ? "READY_READ_ONLY"
+    : config.databaseConfigured && !securityReady
+      ? "SECURITY_POSTURE_REQUIRED"
+      : "FOUNDATION_CONFIGURATION_REQUIRED";
+
   return apiResponse(
     {
       ok: ready,
       service: "luzione-api",
-      status: ready ? "READY_READ_ONLY" : "FOUNDATION_CONFIGURATION_REQUIRED",
+      status,
       checks: {
         continuationSigning: config.continuationSecretConfigured ? "CONFIGURED" : "MISSING",
-        database: config.databaseConfigured ? "CONFIGURED_NOT_PROBED" : "MISSING",
+        database: !config.databaseConfigured
+          ? "MISSING"
+          : securityReady
+            ? "CONNECTED_RLS_GATE_PASS"
+            : "RLS_GATE_FAIL",
         serviceAuthentication: config.serviceTokenConfigured ? "CONFIGURED" : "MISSING",
+      },
+      security: {
+        expectedTableCount: security?.expectedTableCount ?? 10,
+        observedTableCount: security?.observedTableCount ?? 0,
+        status: security?.status ?? "UNAVAILABLE",
+        violationCount: security?.violations.length ?? 1,
+        readbackError: securityReadbackError,
       },
       mutations: config.mutationsEnabled ? "ENABLED" : "DISABLED_FAIL_CLOSED",
       externalEffectsAuthorized: false,

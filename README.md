@@ -15,9 +15,10 @@ Sultan never writes around the API. Every consequential action must resolve an a
 This first release is intentionally fail-closed:
 
 - A restricted technical console is available at `/`.
-- `GET /api/v1/healthz` reports configuration without exposing secret values.
+- `GET /api/v1/healthz` reports configuration and aggregate database-security readiness without exposing secret values.
 - `GET /api/v1/catalog` publishes the object and platform ownership contract.
 - `GET /api/v1/platform-guarantees` reads the existing P110/P111 canonical tables when authenticated and configured.
+- `GET /api/v1/security/rls-readiness` authenticates a service actor and verifies the sensitive server-only RLS boundary; `?activeProbes=true` adds live role-denial probes.
 - `POST /api/v1/platform-guarantees` remains disabled until command-service extraction, database proof, actor authority and recovery verification are complete.
 - No provider calls or external effects are authorized.
 
