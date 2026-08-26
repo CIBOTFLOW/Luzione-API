@@ -5,6 +5,10 @@ import {
   deriveSultanRuntimeStatus,
   type SultanRuntimeAggregate,
 } from "../../modules/sultan-runtime/runtimeStatus";
+import {
+  SULTAN_RUNTIME_READBACK_FAILURE_CODES,
+  classifySultanRuntimeReadbackError,
+} from "../../modules/sultan-runtime/readbackFailure";
 
 function aggregate(overrides: Partial<SultanRuntimeAggregate> = {}): SultanRuntimeAggregate {
   return {
@@ -103,4 +107,19 @@ test("public route exposes aggregate evidence only and fails closed", () => {
   assert.match(route, /runtime readback failed closed/i);
   assert.doesNotMatch(route, /DATABASE_URL|LUZIONE_API_SERVICE_TOKEN/);
   assert.doesNotMatch(service, /select\s+content|select\s+object_id|select\s+target_id/i);
+});
+
+test("database failures are reduced to bounded operational codes", () => {
+  assert.deepEqual(classifySultanRuntimeReadbackError({ code: "42501", message: "sensitive detail" }), {
+    failureCode: SULTAN_RUNTIME_READBACK_FAILURE_CODES.permissionDenied,
+    providerCode: "42501",
+  });
+  assert.deepEqual(classifySultanRuntimeReadbackError({ code: "42P01" }), {
+    failureCode: SULTAN_RUNTIME_READBACK_FAILURE_CODES.relationMissing,
+    providerCode: "42P01",
+  });
+  assert.equal(
+    classifySultanRuntimeReadbackError(new Error("unclassified secret detail")).failureCode,
+    SULTAN_RUNTIME_READBACK_FAILURE_CODES.unavailable,
+  );
 });
