@@ -39,7 +39,8 @@ export class P113IdempotencyConflictError extends Error {
 }
 
 async function beginTenantTransaction(client: PoolClient, tenantId: string, readOnly = false) {
-  await client.query(readOnly ? "begin read only" : "begin");
+  await client.query(readOnly ? "begin read only" : "begin read write");
+  await client.query("set local role luzione_api_projection");
   await client.query("set local statement_timeout = '12s'");
   await client.query("select set_config('app.tenant_id', $1, true)", [tenantId]);
 }

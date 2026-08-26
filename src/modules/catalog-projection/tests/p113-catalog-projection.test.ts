@@ -117,3 +117,13 @@ test("the service boundary is authenticated, idempotent, and never authorizes ex
   assert.match(store, /productsCount \+ productVariantsCount/);
   assert.doesNotMatch(route, /SHOPIFY_(ADMIN|ACCESS)_TOKEN|DATABASE_URL/);
 });
+
+test("the database boundary assumes only the bounded P113 role inside explicit transactions", () => {
+  const store = readFileSync("src/modules/catalog-projection/store.ts", "utf8");
+  assert.match(store, /readOnly \? "begin read only" : "begin read write"/);
+  assert.match(store, /set local role luzione_api_projection/);
+  assert.match(store, /set local statement_timeout = '12s'/);
+  assert.match(store, /set_config\('app\.tenant_id', \$1, true\)/);
+  assert.doesNotMatch(store, /\bdelete\s+from\b/i);
+  assert.doesNotMatch(store, /\btruncate\b/i);
+});
