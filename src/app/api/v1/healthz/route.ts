@@ -29,7 +29,9 @@ export async function GET(request: Request) {
     && config.continuationSecretConfigured
     && securityReady;
   const status = ready
-    ? "READY_READ_ONLY"
+    ? config.internalProjectionsEnabled
+      ? "READY_INTERNAL_PROJECTIONS"
+      : "READY_READ_ONLY"
     : config.databaseConfigured && !securityReady
       ? "SECURITY_POSTURE_REQUIRED"
       : "FOUNDATION_CONFIGURATION_REQUIRED";
@@ -57,6 +59,9 @@ export async function GET(request: Request) {
         readbackErrorCode: securityReadbackErrorCode,
       },
       mutations: config.mutationsEnabled ? "ENABLED" : "DISABLED_FAIL_CLOSED",
+      internalProjections: config.internalProjectionsEnabled
+        ? "ENABLED_BOUNDED"
+        : "DISABLED_FAIL_CLOSED",
       externalEffectsAuthorized: false,
       observedAt: new Date().toISOString(),
     },

@@ -41,7 +41,7 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
         </nav>
         <div className="sidebar-note">
           <span className="status-dot" aria-hidden="true" />
-          <div><strong>Safe foundation</strong><small>RLS verified · writes locked</small></div>
+          <div><strong>Safe foundation</strong><small>RLS verified · P113 bounded</small></div>
         </div>
       </aside>
       <main className="main-content">{children}</main>
