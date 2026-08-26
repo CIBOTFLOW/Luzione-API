@@ -113,5 +113,7 @@ test("the service boundary is authenticated, idempotent, and never authorizes ex
   assert.match(store, /pg_advisory_xact_lock/);
   assert.match(store, /external_write_authorized[^\n]+false/);
   assert.match(store, /returning state, products_observed/);
+  assert.match(store, /payload->>'vendor'/);
+  assert.match(store, /productsCount \+ productVariantsCount/);
   assert.doesNotMatch(route, /SHOPIFY_(ADMIN|ACCESS)_TOKEN|DATABASE_URL/);
 });

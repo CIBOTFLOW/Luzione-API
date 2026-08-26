@@ -44,6 +44,9 @@ export async function GET(request: Request) {
     const rawLimit = Number(url.searchParams.get("limit") ?? 100);
     const limit = Number.isInteger(rawLimit) ? Math.max(1, Math.min(rawLimit, 250)) : 100;
     const query = url.searchParams.get("query")?.trim().slice(0, 500) || null;
+    const productType = url.searchParams.get("productType")?.trim().slice(0, 500) || null;
+    const status = url.searchParams.get("status")?.trim().slice(0, 128) || null;
+    const vendor = url.searchParams.get("vendor")?.trim().slice(0, 500) || null;
     const selectableValue = url.searchParams.get("quoteSelectable");
     const quoteSelectable = selectableValue === "true"
       ? true
@@ -54,8 +57,11 @@ export async function GET(request: Request) {
       actor,
       cursor: url.searchParams.get("cursor"),
       limit,
+      productType,
       query,
       quoteSelectable,
+      status,
+      vendor,
     });
     return apiResponse({ ok: true, ...catalog }, { requestId: id });
   } catch (error) {

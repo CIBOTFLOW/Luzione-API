@@ -447,8 +447,11 @@ export async function listP113CatalogProjections(input: {
   actor: ApiActor;
   cursor: string | null;
   limit: number;
+  productType: string | null;
   query: string | null;
   quoteSelectable: boolean | null;
+  status: string | null;
+  vendor: string | null;
 }) {
   const client = await databasePool().connect();
   const after = decodeCursor(input.cursor);
@@ -464,6 +467,18 @@ export async function listP113CatalogProjections(input: {
     if (input.query) {
       values.push(`%${input.query}%`);
       filters.push(`search_text ilike $${values.length}`);
+    }
+    if (input.vendor) {
+      values.push(input.vendor);
+      filters.push(`payload->>'vendor' = $${values.length}`);
+    }
+    if (input.productType) {
+      values.push(input.productType);
+      filters.push(`payload->>'productType' = $${values.length}`);
+    }
+    if (input.status) {
+      values.push(input.status);
+      filters.push(`payload->>'status' = $${values.length}`);
     }
     if (input.quoteSelectable !== null) {
       values.push(input.quoteSelectable);
@@ -494,15 +509,35 @@ export async function listP113CatalogProjections(input: {
       [input.actor.tenantId],
     );
     await client.query("commit");
+    const latest = latestRun.rows[0] ?? null;
+    const latestPayload = latest?.payload && typeof latest.payload === "object"
+      ? latest.payload as Record<string, unknown>
+      : {};
+    const totalVariantCount = Number(latest?.variants_observed ?? 0);
     return {
       contractVersion: P113_PROJECTION_CONTRACT_VERSION,
+      coverage: {
+        blockedVariantCount: Number(latestPayload.blockedVariantCount ?? 0),
+        eligibleVariantCount: Number(latestPayload.eligibleVariantCount ?? 0),
+        formerCeilingRetired: totalVariantCount > 200,
+        hasHardPageLimit: false,
+        independentOracle: "Shopify productsCount + productVariantsCount with complete cursor receipts and P107 mapping evidence.",
+        productsObserved: Number(latest?.products_observed ?? 0),
+        totalVariantCount,
+      },
       cursor: {
         limit: input.limit,
         nextCursor: result.rows.length > input.limit
           ? encodeCursor(String(page[page.length - 1].projection_id))
           : null,
       },
-      latestRun: latestRun.rows[0] ?? null,
+      filters: {
+        productType: input.productType,
+        query: input.query,
+        status: input.status,
+        vendor: input.vendor,
+      },
+      latestRun: latest,
       selections: page.map((row) => row.payload),
       sourceOfTruth: P113_SOURCE_OF_TRUTH,
     };
