@@ -7,9 +7,9 @@ export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   const id = requestId(request.headers);
-  let actor: ReturnType<typeof requireServiceActor>;
+  let actor: Awaited<ReturnType<typeof requireServiceActor>>;
   try {
-    actor = requireServiceActor(request.headers);
+    actor = await requireServiceActor(request.headers);
   } catch {
     return apiResponse(
       { ok: false, message: "Service authentication required." },

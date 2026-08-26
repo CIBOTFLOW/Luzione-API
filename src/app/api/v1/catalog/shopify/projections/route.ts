@@ -20,7 +20,9 @@ const MAX_REQUEST_BYTES = 24 * 1024 * 1024;
 function serviceActorFailure(error: unknown) {
   const message = error instanceof Error ? error.message : "";
   if (/not configured/i.test(message)) return { code: "SERVICE_AUTH_NOT_CONFIGURED", status: 503 };
-  if (/authentication failed/i.test(message)) return { code: "SERVICE_AUTH_FAILED", status: 401 };
+  if (/authentication failed|tenant is not authorized/i.test(message)) {
+    return { code: "SERVICE_AUTH_FAILED", status: 401 };
+  }
   if (/headers are required|actor type/i.test(message)) return { code: "ACTOR_CONTEXT_REQUIRED", status: 400 };
   return null;
 }
@@ -39,7 +41,7 @@ function idempotencyKey(headers: Headers) {
 export async function GET(request: Request) {
   const id = requestId(request.headers);
   try {
-    const actor = requireServiceActor(request.headers);
+    const actor = await requireServiceActor(request.headers);
     const url = new URL(request.url);
     const rawLimit = Number(url.searchParams.get("limit") ?? 100);
     const limit = Number.isInteger(rawLimit) ? Math.max(1, Math.min(rawLimit, 250)) : 100;
@@ -87,7 +89,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   const id = requestId(request.headers);
   try {
-    const actor = requireServiceActor(request.headers);
+    const actor = await requireServiceActor(request.headers);
     const config = runtimeConfig();
     if (!config.internalProjectionsEnabled) {
       return apiResponse(

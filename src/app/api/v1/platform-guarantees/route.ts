@@ -15,7 +15,7 @@ function statusFor(error: unknown) {
 export async function GET(request: Request) {
   const id = requestId(request.headers);
   try {
-    const actor = requireServiceActor(request.headers);
+    const actor = await requireServiceActor(request.headers);
     const result = await readPlatformGuaranteeSummary(actor);
     return apiResponse({ ok: true, result }, { requestId: id });
   } catch (error) {
