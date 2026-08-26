@@ -106,6 +106,8 @@ test("public route exposes aggregate evidence only and fails closed", () => {
   assert.match(route, /readSultanRuntimeStatus/);
   assert.match(route, /runtime readback failed closed/i);
   assert.doesNotMatch(route, /DATABASE_URL|LUZIONE_API_SERVICE_TOKEN/);
+  assert.match(service, /public\.luzione_sultan_runtime_status_v1\(\)/);
+  assert.doesNotMatch(service, /from public\.agent_runs|from public\.sultan_chat_messages/i);
   assert.doesNotMatch(service, /select\s+content|select\s+object_id|select\s+target_id/i);
 });
 
