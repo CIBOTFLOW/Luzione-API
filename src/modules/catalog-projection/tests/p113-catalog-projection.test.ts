@@ -111,6 +111,13 @@ test("the service boundary is authenticated, idempotent, and never authorizes ex
   assert.match(route, /Idempotency-Key header is required/);
   assert.match(route, /internalProjectionsEnabled/);
   assert.match(store, /pg_advisory_xact_lock/);
+  assert.match(store, /begin read only/);
+  assert.match(store, /begin read write/);
+  assert.match(store, /set local role "luzione_api_p113_runtime"/);
+  assert.ok(
+    store.indexOf('set local role "luzione_api_p113_runtime"')
+      < store.indexOf("set_config('app.tenant_id'"),
+  );
   assert.match(store, /external_write_authorized[^\n]+false/);
   assert.match(store, /returning state, products_observed/);
   assert.match(store, /payload->>'vendor'/);
