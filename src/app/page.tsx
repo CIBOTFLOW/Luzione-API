@@ -15,6 +15,13 @@ const endpointCatalog = [
   },
   {
     method: "GET",
+    path: "/api/v1/sultan/runtime-status",
+    access: "Public aggregate",
+    purpose: "Live cognition, learning, model routing, connector, Shopify, and proposal evidence.",
+    linked: true,
+  },
+  {
+    method: "GET",
     path: "/api/v1/catalog",
     access: "Public contract",
     purpose: "Canonical objects, ownership boundaries, and active platform areas.",
