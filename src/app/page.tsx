@@ -28,6 +28,13 @@ const endpointCatalog = [
     linked: true,
   },
   {
+    method: "GET · POST",
+    path: "/api/v1/catalog/shopify/projections",
+    access: "Service authenticated",
+    purpose: "Read or atomically reconcile the tenant-scoped P113 quote catalog projection.",
+    linked: false,
+  },
+  {
     method: "GET",
     path: "/api/v1/platform-guarantees",
     access: "Service authenticated",
@@ -66,7 +73,11 @@ async function readControlPlaneStatus() {
     config,
     ready,
     security,
-    statusLabel: ready ? "Ready · read only" : "Configuration required",
+    statusLabel: ready
+      ? config.internalProjectionsEnabled
+        ? "Ready · bounded projections"
+        : "Ready · read only"
+      : "Configuration required",
   };
 }
 
@@ -103,7 +114,9 @@ export default async function Home() {
           <strong>{status.ready ? "Safe foundation online" : "Fail-closed safety active"}</strong>
           <p>
             {status.ready
-              ? "Canonical Postgres is connected, the RLS gate passes, and mutations remain locked."
+              ? status.config.internalProjectionsEnabled
+                ? "Canonical Postgres is connected, RLS passes, and the P113 catalog projection can reconcile without external effects."
+                : "Canonical Postgres is connected, the RLS gate passes, and mutations remain locked."
               : "The API is withholding authority until its database, authentication, signing, and RLS checks pass."}
           </p>
           <Link className="inline-link" href="/api/v1/healthz">
@@ -137,9 +150,9 @@ export default async function Home() {
             <small>App and OS must authenticate as bounded service actors</small>
           </article>
           <article className="metric">
-            <span>Write authority</span>
-            <strong>{status.config.mutationsEnabled ? "Enabled" : "Locked"}</strong>
-            <small>{status.config.mutationsEnabled ? "Controlled commands only" : "Mutations fail closed in this release"}</small>
+            <span>Internal projections</span>
+            <strong>{status.config.internalProjectionsEnabled ? "Active" : "Locked"}</strong>
+            <small>{status.config.internalProjectionsEnabled ? "P113 only · idempotent · no external effects" : "Projection writes fail closed"}</small>
           </article>
         </div>
       </section>
@@ -199,8 +212,8 @@ export default async function Home() {
           <li><span>4</span><strong>Execute + verify</strong><p>The API applies an idempotent command, records a receipt, and reads the result back.</p></li>
         </ol>
         <p className="flow-note">
-          Steps 1–2 are the active foundation. Steps 3–4 remain locked until command authorization,
-          idempotency, recovery, and provider readback pass their release gates.
+          Steps 1–2 are the active foundation. A bounded form of step 4 is active for the internal
+          P113 catalog projection; customer sends, Shopify writes, payments, and other external effects remain locked.
         </p>
       </section>
 
