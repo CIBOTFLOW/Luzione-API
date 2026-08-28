@@ -64,7 +64,12 @@ export async function POST(request: Request) {
     logRequestCompletion({ requestId: id, route: "/api/v1/governance/evaluate", status, startedAt, tenantId });
     return apiResponse(body, { requestId: id, status, startedAt });
   } catch (error) {
-    status = error instanceof AutonomyRequestError || error instanceof SyntaxError ? 400 : 503;
+    const message = error instanceof Error ? error.message : "";
+    status = error instanceof AutonomyRequestError || error instanceof SyntaxError
+      ? 400
+      : /authentication|tenant|actor/i.test(message)
+        ? 401
+        : 503;
     logRequestCompletion({ requestId: id, route: "/api/v1/governance/evaluate", status, startedAt, tenantId });
     return apiResponse({
       ok: false,
