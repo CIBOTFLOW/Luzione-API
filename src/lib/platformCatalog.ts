@@ -53,7 +53,11 @@ export const platformAreas: PlatformArea[] = [
     label: "Access",
     summary: "Tenant, actor, roles, permissions, consent, suppression and service authority.",
     owns: ["Tenant", "Actor", "Role", "Permission", "ServiceAccount", "Consent", "Suppression", "RLSReadiness"],
-    apiRoutes: ["/api/v1/security/rls-readiness"],
+    apiRoutes: [
+      "/api/v1/security/rls-readiness",
+      "/api/v1/autonomy/constitution",
+      "/api/v1/autonomy/evaluate",
+    ],
     status: "read-only",
   },
   {
@@ -71,6 +75,14 @@ export const platformAreas: PlatformArea[] = [
     owns: ["AuditEvent", "CommandReceipt", "ApprovalDecision", "CorrectionLineage", "AccessEvent"],
     apiRoutes: [],
     status: "planned",
+  },
+  {
+    id: "autonomy",
+    label: "Autonomy",
+    summary: "Typed effect classes, immutable safety rules, bounded authority, simulations and fail-closed action evaluation.",
+    owns: ["AutonomyConstitution", "CapabilityPolicy", "AuthorityGrant", "ActionEvaluation", "SafetySimulation"],
+    apiRoutes: ["/api/v1/autonomy/constitution", "/api/v1/autonomy/evaluate"],
+    status: "foundation",
   },
   {
     id: "docs",

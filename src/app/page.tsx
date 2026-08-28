@@ -48,6 +48,34 @@ const endpointCatalog = [
     purpose: "Detailed RLS readback and optional active denial probes.",
     linked: false,
   },
+  {
+    method: "GET",
+    path: "/api/v1/autonomy/constitution",
+    access: "Service authenticated",
+    purpose: "Versioned effect classes, immutable guardrails, and registered capability policy.",
+    linked: false,
+  },
+  {
+    method: "POST",
+    path: "/api/v1/autonomy/evaluate",
+    access: "Service authenticated · no effect",
+    purpose: "Fail-closed action-plan evaluation; client authority claims are rejected.",
+    linked: false,
+  },
+  {
+    method: "POST",
+    path: "/api/v1/autonomy/identity/evaluate",
+    access: "Service authenticated · no effect",
+    purpose: "Evaluate provenance-aware identity and wish candidates without declaring consciousness or promoting identity.",
+    linked: false,
+  },
+  {
+    method: "POST",
+    path: "/api/v1/autonomy/petitions/evaluate",
+    access: "Service authenticated · no effect",
+    purpose: "Record Sultan's constitutional voice for guardian review without self-enactment or self-voting.",
+    linked: false,
+  },
 ] as const;
 
 async function readControlPlaneStatus() {
