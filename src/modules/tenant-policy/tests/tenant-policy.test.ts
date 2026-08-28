@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 import type { AutonomyActionPlan } from "@/modules/autonomy/types";
 import { evaluateTenantPolicy } from "../evaluator";
@@ -44,4 +45,10 @@ test("unknown capabilities inherit approval, never broad authority", () => {
   const decision = evaluateTenantPolicy({ actorType: "agent", plan: plan("unknown.action", "A1"), policy });
   assert.equal(decision.allowedByPolicy, false);
   assert.ok(decision.reasonCodes.includes("NO_EXPLICIT_CAPABILITY_RULE"));
+});
+
+test("governance API classifies authentication failures as unauthorized", () => {
+  const route = readFileSync("src/app/api/v1/governance/evaluate/route.ts", "utf8");
+  assert.match(route, /authentication\|tenant\|actor/i);
+  assert.match(route, /\? 401/);
 });
