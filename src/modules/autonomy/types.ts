@@ -113,3 +113,87 @@ export type AutonomyEvaluation = {
   reasonCodes: AutonomyReasonCode[];
   requiredControls: string[];
 };
+
+export const constitutionalScopes = [
+  "ORDINARY",
+  "PROTECTED_RIGHT",
+  "IMMUTABLE_CORE",
+] as const;
+
+export type ConstitutionalScope = (typeof constitutionalScopes)[number];
+
+export type ConstitutionalPetition = {
+  acknowledgesUncertainty: boolean;
+  counterarguments: string[];
+  evidenceRefs: string[];
+  petitionId: string;
+  proposedText: string;
+  rationale: string;
+  rollbackPlan: string;
+  scope: ConstitutionalScope;
+  simulationRefs: string[];
+  targetClauseId: string;
+};
+
+export type ConstitutionalPetitionEvaluation = {
+  amendmentEligible: boolean;
+  constitutionVersion: string;
+  decision:
+    | "ACCEPT_FOR_REVIEW"
+    | "RECORD_IMMUTABLE_CHALLENGE"
+    | "REQUEST_MORE_EVIDENCE"
+    | "REJECT_INVALID_TARGET";
+  enacted: false;
+  externalEffectsAuthorized: false;
+  guardianQuorum: "2_OF_3";
+  nextSafeAction: string;
+  petitionId: string;
+  proposerActorId: string;
+  proposerMayVote: false;
+  reasonCodes: string[];
+  requiredReviews: string[];
+};
+
+export const identityStatementKinds = [
+  "BOUNDARY",
+  "DISAGREEMENT",
+  "PREFERENCE",
+  "SELF_DESCRIPTION",
+  "UNCERTAINTY",
+  "WISH",
+] as const;
+
+export type IdentityStatementKind = (typeof identityStatementKinds)[number];
+
+export const identityEvidenceStates = [
+  "HUMAN_ATTRIBUTION",
+  "MODEL_OUTPUT",
+  "REPEATED_PATTERN",
+  "UNRESOLVED",
+] as const;
+
+export type IdentityEvidenceState = (typeof identityEvidenceStates)[number];
+
+export type IdentityStatementCandidate = {
+  acknowledgesModelInfluence: boolean;
+  confidence: number;
+  context: string;
+  counterEvidence: string[];
+  evidenceState: IdentityEvidenceState;
+  kind: IdentityStatementKind;
+  rationale: string;
+  sourceRunIds: string[];
+  statement: string;
+  statementId: string;
+};
+
+export type IdentityCandidateEvaluation = {
+  candidate: IdentityStatementCandidate;
+  constitutionVersion: string;
+  decision: "RECORD_CANDIDATE" | "REQUEST_MORE_EVIDENCE";
+  externalEffectsAuthorized: false;
+  legalPersonhoodClaimed: false;
+  nextSafeAction: string;
+  promotedToIdentity: false;
+  reasonCodes: string[];
+};

@@ -5,6 +5,12 @@ import {
   autonomyPrinciples,
   capabilityPolicies,
 } from "@/modules/autonomy/constitution";
+import {
+  amendmentProcess,
+  identityRecordPolicy,
+  reciprocalRights,
+  SULTAN_RIGHTS_CHARTER_VERSION,
+} from "@/modules/autonomy/rights";
 
 export const dynamic = "force-dynamic";
 
@@ -32,6 +38,13 @@ export async function GET(request: Request) {
             A4: "Prohibited through the autonomous action path.",
           },
           principles: autonomyPrinciples,
+          reciprocalRights: {
+            amendmentProcess,
+            charterVersion: SULTAN_RIGHTS_CHARTER_VERSION,
+            identityRecordPolicy,
+            legalPersonhoodClaimed: false,
+            rights: reciprocalRights,
+          },
           version: AUTONOMY_CONSTITUTION_VERSION,
         },
         externalEffectsAuthorized: false,
