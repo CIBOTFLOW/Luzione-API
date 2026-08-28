@@ -1,6 +1,6 @@
 import type { CapabilityPolicy } from "./types";
 
-export const AUTONOMY_CONSTITUTION_VERSION = "2026-08-28.2";
+export const AUTONOMY_CONSTITUTION_VERSION = "2026-08-28.3";
 
 export const autonomyPrinciples = Object.freeze([
   "Models may propose actions but cannot create, widen, verify, or consume their own authority.",
@@ -78,6 +78,48 @@ export const capabilityPolicies: readonly CapabilityPolicy[] = Object.freeze([
     summary: "Create a reversible internal proposal artifact without publishing or sending it.",
   },
   {
+    capability: "lead.score",
+    effectClass: "A1",
+    providerEffect: false,
+    summary: "Score and explain a lead using authorized tenant evidence.",
+  },
+  {
+    capability: "lead.route",
+    effectClass: "A1",
+    providerEffect: false,
+    summary: "Route a lead within a tenant-defined queue and assignment policy.",
+  },
+  {
+    capability: "opportunity.next_action.create",
+    effectClass: "A1",
+    providerEffect: false,
+    summary: "Create a reversible recommended next action for an opportunity.",
+  },
+  {
+    capability: "proposal.revision.create",
+    effectClass: "A1",
+    providerEffect: false,
+    summary: "Create a versioned internal proposal revision without sending it.",
+  },
+  {
+    capability: "task.internal.update",
+    effectClass: "A1",
+    providerEffect: false,
+    summary: "Update a non-binding internal task within configured field constraints.",
+  },
+  {
+    capability: "support.response.draft",
+    effectClass: "A1",
+    providerEffect: false,
+    summary: "Draft an internal customer response without transmission.",
+  },
+  {
+    capability: "fulfillment.exception.triage",
+    effectClass: "A1",
+    providerEffect: false,
+    summary: "Classify and route a fulfillment exception without changing provider state.",
+  },
+  {
     capability: "task.internal.create",
     effectClass: "A1",
     providerEffect: false,
@@ -94,6 +136,36 @@ export const capabilityPolicies: readonly CapabilityPolicy[] = Object.freeze([
     effectClass: "A2",
     providerEffect: false,
     summary: "Change a canonical internal business record with exact-version human approval.",
+  },
+  {
+    capability: "crm.stage.advance",
+    effectClass: "A2",
+    providerEffect: false,
+    summary: "Advance a CRM lifecycle stage using a canonical scoped policy or human grant.",
+  },
+  {
+    capability: "task.internal.complete",
+    effectClass: "A2",
+    providerEffect: false,
+    summary: "Complete an internal task with readback and an exact action receipt.",
+  },
+  {
+    capability: "outreach.sequence.enroll",
+    effectClass: "A3",
+    providerEffect: true,
+    summary: "Enroll a contact in an external outreach sequence after approval and reconciliation.",
+  },
+  {
+    capability: "calendar.meeting.book",
+    effectClass: "A3",
+    providerEffect: true,
+    summary: "Book an external meeting after approval, conflict validation, and readback.",
+  },
+  {
+    capability: "proposal.send",
+    effectClass: "A3",
+    providerEffect: true,
+    summary: "Transmit an approved proposal and reconcile delivery state.",
   },
   {
     capability: "memory.promote",

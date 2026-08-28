@@ -18,6 +18,13 @@ export type DatabaseConnectionOptions = {
   };
 };
 
+export type DatabaseRuntimeProfile = {
+  host: string;
+  poolerRecommended: boolean;
+  poolerDetected: boolean;
+  tlsVerification: "CA_VERIFIED" | "ENCRYPTED_UNVERIFIED" | "LOCAL";
+};
+
 function normalizeCertificate(certificate: string | undefined) {
   const normalized = certificate?.trim().replace(/\\n/g, "\n");
   return normalized || undefined;
@@ -53,5 +60,25 @@ export function databaseConnectionOptions(
     ssl: ca
       ? { ca, rejectUnauthorized: true }
       : { rejectUnauthorized: false },
+  };
+}
+
+export function databaseRuntimeProfile(
+  rawConnectionString: string,
+  caCertificate?: string,
+): DatabaseRuntimeProfile {
+  const parsed = new URL(rawConnectionString.trim());
+  const local = localDatabaseHosts.has(parsed.hostname);
+  const poolerDetected = parsed.hostname.includes("pooler.supabase.com")
+    || parsed.port === "6543";
+  return {
+    host: parsed.hostname,
+    poolerDetected,
+    poolerRecommended: !local && !poolerDetected,
+    tlsVerification: local
+      ? "LOCAL"
+      : normalizeCertificate(caCertificate)
+        ? "CA_VERIFIED"
+        : "ENCRYPTED_UNVERIFIED",
   };
 }
