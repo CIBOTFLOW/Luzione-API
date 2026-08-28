@@ -42,3 +42,15 @@ The service connects directly to Postgres for canonical P110/P111 records. If Su
 `GET /api/v1/security/rls-readiness` is a service-authenticated, read-only contract over the canonical Postgres catalog. It verifies the first server-only control-plane boundary: ten credential, authentication, connector, service-client and migration relations must exist, have RLS enabled and grant no access to `anon` or `authenticated`. It also rejects unsafe default grants for future tables.
 
 The public health endpoint reports only aggregate pass/fail posture and returns 503 unless configuration and this RLS gate pass. Authorized callers may add `?activeProbes=true` to prove that `anon` and `authenticated` reads fail with PostgreSQL `42501 permission_denied`. No row values, credentials or connection details are returned.
+
+## Autonomy boundary
+
+The autonomy constitution in `src/modules/autonomy` assigns every registered capability an effect class. A model or client may describe an intent, but it cannot choose a lower class, submit tenant or actor identity, assert approval, or mint authority.
+
+- **A0** is read-only analysis or no-effect simulation.
+- **A1** is a reversible internal effect under a pre-granted, scoped policy.
+- **A2** is a consequential but reversible effect requiring exact action-version human approval.
+- **A3** is an external or binding effect requiring one-time human approval, idempotency, reconciliation, rollback and source readback.
+- **A4** is prohibited through the agent action path, including direct payments and changes to authority, the constitution, kill switches, audit history or budget guardrails.
+
+`POST /api/v1/autonomy/evaluate` performs only authenticated deterministic evaluation. It deliberately has no authority-store adapter and therefore cannot allow A1–A3 in production yet. The pure evaluator accepts a `VerifiedAuthorityGrant` only as an internal server-side dependency so a later canonical-store adapter can be tested without weakening this boundary.
