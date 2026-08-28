@@ -38,6 +38,10 @@ Configure the following encrypted server-only values in Preview and Production:
 - `PLATFORM_CONTINUATION_SECRET`
 - `APP_ENV=production`
 - `LUZIONE_API_MUTATIONS_ENABLED=false`
+- `LUZIONE_CANONICAL_TENANT_CODE=LUZIONE_INTERNAL`
+- `DATABASE_POOL_MAX=3`
+
+Use the Supabase transaction pooler for serverless production traffic. Keep prepared statements disabled at the infrastructure connection layer, align Vercel compute with the database region, and configure `DATABASE_CA_CERT` as soon as the managed CA is available. `/api/v1/livez` is the no-dependency load-balancer probe; `/api/v1/readyz` checks database connectivity and safe runtime configuration; `/api/v1/healthz` performs the deeper RLS posture check.
 
 Optional future Supabase administrative integration uses `SUPABASE_URL` and the new `SUPABASE_SECRET_KEY`. Never expose the secret key through `NEXT_PUBLIC_*`.
 
@@ -46,3 +50,9 @@ Optional future Supabase administrative integration uses `SUPABASE_URL` and the 
 This service must initially connect to the existing Luzione Postgres/Supabase project. Do not create duplicate Account, Commercial Case, Proposal, Order, event, receipt, workflow or checkpoint stores. P110/P111 migrations remain under their existing migration authority until a verified ownership transfer is performed.
 
 See [Architecture](docs/ARCHITECTURE.md) and [Cutover plan](docs/CUTOVER.md).
+
+## Production workflow and governance surface
+
+`GET /api/v1/workflows` publishes the nine launch workflow packs: eight general CRM/growth/commercial/work/service packs and one isolated luxury-home pack. `POST /api/v1/governance/evaluate` intersects the immutable platform constitution with the active tenant `sultan.autonomy` policy. The UI and Sultan may request an evaluation, but neither can supply its own actor, tenant, role, authority grant, policy version or approval.
+
+The tenant policy is intentionally liberal for explicit A0/A1 capabilities. Exact bounded A2 changes can be enabled by a canonical one-time policy grant. External or binding A3 effects remain approval-gated and require provider reconciliation. A4 capabilities—money movement, self-granted authority, audit deletion, kill-switch bypass and constitution mutation—remain prohibited.

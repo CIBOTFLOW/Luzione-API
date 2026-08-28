@@ -91,7 +91,9 @@ function validateAuthority(
       reasons.push("POLICY_GRANT_TOO_POWERFUL");
     }
   } else {
-    if (grant.source === "POLICY_GRANT") reasons.push("HUMAN_APPROVAL_REQUIRED");
+    if (effectClass === "A3" && grant.source === "POLICY_GRANT") {
+      reasons.push("HUMAN_APPROVAL_REQUIRED");
+    }
     if (grant.actionId !== plan.actionId || grant.actionVersion !== plan.actionVersion) {
       reasons.push("ACTION_VERSION_MISMATCH");
     }

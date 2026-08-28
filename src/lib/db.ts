@@ -18,10 +18,17 @@ export function databasePool() {
     );
     global.__luzioneApiPool = new Pool({
       ...connection,
-      max: 5,
-      idleTimeoutMillis: 10_000,
-      connectionTimeoutMillis: 5_000,
+      allowExitOnIdle: true,
+      max: boundedInteger(process.env.DATABASE_POOL_MAX, 3, 1, 20),
+      idleTimeoutMillis: boundedInteger(process.env.DATABASE_IDLE_TIMEOUT_MS, 10_000, 1_000, 60_000),
+      connectionTimeoutMillis: boundedInteger(process.env.DATABASE_CONNECT_TIMEOUT_MS, 3_000, 500, 15_000),
+      maxUses: boundedInteger(process.env.DATABASE_POOL_MAX_USES, 7_500, 100, 50_000),
     });
   }
   return global.__luzioneApiPool;
+}
+
+function boundedInteger(raw: string | undefined, fallback: number, minimum: number, maximum: number) {
+  const value = Number(raw);
+  return Number.isInteger(value) && value >= minimum && value <= maximum ? value : fallback;
 }

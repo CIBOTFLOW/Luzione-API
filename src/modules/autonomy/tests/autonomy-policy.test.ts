@@ -142,6 +142,17 @@ test("A2 requires exact action-version human approval", () => {
   );
 });
 
+test("A2 accepts an exact one-time canonical tenant policy grant", () => {
+  const proposed = plan({ capability: "crm.stage.advance", declaredEffectClass: "A2" });
+  const approved = grant({
+    capability: "crm.stage.advance",
+    effectClassMaximum: "A2",
+    oneTime: true,
+    source: "POLICY_GRANT",
+  });
+  assert.equal(evaluateAutonomyPlan(proposed, context(approved)).decision, "ALLOW");
+});
+
 test("A3 needs one-time human approval and provider reconciliation", () => {
   const proposed = plan({ capability: "email.send", declaredEffectClass: "A3" });
   const approved = grant({
