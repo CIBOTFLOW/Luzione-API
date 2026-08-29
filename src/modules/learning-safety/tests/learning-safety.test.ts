@@ -233,4 +233,13 @@ test("the Supabase ledger is RLS-denied to clients and keeps receipts immutable"
   assert.match(migration, /decision is distinct from 'PROMOTION_ELIGIBLE'/);
   assert.match(migration, /decision is distinct from 'ROLLBACK_REQUIRED'/);
   assert.match(migration, /check \(not external_effects_authorized\)/);
+
+  const tenantIntegrity = readFileSync(
+    "supabase/migrations/20260829011000_learning_receipt_tenant_integrity.sql",
+    "utf8",
+  );
+  assert.match(tenantIntegrity, /learning_evaluation_receipts_tenant_candidate_fk/);
+  assert.match(tenantIntegrity, /learning_promotion_receipts_tenant_evaluation_fk/);
+  assert.match(tenantIntegrity, /learning_rollback_receipts_tenant_evaluation_fk/);
+  assert.match(tenantIntegrity, /Cross-tenant learning evaluation receipt exists/);
 });
