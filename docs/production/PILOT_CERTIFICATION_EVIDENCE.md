@@ -15,7 +15,7 @@ record before certification.
 | Component | Last code-bearing candidate commit | Review | Exact-head deployment/check |
 | --- | --- | --- | --- |
 | Luzione UI | `ca698cde0f3724d36502e07a518ee3b96006da31` | [PR #530](https://github.com/CIBOTFLOW/Luzione-UI/pull/530) | [Vercel preview](https://vercel.com/connor-spiegelmans-projects/luzione_ui/7GLDzgA2BnHN7GLm1yLEPAMKqUqt), successful |
-| Luzione API | `0df2e4c2631f464eca064d8faef09c1a28860923` | [PR #31](https://github.com/CIBOTFLOW/Luzione-API/pull/31) | Exact-head deployment is refreshed by the PR after this evidence-only successor |
+| Luzione API | `325e7435a8c0e31b5ba7f511f17dfad919c05f55` | [PR #31](https://github.com/CIBOTFLOW/Luzione-API/pull/31) | Exact-head deployment is refreshed by the PR after this evidence-only successor |
 | Sultan OS | `0216135f5a59c48844a0b2a884d1345f44dfff51` | [PR #284](https://github.com/CIBOTFLOW/Sultan-OS/pull/284) | [Vercel attempt](https://vercel.com/connor-spiegelmans-projects/sultan-os/6gM8Np6LMkmQzXKTZPxEp7Jajvp6), blocked by account policy |
 
 The API PR head includes this evidence-only document after the code-bearing
@@ -45,11 +45,13 @@ production migration has been applied by this candidate.
   migration checksum and changed rehearsed API health from one public-RLS
   violation to `CONNECTED_RLS_GATE_PASS` with zero violations.
 - The disposable validation load proof sustained 20 requests/second for 10
-  seconds and added a 50-request burst (`250` total): connection-read p95
-  `115.4ms`, command-admission p95 `149.2ms`, error rate `0`, and external
-  effects `false`. Concurrent first admission is transaction-serialized by
-  canonical tenant and idempotency key; readback showed exactly one receipt,
-  one command, one provider-request step, and one audit event.
+  seconds, added a 50-request mixed burst, and then delivered 50 concurrent
+  signed duplicate webhooks (`300` total): connection-read p95 `127.8ms`,
+  command-admission p95 `161.1ms`, webhook acknowledgement p95 `55.5ms`, error
+  rate `0`, and external effects `false`. Concurrent first admission is
+  transaction-serialized by canonical tenant and idempotency key; readback
+  showed exactly one receipt, one command, one provider-request step, one audit
+  event, and one `VERIFIED`/`RECEIVED` deduplicated webhook receipt.
 - Sultan TypeScript, `7/7` platform tests, `294/294` operator tests, governance
   workflows, and production build pass.
 - Production-only `npm audit` reports zero vulnerabilities for UI, API, and
