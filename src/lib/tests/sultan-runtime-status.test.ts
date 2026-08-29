@@ -24,6 +24,7 @@ function aggregate(overrides: Partial<SultanRuntimeAggregate> = {}): SultanRunti
     evaluationCount: 0,
     gmailConnectionCount: 0,
     googleDriveConnectionCount: 0,
+    googleVerifiedDocumentCount: 0,
     latestAgentRunAt: null,
     latestEvaluationAt: null,
     latestModelCallAt: null,
@@ -100,6 +101,19 @@ test("marks connected providers honestly and detects a stale Shopify sync", () =
   assert.equal(result.connectors.shopify.status, "DEGRADED_STALE_SYNC");
 });
 
+test("requires both a connected Google account and authoritative document receipts", () => {
+  const disconnected = deriveSultanRuntimeStatus(aggregate({
+    googleVerifiedDocumentCount: 2,
+  }), "2026-08-26T18:00:00.000Z");
+  assert.equal(disconnected.connectors.googleDocs.generationVerified, false);
+
+  const verified = deriveSultanRuntimeStatus(aggregate({
+    googleDriveConnectionCount: 1,
+    googleVerifiedDocumentCount: 2,
+  }), "2026-08-26T18:00:00.000Z");
+  assert.equal(verified.connectors.googleDocs.generationVerified, true);
+});
+
 test("public route exposes aggregate evidence only and fails closed", () => {
   const route = readFileSync("src/app/api/v1/sultan/runtime-status/route.ts", "utf8");
   const service = readFileSync("src/lib/sultan-runtime/readService.ts", "utf8");
@@ -107,6 +121,19 @@ test("public route exposes aggregate evidence only and fails closed", () => {
   assert.match(route, /runtime readback failed closed/i);
   assert.doesNotMatch(route, /DATABASE_URL|LUZIONE_API_SERVICE_TOKEN/);
   assert.match(service, /public\.luzione_sultan_runtime_status_v1\(\)/);
+  assert.match(service, /commercial_case_google_rendering_events/);
+  assert.match(service, /google_generation_state = 'readback_verified'/);
+  assert.match(service, /luzione-google-proposal-readback\/v2/);
+  assert.match(service, /google_readback_proof/);
+  assert.match(service, /jsonb_object_keys\(d\.google_readback_proof\)/);
+  assert.doesNotMatch(service, /jsonb_object_length/);
+  assert.match(service, /e\.readback_proof = d\.google_readback_proof/);
+  assert.match(service, /e\.snapshot_checksum = d\.snapshot_checksum/);
+  assert.match(service, /'sales_proposal'[\s\S]*'itemized_quote'[\s\S]*'whole_home_proposal'/);
+  assert.match(service, /'tableCount'\)::int = 4/);
+  assert.match(service, /'requiredSections' = contract\.required_sections/);
+  assert.match(service, /e\.external_ids = \(/);
+  assert.doesNotMatch(service, /jsonb_array_length\(d\.google_artifacts\) >= 3/);
   assert.doesNotMatch(service, /from public\.agent_runs|from public\.sultan_chat_messages/i);
   assert.doesNotMatch(service, /select\s+content|select\s+object_id|select\s+target_id/i);
 });
