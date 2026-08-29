@@ -123,6 +123,15 @@ test("public route exposes aggregate evidence only and fails closed", () => {
   assert.match(service, /public\.luzione_sultan_runtime_status_v1\(\)/);
   assert.match(service, /commercial_case_google_rendering_events/);
   assert.match(service, /google_generation_state = 'readback_verified'/);
+  assert.match(service, /luzione-google-proposal-readback\/v2/);
+  assert.match(service, /google_readback_proof/);
+  assert.match(service, /e\.readback_proof = d\.google_readback_proof/);
+  assert.match(service, /e\.snapshot_checksum = d\.snapshot_checksum/);
+  assert.match(service, /'sales_proposal'[\s\S]*'itemized_quote'[\s\S]*'whole_home_proposal'/);
+  assert.match(service, /'tableCount'\)::int = 4/);
+  assert.match(service, /'requiredSections' = contract\.required_sections/);
+  assert.match(service, /e\.external_ids = \(/);
+  assert.doesNotMatch(service, /jsonb_array_length\(d\.google_artifacts\) >= 3/);
   assert.doesNotMatch(service, /from public\.agent_runs|from public\.sultan_chat_messages/i);
   assert.doesNotMatch(service, /select\s+content|select\s+object_id|select\s+target_id/i);
 });
