@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import crypto from "node:crypto";
 import { performance } from "node:perf_hooks";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
@@ -93,6 +94,34 @@ async function measuredRequest(config, kind) {
   return { kind, latencyMs, ok: expectedStatus && body?.ok === true && safeBoundary, status: response.status };
 }
 
+async function measuredWebhook(config) {
+  const body = JSON.stringify({ event: "controlled-load-webhook", testOnly: true });
+  const signature = crypto.createHmac("sha256", config.webhookSecret).update(body).digest("hex");
+  const startedAt = performance.now();
+  const response = await fetch(new URL(`/api/v1/webhooks/${config.webhookProvider}`, config.baseUrl), {
+    body,
+    headers: {
+      "content-type": "application/json",
+      "x-luzione-webhook-endpoint": config.webhookEndpoint,
+      "x-provider-event-id": config.webhookEventId,
+      "x-provider-event-type": "message.received",
+      "x-provider-signature": `sha256=${signature}`,
+    },
+    method: "POST",
+    signal: AbortSignal.timeout(config.timeoutMs),
+  });
+  const latencyMs = Math.round((performance.now() - startedAt) * 10) / 10;
+  const responseBody = await response.json().catch(() => null);
+  return {
+    kind: "webhook",
+    latencyMs,
+    ok: (response.status === 200 || response.status === 202)
+      && responseBody?.ok === true
+      && responseBody?.externalEffectsAuthorized === false,
+    status: response.status,
+  };
+}
+
 async function runBatch(config, count, offset = 0) {
   return Promise.all(Array.from({ length: count }, (_, index) =>
     measuredRequest(config, (index + offset) % 2 === 0 ? "read" : "command")));
@@ -108,10 +137,17 @@ export async function runPilotLoad(config) {
     results.push(...await runBatch(config, config.sustainedRps, second * config.sustainedRps));
   }
   results.push(...await runBatch(config, config.burstRequests, config.durationSeconds * config.sustainedRps));
+  if (config.webhookRequests > 0) {
+    results.push(...await Promise.all(Array.from(
+      { length: config.webhookRequests },
+      () => measuredWebhook(config),
+    )));
+  }
 
   const failures = results.filter((result) => !result.ok);
   const reads = results.filter((result) => result.kind === "read").map((result) => result.latencyMs);
   const commands = results.filter((result) => result.kind === "command").map((result) => result.latencyMs);
+  const webhooks = results.filter((result) => result.kind === "webhook").map((result) => result.latencyMs);
   const summary = {
     burstRequests: config.burstRequests,
     commandAdmissionP95Ms: percentile(commands, 0.95),
@@ -122,9 +158,12 @@ export async function runPilotLoad(config) {
     failures: failures.slice(0, 20).map(({ kind, status }) => ({ kind, status })),
     requests: results.length,
     sustainedRps: config.sustainedRps,
+    webhookAckP95Ms: percentile(webhooks, 0.95),
+    webhookRequests: config.webhookRequests,
   };
   if (summary.connectionReadP95Ms >= config.p95LimitMs
     || summary.commandAdmissionP95Ms >= config.p95LimitMs
+    || (summary.webhookRequests > 0 && summary.webhookAckP95Ms >= config.webhookP95LimitMs)
     || summary.errorRate >= config.errorRateLimit) {
     throw new Error(`Pilot load gate failed: ${JSON.stringify(summary)}`);
   }
@@ -134,6 +173,7 @@ export async function runPilotLoad(config) {
 async function main() {
   const token = process.env.PILOT_LOAD_TOKEN?.trim();
   const canonicalTenantId = process.env.PILOT_LOAD_CANONICAL_TENANT_ID?.trim();
+  const webhookSecret = process.env.PILOT_LOAD_WEBHOOK_SECRET?.trim() || "";
   if (!token || !canonicalTenantId) {
     throw new Error("PILOT_LOAD_TOKEN and PILOT_LOAD_CANONICAL_TENANT_ID are required.");
   }
@@ -157,6 +197,14 @@ async function main() {
     sustainedRps: boundedInteger(process.env.PILOT_LOAD_SUSTAINED_RPS, 20, 1, 200),
     timeoutMs: boundedInteger(process.env.PILOT_LOAD_TIMEOUT_MS, 5_000, 100, 60_000),
     token,
+    webhookEndpoint: process.env.PILOT_LOAD_WEBHOOK_ENDPOINT?.trim() || "gmail-controlled-pilot",
+    webhookEventId: process.env.PILOT_LOAD_WEBHOOK_EVENT_ID?.trim() || "pilot-load-webhook-1",
+    webhookP95LimitMs: boundedInteger(process.env.PILOT_LOAD_WEBHOOK_P95_LIMIT_MS, 1_000, 1, 60_000),
+    webhookProvider: process.env.PILOT_LOAD_WEBHOOK_PROVIDER?.trim() || "gmail",
+    webhookRequests: webhookSecret
+      ? boundedInteger(process.env.PILOT_LOAD_WEBHOOK_REQUESTS, 50, 1, 500)
+      : 0,
+    webhookSecret,
   };
   console.log(JSON.stringify(await runPilotLoad(config), null, 2));
 }
