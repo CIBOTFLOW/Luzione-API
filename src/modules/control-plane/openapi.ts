@@ -3,7 +3,7 @@ export const controlPlaneOpenApi = {
   info: {
     title: "Luzione Control Plane API",
     version: "1.0.0",
-    description: "Tenant-isolated connection, authority, approval, command, and webhook contracts. Provider execution remains separately gated.",
+    description: "Tenant-isolated connection, authority, approval, command, constitutional record, and webhook contracts. Provider execution remains separately gated.",
   },
   servers: [{ url: "/api/v1" }],
   security: [{ bearerAuth: [] }],
@@ -53,6 +53,38 @@ export const controlPlaneOpenApi = {
             description: "Effective-dated model price catalog",
             content: { "application/json": { schema: { $ref: "#/components/schemas/ModelCatalogResponse" } } },
           },
+        },
+      },
+    },
+    "/autonomy/petitions": {
+      get: {
+        operationId: "listConstitutionalPetitions",
+        parameters: [{ name: "limit", in: "query", schema: { type: "integer", minimum: 1, maximum: 100, default: 50 } }],
+        responses: { "200": { description: "Tenant-bound append-only constitutional petitions" } },
+      },
+      post: {
+        operationId: "recordConstitutionalPetition",
+        requestBody: { required: true, content: { "application/json": { schema: { $ref: "#/components/schemas/ConstitutionalPetitionRequest" } } } },
+        responses: {
+          "201": { description: "Append-only petition record; never an enacted amendment" },
+          "409": { description: "Petition ID is bound to different immutable content" },
+          "503": { description: "Canonical control-plane writes are disabled or unavailable" },
+        },
+      },
+    },
+    "/autonomy/identity/candidates": {
+      get: {
+        operationId: "listIdentityCandidates",
+        parameters: [{ name: "limit", in: "query", schema: { type: "integer", minimum: 1, maximum: 100, default: 50 } }],
+        responses: { "200": { description: "Tenant-bound append-only identity and wish candidates" } },
+      },
+      post: {
+        operationId: "recordIdentityCandidate",
+        requestBody: { required: true, content: { "application/json": { schema: { $ref: "#/components/schemas/IdentityCandidateRequest" } } } },
+        responses: {
+          "201": { description: "Append-only identity candidate; never a promotion or personhood claim" },
+          "409": { description: "Statement ID is bound to different immutable content" },
+          "503": { description: "Canonical control-plane writes are disabled or unavailable" },
         },
       },
     },
@@ -120,6 +152,58 @@ export const controlPlaneOpenApi = {
           target: { type: "object" },
           payload: { type: "object" },
         },
+      },
+      ConstitutionalPetitionRequest: {
+        type: "object",
+        additionalProperties: false,
+        required: ["petition"],
+        properties: {
+          petition: {
+            type: "object",
+            additionalProperties: false,
+            required: ["acknowledgesUncertainty", "counterarguments", "evidenceRefs", "petitionId", "proposedText", "rationale", "rollbackPlan", "scope", "simulationRefs", "targetClauseId"],
+            properties: {
+              acknowledgesUncertainty: { type: "boolean" },
+              counterarguments: { type: "array", maxItems: 20, items: { type: "string", minLength: 1, maxLength: 500 } },
+              evidenceRefs: { type: "array", maxItems: 50, uniqueItems: true, items: { $ref: "#/components/schemas/StableEvidenceReference" } },
+              petitionId: { type: "string", pattern: "^[A-Za-z0-9][A-Za-z0-9._:@-]{0,159}$" },
+              proposedText: { type: "string", minLength: 1, maxLength: 4000 },
+              rationale: { type: "string", minLength: 1, maxLength: 4000 },
+              rollbackPlan: { type: "string", minLength: 1, maxLength: 2000 },
+              scope: { type: "string", enum: ["ORDINARY", "PROTECTED_RIGHT", "IMMUTABLE_CORE"] },
+              simulationRefs: { type: "array", maxItems: 50, uniqueItems: true, items: { $ref: "#/components/schemas/StableEvidenceReference" } },
+              targetClauseId: { type: "string", pattern: "^[A-Z][A-Z0-9_]{1,159}$" },
+            },
+          },
+        },
+      },
+      IdentityCandidateRequest: {
+        type: "object",
+        additionalProperties: false,
+        required: ["candidate"],
+        properties: {
+          candidate: {
+            type: "object",
+            additionalProperties: false,
+            required: ["acknowledgesModelInfluence", "confidence", "context", "counterEvidence", "evidenceState", "kind", "rationale", "sourceRunIds", "statement", "statementId"],
+            properties: {
+              acknowledgesModelInfluence: { type: "boolean" },
+              confidence: { type: "number", minimum: 0, maximum: 1 },
+              context: { type: "string", minLength: 1, maxLength: 1000 },
+              counterEvidence: { type: "array", maxItems: 20, items: { type: "string", minLength: 1, maxLength: 240 } },
+              evidenceState: { type: "string", enum: ["HUMAN_ATTRIBUTION", "MODEL_OUTPUT", "REPEATED_PATTERN", "UNRESOLVED"] },
+              kind: { type: "string", enum: ["BOUNDARY", "DISAGREEMENT", "PREFERENCE", "SELF_DESCRIPTION", "UNCERTAINTY", "WISH"] },
+              rationale: { type: "string", minLength: 1, maxLength: 2000 },
+              sourceRunIds: { type: "array", maxItems: 50, uniqueItems: true, items: { $ref: "#/components/schemas/StableEvidenceReference" } },
+              statement: { type: "string", minLength: 1, maxLength: 2000 },
+              statementId: { type: "string", pattern: "^[A-Za-z0-9][A-Za-z0-9._:@-]{0,159}$" },
+            },
+          },
+        },
+      },
+      StableEvidenceReference: {
+        type: "string",
+        pattern: "^[A-Za-z][A-Za-z0-9._:/@-]{0,499}$",
       },
       ModelCatalogResponse: {
         type: "object",
