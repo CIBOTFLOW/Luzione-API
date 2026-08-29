@@ -15,7 +15,7 @@ record before certification.
 | Component | Last code-bearing candidate commit | Review | Exact-head deployment/check |
 | --- | --- | --- | --- |
 | Luzione UI | `ca698cde0f3724d36502e07a518ee3b96006da31` | [PR #530](https://github.com/CIBOTFLOW/Luzione-UI/pull/530) | [Vercel preview](https://vercel.com/connor-spiegelmans-projects/luzione_ui/7GLDzgA2BnHN7GLm1yLEPAMKqUqt), successful |
-| Luzione API | `87fb576b06f5eb1fd70a6ebc28ea48b18e2b9dd6` | [PR #31](https://github.com/CIBOTFLOW/Luzione-API/pull/31) | Exact-head deployment is refreshed by the PR after this evidence-only successor |
+| Luzione API | `0df2e4c2631f464eca064d8faef09c1a28860923` | [PR #31](https://github.com/CIBOTFLOW/Luzione-API/pull/31) | Exact-head deployment is refreshed by the PR after this evidence-only successor |
 | Sultan OS | `0216135f5a59c48844a0b2a884d1345f44dfff51` | [PR #284](https://github.com/CIBOTFLOW/Sultan-OS/pull/284) | [Vercel attempt](https://vercel.com/connor-spiegelmans-projects/sultan-os/6gM8Np6LMkmQzXKTZPxEp7Jajvp6), blocked by account policy |
 
 The API PR head includes this evidence-only document after the code-bearing
@@ -35,11 +35,21 @@ production migration has been applied by this candidate.
 - UI migration, runtime schema, RLS posture, integration, Shopify, governance,
   proposal, operations, platform-guarantee, Reality Lab, and changed-domain
   suites pass. The changed-domain set is `98/98`.
-- API typecheck, lint, `140/140` tests, and production Webpack build pass. The
+- API typecheck, lint, `144/144` tests, and production Webpack build pass. The
   runtime webhook registry now activates only explicitly allowlisted providers,
   resolves a single connected/pass-validated/non-kill-switched endpoint, reads
   only `env:` or tenant-bound `vault:` material, verifies HMAC, and otherwise
   fails closed. Final exact-head Release gate and CodeQL are recorded by PR #31.
+- The API migration ledger is now schema-qualified, RLS-enabled, and explicitly
+  denied to client roles. Reapplying the runner preserved every existing API
+  migration checksum and changed rehearsed API health from one public-RLS
+  violation to `CONNECTED_RLS_GATE_PASS` with zero violations.
+- The disposable validation load proof sustained 20 requests/second for 10
+  seconds and added a 50-request burst (`250` total): connection-read p95
+  `115.4ms`, command-admission p95 `149.2ms`, error rate `0`, and external
+  effects `false`. Concurrent first admission is transaction-serialized by
+  canonical tenant and idempotency key; readback showed exactly one receipt,
+  one command, one provider-request step, and one audit event.
 - Sultan TypeScript, `7/7` platform tests, `294/294` operator tests, governance
   workflows, and production build pass.
 - Production-only `npm audit` reports zero vulnerabilities for UI, API, and
@@ -72,12 +82,12 @@ production migration has been applied by this candidate.
 | Tenancy | Canonical UUID model, membership enforcement, and local isolation tests | 24-hour zero-mismatch production shadow window and signed workload canary |
 | Governance | Authority v2, exact approvals, A4 denial, compensation/readback contracts, and v1 preservation are tested | Production receipt chain for the controlled canary |
 | Integrations | Connection contract and fail-closed legacy states are implemented | Real Gmail, private Google Docs/PDF, OpenAI, API/Postgres, and atomic Shopify readback receipts |
-| Reliability | Durable commands, leases, retries, circuits, dead letters, reconciliation, and kill switches are implemented and tested | Production checkpoint/readback and controlled failure drill |
+| Reliability | Durable commands, leases, retries, circuits, dead letters, reconciliation, kill switches, concurrent idempotency, and the specified local load profile are implemented and tested | Production checkpoint/readback and controlled failure drill |
 | AI cost control | Deterministic routing, effective-dated prices, metering, safe fallback, and budget controls are tested | Budgeted real OpenAI readback under the shared `$5` cap |
 | Security | Local lint, test, build, CodeQL, grants/RLS, redaction, secret boundaries, and signed-manifest checks pass | Zero live Supabase advisor `WARN`/`ERROR`, classification of active-risk `INFO`, dependency/secret-scan closure, and exact-artifact SBOMs |
 | Recovery | Deterministic empty-clone replay and guarded migration rollback pass | Fresh production-backup restore, data comparison, previous-binary proof, and retained production rollback artifacts |
 | Observability | Audit/usage/queue/provider structures are implemented | Production dashboards, alerts, and alert-delivery proof |
-| Operations | UI/API exact-head previews and GitHub checks pass | Sultan Vercel policy resolution, all exact-head checks, load/browser gates, signed immutable manifest, promotion and rollback drill |
+| Operations | UI/API previews, GitHub checks, and the exact local load profile pass | Sultan Vercel policy resolution, final exact-head checks, authenticated hosted browser gate, signed immutable manifest, promotion and rollback drill |
 
 No category receives 10/10 from design or local evidence alone. Any active hard
 gate keeps the release below 100; no waiver changes this decision.
@@ -94,7 +104,7 @@ gate keeps the release below 100; no waiver changes this decision.
 4. Resolve Sultan's Vercel collaboration policy with an authorized team/service
    identity and obtain an exact-head preview.
 5. Generate exact-artifact SBOMs, close dependency and secret-scan findings,
-   complete desktop/390px browser checks and the specified load test.
+   complete authenticated desktop/390px browser checks.
 6. Supply the protected release signer, immutable artifact/deployment IDs, and
    verify the signed manifest in the authorized promotion environment.
 7. Complete the 24-hour tenancy shadow window, signed-principal canary, and only
