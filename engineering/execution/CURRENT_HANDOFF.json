@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "queue_id": "LUZIONE_API_SYSTEMS_ENGINEERING_V1",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "program_state": "PLANNING_ONLY_NOT_IMPLEMENTED",
+  "current_project": null,
+  "next_projects": ["API_SE_001"],
+  "next_action": "Launch the prepared Codex prompt, inventory current repository and cross-system contract reality, then begin API_SE_001 without creating runtime claims from this planning scaffold.",
+  "canonical_program": "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md",
+  "failure_ledger": "engineering/execution/SYSTEMS_ENGINEERING_FAILURE_LEDGER.json",
+  "proof_ledger": "engineering/execution/SYSTEMS_ENGINEERING_PROOF_LEDGER.json",
+  "cross_repo_consumers": ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
+  "open_quarantines": [],
+  "deferred_external_infra": [],
+  "remaining_uncertainty": [
+    "The target model has not yet been reconciled against every current endpoint, service, store, workflow and deployment.",
+    "No shared systems-engineering contract in this planning program is implemented or production observed yet.",
+    "UI and Sultan consumer mappings must be independently reconciled in their own repositories."
+  ],
+  "stop_code": null
+}
