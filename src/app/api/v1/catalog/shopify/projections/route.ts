@@ -1,4 +1,4 @@
-import { apiResponse, requestId } from "@/lib/api/http";
+import { apiResponse, createRequestIdentity } from "@/lib/api/http";
 import { requireServiceActor } from "@/lib/api/actor";
 import { runtimeConfig } from "@/lib/api/config";
 import {
@@ -11,6 +11,7 @@ import {
   ingestP113CatalogProjection,
   listP113CatalogProjections,
 } from "@/modules/catalog-projection/store";
+import { bindAuthenticatedRequestIdentity } from "@/modules/platform-contracts/requestIdentity";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -39,9 +40,15 @@ function idempotencyKey(headers: Headers) {
 }
 
 export async function GET(request: Request) {
-  const id = requestId(request.headers);
+  let identity = createRequestIdentity(request.headers);
   try {
     const actor = await requireServiceActor(request.headers);
+    identity = bindAuthenticatedRequestIdentity(identity, actor, {
+      authorityClass: "A0",
+      capability: "catalog.projection.read",
+      purpose: "read-shopify-catalog-projection",
+      sourceVersionRefs: [P113_INGEST_CONTRACT_VERSION],
+    });
     const url = new URL(request.url);
     const rawLimit = Number(url.searchParams.get("limit") ?? 100);
     const limit = Number.isInteger(rawLimit) ? Math.max(1, Math.min(rawLimit, 250)) : 100;
@@ -65,13 +72,13 @@ export async function GET(request: Request) {
       status,
       vendor,
     });
-    return apiResponse({ ok: true, ...catalog }, { requestId: id });
+    return apiResponse({ ok: true, ...catalog }, { requestIdentity: identity });
   } catch (error) {
     const actorFailure = serviceActorFailure(error);
     if (actorFailure) {
       return apiResponse(
         { ok: false, code: actorFailure.code, message: "Service authentication is required." },
-        { requestId: id, status: actorFailure.status },
+        { requestIdentity: identity, status: actorFailure.status },
       );
     }
     const cursorInvalid = error instanceof Error && error.message === "P113_CURSOR_INVALID";
@@ -81,13 +88,13 @@ export async function GET(request: Request) {
         code: cursorInvalid ? "P113_CURSOR_INVALID" : "P113_CATALOG_READ_UNAVAILABLE",
         message: cursorInvalid ? "The catalog cursor is invalid." : "The catalog projection is unavailable.",
       },
-      { requestId: id, status: cursorInvalid ? 400 : 503 },
+      { requestIdentity: identity, status: cursorInvalid ? 400 : 503 },
     );
   }
 }
 
 export async function POST(request: Request) {
-  const id = requestId(request.headers);
+  let identity = createRequestIdentity(request.headers);
   try {
     const actor = await requireServiceActor(request.headers);
     const config = runtimeConfig();
@@ -98,7 +105,7 @@ export async function POST(request: Request) {
           code: "INTERNAL_PROJECTIONS_DISABLED",
           message: "Internal catalog projection writes are disabled fail closed.",
         },
-        { requestId: id, status: 503 },
+        { requestIdentity: identity, status: 503 },
       );
     }
     const contentLength = Number(request.headers.get("content-length") ?? 0);
@@ -110,6 +117,13 @@ export async function POST(request: Request) {
       );
     }
     const key = idempotencyKey(request.headers);
+    identity = bindAuthenticatedRequestIdentity(identity, actor, {
+      authorityClass: "A1",
+      capability: "catalog.projection.ingest",
+      idempotencyKey: key,
+      purpose: "ingest-shopify-catalog-observation",
+      sourceVersionRefs: [P113_INGEST_CONTRACT_VERSION],
+    });
     let body: unknown;
     try {
       const rawBody = await request.text();
@@ -137,31 +151,31 @@ export async function POST(request: Request) {
         contractVersion: P113_INGEST_CONTRACT_VERSION,
         receipt,
       },
-      { requestId: id, status: receipt.replayed ? 200 : 201 },
+      { requestIdentity: identity, status: receipt.replayed ? 200 : 201 },
     );
   } catch (error) {
     const actorFailure = serviceActorFailure(error);
     if (actorFailure) {
       return apiResponse(
         { ok: false, code: actorFailure.code, message: "Service authentication is required." },
-        { requestId: id, status: actorFailure.status },
+        { requestIdentity: identity, status: actorFailure.status },
       );
     }
     if (error instanceof P113ContractError) {
       return apiResponse(
         { ok: false, code: error.code, message: error.message },
-        { requestId: id, status: error.status },
+        { requestIdentity: identity, status: error.status },
       );
     }
     if (error instanceof P113IdempotencyConflictError) {
       return apiResponse(
         { ok: false, code: "P113_IDEMPOTENCY_CONFLICT", message: error.message },
-        { requestId: id, status: 409 },
+        { requestIdentity: identity, status: 409 },
       );
     }
     console.error(JSON.stringify({
       event: "p113_catalog_projection_failed",
-      requestId: id,
+      requestId: identity.requestId,
       providerCode: error && typeof error === "object" && "code" in error
         ? String((error as { code: unknown }).code).slice(0, 64)
         : null,
@@ -172,7 +186,7 @@ export async function POST(request: Request) {
         code: "P113_CATALOG_PROJECTION_FAILED",
         message: "The catalog projection could not be reconciled.",
       },
-      { requestId: id, status: 503 },
+      { requestIdentity: identity, status: 503 },
     );
   }
 }

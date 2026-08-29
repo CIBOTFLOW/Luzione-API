@@ -1,10 +1,11 @@
 import { requireServiceActor } from "@/lib/api/actor";
-import { apiResponse, requestId } from "@/lib/api/http";
+import { apiResponse, createRequestIdentity } from "@/lib/api/http";
 import { evaluateAutonomyPlan } from "@/modules/autonomy/evaluator";
 import {
   AutonomyRequestError,
   parseAutonomyEvaluationRequest,
 } from "@/modules/autonomy/parser";
+import { bindAuthenticatedRequestIdentity } from "@/modules/platform-contracts/requestIdentity";
 
 export const dynamic = "force-dynamic";
 
@@ -19,9 +20,14 @@ function statusFor(error: unknown) {
 }
 
 export async function POST(request: Request) {
-  const id = requestId(request.headers);
+  let identity = createRequestIdentity(request.headers);
   try {
     const actor = await requireServiceActor(request.headers);
+    identity = bindAuthenticatedRequestIdentity(identity, actor, {
+      authorityClass: "A0",
+      capability: "governance.evaluate",
+      purpose: "evaluate-autonomy-plan",
+    });
     const declaredLength = Number(request.headers.get("content-length") ?? "0");
     if (Number.isFinite(declaredLength) && declaredLength > MAX_REQUEST_BYTES) {
       throw new AutonomyRequestError("INVALID_REQUEST", "Request body is too large.");
@@ -52,7 +58,7 @@ export async function POST(request: Request) {
         evaluation,
         externalEffectsAuthorized: false,
       },
-      { requestId: id },
+      { requestIdentity: identity },
     );
   } catch (error) {
     return apiResponse(
@@ -62,7 +68,7 @@ export async function POST(request: Request) {
         message: error instanceof Error ? error.message : "Autonomy evaluation failed closed.",
         externalEffectsAuthorized: false,
       },
-      { requestId: id, status: statusFor(error) },
+      { requestIdentity: identity, status: statusFor(error) },
     );
   }
 }

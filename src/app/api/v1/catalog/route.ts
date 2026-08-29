@@ -1,4 +1,4 @@
-import { apiResponse, requestId } from "@/lib/api/http";
+import { apiResponse, createRequestIdentity } from "@/lib/api/http";
 import { canonicalObjects, platformAreas } from "@/lib/platformCatalog";
 import {
   PLATFORM_CONTRACT_REGISTRY_VERSION,
@@ -12,7 +12,7 @@ import {
 } from "@/modules/platform-contracts/truthRegistry";
 
 export async function GET(request: Request) {
-  const id = requestId(request.headers);
+  const identity = createRequestIdentity(request.headers);
   return apiResponse(
     {
       ok: true,
@@ -55,6 +55,6 @@ export async function GET(request: Request) {
         os: "Reasoning, agents, tools, models, memory, simulations and AI governance",
       },
     },
-    { requestId: id },
+    { requestIdentity: identity },
   );
 }

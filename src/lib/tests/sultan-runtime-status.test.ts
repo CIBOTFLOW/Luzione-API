@@ -95,9 +95,13 @@ test("marks connected providers honestly and detects a stale Shopify sync", () =
   }), "2026-08-26T18:00:00.000Z");
   assert.equal(result.connectors.googleDocs.status, "CONNECTED");
   assert.equal(result.connectors.googleDocs.generationVerified, false);
+  assert.equal(result.connectors.googleDocs.stateContract.desired.state, "CONNECTED");
+  assert.equal(result.connectors.googleDocs.stateContract.observed.state, null);
+  assert.equal(result.connectors.googleDocs.stateContract.reconciliation.state, "UNKNOWN");
   assert.equal(result.connectors.email.sendAuthority, "APPROVAL_REQUIRED");
   assert.equal(result.connectors.airtable.role, "TRANSITIONAL_WORKSPACE_ONLY");
   assert.equal(result.connectors.shopify.status, "DEGRADED_STALE_SYNC");
+  assert.equal(result.connectors.shopify.stateContract.reconciliation.state, "DRIFTED");
 });
 
 test("public route exposes aggregate evidence only and fails closed", () => {

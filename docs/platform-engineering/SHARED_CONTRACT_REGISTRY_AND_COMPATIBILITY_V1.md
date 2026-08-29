@@ -44,8 +44,8 @@ The legacy `authority`, `canonicalObjects[].owner` and `platformAreas[].status` 
 
 ## Current limitations
 
-- The HTTP response and actor envelopes are not yet the universal request/correlation envelope required by `API_SE_004`.
-- The existing retry failure classes predate the universal failure taxonomy and are registered as legacy/library-only, not as the completed `platform-failure/v1` contract.
+- Request identity, platform failure and reconciliation state now have current runtime V1 contracts; consumer adoption remains independently unproven.
+- The earlier retry helper remains registered as legacy/library-only and must not be mistaken for the universal `platform-failure/v1` HTTP envelope.
 - Lifecycle command, receipt, workflow and continuation code is library-only until canonical runtime ownership and persistence are activated.
 - Authority v2 and OpenAPI remain draft PR #31 candidates.
 - UI and Sultan must independently prove consumption of any stable registry version.

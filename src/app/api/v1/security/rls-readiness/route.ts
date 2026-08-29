@@ -1,19 +1,25 @@
 import { requireServiceActor } from "@/lib/api/actor";
-import { apiResponse, requestId } from "@/lib/api/http";
+import { apiResponse, createRequestIdentity } from "@/lib/api/http";
 import { readRlsReadiness } from "@/lib/security-posture/readService";
 import { logRlsReadbackFailure } from "@/modules/security-posture/readbackFailure";
+import { bindAuthenticatedRequestIdentity } from "@/modules/platform-contracts/requestIdentity";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
-  const id = requestId(request.headers);
+  let identity = createRequestIdentity(request.headers);
   let actor: Awaited<ReturnType<typeof requireServiceActor>>;
   try {
     actor = await requireServiceActor(request.headers);
+    identity = bindAuthenticatedRequestIdentity(identity, actor, {
+      authorityClass: "A0",
+      capability: "security.rls.read",
+      purpose: "read-rls-posture",
+    });
   } catch {
     return apiResponse(
       { ok: false, message: "Service authentication required." },
-      { requestId: id, status: 401 },
+      { requestIdentity: identity, status: 401 },
     );
   }
 
@@ -23,14 +29,14 @@ export async function GET(request: Request) {
     if (unsupported.length) {
       return apiResponse(
         { ok: false, message: `Unsupported security readback parameters: ${unsupported.join(", ")}.` },
-        { requestId: id, status: 400 },
+        { requestIdentity: identity, status: 400 },
       );
     }
     const activeValue = url.searchParams.get("activeProbes");
     if (activeValue !== null && activeValue !== "true" && activeValue !== "false") {
       return apiResponse(
         { ok: false, message: "activeProbes must be true or false." },
-        { requestId: id, status: 400 },
+        { requestIdentity: identity, status: 400 },
       );
     }
     const result = await readRlsReadiness({ activeProbes: activeValue === "true" });
@@ -40,12 +46,12 @@ export async function GET(request: Request) {
         actor: { actorId: actor.actorId, actorType: actor.actorType, tenantId: actor.tenantId },
         result,
       },
-      { requestId: id, status: result.status === "PASS" ? 200 : 503 },
+      { requestIdentity: identity, status: result.status === "PASS" ? 200 : 503 },
     );
   } catch (error) {
     const failure = logRlsReadbackFailure({
       error,
-      requestId: id,
+      requestId: identity.requestId,
       route: "/api/v1/security/rls-readiness",
     });
     return apiResponse(
@@ -54,7 +60,7 @@ export async function GET(request: Request) {
         message: "RLS readiness read failed closed.",
         errorCode: failure.failureCode,
       },
-      { requestId: id, status: 503 },
+      { requestIdentity: identity, status: 503 },
     );
   }
 }

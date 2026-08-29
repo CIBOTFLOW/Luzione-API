@@ -1,11 +1,11 @@
-import { apiResponse, requestId } from "@/lib/api/http";
+import { apiResponse, createRequestIdentity } from "@/lib/api/http";
 import { readSultanRuntimeStatus } from "@/lib/sultan-runtime/readService";
 import { logSultanRuntimeReadbackFailure } from "@/modules/sultan-runtime/readbackFailure";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
-  const id = requestId(request.headers);
+  const identity = createRequestIdentity(request.headers);
   try {
     const result = await readSultanRuntimeStatus();
     return apiResponse(
@@ -15,12 +15,12 @@ export async function GET(request: Request) {
         status: result.overallStatus,
         result,
       },
-      { requestId: id },
+      { requestIdentity: identity },
     );
   } catch (error) {
     const failure = logSultanRuntimeReadbackFailure({
       error,
-      requestId: id,
+      requestId: identity.requestId,
       route: "/api/v1/sultan/runtime-status",
     });
     return apiResponse(
@@ -31,7 +31,7 @@ export async function GET(request: Request) {
         message: "Sultan runtime readback failed closed.",
         errorCode: failure.failureCode,
       },
-      { requestId: id, status: 503 },
+      { requestIdentity: identity, status: 503 },
     );
   }
 }

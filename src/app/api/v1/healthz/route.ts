@@ -1,12 +1,13 @@
-import { apiResponse, requestId } from "@/lib/api/http";
+import { apiResponse, createRequestIdentity } from "@/lib/api/http";
 import { runtimeConfig } from "@/lib/api/config";
 import { readRlsReadiness } from "@/lib/security-posture/readService";
 import { logRlsReadbackFailure } from "@/modules/security-posture/readbackFailure";
+import { deriveDesiredObservedState } from "@/modules/platform-contracts/stateContract";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
-  const id = requestId(request.headers);
+  const identity = createRequestIdentity(request.headers);
   const config = runtimeConfig();
   let security: Awaited<ReturnType<typeof readRlsReadiness>> | null = null;
   let securityReadbackError = false;
@@ -18,7 +19,7 @@ export async function GET(request: Request) {
       securityReadbackError = true;
       securityReadbackErrorCode = logRlsReadbackFailure({
         error,
-        requestId: id,
+        requestId: identity.requestId,
         route: "/api/v1/healthz",
       }).failureCode;
     }
@@ -35,6 +36,22 @@ export async function GET(request: Request) {
     : config.databaseConfigured && !securityReady
       ? "SECURITY_POSTURE_REQUIRED"
       : "FOUNDATION_CONFIGURATION_REQUIRED";
+  const observedAt = new Date().toISOString();
+  const stateContract = deriveDesiredObservedState({
+    desiredSource: "luzione-api deployment readiness policy",
+    desiredState: "READY",
+    evidenceRefs: ["runtime-config", "canonical-postgres-catalog"],
+    freshnessMs: 60_000,
+    nextAction: ready
+      ? "Continue bounded health observation."
+      : "Restore required configuration and the canonical Postgres RLS gate before promotion.",
+    now: observedAt,
+    observedAt,
+    observedSource: "GET /api/v1/healthz",
+    observedState: ready ? "READY" : "NOT_READY",
+    owner: "CIBOTFLOW/Luzione-API",
+    scope: "service.security-readiness",
+  });
 
   return apiResponse(
     {
@@ -63,8 +80,9 @@ export async function GET(request: Request) {
         ? "ENABLED_BOUNDED"
         : "DISABLED_FAIL_CLOSED",
       externalEffectsAuthorized: false,
-      observedAt: new Date().toISOString(),
+      observedAt,
+      stateContract,
     },
-    { requestId: id, status: ready ? 200 : 503 },
+    { requestIdentity: identity, status: ready ? 200 : 503 },
   );
 }
