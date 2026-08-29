@@ -125,6 +125,8 @@ test("public route exposes aggregate evidence only and fails closed", () => {
   assert.match(service, /google_generation_state = 'readback_verified'/);
   assert.match(service, /luzione-google-proposal-readback\/v2/);
   assert.match(service, /google_readback_proof/);
+  assert.match(service, /jsonb_object_keys\(d\.google_readback_proof\)/);
+  assert.doesNotMatch(service, /jsonb_object_length/);
   assert.match(service, /e\.readback_proof = d\.google_readback_proof/);
   assert.match(service, /e\.snapshot_checksum = d\.snapshot_checksum/);
   assert.match(service, /'sales_proposal'[\s\S]*'itemized_quote'[\s\S]*'whole_home_proposal'/);
