@@ -57,15 +57,19 @@ export function migrationDatabaseUrl() {
   return url.toString();
 }
 
-async function ensureLedger(client) {
+export async function ensureLedger(client) {
   await client.query(`
-    create table if not exists platform_schema_migrations (
+    create table if not exists public.platform_schema_migrations (
       id text primary key,
       dependency_order integer not null unique,
       path text not null unique,
       checksum text not null,
       applied_at timestamptz not null default now()
-    )
+    );
+    alter table public.platform_schema_migrations enable row level security;
+    revoke all on table public.platform_schema_migrations from public, anon, authenticated, service_role;
+    comment on table public.platform_schema_migrations is
+      'API-owned immutable migration ledger; accessible only to the authorized migration role.'
   `);
 }
 
@@ -76,7 +80,7 @@ export async function applyMigrations(client, migrations = discoverMigrations())
     const content = fs.readFileSync(absolutePath, "utf8");
     const digest = checksum(content);
     const applied = await client.query(
-      "select checksum, dependency_order, path from platform_schema_migrations where id = $1",
+      "select checksum, dependency_order, path from public.platform_schema_migrations where id = $1",
       [migration.id],
     );
     if (applied.rows.length === 1) {
@@ -94,7 +98,7 @@ export async function applyMigrations(client, migrations = discoverMigrations())
       await client.query("set local statement_timeout = '5min'");
       await client.query(stripOuterTransaction(content));
       await client.query(
-        `insert into platform_schema_migrations (id, dependency_order, path, checksum)
+        `insert into public.platform_schema_migrations (id, dependency_order, path, checksum)
          values ($1,$2,$3,$4)`,
         [migration.id, migration.dependencyOrder, migration.path, digest],
       );

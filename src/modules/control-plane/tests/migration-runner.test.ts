@@ -4,6 +4,7 @@ import test from "node:test";
 import {
   checksum,
   discoverMigrations,
+  ensureLedger,
   stripOuterTransaction,
 } from "../../../../scripts/run-platform-migrations.mjs";
 
@@ -25,4 +26,18 @@ test("runner strips one outer transaction and rejects incomplete or nested contr
 test("checksums are content-sensitive", () => {
   assert.match(checksum("select 1;"), /^[a-f0-9]{64}$/);
   assert.notEqual(checksum("select 1;"), checksum("select 2;"));
+});
+
+test("the API migration ledger is schema-qualified, RLS-enabled and client denied", async () => {
+  const statements: string[] = [];
+  await ensureLedger({
+    async query(statement: string) {
+      statements.push(statement);
+      return { rows: [] };
+    },
+  });
+  const statement = statements.join("\n");
+  assert.match(statement, /public\.platform_schema_migrations/);
+  assert.match(statement, /enable row level security/i);
+  assert.match(statement, /revoke all[^;]+public, anon, authenticated, service_role/i);
 });

@@ -11,6 +11,7 @@
     "typecheck": "tsc --noEmit",
     "test": "node --import tsx --test src/lib/tests/*.test.ts src/modules/*/tests/*.test.ts scripts/*.test.mjs",
     "test:security-posture": "node --import tsx --test src/lib/tests/*.test.ts src/modules/security-posture/tests/*.test.ts",
+    "test:load:pilot": "node scripts/pilot-load-test.mjs",
     "db:migrate": "node scripts/run-platform-migrations.mjs",
     "db:migrate:dry-run": "node scripts/run-platform-migrations.mjs --dry-run",
     "release:manifest:prepare": "node scripts/platform-release-manifest.mjs prepare",

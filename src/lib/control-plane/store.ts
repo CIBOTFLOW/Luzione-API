@@ -464,6 +464,10 @@ export async function admitCommand(actor: CanonicalActor, command: ParsedCommand
   const client = await databasePool().connect();
   try {
     await client.query("begin");
+    await client.query(
+      "select pg_advisory_xact_lock(hashtextextended($1::text || ':' || $2::text, 0))",
+      [actor.tenantId, command.envelope.idempotencyKey],
+    );
     const payloadHash = digest(command);
     const replay = await client.query(
       `select receipt_id, command_id, payload_hash, state, authority_class, capability,

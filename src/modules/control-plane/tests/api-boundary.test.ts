@@ -33,6 +33,13 @@ test("the command endpoint admits receipts but never dispatches provider effects
   assert.doesNotMatch(store, /providerAdapters\.require/);
 });
 
+test("concurrent first admission serializes by canonical tenant and idempotency key", () => {
+  assert.match(store, /pg_advisory_xact_lock\(hashtextextended\(\$1::text \|\| ':' \|\| \$2::text, 0\)\)/);
+  const lock = store.indexOf("pg_advisory_xact_lock");
+  const replay = store.indexOf("from public.p110_command_receipts", lock);
+  assert.ok(lock >= 0 && replay > lock);
+});
+
 test("connection mutations require canonical tenant-administrator authority", () => {
   assert.match(actor, /TENANT_ADMIN_REQUIRED/);
   assert.match(actor, /connections\.manage/);
