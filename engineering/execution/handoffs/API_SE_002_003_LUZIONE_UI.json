@@ -2,7 +2,7 @@
   "schema_version": 1,
   "handoff_id": "API_SE_002_003_TO_LUZIONE_UI_V1",
   "producer_repository": "CIBOTFLOW/Luzione-API",
-  "producer_sha": null,
+  "producer_sha": "dc938452c01809833c6f6aed147bc82112b881ac",
   "producer_ref": "codex/api-se-001-topology-inventory",
   "contract_name": "platform-contract-and-truth-registries",
   "contract_version": "luzione-platform-contract-registry/v1 + luzione-source-of-truth-registry/v1",

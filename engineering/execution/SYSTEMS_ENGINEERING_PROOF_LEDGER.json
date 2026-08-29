@@ -77,6 +77,104 @@
         "Publish API_SE_003 object/source-of-truth registry without guessing unresolved UI/provider ownership.",
         "Receive independent UI and Sultan topology handoffs for later cross-system reconciliation."
       ]
+    },
+    {
+      "proof_id": "API_SE_002_LOCAL_PROOF_20260829",
+      "project_id": "API_SE_002",
+      "recorded_at": "2026-08-29T23:20:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "dc938452c01809833c6f6aed147bc82112b881ac",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "One typed API-owned registry now identifies current, transitional, library-only, specified-only and pending shared contracts with additive/breaking compatibility law and publishes them through the existing catalog response.",
+      "exercised_boundaries": [
+        "All current-runtime contract source paths exist on the exact candidate SHA.",
+        "Contract IDs and versions are unique and API-owned.",
+        "Pending PR #31 contracts cannot be marked current runtime.",
+        "Known-bad duplicate and promoted-draft fixtures fail validation.",
+        "The existing catalog contract remains 1.0 and exposes additive registry fields plus legacy-field compatibility notices.",
+        "Compliance, typecheck, lint, 89/89 tests and production build pass."
+      ],
+      "untested_boundaries": [
+        "UI and Sultan consumer compatibility",
+        "PR #31 rebase and OpenAPI convergence",
+        "preview and production catalog deployment",
+        "runtime activation of library-only command/workflow contracts"
+      ],
+      "evidence_refs": [
+        "src/modules/platform-contracts/registry.ts",
+        "src/modules/platform-contracts/tests/registry.test.ts",
+        "src/app/api/v1/catalog/route.ts",
+        "docs/platform-engineering/SHARED_CONTRACT_REGISTRY_AND_COMPATIBILITY_V1.md",
+        "commit:dc938452c01809833c6f6aed147bc82112b881ac"
+      ],
+      "failure_refs": ["API_SE_001_DEPENDENCY_AUDIT_20260829"],
+      "cross_repo_handoffs": [
+        "API_SE_002_003_TO_LUZIONE_UI_V1",
+        "API_SE_002_003_TO_SULTAN_OS_V1"
+      ],
+      "deferred_external_infra": [],
+      "remaining_uncertainty": [
+        "Consumers may retain unobserved local forks of shared meanings.",
+        "The draft authority-v2/OpenAPI candidate has not been rebased onto this registry."
+      ],
+      "next_proof_needed": [
+        "Independent UI and Sultan registry-consumer tests",
+        "API_SE_004/API_SE_005/API_SE_007 contract slices",
+        "Preview proof after PR integration"
+      ]
+    },
+    {
+      "proof_id": "API_SE_003_LOCAL_PROOF_20260829",
+      "project_id": "API_SE_003",
+      "recorded_at": "2026-08-29T23:20:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "dc938452c01809833c6f6aed147bc82112b881ac",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The required initial business/platform entities now have one machine-readable truth/consistency record, and duplicate definitions or pending mutation-path collisions are explicit without guessing missing owners.",
+      "exercised_boundaries": [
+        "All 17 program-required initial entities are present with unique domain/entity identity.",
+        "Unresolved functional business owners retain null mutationOwner instead of a guessed repository owner.",
+        "Product is explicitly Shopify-authoritative and P113 is explicitly a rebuildable read model.",
+        "Workflow ownership transfer remains pending while P111 transactional state/readback semantics are recorded.",
+        "Known-bad duplicate and incomplete-confirmed fixtures fail validation.",
+        "Three duplicate/conflicting/pending mutation-path findings are published.",
+        "Compliance, typecheck, lint, 89/89 tests and production build pass."
+      ],
+      "untested_boundaries": [
+        "current UI object mutation paths",
+        "current Sultan Memory/AIGeneration persistence",
+        "live production schema ownership",
+        "cross-system reconciliation and retirement of duplicate paths"
+      ],
+      "evidence_refs": [
+        "src/modules/platform-contracts/truthRegistry.ts",
+        "src/modules/platform-contracts/tests/registry.test.ts",
+        "src/app/api/v1/catalog/route.ts",
+        "docs/platform-engineering/SOURCE_OF_TRUTH_AND_CONSISTENCY_V1.md",
+        "commit:dc938452c01809833c6f6aed147bc82112b881ac"
+      ],
+      "failure_refs": ["API_SE_001_DEPENDENCY_AUDIT_20260829"],
+      "cross_repo_handoffs": [
+        "API_SE_002_003_TO_LUZIONE_UI_V1",
+        "API_SE_002_003_TO_SULTAN_OS_V1"
+      ],
+      "deferred_external_infra": [],
+      "remaining_uncertainty": [
+        "Most business mutation owners are unresolved pending consumer evidence.",
+        "Approval and Decision durable stores exist only in a pending change set.",
+        "Memory and AIGeneration have aggregate readback but no verified store/version mapping in this repository."
+      ],
+      "next_proof_needed": [
+        "Independent UI business-object ownership handoff",
+        "Independent Sultan Memory/AIGeneration handoff",
+        "Production schema and migration ownership reconciliation"
+      ]
     }
   ]
 }
