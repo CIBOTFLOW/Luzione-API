@@ -5,3 +5,4 @@ export * from "./recoveryPlaybooks";
 export * from "./retryPolicy";
 export * from "./stateMachine";
 export * from "./types";
+export * from "../platform-contracts/receiptContract";

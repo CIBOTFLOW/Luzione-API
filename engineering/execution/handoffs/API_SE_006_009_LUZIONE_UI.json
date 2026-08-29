@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_SE_006_009_TO_LUZIONE_UI_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": null,
+  "producer_ref": "codex/api-se-001-topology-inventory",
+  "contract_name": "platform-receipts-and-service-catalog",
+  "contract_version": "luzione-platform-receipt/v1 + luzione-service-catalog/v1",
+  "consumer_repository": "CIBOTFLOW/Luzione-UI",
+  "required_consumer_behavior": [
+    "Render decision, intent, execution, acknowledgement and readback as distinct receipt evidence and navigate lineage by predecessor receipt IDs.",
+    "Never label intent or provider acknowledgement as completed/read-back effect.",
+    "Consume service/dependency/runbook metadata from GET /api/v1/catalog while treating UNVERIFIED_CONSUMER and null lastObservedReleaseSha literally.",
+    "Return a versioned UI service descriptor rather than requiring the API to guess UI runtime metadata."
+  ],
+  "acceptance_proof_needed": ["exact UI SHA", "receipt-lineage rendering tests", "known-bad acknowledgement-as-readback rejection", "versioned UI service/dependency/runbook descriptor"],
+  "producer_evidence_refs": ["src/modules/platform-contracts/tests/receipt-contract.test.ts", "src/modules/platform-service-catalog/tests/registry.test.ts", "docs/platform-engineering/UNIVERSAL_RECEIPT_AND_LINEAGE_V1.md", "docs/platform-engineering/SERVICE_CATALOG_DEPENDENCY_AND_RUNBOOKS_V1.md"],
+  "known_limitations": ["Durable universal receipt storage is not activated.", "The producer has not inspected the UI repository.", "No production release SHA, SLO or dashboard is claimed."]
+}

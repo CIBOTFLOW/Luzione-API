@@ -111,6 +111,21 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
     version: "1.0",
   },
   {
+    compatibility: "NEW_MAJOR_FOR_BREAKING",
+    consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
+    contractId: "platform-receipt",
+    currentRuntime: false,
+    maturity: "LIBRARY_ONLY",
+    name: "Decision, action intent, execution, readback, recovery and release receipt",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: ["pull/31:durable-receipt-store"],
+    sourcePaths: [
+      "src/modules/platform-contracts/receiptContract.ts",
+      "src/modules/platform-contracts/tests/receipt-contract.test.ts"
+    ],
+    version: "luzione-platform-receipt/v1",
+  },
+  {
     compatibility: "EXACT_VERSION",
     consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
     contractId: "lifecycle-command-receipt",
@@ -267,13 +282,16 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
     compatibility: "ADDITIVE_MINOR",
     consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
     contractId: "service-descriptor",
-    currentRuntime: false,
-    maturity: "SPECIFIED_ONLY",
+    currentRuntime: true,
+    maturity: "IMPLEMENTED",
     name: "Service and dependency descriptor",
     ownerRepository: "CIBOTFLOW/Luzione-API",
     pendingChangeRefs: [],
-    sourcePaths: ["docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md"],
-    version: "1",
+    sourcePaths: [
+      "src/modules/platform-service-catalog/registry.ts",
+      "src/app/api/v1/catalog/route.ts"
+    ],
+    version: "luzione-service-catalog/v1",
   },
   {
     compatibility: "NEW_MAJOR_FOR_BREAKING",

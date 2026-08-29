@@ -10,6 +10,13 @@ import {
   SOURCE_OF_TRUTH_REGISTRY_VERSION,
   sourceOfTruthRegistry,
 } from "@/modules/platform-contracts/truthRegistry";
+import {
+  dependencyCatalog,
+  dependencyGraph,
+  PLATFORM_SERVICE_CATALOG_VERSION,
+  runbookRegistry,
+  serviceCatalog,
+} from "@/modules/platform-service-catalog/registry";
 
 export async function GET(request: Request) {
   const identity = createRequestIdentity(request.headers);
@@ -47,6 +54,13 @@ export async function GET(request: Request) {
         entries: sourceOfTruthRegistry,
         mutationPathFindings,
         registryVersion: SOURCE_OF_TRUTH_REGISTRY_VERSION,
+      },
+      serviceCatalog: {
+        dependencies: dependencyCatalog,
+        dependencyGraph,
+        registryVersion: PLATFORM_SERVICE_CATALOG_VERSION,
+        runbooks: runbookRegistry,
+        services: serviceCatalog,
       },
       platformAreas,
       authority: {
