@@ -1,6 +1,6 @@
 import { runtimeConfig } from "@/lib/api/config";
 import { apiResponse, requestId } from "@/lib/api/http";
-import { requireCanonicalActor } from "@/lib/control-plane/actor";
+import { requireCanonicalActor, requireConnectionAdministrator } from "@/lib/control-plane/actor";
 import { controlPlaneFailure, uuidPath } from "@/lib/control-plane/http";
 import { getConnection, patchConnection } from "@/lib/control-plane/store";
 import { parseConnectionPatch, readBoundedJson } from "@/modules/control-plane/request";
@@ -31,7 +31,7 @@ export async function PATCH(request: Request, context: Context) {
         { requestId: id, status: 503 },
       );
     }
-    const actor = await requireCanonicalActor(request.headers);
+    const actor = requireConnectionAdministrator(await requireCanonicalActor(request.headers));
     const { connectionId } = await context.params;
     const result = await patchConnection(
       actor,

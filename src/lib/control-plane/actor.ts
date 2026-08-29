@@ -14,12 +14,50 @@ export class CanonicalActorError extends Error {
 
 export type CanonicalActor = {
   legacyTenantId: string;
+  membershipCapabilities: string[];
   principal: AuthenticatedPrincipal;
   tenantCode: string;
   tenantId: string;
 };
 
 type Queryable = Pick<Pool | PoolClient, "query">;
+
+const CONNECTION_ADMIN_ROLES = new Set([
+  "ADMIN",
+  "ADMINISTRATOR",
+  "OWNER",
+  "TENANT_ADMIN",
+  "TENANT_OWNER",
+]);
+
+function normalizedRole(role: string) {
+  return role.trim().toUpperCase().replace(/[^A-Z0-9]+/g, "_");
+}
+
+function membershipCapabilities(value: unknown) {
+  if (!Array.isArray(value)) return [];
+  return value.filter((item): item is string => typeof item === "string" && item.length <= 200);
+}
+
+export function canAdministerConnections(actor: CanonicalActor) {
+  return CONNECTION_ADMIN_ROLES.has(normalizedRole(actor.principal.membershipRole))
+    || actor.membershipCapabilities.some((capability) => [
+      "connections.manage",
+      "platform.admin",
+      "tenant.connections.manage",
+    ].includes(capability));
+}
+
+export function requireConnectionAdministrator(actor: CanonicalActor) {
+  if (!canAdministerConnections(actor)) {
+    throw new CanonicalActorError(
+      "TENANT_ADMIN_REQUIRED",
+      "An active tenant administrator membership is required to manage connections.",
+      403,
+    );
+  }
+  return actor;
+}
 
 function identityId(actor: ApiActor) {
   if (/^(user|service|agent):/.test(actor.actorId)) return actor.actorId;
@@ -87,6 +125,7 @@ export async function resolveCanonicalActor(actor: ApiActor, database: Queryable
   }
   return {
     legacyTenantId: actor.tenantId,
+    membershipCapabilities: membershipCapabilities(row.capabilities),
     principal: {
       identityId: normalizedIdentityId,
       membershipRole: row.role,

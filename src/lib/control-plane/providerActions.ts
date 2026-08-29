@@ -1,6 +1,6 @@
 import { runtimeConfig } from "@/lib/api/config";
 import { apiResponse, requestId } from "@/lib/api/http";
-import { requireCanonicalActor } from "@/lib/control-plane/actor";
+import { requireCanonicalActor, requireConnectionAdministrator } from "@/lib/control-plane/actor";
 import { controlPlaneFailure, uuidPath } from "@/lib/control-plane/http";
 import { getConnection } from "@/lib/control-plane/store";
 
@@ -17,7 +17,7 @@ export async function unavailableProviderAction(
         { requestId: id, status: 503 },
       );
     }
-    const actor = await requireCanonicalActor(request.headers);
+    const actor = requireConnectionAdministrator(await requireCanonicalActor(request.headers));
     const { connectionId } = await context.params;
     const connection = await getConnection(actor, uuidPath(connectionId, "connectionId"));
     return apiResponse(

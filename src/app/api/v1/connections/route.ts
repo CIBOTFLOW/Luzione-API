@@ -1,6 +1,6 @@
 import { runtimeConfig } from "@/lib/api/config";
 import { apiResponse, requestId } from "@/lib/api/http";
-import { requireCanonicalActor } from "@/lib/control-plane/actor";
+import { requireCanonicalActor, requireConnectionAdministrator } from "@/lib/control-plane/actor";
 import { controlPlaneFailure } from "@/lib/control-plane/http";
 import { createConnection, listConnections } from "@/lib/control-plane/store";
 import { parseCreateConnection, readBoundedJson } from "@/modules/control-plane/request";
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
         { requestId: id, status: 503 },
       );
     }
-    const actor = await requireCanonicalActor(request.headers);
+    const actor = requireConnectionAdministrator(await requireCanonicalActor(request.headers));
     const result = await createConnection(actor, parseCreateConnection(await readBoundedJson(request)));
     return apiResponse(
       { ok: true, contractVersion: "luzione-connections/v1", result, externalEffectsAuthorized: false },
