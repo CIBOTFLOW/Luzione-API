@@ -15,7 +15,7 @@ record before certification.
 | Component | Last code-bearing candidate commit | Review | Exact-head deployment/check |
 | --- | --- | --- | --- |
 | Luzione UI | `ca698cde0f3724d36502e07a518ee3b96006da31` | [PR #530](https://github.com/CIBOTFLOW/Luzione-UI/pull/530) | [Vercel preview](https://vercel.com/connor-spiegelmans-projects/luzione_ui/7GLDzgA2BnHN7GLm1yLEPAMKqUqt), successful |
-| Luzione API | `48461d8a1e54390342da388dd15b93158a240968` | [PR #31](https://github.com/CIBOTFLOW/Luzione-API/pull/31) | [Vercel preview](https://vercel.com/connor-spiegelmans-projects/luzione-api/6oxJBPv2YGovmQ2SnAhfKoXZARKJ), successful |
+| Luzione API | `87fb576b06f5eb1fd70a6ebc28ea48b18e2b9dd6` | [PR #31](https://github.com/CIBOTFLOW/Luzione-API/pull/31) | Exact-head deployment is refreshed by the PR after this evidence-only successor |
 | Sultan OS | `0216135f5a59c48844a0b2a884d1345f44dfff51` | [PR #284](https://github.com/CIBOTFLOW/Sultan-OS/pull/284) | [Vercel attempt](https://vercel.com/connor-spiegelmans-projects/sultan-os/6gM8Np6LMkmQzXKTZPxEp7Jajvp6), blocked by account policy |
 
 The API PR head includes this evidence-only document after the code-bearing
@@ -35,8 +35,11 @@ production migration has been applied by this candidate.
 - UI migration, runtime schema, RLS posture, integration, Shopify, governance,
   proposal, operations, platform-guarantee, Reality Lab, and changed-domain
   suites pass. The changed-domain set is `98/98`.
-- API typecheck, lint, `137/137` tests, production Webpack build, Release gate,
-  and CodeQL pass.
+- API typecheck, lint, `140/140` tests, and production Webpack build pass. The
+  runtime webhook registry now activates only explicitly allowlisted providers,
+  resolves a single connected/pass-validated/non-kill-switched endpoint, reads
+  only `env:` or tenant-bound `vault:` material, verifies HMAC, and otherwise
+  fails closed. Final exact-head Release gate and CodeQL are recorded by PR #31.
 - Sultan TypeScript, `7/7` platform tests, `294/294` operator tests, governance
   workflows, and production build pass.
 - Production-only `npm audit` reports zero vulnerabilities for UI, API, and
