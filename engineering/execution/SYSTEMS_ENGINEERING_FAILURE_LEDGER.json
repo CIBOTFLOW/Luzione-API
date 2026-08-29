@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "ledger_id": "LUZIONE_PLATFORM_SYSTEMS_ENGINEERING_FAILURES_V1",
+  "policy": "Append material failures and contingencies. Resolved entries remain historical evidence and are not deleted merely because the project later passes.",
+  "entry_schema": {
+    "failure_id": "string",
+    "project_id": "string",
+    "observed_at": "ISO-8601",
+    "repository": "string",
+    "exact_sha": "string|null",
+    "environment": "local|disposable|ci|preview|production|provider|unknown",
+    "layer": "string",
+    "symptom": "string",
+    "expected": "string",
+    "actual": "string",
+    "classification": {
+      "domain": "CLIENT|AUTH|POLICY|DATA|DEPENDENCY|MODEL|TOOL|WORKFLOW|PLATFORM",
+      "class": "INVALID|DENIED|CONFLICT|TIMEOUT|UNAVAILABLE|RATE_LIMITED|CORRUPT|INDETERMINATE|UNKNOWN",
+      "retry": "NEVER|IMMEDIATE|BACKOFF|RECONCILE_FIRST|HUMAN",
+      "severity": "INFO|DEGRADED|ERROR|CRITICAL"
+    },
+    "evidence_refs": ["string"],
+    "repair_attempts": ["string"],
+    "strategy_reset": "string|null",
+    "quarantine_scope": ["string"],
+    "deferred_external_infra": ["string"],
+    "resolved": "boolean",
+    "resolution_ref": "string|null",
+    "remaining_uncertainty": ["string"],
+    "next_action": "string"
+  },
+  "entries": []
+}
