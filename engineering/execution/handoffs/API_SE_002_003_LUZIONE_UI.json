@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_SE_002_003_TO_LUZIONE_UI_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": null,
+  "producer_ref": "codex/api-se-001-topology-inventory",
+  "contract_name": "platform-contract-and-truth-registries",
+  "contract_version": "luzione-platform-contract-registry/v1 + luzione-source-of-truth-registry/v1",
+  "published_path": "GET /api/v1/catalog",
+  "consumer_repository": "CIBOTFLOW/Luzione-UI",
+  "required_consumer_behavior": [
+    "Consume registry maturity and compatibility metadata without treating LIBRARY_ONLY, SPECIFIED_ONLY or PENDING_CHANGESET entries as callable current runtime.",
+    "Return an exact inventory for Account, Contact, Lead, Opportunity, CommercialCase, Proposal, Quote, Order, Supplier, Shipment, Task, Campaign and CustomerIssue mutation/readback paths.",
+    "Identify any UI-local definitions of actor, authority, command, receipt, retry, failure, desired/observed state or release evidence that compete with an API registry entry.",
+    "Keep unknown authority/effect/failure/state enum values fail closed."
+  ],
+  "compatibility_expectation": "The existing catalog 1.0 shape is extended additively. UI must not infer current runtime from contract presence; use each entry's maturity and currentRuntime fields.",
+  "acceptance_proof_needed": [
+    "exact UI SHA and API catalog consumer test",
+    "object-by-object mutation owner, canonical table/provider and readback path",
+    "known-bad unknown-enum and draft-as-current rejection",
+    "explicit retirement or handoff for duplicated shared contract definitions"
+  ],
+  "producer_evidence_refs": [
+    "src/modules/platform-contracts/registry.ts",
+    "src/modules/platform-contracts/truthRegistry.ts",
+    "src/modules/platform-contracts/tests/registry.test.ts",
+    "docs/platform-engineering/SHARED_CONTRACT_REGISTRY_AND_COMPATIBILITY_V1.md",
+    "docs/platform-engineering/SOURCE_OF_TRUTH_AND_CONSISTENCY_V1.md"
+  ],
+  "known_limitations": [
+    "Most business mutation owners remain unresolved rather than guessed.",
+    "PR #31 authority/OpenAPI/command contracts remain pending and non-callable from main.",
+    "The API producer has not inspected or modified the UI repository."
+  ],
+  "remaining_uncertainty": [
+    "Which UI writes are canonical today.",
+    "Whether UI has local contract forks or stale enum meanings.",
+    "Which object versions and reconciliation paths UI currently exposes to operators."
+  ]
+}
