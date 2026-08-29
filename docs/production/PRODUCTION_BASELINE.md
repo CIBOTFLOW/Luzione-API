@@ -22,3 +22,5 @@ UI, API and Sultan releases remain separately rollbackable. External effects
 stay fail-closed unless a versioned policy and exact approval authorize the
 specific effect.
 
+The current candidate's exact public evidence and unresolved certification
+gates are recorded in [PILOT_CERTIFICATION_EVIDENCE.md](./PILOT_CERTIFICATION_EVIDENCE.md).
