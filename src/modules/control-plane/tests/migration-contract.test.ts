@@ -15,6 +15,14 @@ const connectionKillSwitchDefault = fs.readFileSync(
   path.join(process.cwd(), "supabase/migrations/20260829014342_connection_kill_switch_default_safe.sql"),
   "utf8",
 );
+const sultanWorkloadIdentity = fs.readFileSync(
+  path.join(process.cwd(), "supabase/migrations/20260829023000_sultan_workload_identity.sql"),
+  "utf8",
+);
+const p110PolicyAndApprovalIndex = fs.readFileSync(
+  path.join(process.cwd(), "supabase/migrations/20260829023500_p110_command_policy_and_approval_index.sql"),
+  "utf8",
+);
 
 test("control-plane migration uses UUID tenancy, opaque secret refs, and authority-v2 preservation", () => {
   assert.match(migration, /tenant_memberships[\s\S]*tenant_id uuid not null references public\.tenant_accounts/);
@@ -77,4 +85,19 @@ test("the follow-up migration covers every control-plane foreign-key advisor fin
 test("connection kill switches default off while the independent global effect freeze remains application-gated", () => {
   assert.match(connectionKillSwitchDefault, /alter column kill_switch_active set default false/);
   assert.match(connectionKillSwitchDefault, /where state = 'LEGACY_MANAGED'/);
+});
+
+test("Sultan receives a tenant-bound least-authority workload membership", () => {
+  assert.match(sultanWorkloadIdentity, /'agent:sultan-os', 'AGENT'/);
+  assert.match(sultanWorkloadIdentity, /tenant\.code = 'LUZIONE_INTERNAL'/);
+  assert.match(sultanWorkloadIdentity, /legacy\.legacy_tenant_id = 'luzione'/);
+  assert.match(sultanWorkloadIdentity, /\["governance\.evaluate","models\.read","commands\.request"\]/);
+  assert.doesNotMatch(sultanWorkloadIdentity, /connections\.manage|platform\.admin|effects\.execute/);
+  assert.match(sultanWorkloadIdentity, /on conflict \(tenant_id, identity_id\) do nothing/);
+});
+
+test("the API-owned command table has its approval FK index and initplan-safe tenant policy", () => {
+  assert.match(p110PolicyAndApprovalIndex, /p110_command_receipts_approval_idx/);
+  assert.match(p110PolicyAndApprovalIndex, /approval_id is not null/);
+  assert.match(p110PolicyAndApprovalIndex, /tenant_id = \(select current_setting\('app\.tenant_id', true\)\)/);
 });

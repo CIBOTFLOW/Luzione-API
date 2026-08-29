@@ -41,6 +41,21 @@ export const controlPlaneOpenApi = {
     "/commands/{commandId}": {
       get: { operationId: "getCommand", parameters: [{ $ref: "#/components/parameters/commandId" }], responses: { "200": { description: "Durable command receipt" } } },
     },
+    "/models/catalog": {
+      get: {
+        operationId: "listEffectiveModelPrices",
+        parameters: [
+          { name: "provider", in: "query", schema: { type: "string", pattern: "^[a-z][a-z0-9._-]+$" } },
+          { name: "at", in: "query", schema: { type: "string", format: "date-time" } },
+        ],
+        responses: {
+          "200": {
+            description: "Effective-dated model price catalog",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/ModelCatalogResponse" } } },
+          },
+        },
+      },
+    },
     "/approvals/{approvalId}/decisions": {
       post: { operationId: "decideApproval", parameters: [{ $ref: "#/components/parameters/approvalId" }], responses: { "200": { description: "Immutable human approval decision" } } },
     },
@@ -104,6 +119,47 @@ export const controlPlaneOpenApi = {
           action: { type: "object" },
           target: { type: "object" },
           payload: { type: "object" },
+        },
+      },
+      ModelCatalogResponse: {
+        type: "object",
+        additionalProperties: false,
+        required: ["ok", "contractVersion", "result", "requestId"],
+        properties: {
+          ok: { const: true },
+          contractVersion: { const: "luzione-model-catalog/v1" },
+          requestId: { type: "string" },
+          result: {
+            type: "object",
+            additionalProperties: false,
+            required: ["catalogVersion", "effectiveAt", "items", "tenantId"],
+            properties: {
+              catalogVersion: { type: "string", pattern: "^sha256:[a-f0-9]{64}$" },
+              effectiveAt: { type: "string", format: "date-time" },
+              tenantId: { type: "string", format: "uuid" },
+              items: {
+                type: "array",
+                items: {
+                  type: "object",
+                  additionalProperties: false,
+                  required: ["priceCatalogId", "provider", "model", "currency", "inputPricePerMillion", "outputPricePerMillion", "effectiveFrom", "sourceUrl", "observedAt"],
+                  properties: {
+                    priceCatalogId: { type: "string" },
+                    provider: { type: "string" },
+                    model: { type: "string" },
+                    currency: { type: "string", pattern: "^[A-Z]{3}$" },
+                    inputPricePerMillion: { type: "string" },
+                    cachedInputPricePerMillion: { type: ["string", "null"] },
+                    outputPricePerMillion: { type: "string" },
+                    effectiveFrom: { type: "string", format: "date-time" },
+                    effectiveUntil: { type: ["string", "null"], format: "date-time" },
+                    sourceUrl: { type: "string", format: "uri" },
+                    observedAt: { type: "string", format: "date-time" },
+                  },
+                },
+              },
+            },
+          },
         },
       },
     },

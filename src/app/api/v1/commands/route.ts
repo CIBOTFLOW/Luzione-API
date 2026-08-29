@@ -1,6 +1,6 @@
 import { runtimeConfig } from "@/lib/api/config";
 import { apiResponse, requestId } from "@/lib/api/http";
-import { requireCanonicalActor } from "@/lib/control-plane/actor";
+import { requireCanonicalActor, requireWorkloadCapability } from "@/lib/control-plane/actor";
 import { controlPlaneFailure } from "@/lib/control-plane/http";
 import { admitCommand } from "@/lib/control-plane/store";
 import { parseCommand, readBoundedJson } from "@/modules/control-plane/request";
@@ -17,7 +17,7 @@ export async function POST(request: Request) {
         { requestId: id, status: 503 },
       );
     }
-    const actor = await requireCanonicalActor(request.headers);
+    const actor = requireWorkloadCapability(await requireCanonicalActor(request.headers), "commands.request");
     const result = await admitCommand(actor, parseCommand(await readBoundedJson(request)));
     return apiResponse(
       { ok: true, contractVersion: "luzione-authority/v2", result, externalEffectsAuthorized: false },
