@@ -77,7 +77,19 @@ async function readGoogleVerifiedDocumentCount() {
          and nullif(btrim(d.google_primary_document_id), '') is not null
          and nullif(btrim(d.google_primary_url), '') is not null
          and d.google_readback_at is not null
-         and d.snapshot_checksum ~ '^[a-f0-9]{64}
+         and d.snapshot_checksum ~ '^[a-f0-9]{64}$'
+         and jsonb_typeof(d.google_artifacts) = 'array'
+         and jsonb_array_length(d.google_artifacts) >= 3
+         and jsonb_typeof(e.external_ids) = 'array'
+         and jsonb_array_length(e.external_ids) >= 3
+    `);
+    return numberValue(verified.rows[0]?.verified_document_count);
+  } catch {
+    // Verification is evidence-based and fail-closed. Missing or drifting schema is never success.
+    return 0;
+  }
+}
+
 export async function readSultanRuntimeStatus() {
   const [result, googleVerifiedDocumentCount] = await Promise.all([
     databasePool().query<RuntimeAggregateRow>(
@@ -100,59 +112,6 @@ export async function readSultanRuntimeStatus() {
     gmailConnectionCount: numberValue(row.gmail_connection_count),
     googleDriveConnectionCount: numberValue(row.google_drive_connection_count),
     googleVerifiedDocumentCount,
-    latestAgentRunAt: timestampValue(row.latest_agent_run_at),
-    latestEvaluationAt: timestampValue(row.latest_evaluation_at),
-    latestModelCallAt: timestampValue(row.latest_model_call_at),
-    latestShopifySyncAt: timestampValue(row.latest_shopify_sync_at),
-    latestShopifySyncStatus: typeof row.latest_shopify_sync_status === "string" ? row.latest_shopify_sync_status : null,
-    lessonMemoryCount: numberValue(row.lesson_memory_count),
-    lunaCallCount: numberValue(row.luna_call_count),
-    modelCallCount: numberValue(row.model_call_count),
-    needsReviewMemoryCount: numberValue(row.needs_review_memory_count),
-    openReviewCandidateCount: numberValue(row.open_review_candidate_count),
-    pendingFeedbackCount: numberValue(row.pending_feedback_count),
-    proposalDocumentCount: numberValue(row.proposal_document_count),
-    proposalGateCount: numberValue(row.proposal_gate_count),
-    proposalReviewCount: numberValue(row.proposal_review_count),
-    shopifyProductCount: numberValue(row.shopify_product_count),
-    shopifySyncCount: numberValue(row.shopify_sync_count),
-    solCallCount: numberValue(row.sol_call_count),
-    successfulModelCallCount: numberValue(row.successful_model_call_count),
-    terraCallCount: numberValue(row.terra_call_count),
-  };
-  return deriveSultanRuntimeStatus(aggregate);
-}
-
-         and jsonb_typeof(d.google_artifacts) = 'array'
-         and jsonb_array_length(d.google_artifacts) >= 3
-         and jsonb_typeof(e.external_ids) = 'array'
-         and jsonb_array_length(e.external_ids) >= 3
-    `);
-    return numberValue(verified.rows[0]?.verified_document_count);
-  } catch {
-    // Verification is evidence-based and fail-closed. Missing or drifting schema is never success.
-    return 0;
-  }
-}
-
-export async function readSultanRuntimeStatus() {
-  const result = await databasePool().query<RuntimeAggregateRow>(
-    "select * from public.luzione_sultan_runtime_status_v1()",
-  );
-  const row = result.rows[0] ?? {};
-  const aggregate: SultanRuntimeAggregate = {
-    agentRunCount: numberValue(row.agent_run_count),
-    agreementCount: numberValue(row.agreement_count),
-    airtableConnectionCount: numberValue(row.airtable_connection_count),
-    chatMessageCount: numberValue(row.chat_message_count),
-    chatSessionCount: numberValue(row.chat_session_count),
-    completedRunCount: numberValue(row.completed_run_count),
-    completedShopifySyncCount: numberValue(row.completed_shopify_sync_count),
-    crmAiProposalCount: numberValue(row.crm_ai_proposal_count),
-    disagreementCount: numberValue(row.disagreement_count),
-    evaluationCount: numberValue(row.evaluation_count),
-    gmailConnectionCount: numberValue(row.gmail_connection_count),
-    googleDriveConnectionCount: numberValue(row.google_drive_connection_count),
     latestAgentRunAt: timestampValue(row.latest_agent_run_at),
     latestEvaluationAt: timestampValue(row.latest_evaluation_at),
     latestModelCallAt: timestampValue(row.latest_model_call_at),
