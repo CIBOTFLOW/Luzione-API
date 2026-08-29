@@ -71,31 +71,33 @@
       "platform_project": "PLAT_SE_004",
       "title": "Universal Request Identity and Correlation Envelope",
       "priority": 397,
-      "status": "READY",
+      "status": "COMPLETE",
       "depends_on": ["API_SE_002"],
       "mutation_cone": ["http", "auth", "contracts", "telemetry", "tests"],
       "core_outcome": "Converge request, correlation, trace, actor, tenant, purpose, capability, authority, contract version and idempotency context at the API boundary while preserving fail-closed server-derived authority.",
       "published_artifacts": ["identity envelope contract", "propagation tests", "UI/Sultan consumer handoff"],
-      "irreversible_effects": []
+      "irreversible_effects": [],
+      "completion_evidence_ref": "API_SE_004_LOCAL_PROOF_20260829"
     },
     {
       "project_id": "API_SE_005",
       "platform_project": "PLAT_SE_005",
       "title": "Universal Failure Taxonomy and Retry Contract",
       "priority": 396,
-      "status": "READY",
+      "status": "COMPLETE",
       "depends_on": ["API_SE_002"],
       "mutation_cone": ["errors", "http", "integrations", "workflows", "tests"],
       "core_outcome": "Map stable domain/class/retry/severity semantics across API endpoints and provider adapters, preserving bounded provider details while giving UI and Sultan one machine-readable failure contract.",
       "published_artifacts": ["failure registry", "retry contract", "consumer handoff"],
-      "irreversible_effects": []
+      "irreversible_effects": [],
+      "completion_evidence_ref": "API_SE_005_LOCAL_PROOF_20260829"
     },
     {
       "project_id": "API_SE_006",
       "platform_project": "PLAT_SE_006",
       "title": "Universal Decision, Action, Execution and Readback Receipts",
       "priority": 395,
-      "status": "PLANNED",
+      "status": "READY",
       "depends_on": ["API_SE_002", "API_SE_004"],
       "mutation_cone": ["receipts", "events", "commands", "audit", "tests"],
       "core_outcome": "Converge receipt semantics so intent, approval, execution, provider acknowledgement, authoritative readback, recovery and release evidence are addressable and never conflated.",
@@ -107,12 +109,13 @@
       "platform_project": "PLAT_SE_007",
       "title": "Desired, Observed and Reconciliation State Contract",
       "priority": 394,
-      "status": "READY",
+      "status": "COMPLETE",
       "depends_on": ["API_SE_002", "API_SE_003"],
       "mutation_cone": ["health", "integrations", "workflows", "contracts", "tests"],
       "core_outcome": "Define and implement shared desired/observed/freshness/reconciliation semantics for provider, service and workflow state so configuration cannot masquerade as observed health.",
       "published_artifacts": ["state contract", "freshness rules", "consumer handoff"],
-      "irreversible_effects": []
+      "irreversible_effects": [],
+      "completion_evidence_ref": "API_SE_007_LOCAL_PROOF_20260829"
     },
     {
       "project_id": "API_SE_008",
@@ -131,7 +134,7 @@
       "platform_project": "PLAT_SE_009",
       "title": "Service Catalog, Dependency Graph and Runbook Registry",
       "priority": 392,
-      "status": "PLANNED",
+      "status": "READY",
       "depends_on": ["API_SE_001", "API_SE_002", "API_SE_003"],
       "mutation_cone": ["service-catalog", "architecture", "operations", "docs", "tests"],
       "core_outcome": "Publish discoverable service identity, owner, tier, repository/runtime, dependencies, contracts, truth scope, SLO refs, runbooks, dashboards and deployment identity; accept consumer records through versioned handoff rather than guessed metadata.",
