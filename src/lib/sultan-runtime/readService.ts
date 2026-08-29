@@ -117,7 +117,7 @@ async function readGoogleVerifiedDocumentCount() {
          and jsonb_typeof(d.google_artifacts) = 'array'
          and jsonb_array_length(d.google_artifacts) = 3
          and jsonb_typeof(d.google_readback_proof) = 'object'
-         and jsonb_object_length(d.google_readback_proof) = 3
+         and (select count(*) from jsonb_object_keys(d.google_readback_proof)) = 3
          and e.snapshot_checksum = d.snapshot_checksum
          and e.readback_proof = d.google_readback_proof
          and jsonb_typeof(e.external_ids) = 'array'
