@@ -1,6 +1,7 @@
 import { apiResponse, requestId } from "@/lib/api/http";
 import { ControlPlaneRequestError } from "@/modules/control-plane/request";
 import { controlPlaneFailure } from "@/lib/control-plane/http";
+import { ensureRuntimeWebhookProvider } from "@/lib/control-plane/webhookRuntime";
 import { persistWebhookReceipt } from "@/lib/control-plane/webhookStore";
 import {
   providerWebhookRegistry,
@@ -15,9 +16,10 @@ export async function POST(request: Request, context: { params: Promise<{ provid
   const id = requestId(request.headers);
   try {
     const { provider } = await context.params;
-    if (!/^[a-z][a-z0-9._-]+$/.test(provider)) {
+    if (!/^[a-z][a-z0-9._-]{0,199}$/.test(provider)) {
       throw new ControlPlaneRequestError("INVALID_PATH", "provider is invalid.");
     }
+    ensureRuntimeWebhookProvider(provider);
     const verifier = providerWebhookRegistry.get(provider);
     if (!verifier) {
       return apiResponse(
