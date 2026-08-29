@@ -1,0 +1,543 @@
+{
+  "schema_version": 1,
+  "inventory_id": "luzione-api-topology/v1",
+  "project_id": "API_SE_001",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "observed_ref": "main",
+  "observed_sha": "be8cd38fe6af24a5d686ff414b02caf449980386",
+  "observed_at": "2026-08-29T22:58:24Z",
+  "scope": {
+    "included": [
+      "tracked main-branch runtime, routes, migrations, tests, deployment configuration and published architecture",
+      "open Luzione API pull requests as pending, non-runtime evidence",
+      "published cross-system ownership contracts in this repository"
+    ],
+    "excluded": [
+      "unpublished production configuration and secret values",
+      "unverified current contents of the Luzione UI and Sultan OS repositories",
+      "provider reachability not exercised by this no-effect inventory"
+    ]
+  },
+  "deployables": [
+    {
+      "deployable_id": "luzione-api-nextjs",
+      "name": "Luzione API and restricted engineering console",
+      "owner_repository": "CIBOTFLOW/Luzione-API",
+      "runtime": "Next.js 16 Node.js runtime",
+      "hosting_target": "Vercel",
+      "region_configuration": ["iad1"],
+      "entrypoint_paths": ["src/app", "instrumentation.ts"],
+      "deployment_configuration": "vercel.json",
+      "release_identity_source": "VERCEL_GIT_COMMIT_SHA",
+      "state": "IMPLEMENTED_ON_MAIN",
+      "dependencies": [
+        "canonical-postgres",
+        "vercel-workload-identity",
+        "luzione-ui-consumer",
+        "sultan-os-consumer"
+      ]
+    },
+    {
+      "deployable_id": "luzione-api-schema-bundle",
+      "name": "Luzione API additive Postgres migration bundle",
+      "owner_repository": "CIBOTFLOW/Luzione-API",
+      "runtime": "PostgreSQL migration artifacts",
+      "entrypoint_paths": ["supabase/migrations"],
+      "deployment_configuration": null,
+      "release_identity_source": "repository filename and checksum; no main-branch migration runner",
+      "state": "ARTIFACT_ONLY_ON_MAIN",
+      "dependencies": ["canonical-postgres"]
+    }
+  ],
+  "consumers": [
+    {
+      "component_id": "luzione-ui-consumer",
+      "repository": "CIBOTFLOW/Luzione-UI",
+      "semantic_owner": "human-facing business workflows, operator interaction and presentation of canonical readback",
+      "relationship": "HTTP consumer and Vercel workload principal",
+      "verification": "PUBLISHED_CONTRACT_ONLY_NOT_REPOSITORY_RECONCILED"
+    },
+    {
+      "component_id": "sultan-os-consumer",
+      "repository": "CIBOTFLOW/Sultan-OS",
+      "semantic_owner": "reasoning, agents, models, tools, memory, simulation, evaluation and AI-quality governance",
+      "relationship": "HTTP consumer and producer of typed intent",
+      "verification": "PUBLISHED_CONTRACT_ONLY_NOT_REPOSITORY_RECONCILED"
+    }
+  ],
+  "stores": [
+    {
+      "store_id": "canonical-postgres",
+      "kind": "PostgreSQL",
+      "hosting": "Supabase/Postgres contract; exact production project is not repository truth",
+      "truth_scope": "canonical application, command, workflow, projection, policy and security-catalog records named below",
+      "connection_path": "server-only node-postgres DATABASE_URL",
+      "tls_path": "explicit DATABASE_CA_CERT when configured",
+      "mutation_owner": "domain-specific; unresolved objects are listed in ownership_findings",
+      "observed_on_main": true
+    }
+  ],
+  "http_surfaces": [
+    {
+      "route_id": "autonomy-constitution-read",
+      "method": "GET",
+      "path": "/api/v1/autonomy/constitution",
+      "source_path": "src/app/api/v1/autonomy/constitution/route.ts",
+      "authentication": "service token or exact Luzione UI Vercel OIDC workload",
+      "canonical_readback": "static versioned constitution and reciprocal-rights modules",
+      "effect": "NO_EFFECT"
+    },
+    {
+      "route_id": "autonomy-evaluate",
+      "method": "POST",
+      "path": "/api/v1/autonomy/evaluate",
+      "source_path": "src/app/api/v1/autonomy/evaluate/route.ts",
+      "authentication": "service token or exact Luzione UI Vercel OIDC workload",
+      "canonical_readback": "deterministic in-process evaluation",
+      "effect": "NO_EFFECT"
+    },
+    {
+      "route_id": "autonomy-identity-evaluate",
+      "method": "POST",
+      "path": "/api/v1/autonomy/identity/evaluate",
+      "source_path": "src/app/api/v1/autonomy/identity/evaluate/route.ts",
+      "authentication": "service token or exact Luzione UI Vercel OIDC workload",
+      "canonical_readback": "deterministic in-process evaluation; no persistence",
+      "effect": "NO_EFFECT"
+    },
+    {
+      "route_id": "autonomy-petition-evaluate",
+      "method": "POST",
+      "path": "/api/v1/autonomy/petitions/evaluate",
+      "source_path": "src/app/api/v1/autonomy/petitions/evaluate/route.ts",
+      "authentication": "service token or exact Luzione UI Vercel OIDC workload",
+      "canonical_readback": "deterministic in-process evaluation; no persistence",
+      "effect": "NO_EFFECT"
+    },
+    {
+      "route_id": "platform-catalog-read",
+      "method": "GET",
+      "path": "/api/v1/catalog",
+      "source_path": "src/app/api/v1/catalog/route.ts",
+      "authentication": "public",
+      "canonical_readback": "in-process platformCatalog.ts",
+      "effect": "NO_EFFECT"
+    },
+    {
+      "route_id": "shopify-catalog-projection-read",
+      "method": "GET",
+      "path": "/api/v1/catalog/shopify/projections",
+      "source_path": "src/app/api/v1/catalog/shopify/projections/route.ts",
+      "authentication": "service token or exact Luzione UI Vercel OIDC workload",
+      "canonical_readback": "tenant-scoped P113 Postgres projection and latest sync run",
+      "effect": "NO_EFFECT"
+    },
+    {
+      "route_id": "shopify-catalog-projection-ingest",
+      "method": "POST",
+      "path": "/api/v1/catalog/shopify/projections",
+      "source_path": "src/app/api/v1/catalog/shopify/projections/route.ts",
+      "authentication": "service token or exact Luzione UI Vercel OIDC workload",
+      "canonical_readback": "transactional P113 projection completion receipt",
+      "effect": "BOUNDED_INTERNAL_PROJECTION",
+      "external_effect_authorized": false
+    },
+    {
+      "route_id": "governance-evaluate",
+      "method": "POST",
+      "path": "/api/v1/governance/evaluate",
+      "source_path": "src/app/api/v1/governance/evaluate/route.ts",
+      "authentication": "service token or exact Luzione UI Vercel OIDC workload",
+      "canonical_readback": "active tenant policy from Postgres plus deterministic evaluation",
+      "effect": "NO_EFFECT"
+    },
+    {
+      "route_id": "health-summary-read",
+      "method": "GET",
+      "path": "/api/v1/healthz",
+      "source_path": "src/app/api/v1/healthz/route.ts",
+      "authentication": "public aggregate",
+      "canonical_readback": "configuration plus canonical Postgres catalog RLS posture",
+      "effect": "NO_EFFECT"
+    },
+    {
+      "route_id": "process-liveness-read",
+      "method": "GET",
+      "path": "/api/v1/livez",
+      "source_path": "src/app/api/v1/livez/route.ts",
+      "authentication": "public",
+      "canonical_readback": "running process and Vercel release environment",
+      "effect": "NO_EFFECT"
+    },
+    {
+      "route_id": "platform-guarantee-read",
+      "method": "GET",
+      "path": "/api/v1/platform-guarantees",
+      "source_path": "src/app/api/v1/platform-guarantees/route.ts",
+      "authentication": "service token or exact Luzione UI Vercel OIDC workload",
+      "canonical_readback": "tenant-scoped P110/P111 Postgres aggregates",
+      "effect": "NO_EFFECT"
+    },
+    {
+      "route_id": "platform-guarantee-mutation-placeholder",
+      "method": "POST",
+      "path": "/api/v1/platform-guarantees",
+      "source_path": "src/app/api/v1/platform-guarantees/route.ts",
+      "authentication": "none before fail-closed response",
+      "canonical_readback": "none; always 503 or 501",
+      "effect": "NO_EFFECT_PLACEHOLDER"
+    },
+    {
+      "route_id": "deployment-readiness-read",
+      "method": "GET",
+      "path": "/api/v1/readyz",
+      "source_path": "src/app/api/v1/readyz/route.ts",
+      "authentication": "public aggregate",
+      "canonical_readback": "Postgres select 1 plus configuration",
+      "effect": "NO_EFFECT"
+    },
+    {
+      "route_id": "rls-readiness-read",
+      "method": "GET",
+      "path": "/api/v1/security/rls-readiness",
+      "source_path": "src/app/api/v1/security/rls-readiness/route.ts",
+      "authentication": "service token or exact Luzione UI Vercel OIDC workload",
+      "canonical_readback": "Postgres catalog and optional role-denial probes",
+      "effect": "NO_EFFECT"
+    },
+    {
+      "route_id": "sultan-runtime-status-read",
+      "method": "GET",
+      "path": "/api/v1/sultan/runtime-status",
+      "source_path": "src/app/api/v1/sultan/runtime-status/route.ts",
+      "authentication": "public aggregate",
+      "canonical_readback": "public.luzione_sultan_runtime_status_v1()",
+      "effect": "NO_EFFECT"
+    },
+    {
+      "route_id": "workflow-pack-catalog-read",
+      "method": "GET",
+      "path": "/api/v1/workflows",
+      "source_path": "src/app/api/v1/workflows/route.ts",
+      "authentication": "public cached",
+      "canonical_readback": "in-process workflows/catalog.ts",
+      "effect": "NO_EFFECT"
+    }
+  ],
+  "database_relations": {
+    "repo_migration_owned": [
+      "tenant_field_definitions",
+      "tenant_workflow_pack_settings",
+      "workflow_pack_registry"
+    ],
+    "repo_migration_extended": ["policy_evaluations"],
+    "preexisting_runtime_dependencies": [
+      "luzione_sultan_runtime_status_v1",
+      "p107_product_manufacturer_mappings",
+      "p110_dead_letters",
+      "p110_idempotency_conflicts",
+      "p110_outbox_messages",
+      "p111_workflow_instances",
+      "p113_catalog_coverage_observations",
+      "p113_catalog_reconciliation_items",
+      "p113_catalog_search_projections",
+      "p113_catalog_sync_cursors",
+      "p113_catalog_sync_runs",
+      "policy_definitions",
+      "tenant_accounts"
+    ],
+    "security_catalog_expected_server_only": [
+      "auth_users",
+      "connected_accounts",
+      "connected_assets",
+      "connector_sync_logs",
+      "manual_connector_credentials",
+      "migration_discipline_records",
+      "policy_constant_migrations",
+      "schema_migrations",
+      "secret_registry",
+      "service_auth_clients"
+    ],
+    "ownership_transfer_state": "P110/P111 and most runtime dependencies are referenced but not created or transferred by main-branch migrations"
+  },
+  "provider_boundaries": [
+    {
+      "provider_id": "postgres-supabase",
+      "kind": "DIRECT_RUNTIME_DEPENDENCY",
+      "capabilities_on_main": ["read", "bounded internal projection write", "catalog/security readback"],
+      "authoritative_for": ["canonical application and platform records named in database_relations"],
+      "health_source": ["/api/v1/readyz", "/api/v1/healthz", "/api/v1/security/rls-readiness"]
+    },
+    {
+      "provider_id": "vercel",
+      "kind": "DIRECT_RUNTIME_AND_IDENTITY_DEPENDENCY",
+      "capabilities_on_main": ["hosting", "release metadata", "OIDC JWKS verification"],
+      "authoritative_for": ["deployment identity", "workload-token signature and claims"],
+      "health_source": ["/api/v1/livez", "GitHub checks and Vercel deployment evidence outside main runtime"]
+    },
+    {
+      "provider_id": "shopify",
+      "kind": "INDIRECT_SOURCE_BOUNDARY",
+      "capabilities_on_main": ["catalog observations accepted from an authenticated caller and projected into Postgres"],
+      "authoritative_for": ["Shopify product and variant source counts/versions"],
+      "health_source": ["P113 cursor/count reconciliation", "Sultan aggregate sync status"],
+      "limitations": ["no direct Shopify adapter, credential use or provider request exists on main"]
+    },
+    {
+      "provider_id": "gmail-google-drive-airtable",
+      "kind": "OBSERVED_THROUGH_POSTGRES_AGGREGATE_ONLY",
+      "capabilities_on_main": ["connection counts and selected historical evidence only"],
+      "authoritative_for": [],
+      "health_source": ["public.luzione_sultan_runtime_status_v1()"],
+      "limitations": ["stored connection counts do not prove current reachability or readback"]
+    },
+    {
+      "provider_id": "ai-and-other-documented-vendors",
+      "kind": "DECLARATIVE_ONLY_ON_MAIN",
+      "capabilities_on_main": [],
+      "authoritative_for": [],
+      "health_source": [],
+      "limitations": ["vendor/compliance and autonomy policy references are not runtime adapters"]
+    }
+  ],
+  "health_and_evidence_sources": [
+    {
+      "source_id": "livez",
+      "path": "/api/v1/livez",
+      "proves": "request reached a running release",
+      "does_not_prove": "dependency, tenant, security or business readiness"
+    },
+    {
+      "source_id": "readyz",
+      "path": "/api/v1/readyz",
+      "proves": "database select 1 and required configuration presence",
+      "does_not_prove": "RLS posture, schema compatibility or business workflow readiness"
+    },
+    {
+      "source_id": "healthz",
+      "path": "/api/v1/healthz",
+      "proves": "configuration plus current database catalog RLS gate",
+      "does_not_prove": "provider reachability, mutation readiness or cross-system journeys"
+    },
+    {
+      "source_id": "rls-readiness",
+      "path": "/api/v1/security/rls-readiness",
+      "proves": "expected sensitive relation posture and optional active denial probes",
+      "does_not_prove": "all domain tenant isolation or provider security"
+    },
+    {
+      "source_id": "platform-guarantee-summary",
+      "path": "/api/v1/platform-guarantees",
+      "proves": "tenant-scoped P110/P111 aggregate readback when schema exists",
+      "does_not_prove": "command execution is activated"
+    },
+    {
+      "source_id": "sultan-runtime-aggregate",
+      "path": "/api/v1/sultan/runtime-status",
+      "proves": "aggregate rows returned by the canonical Postgres function",
+      "does_not_prove": "provider reachability, Google generation finality or Sultan repository integration"
+    },
+    {
+      "source_id": "structured-process-logs",
+      "path": "instrumentation.ts and selected request/error log sites",
+      "proves": "service start and selected request/error observations",
+      "does_not_prove": "complete trace propagation or durable business outcomes"
+    },
+    {
+      "source_id": "github-release-gate",
+      "path": ".github/workflows/ci.yml",
+      "proves": "compliance, typecheck, lint, test and build on the exact checked SHA",
+      "does_not_prove": "production runtime or provider outcomes"
+    },
+    {
+      "source_id": "github-codeql",
+      "path": ".github/workflows/codeql.yml",
+      "proves": "JavaScript/TypeScript static analysis on the exact checked SHA",
+      "does_not_prove": "runtime security or zero vulnerabilities"
+    }
+  ],
+  "runtime_configuration_keys": [
+    "APP_ENV",
+    "DATABASE_CA_CERT",
+    "DATABASE_CONNECT_TIMEOUT_MS",
+    "DATABASE_IDLE_TIMEOUT_MS",
+    "DATABASE_POOL_MAX",
+    "DATABASE_POOL_MAX_USES",
+    "DATABASE_URL",
+    "LUZIONE_API_INTERNAL_PROJECTIONS_ENABLED",
+    "LUZIONE_API_MUTATIONS_ENABLED",
+    "LUZIONE_API_SERVICE_TOKEN",
+    "LUZIONE_API_VERCEL_OIDC_ENABLED",
+    "LUZIONE_CANONICAL_TENANT_CODE",
+    "NEXT_RUNTIME",
+    "NODE_ENV",
+    "PLATFORM_CONTINUATION_SECRET",
+    "VERCEL_ENV",
+    "VERCEL_GIT_COMMIT_SHA",
+    "VERCEL_REGION"
+  ],
+  "semantic_ownership": [
+    {
+      "concept": "shared deterministic platform contracts",
+      "owner": "CIBOTFLOW/Luzione-API",
+      "state": "CANONICAL_PUBLISHED_CONTRACT"
+    },
+    {
+      "concept": "human-facing workflow and presentation",
+      "owner": "CIBOTFLOW/Luzione-UI",
+      "state": "CANONICAL_PUBLISHED_CONTRACT"
+    },
+    {
+      "concept": "reasoning, models, tools, memory and AI evaluation",
+      "owner": "CIBOTFLOW/Sultan-OS",
+      "state": "CANONICAL_PUBLISHED_CONTRACT"
+    },
+    {
+      "concept": "business records",
+      "owner": "canonical Postgres or explicitly named external provider",
+      "state": "DOMAIN_MAPPING_INCOMPLETE_API_SE_003"
+    }
+  ],
+  "ownership_findings": [
+    {
+      "finding_id": "API_SE_001_F001",
+      "severity": "HIGH",
+      "status": "OPEN",
+      "subject": "business-object semantic ownership",
+      "evidence": ["src/lib/platformCatalog.ts", "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md", "open PR #31 docs/production/SYSTEM_ARCHITECTURE.md"],
+      "finding": "The public catalog describes API-owned canonical business objects and deterministic truth, while the systems program assigns business truth to Postgres/providers and the pending control plane preserves existing UI object ownership until explicit transfer.",
+      "required_convergence": "API_SE_003 must assign store, mutation owner and readback per object; API_SE_002 must keep the public catalog from expressing stronger ownership than that registry."
+    },
+    {
+      "finding_id": "API_SE_001_F002",
+      "severity": "HIGH",
+      "status": "OPEN",
+      "subject": "P110/P111 ownership transfer",
+      "evidence": ["docs/ARCHITECTURE.md", "src/lib/platform-guarantees/readService.ts", "open PR #31 supabase/migrations/20260829010607_platform_control_plane_v2.sql"],
+      "finding": "Main reads P110/P111 as canonical but deliberately does not carry their migration or completed ownership transfer; PR #31 proposes a transfer registry but is unmerged.",
+      "required_convergence": "Do not claim API migration ownership until migration history and production ownership evidence are reconciled."
+    },
+    {
+      "finding_id": "API_SE_001_F003",
+      "severity": "MEDIUM",
+      "status": "OPEN",
+      "subject": "workflow-pack duplicate definitions",
+      "evidence": ["src/modules/workflows/catalog.ts", "supabase/migrations/20260828210000_tenant_ai_governance_and_workflow_packs.sql", "src/modules/workflows/tests/workflow-catalog.test.ts"],
+      "finding": "Nine workflow packs are independently defined in TypeScript and SQL; tests validate TypeScript against capabilities but do not prove parity with the SQL seed.",
+      "required_convergence": "Select one canonical definition or add generated/checksummed parity before either surface is treated as authoritative."
+    },
+    {
+      "finding_id": "API_SE_001_F004",
+      "severity": "HIGH",
+      "status": "OPEN",
+      "subject": "readiness semantic split",
+      "evidence": ["src/app/api/v1/readyz/route.ts", "src/app/api/v1/healthz/route.ts"],
+      "finding": "readyz can return READY after select 1 and configuration checks while healthz returns 503 unless the RLS posture also passes.",
+      "required_convergence": "API_SE_007 and API_SE_011 must name these as distinct observations or converge one readiness rule."
+    },
+    {
+      "finding_id": "API_SE_001_F005",
+      "severity": "HIGH",
+      "status": "OPEN",
+      "subject": "provider connected status",
+      "evidence": ["src/modules/sultan-runtime/runtimeStatus.ts", "src/lib/sultan-runtime/readService.ts"],
+      "finding": "Gmail, Google Drive and Airtable are labelled CONNECTED from stored connection counts without current provider reachability/readback.",
+      "required_convergence": "API_SE_007 must separate desired/configured, credential-ready, observed and reconciled provider state."
+    },
+    {
+      "finding_id": "API_SE_001_F006",
+      "severity": "HIGH",
+      "status": "OPEN",
+      "subject": "identity and tenant transition",
+      "evidence": ["src/lib/api/actor.ts", "docs/ARCHITECTURE.md", "open PR #31 control-plane identity files"],
+      "finding": "The service-token boundary accepts tenant/actor headers; Vercel OIDC pins only the Luzione UI workload and tenant. Canonical membership resolution is pending in PR #31.",
+      "required_convergence": "API_SE_004 must preserve current compatibility without allowing caller-supplied authority to become canonical identity."
+    },
+    {
+      "finding_id": "API_SE_001_F007",
+      "severity": "MEDIUM",
+      "status": "OPEN",
+      "subject": "mutation endpoint overlap",
+      "evidence": ["src/app/api/v1/platform-guarantees/route.ts", "open PR #31 src/app/api/v1/commands/route.ts"],
+      "finding": "Main exposes an unauthenticated, fail-closed POST placeholder while PR #31 introduces the governed command path.",
+      "required_convergence": "Retire or explicitly compatibility-map the placeholder when the command contract is adopted."
+    },
+    {
+      "finding_id": "API_SE_001_F008",
+      "severity": "MEDIUM",
+      "status": "OPEN",
+      "subject": "catalog evidence labels",
+      "evidence": ["src/lib/platformCatalog.ts", "src/app/api/v1/catalog/route.ts"],
+      "finding": "The catalog labels developer/OpenAPI and other planned concepts as foundation even though main has no OpenAPI route or shared compatibility registry.",
+      "required_convergence": "API_SE_002 must publish explicit contract versions and evidence maturity instead of broad foundation labels."
+    },
+    {
+      "finding_id": "API_SE_001_F009",
+      "severity": "MEDIUM",
+      "status": "OPEN",
+      "subject": "canonical object inventory completeness",
+      "evidence": ["src/lib/platformCatalog.ts", "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md"],
+      "finding": "The current object list omits Supplier, Quote, Product, Task, Approval, Decision, Workflow, Memory and AI Generation from the program's required initial truth inventory.",
+      "required_convergence": "API_SE_003 must inventory these without inventing owners where repository evidence is absent."
+    }
+  ],
+  "pending_change_sets": [
+    {
+      "pull_request": 31,
+      "head_ref": "codex/pilot-100-control-plane",
+      "head_sha": "b08e472eee11d6c9db6e332836bad8c1a98e53ed",
+      "state": "OPEN_DRAFT_NOT_MAIN_TRUTH",
+      "scope": "integrated authority-v2 control plane, connections, commands, durable execution, webhook runtime, learning and constitutional ledgers, migration runner and release/load evidence",
+      "convergence_rule": "reuse after rebase/reconciliation; do not copy its runtime or migration ownership claims into main metadata as implemented"
+    },
+    {
+      "pull_request": 29,
+      "head_ref": "codex/authority-v2-control-plane",
+      "head_sha": "a1e356393c227fd5045bfea078ee4a3ff5a0a35f",
+      "state": "OPEN_DRAFT_SUBSET_OF_PR31",
+      "scope": "authority-v2 control plane"
+    },
+    {
+      "pull_request": 30,
+      "head_ref": "codex/sultan-constitutional-ledger-20260829",
+      "head_sha": "6eca058d304527db567c5af70c0f50ec52e26270",
+      "state": "OPEN_DRAFT_STACKED_ON_PR29_AND_INCLUDED_IN_PR31",
+      "scope": "constitutional petitions and identity-candidate persistence"
+    },
+    {
+      "pull_request": 26,
+      "head_ref": "codex/sultan-learning-safety-gate-20260829",
+      "head_sha": "1c1f822d4d557182baeb3b48511f2f9625febeb3",
+      "state": "OPEN_DRAFT_INCLUDED_IN_PR31",
+      "scope": "learning promotion and rollback gate"
+    },
+    {
+      "pull_request": 28,
+      "head_ref": "codex/google-doc-authoritative-status-20260829",
+      "head_sha": "2816cd54f8ffb035ef10ab77688eb10b88486a5e",
+      "state": "OPEN_DRAFT_INCLUDED_IN_PR31",
+      "scope": "Google proposal authoritative readback"
+    },
+    {
+      "pull_request": 27,
+      "head_ref": "codex/platform-baseline-public",
+      "head_sha": "6cd3b82c22b4737e868cbe05c986a601c5d97b7a",
+      "state": "OPEN_DRAFT_INCLUDED_IN_PR31",
+      "scope": "public production contracts"
+    }
+  ],
+  "cross_repo_handoffs": [
+    "engineering/execution/handoffs/API_SE_001_LUZIONE_UI.json",
+    "engineering/execution/handoffs/API_SE_001_SULTAN_OS.json"
+  ],
+  "failure_refs": [
+    "API_SE_001_DEPENDENCY_AUDIT_20260829"
+  ],
+  "strongest_claim": {
+    "engineering_state": "BOUNDED_PASS",
+    "release_evidence": "LOCAL_PROVEN",
+    "effect_authority": "NO_EFFECT",
+    "finality": "BOUNDED_CLAIM",
+    "claim": "The tracked main-branch API topology, route surface, direct store/provider boundaries, health/evidence sources, pending API change sets and visible semantic conflicts are inventoried and coverage-checked for API_SE_001. Consumer repository internals and live production/provider state remain unverified."
+  }
+}

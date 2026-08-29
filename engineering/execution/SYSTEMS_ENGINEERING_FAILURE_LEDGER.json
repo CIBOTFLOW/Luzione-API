@@ -29,5 +29,48 @@
     "remaining_uncertainty": ["string"],
     "next_action": "string"
   },
-  "entries": []
+  "entries": [
+    {
+      "failure_id": "API_SE_001_DEPENDENCY_AUDIT_20260829",
+      "project_id": "API_SE_001",
+      "observed_at": "2026-08-29T22:58:24Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "be8cd38fe6af24a5d686ff414b02caf449980386",
+      "environment": "local",
+      "layer": "dependency-security",
+      "symptom": "The locked main-branch dependency graph reports one low and three high vulnerability entries.",
+      "expected": "The release dependency graph has no unresolved high-severity advisory entry.",
+      "actual": "npm audit reports high-severity entries for Next.js 16.2.4 and its PostCSS/sharp dependency paths, plus a low-severity esbuild development-server entry. npm identifies Next.js 16.3.3 as the non-major fix path.",
+      "classification": {
+        "domain": "DEPENDENCY",
+        "class": "CORRUPT",
+        "retry": "HUMAN",
+        "severity": "ERROR"
+      },
+      "evidence_refs": [
+        "package.json",
+        "package-lock.json",
+        "npm audit --json at 2026-08-29T22:58:24Z",
+        "https://github.com/advisories/GHSA-6gpp-xcg3-4w24",
+        "https://github.com/advisories/GHSA-m99w-x7hq-7vfj",
+        "https://github.com/advisories/GHSA-89xv-2m56-2m9x",
+        "https://github.com/advisories/GHSA-p9j2-gv94-2wf4",
+        "https://github.com/advisories/GHSA-f88m-g3jw-g9cj",
+        "https://github.com/advisories/GHSA-fxqj-rqcc-2cmp"
+      ],
+      "repair_attempts": [],
+      "strategy_reset": null,
+      "quarantine_scope": [
+        "release-readiness claims for the main-branch dependency graph"
+      ],
+      "deferred_external_infra": [],
+      "resolved": false,
+      "resolution_ref": null,
+      "remaining_uncertainty": [
+        "Runtime exploitability was not individually assessed in the API_SE_001 documentation/discovery mutation cone.",
+        "The available Next.js 16.3.3 update still needs exact-head type, lint, test, build and audit proof after convergence with current work."
+      ],
+      "next_action": "Converge the existing dependency-update pull requests or an equivalent Next.js 16.3.3 lockfile update, then rerun the full release gate and npm audit on the exact candidate SHA."
+    }
+  ]
 }

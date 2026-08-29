@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_SE_001_TO_LUZIONE_UI_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": null,
+  "producer_ref": "codex/api-se-001-topology-inventory",
+  "contract_name": "luzione-api-topology/v1",
+  "contract_version": 1,
+  "published_path": "engineering/execution/LUZIONE_API_TOPOLOGY_INVENTORY_V1.json",
+  "consumer_repository": "CIBOTFLOW/Luzione-UI",
+  "required_consumer_behavior": [
+    "Inventory UI-owned human workflows, API call sites, direct database/provider writes, deployment identities, health sources and duplicated shared contracts.",
+    "Treat Luzione API main routes as current only and PR #31 routes as pending until a merged API handoff publishes them.",
+    "Identify every business object currently mutated by UI and provide exact source/readback paths before any ownership transfer.",
+    "Preserve the exact Vercel workload identity boundary while reporting any other principals that call the API."
+  ],
+  "compatibility_expectation": "UI may render or map API-owned shared contracts but must not redefine actor, tenant, authority, receipt, failure, readiness or source-of-truth semantics.",
+  "acceptance_proof_needed": [
+    "exact UI SHA and route/call-site inventory",
+    "negative proof that browser/model payloads cannot self-grant tenant or authority",
+    "inventory of direct UI database/provider mutations and their retirement or ownership status",
+    "mapping of UI health labels to observed evidence rather than configuration"
+  ],
+  "producer_evidence_refs": [
+    "docs/platform-engineering/CROSS_SYSTEM_TOPOLOGY_AND_OWNERSHIP_V1.md",
+    "src/modules/platform-topology/tests/topology-inventory.test.ts"
+  ],
+  "known_limitations": [
+    "The API session did not inspect or edit the UI repository.",
+    "PR #31 is open draft evidence and is not a consumable current runtime contract.",
+    "Object-by-object source-of-truth assignments remain for API_SE_003."
+  ],
+  "remaining_uncertainty": [
+    "Which current UI paths still write canonical tables or providers directly.",
+    "Whether the documented Luzione UI Vercel project is the only production API workload principal.",
+    "Which UI health labels conflate configured, connected, observed and reconciled state."
+  ]
+}
