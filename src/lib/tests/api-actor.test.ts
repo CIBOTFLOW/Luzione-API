@@ -3,11 +3,12 @@ import crypto from "node:crypto";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-import { verifyVercelWorkloadToken } from "@/lib/api/actor";
+import { requireServiceActor, verifyVercelWorkloadToken } from "@/lib/api/actor";
 
 const ISSUER = "https://oidc.vercel.com/connor-spiegelmans-projects";
 const AUDIENCE = "https://vercel.com/connor-spiegelmans-projects";
 const SUBJECT = "owner:connor-spiegelmans-projects:project:luzione_ui:environment:production";
+const SULTAN_SUBJECT = "owner:connor-spiegelmans-projects:project:sultan-os:environment:production";
 const KEY_ID = "test-vercel-key";
 const { privateKey, publicKey } = crypto.generateKeyPairSync("rsa", { modulusLength: 2048 });
 const publicJwk = {
@@ -48,7 +49,7 @@ function signedToken(
 
 const loadJwks = async () => [publicJwk];
 
-test("accepts only the signed production identity of the Luzione UI project", async () => {
+test("accepts the signed production identity of the Luzione UI project", async () => {
   assert.equal(await verifyVercelWorkloadToken(signedToken(), loadJwks), true);
   assert.equal(await verifyVercelWorkloadToken(
     signedToken({ project_id: "prj_wrong" }),
@@ -62,6 +63,69 @@ test("accepts only the signed production identity of the Luzione UI project", as
     signedToken({ aud: "https://attacker.example" }),
     loadJwks,
   ), false);
+});
+
+test("accepts the signed Sultan production workload but no preview or unknown project", async () => {
+  assert.equal(await verifyVercelWorkloadToken(signedToken({
+    project: "sultan-os",
+    project_id: "prj_5nTisld8OnGiBhIxegGbUpWrZNp0",
+    sub: SULTAN_SUBJECT,
+  }), loadJwks), true);
+  assert.equal(await verifyVercelWorkloadToken(signedToken({
+    environment: "preview",
+    project: "sultan-os",
+    project_id: "prj_5nTisld8OnGiBhIxegGbUpWrZNp0",
+    sub: "owner:connor-spiegelmans-projects:project:sultan-os:environment:preview",
+  }), loadJwks), false);
+  assert.equal(await verifyVercelWorkloadToken(signedToken({
+    project: "unknown",
+    project_id: "prj_unknown",
+    sub: "owner:connor-spiegelmans-projects:project:unknown:environment:production",
+  }), loadJwks), false);
+});
+
+test("binds the Sultan workload to its canonical agent and Luzione tenant", async () => {
+  const previous = process.env.LUZIONE_API_SERVICE_TOKEN;
+  delete process.env.LUZIONE_API_SERVICE_TOKEN;
+  const sultanCaller = {
+    actor: { actorId: "agent:sultan-os", actorType: "agent" as const },
+    audience: AUDIENCE,
+    environment: "production" as const,
+    owner: "connor-spiegelmans-projects",
+    ownerId: "team_ZB7I1yzyt3ywCXQtPCYn4kL9",
+    project: "sultan-os",
+    projectId: "prj_5nTisld8OnGiBhIxegGbUpWrZNp0",
+    tenantId: "luzione",
+  };
+  const headers = new Headers({
+    authorization: "Bearer signed-sultan-token",
+    "x-luzione-actor": "agent:sultan-os",
+    "x-luzione-actor-type": "agent",
+    "x-luzione-tenant": "luzione",
+  });
+  try {
+    assert.deepEqual(await requireServiceActor(headers, async () => sultanCaller), {
+      actorId: "agent:sultan-os",
+      actorType: "agent",
+      source: "vercel-oidc",
+      tenantId: "luzione",
+    });
+    const impersonated = new Headers(headers);
+    impersonated.set("x-luzione-actor", "user:someone-else");
+    await assert.rejects(
+      requireServiceActor(impersonated, async () => sultanCaller),
+      /workload actor is not authorized/i,
+    );
+    const crossTenant = new Headers(headers);
+    crossTenant.set("x-luzione-tenant", "bravi");
+    await assert.rejects(
+      requireServiceActor(crossTenant, async () => sultanCaller),
+      /workload tenant is not authorized/i,
+    );
+  } finally {
+    if (previous === undefined) delete process.env.LUZIONE_API_SERVICE_TOKEN;
+    else process.env.LUZIONE_API_SERVICE_TOKEN = previous;
+  }
 });
 
 test("rejects expired, algorithm-confused, unknown-key and tampered tokens", async () => {
@@ -97,7 +161,9 @@ test("all protected API routes await the asynchronous workload identity boundary
   }
   const actor = readFileSync("src/lib/api/actor.ts", "utf8");
   assert.match(actor, /projectId: "prj_WGbFwkzAYBij46rrVUqNPGEeWzCP"/);
-  assert.match(actor, /tenantId !== VERCEL_CALLER\.tenantId/);
+  assert.match(actor, /projectId: "prj_5nTisld8OnGiBhIxegGbUpWrZNp0"/);
+  assert.match(actor, /actorId: "agent:sultan-os"/);
+  assert.match(actor, /tenantId !== vercelCaller\.tenantId/);
   assert.match(actor, /crypto\.verify/);
   assert.match(actor, /AbortSignal\.timeout\(JWKS_TIMEOUT_MS\)/);
 });

@@ -11,6 +11,7 @@ export type SultanRuntimeAggregate = {
   evaluationCount: number;
   gmailConnectionCount: number;
   googleDriveConnectionCount: number;
+  googleVerifiedDocumentCount: number;
   latestAgentRunAt: string | null;
   latestEvaluationAt: string | null;
   latestModelCallAt: string | null;
@@ -148,7 +149,9 @@ export function deriveSultanRuntimeStatus(
       googleDocs: {
         status: aggregate.googleDriveConnectionCount > 0 ? "CONNECTED" : "NOT_AVAILABLE",
         connectedAccountCount: aggregate.googleDriveConnectionCount,
-        generationVerified: false,
+        generationVerified:
+          aggregate.googleDriveConnectionCount > 0
+          && aggregate.googleVerifiedDocumentCount > 0,
       },
       email: {
         status: aggregate.gmailConnectionCount > 0 ? "CONNECTED" : "NOT_AVAILABLE",
