@@ -49,6 +49,6 @@ test("unknown capabilities inherit approval, never broad authority", () => {
 
 test("governance API classifies authentication failures as unauthorized", () => {
   const route = readFileSync("src/app/api/v1/governance/evaluate/route.ts", "utf8");
-  assert.match(route, /authentication\|tenant\|actor/i);
-  assert.match(route, /\? 401/);
+  assert.match(route, /error instanceof CanonicalActorError/);
+  assert.match(route, /\? error\.status/);
 });
