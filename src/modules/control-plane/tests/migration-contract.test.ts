@@ -23,6 +23,10 @@ const p110PolicyAndApprovalIndex = fs.readFileSync(
   path.join(process.cwd(), "supabase/migrations/20260829023500_p110_command_policy_and_approval_index.sql"),
   "utf8",
 );
+const vaultBoundary = fs.readFileSync(
+  path.join(process.cwd(), "supabase/migrations/20260829040000_vault_secret_store_boundary.sql"),
+  "utf8",
+);
 
 test("control-plane migration uses UUID tenancy, opaque secret refs, and authority-v2 preservation", () => {
   assert.match(migration, /tenant_memberships[\s\S]*tenant_id uuid not null references public\.tenant_accounts/);
@@ -100,4 +104,13 @@ test("the API-owned command table has its approval FK index and initplan-safe te
   assert.match(p110PolicyAndApprovalIndex, /p110_command_receipts_approval_idx/);
   assert.match(p110PolicyAndApprovalIndex, /approval_id is not null/);
   assert.match(p110PolicyAndApprovalIndex, /tenant_id = \(select current_setting\('app\.tenant_id', true\)\)/);
+});
+
+test("Vault stays tenant-bound and fails closed until explicitly validated", () => {
+  assert.match(vaultBoundary, /backend = 'VAULT'[\s\S]*validation_status = 'PASS'/);
+  assert.match(vaultBoundary, /allow_new_secret_writes/);
+  assert.match(vaultBoundary, /to_regclass\('vault\.decrypted_secrets'\) is null/);
+  assert.match(vaultBoundary, /tenant_vault_secret_refs[\s\S]*primary key \(tenant_id, vault_secret_id\)/);
+  assert.match(vaultBoundary, /alter table public\.tenant_vault_secret_refs force row level security/);
+  assert.doesNotMatch(vaultBoundary, /create extension/);
 });

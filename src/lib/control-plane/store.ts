@@ -495,6 +495,8 @@ export async function admitCommand(actor: CanonicalActor, command: ParsedCommand
     });
     const commandId = `cmd:${crypto.randomUUID()}`;
     const receiptId = `receipt:${crypto.randomUUID()}`;
+    const auditEventId = crypto.randomUUID();
+    const executionStepId = authority.allowed ? crypto.randomUUID() : null;
     const state = authority.allowed ? "VALIDATED" : "BLOCKED";
     await client.query(
       `insert into public.p110_command_receipts
@@ -534,6 +536,49 @@ export async function admitCommand(actor: CanonicalActor, command: ParsedCommand
         command.action.compensationPlanRef ?? null,
       ],
     );
+    if (executionStepId) {
+      await client.query(
+        `insert into public.platform_execution_steps
+          (execution_step_id, tenant_id, legacy_tenant_id, command_id, receipt_id,
+           connection_id, provider, capability, step_kind, step_sequence, state,
+           idempotency_key, input_digest)
+         values ($1,$2,$3,$4,$5,$6,$7,$8,'PROVIDER_REQUEST',0,'PENDING',$9,$10)`,
+        [
+          executionStepId,
+          actor.tenantId,
+          actor.legacyTenantId,
+          commandId,
+          receiptId,
+          command.action.connectionId ?? null,
+          command.action.provider,
+          command.envelope.capability,
+          `${command.envelope.idempotencyKey}:provider-request`,
+          payloadHash,
+        ],
+      );
+    }
+    await client.query(
+      `insert into public.platform_audit_events
+        (audit_event_id, tenant_id, identity_id, event_type, command_id,
+         execution_step_id, correlation_id, payload_digest, evidence)
+       values ($1,$2,$3,'command.admitted',$4,$5,$6,$7,$8::jsonb)`,
+      [
+        auditEventId,
+        actor.tenantId,
+        actor.principal.identityId,
+        commandId,
+        executionStepId,
+        command.envelope.correlationId,
+        payloadHash,
+        JSON.stringify({
+          authorityClass: command.envelope.authorityClass,
+          authorityCode: authority.code,
+          capability: command.envelope.capability,
+          provider: command.action.provider,
+          state,
+        }),
+      ],
+    );
     if (authority.allowed && command.envelope.authorityClass === "A3" && command.envelope.approvalId) {
       const consumed = await client.query(
         `update public.platform_effect_approvals
@@ -550,9 +595,11 @@ export async function admitCommand(actor: CanonicalActor, command: ParsedCommand
       approvalId: command.envelope.approvalId ?? null,
       authorityClass: command.envelope.authorityClass,
       authorityDecision: authority,
+      auditReference: `audit:${auditEventId}`,
       capability: command.envelope.capability,
       commandId,
       correlationId: command.envelope.correlationId,
+      executionStepId,
       externalEffectDispatched: false,
       receiptId,
       replayed: false,
