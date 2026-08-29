@@ -59,6 +59,18 @@ export function requireConnectionAdministrator(actor: CanonicalActor) {
   return actor;
 }
 
+export function requireWorkloadCapability(actor: CanonicalActor, capability: string) {
+  if (actor.principal.principalType === "USER") return actor;
+  if (!actor.membershipCapabilities.includes(capability)) {
+    throw new CanonicalActorError(
+      "WORKLOAD_CAPABILITY_REQUIRED",
+      `The authenticated workload is not permitted to use ${capability}.`,
+      403,
+    );
+  }
+  return actor;
+}
+
 function identityId(actor: ApiActor) {
   if (/^(user|service|agent):/.test(actor.actorId)) return actor.actorId;
   if (actor.actorType === "user") {

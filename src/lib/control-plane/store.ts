@@ -96,6 +96,46 @@ export async function listConnections(actor: CanonicalActor, limit = 100) {
   return result.rows.map(mapConnection);
 }
 
+export async function listModelPriceCatalog(
+  actor: CanonicalActor,
+  input: { effectiveAt: string; provider?: string },
+) {
+  const result = await databasePool().query(
+    `select distinct on (provider, model)
+       price_catalog_id, provider, model, currency,
+       input_price_per_million::text,
+       cached_input_price_per_million::text,
+       output_price_per_million::text,
+       effective_from, effective_until, source_url, observed_at
+     from public.model_price_catalog
+     where active
+       and effective_from <= $1::timestamptz
+       and (effective_until is null or effective_until > $1::timestamptz)
+       and ($2::text is null or provider = $2)
+     order by provider, model, effective_from desc`,
+    [input.effectiveAt, input.provider ?? null],
+  );
+  const items = result.rows.map((row) => ({
+    cachedInputPricePerMillion: row.cached_input_price_per_million,
+    currency: row.currency,
+    effectiveFrom: row.effective_from,
+    effectiveUntil: row.effective_until,
+    inputPricePerMillion: row.input_price_per_million,
+    model: row.model,
+    observedAt: row.observed_at,
+    outputPricePerMillion: row.output_price_per_million,
+    priceCatalogId: row.price_catalog_id,
+    provider: row.provider,
+    sourceUrl: row.source_url,
+  }));
+  return {
+    catalogVersion: `sha256:${digest(items)}`,
+    effectiveAt: input.effectiveAt,
+    items,
+    tenantId: actor.tenantId,
+  };
+}
+
 export async function getConnection(actor: CanonicalActor, connectionId: string) {
   const result = await databasePool().query(
     `${CONNECTION_SELECT}

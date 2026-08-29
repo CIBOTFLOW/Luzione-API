@@ -15,10 +15,12 @@ test("OpenAPI publishes the complete versioned connection and effect surface", (
     "/connections/{connectionId}/sync-runs",
     "/commands",
     "/commands/{commandId}",
+    "/models/catalog",
     "/approvals/{approvalId}/decisions",
     "/webhooks/{provider}",
   ]) {
     assert.ok(path in controlPlaneOpenApi.paths, `${path} is missing`);
   }
   assert.equal(controlPlaneOpenApi.components.schemas.EffectEnvelope.properties.contractVersion.const, "luzione-authority/v2");
+  assert.equal(controlPlaneOpenApi.components.schemas.ModelCatalogResponse.properties.contractVersion.const, "luzione-model-catalog/v1");
 });
