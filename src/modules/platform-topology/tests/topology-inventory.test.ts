@@ -120,7 +120,7 @@ test("cross-repository handoffs are parseable and remain unclaimed consumer evid
       producer_sha: string | null;
     };
     assert.equal(handoff.producer_repository, inventory.repository);
-    assert.equal(handoff.producer_sha, null);
+    assert.match(handoff.producer_sha ?? "", /^[a-f0-9]{40}$/);
     assert.ok(["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"].includes(handoff.consumer_repository));
     assert.ok(handoff.acceptance_proof_needed.length >= 1);
   }

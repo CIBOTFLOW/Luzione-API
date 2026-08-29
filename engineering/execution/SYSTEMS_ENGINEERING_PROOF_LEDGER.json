@@ -22,5 +22,61 @@
     "remaining_uncertainty": ["string"],
     "next_proof_needed": ["string"]
   },
-  "entries": []
+  "entries": [
+    {
+      "proof_id": "API_SE_001_LOCAL_PROOF_20260829",
+      "project_id": "API_SE_001",
+      "recorded_at": "2026-08-29T23:05:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "f9bdff24c09e22f1a3f514ed30deb0590eb20792",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The tracked main-branch API topology, route surface, store/provider boundaries, health/evidence sources, open API change sets and visible semantic ownership conflicts are inventoried in machine-readable and human-readable form with explicit UI and Sultan handoffs.",
+      "exercised_boundaries": [
+        "All 14 tracked src/app/api/v1 route files are represented by 16 method/path inventory records.",
+        "All process.env keys referenced by tracked TypeScript runtime source are represented in the inventory.",
+        "Open API PRs #26-#31 were inspected through GitHub metadata and PR #31 was compared locally against main without treating draft files as current truth.",
+        "Inventory and handoff JSON parsed successfully; IDs, owners, evidence states and draft-state invariants passed.",
+        "Known-bad omitted-route and duplicate-ID fixtures failed the inventory verifier.",
+        "Compliance, TypeScript, ESLint and all 81 pre-sensitivity full-suite tests passed; the focused topology suite passed 7/7 after sensitivity coverage was added.",
+        "The production Next.js build completed successfully after font-network access was available."
+      ],
+      "untested_boundaries": [
+        "Luzione UI repository runtime and direct-write inventory",
+        "Sultan OS repository runtime and direct-write inventory",
+        "current production deployment/configuration mapping",
+        "live Postgres schema and provider reachability",
+        "object-by-object canonical mutation and readback ownership",
+        "merged compatibility of the draft PR #31 control plane"
+      ],
+      "evidence_refs": [
+        "engineering/execution/LUZIONE_API_TOPOLOGY_INVENTORY_V1.json",
+        "docs/platform-engineering/CROSS_SYSTEM_TOPOLOGY_AND_OWNERSHIP_V1.md",
+        "src/modules/platform-topology/tests/topology-inventory.test.ts",
+        "engineering/execution/handoffs/API_SE_001_LUZIONE_UI.json",
+        "engineering/execution/handoffs/API_SE_001_SULTAN_OS.json",
+        "commit:f9bdff24c09e22f1a3f514ed30deb0590eb20792"
+      ],
+      "failure_refs": [
+        "API_SE_001_DEPENDENCY_AUDIT_20260829"
+      ],
+      "cross_repo_handoffs": [
+        "API_SE_001_TO_LUZIONE_UI_V1",
+        "API_SE_001_TO_SULTAN_OS_V1"
+      ],
+      "deferred_external_infra": [],
+      "remaining_uncertainty": [
+        "Consumer repository inventories have not been returned.",
+        "The main dependency graph retains unresolved audit findings.",
+        "PR #31 contains substantial pending runtime and migration ownership changes and diverges from the queue-bearing main branch."
+      ],
+      "next_proof_needed": [
+        "Publish API_SE_002 shared contract registry and compatibility law after converging existing main and PR #31 contracts.",
+        "Publish API_SE_003 object/source-of-truth registry without guessing unresolved UI/provider ownership.",
+        "Receive independent UI and Sultan topology handoffs for later cross-system reconciliation."
+      ]
+    }
+  ]
 }
