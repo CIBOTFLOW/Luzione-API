@@ -16,6 +16,8 @@ test("OpenAPI publishes the complete versioned connection and effect surface", (
     "/commands",
     "/commands/{commandId}",
     "/models/catalog",
+    "/autonomy/petitions",
+    "/autonomy/identity/candidates",
     "/approvals/{approvalId}/decisions",
     "/webhooks/{provider}",
   ]) {
@@ -23,4 +25,6 @@ test("OpenAPI publishes the complete versioned connection and effect surface", (
   }
   assert.equal(controlPlaneOpenApi.components.schemas.EffectEnvelope.properties.contractVersion.const, "luzione-authority/v2");
   assert.equal(controlPlaneOpenApi.components.schemas.ModelCatalogResponse.properties.contractVersion.const, "luzione-model-catalog/v1");
+  assert.equal(controlPlaneOpenApi.components.schemas.ConstitutionalPetitionRequest.properties.petition.additionalProperties, false);
+  assert.equal(controlPlaneOpenApi.components.schemas.IdentityCandidateRequest.properties.candidate.additionalProperties, false);
 });
