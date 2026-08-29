@@ -13,6 +13,10 @@
     "test:security-posture": "node --import tsx --test src/lib/tests/*.test.ts src/modules/security-posture/tests/*.test.ts",
     "db:migrate": "node scripts/run-platform-migrations.mjs",
     "db:migrate:dry-run": "node scripts/run-platform-migrations.mjs --dry-run",
+    "release:manifest:prepare": "node scripts/platform-release-manifest.mjs prepare",
+    "release:manifest:sign": "node scripts/platform-release-manifest.mjs sign",
+    "release:manifest:verify": "node scripts/platform-release-manifest.mjs verify --production",
+    "test:release-manifest": "node --test scripts/platform-release-manifest.test.mjs",
     "verify": "npm run typecheck && npm run lint && npm test && npm run build",
     "compliance:verify": "node scripts/verify-compliance.mjs"
   },
