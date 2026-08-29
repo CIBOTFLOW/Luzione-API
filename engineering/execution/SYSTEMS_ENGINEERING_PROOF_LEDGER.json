@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "ledger_id": "LUZIONE_PLATFORM_SYSTEMS_ENGINEERING_PROOFS_V1",
+  "policy": "Record only the strongest claim directly supported by exercised evidence. Every entry must list untested boundaries and remaining uncertainty. Never infer production finality from local, mock, CI, preview or synthetic evidence.",
+  "entry_schema": {
+    "proof_id": "string",
+    "project_id": "string",
+    "recorded_at": "ISO-8601",
+    "repository": "string",
+    "exact_sha": "string|null",
+    "engineering_state": "SPECIFIED|CONTRACT_STABLE|IMPLEMENTED|BOUNDED_PASS|INTEGRATED_PASS",
+    "release_evidence": "NOT_ASSESSED|DEFERRED_EXTERNAL_INFRA|LOCAL_PROVEN|PREVIEW_PROVEN|PRODUCTION_OBSERVED",
+    "effect_authority": "NO_EFFECT|SANDBOX_ONLY|LIVE_EFFECT_AUTHORIZED",
+    "finality": "NOT_FINAL|BOUNDED_CLAIM|RELEASE_CANDIDATE|PRODUCTION_OBSERVED_FINAL_FOR_SCOPE",
+    "claim": "string",
+    "exercised_boundaries": ["string"],
+    "untested_boundaries": ["string"],
+    "evidence_refs": ["string"],
+    "failure_refs": ["string"],
+    "cross_repo_handoffs": ["string"],
+    "deferred_external_infra": ["string"],
+    "remaining_uncertainty": ["string"],
+    "next_proof_needed": ["string"]
+  },
+  "entries": []
+}
