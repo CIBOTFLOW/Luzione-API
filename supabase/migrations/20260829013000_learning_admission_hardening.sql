@@ -27,7 +27,7 @@ DO $$
 BEGIN
   ALTER TABLE public.learning_promotion_receipts
     ADD CONSTRAINT learning_promotion_receipt_id_format_check
-    CHECK (promotion_receipt_id ~ '^learning_promotion_[a-f0-9]{24}$');
+    CHECK (promotion_receipt_id ~ '^learning_promotion_[a-f0-9]{24}$') NOT VALID;
 EXCEPTION WHEN duplicate_object THEN NULL;
 END
 $$;
@@ -36,7 +36,7 @@ DO $$
 BEGIN
   ALTER TABLE public.learning_promotion_receipts
     ADD CONSTRAINT learning_promotion_canonical_approval_id_format_check
-    CHECK (canonical_approval_id ~ '^learning_quorum_[a-f0-9]{24}$');
+    CHECK (canonical_approval_id ~ '^learning_quorum_[a-f0-9]{24}$') NOT VALID;
 EXCEPTION WHEN duplicate_object THEN NULL;
 END
 $$;
@@ -45,7 +45,7 @@ DO $$
 BEGIN
   ALTER TABLE public.learning_promotion_receipts
     ADD CONSTRAINT learning_promotion_command_id_format_check
-    CHECK (command_id ~ '^[A-Za-z0-9][A-Za-z0-9._:-]{7,190}$');
+    CHECK (command_id ~ '^[A-Za-z0-9][A-Za-z0-9._:-]{7,190}$') NOT VALID;
 EXCEPTION WHEN duplicate_object THEN NULL;
 END
 $$;
@@ -54,7 +54,7 @@ DO $$
 BEGIN
   ALTER TABLE public.learning_promotion_receipts
     ADD CONSTRAINT learning_promotion_idempotency_key_format_check
-    CHECK (idempotency_key ~ '^[A-Za-z0-9][A-Za-z0-9._:-]{7,190}$');
+    CHECK (idempotency_key ~ '^[A-Za-z0-9][A-Za-z0-9._:-]{7,190}$') NOT VALID;
 EXCEPTION WHEN duplicate_object THEN NULL;
 END
 $$;
@@ -70,7 +70,7 @@ BEGIN
       AND source_readback->>'commandId' = command_id
       AND source_readback->>'contentDigest' ~ '^[a-f0-9]{64}$'
       AND source_readback->'externalEffectsAuthorized' = 'false'::jsonb
-    );
+    ) NOT VALID;
 EXCEPTION WHEN duplicate_object THEN NULL;
 END
 $$;
@@ -79,7 +79,7 @@ DO $$
 BEGIN
   ALTER TABLE public.learning_rollback_receipts
     ADD CONSTRAINT learning_rollback_receipt_id_format_check
-    CHECK (rollback_receipt_id ~ '^learning_rollback_[a-f0-9]{24}$');
+    CHECK (rollback_receipt_id ~ '^learning_rollback_[a-f0-9]{24}$') NOT VALID;
 EXCEPTION WHEN duplicate_object THEN NULL;
 END
 $$;
@@ -88,7 +88,7 @@ DO $$
 BEGIN
   ALTER TABLE public.learning_rollback_receipts
     ADD CONSTRAINT learning_rollback_command_id_format_check
-    CHECK (command_id ~ '^[A-Za-z0-9][A-Za-z0-9._:-]{7,190}$');
+    CHECK (command_id ~ '^[A-Za-z0-9][A-Za-z0-9._:-]{7,190}$') NOT VALID;
 EXCEPTION WHEN duplicate_object THEN NULL;
 END
 $$;
@@ -97,7 +97,7 @@ DO $$
 BEGIN
   ALTER TABLE public.learning_rollback_receipts
     ADD CONSTRAINT learning_rollback_idempotency_key_format_check
-    CHECK (idempotency_key ~ '^[A-Za-z0-9][A-Za-z0-9._:-]{7,190}$');
+    CHECK (idempotency_key ~ '^[A-Za-z0-9][A-Za-z0-9._:-]{7,190}$') NOT VALID;
 EXCEPTION WHEN duplicate_object THEN NULL;
 END
 $$;
@@ -113,7 +113,7 @@ BEGIN
       AND source_readback->>'commandId' = command_id
       AND source_readback->>'contentDigest' ~ '^[a-f0-9]{64}$'
       AND source_readback->'externalEffectsAuthorized' = 'false'::jsonb
-    );
+    ) NOT VALID;
 EXCEPTION WHEN duplicate_object THEN NULL;
 END
 $$;
@@ -180,6 +180,8 @@ BEGIN
           OR COALESCE(approval.value->>'guardianId', '') !~ '^user:[A-Za-z0-9._:@-]{1,190}$'
           OR approval.value->>'decision' IS DISTINCT FROM 'APPROVED'
           OR COALESCE(approval.value->>'contentDigest', '') !~ '^[a-f0-9]{64}$'
+          OR NULLIF(approval.value->>'decidedAt', '') IS NULL
+          OR NULLIF(approval.value->>'expiresAt', '') IS NULL
           OR (approval.value->>'decidedAt')::timestamptz > NEW.promoted_at
           OR (approval.value->>'expiresAt')::timestamptz <= NEW.promoted_at
           OR approval.value->>'guardianId' = candidate.proposed_by_actor_id
