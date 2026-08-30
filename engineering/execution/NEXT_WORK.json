@@ -227,19 +227,20 @@
       "platform_project": "PLAT_SE_016",
       "title": "API Engineering Portal and Contract Explorer",
       "priority": 385,
-      "status": "READY",
+      "status": "COMPLETE",
       "depends_on": ["API_SE_009", "API_SE_010", "API_SE_011", "API_SE_012", "API_SE_015"],
       "mutation_cone": ["console", "ui", "api", "docs", "tests"],
       "core_outcome": "Turn api.luzione.com into an engineering control surface for services, contracts, errors, events, dependencies, SLOs, release/readiness evidence and safe bounded request exploration without exposing secrets or granting authority.",
       "published_artifacts": ["engineering portal", "contract explorer", "status/evidence navigation"],
-      "irreversible_effects": []
+      "irreversible_effects": [],
+      "completion_evidence_ref": "API_SE_016_LOCAL_PROOF_20260829"
     },
     {
       "project_id": "API_SE_017",
       "platform_project": "PLAT_SE_017",
       "title": "Causal Trace and Receipt Navigation Contract",
       "priority": 384,
-      "status": "PLANNED",
+      "status": "READY",
       "depends_on": ["API_SE_006", "API_SE_008", "API_SE_016"],
       "mutation_cone": ["trace", "receipts", "api", "console", "tests"],
       "core_outcome": "Provide stable authorized navigation from request/business state to causal events, receipts, traces and source readback so consumers can answer why a state exists without code inspection.",
@@ -251,12 +252,13 @@
       "platform_project": "PLAT_SE_018",
       "title": "Test Taxonomy and Harness Consolidation",
       "priority": 383,
-      "status": "READY",
+      "status": "COMPLETE",
       "depends_on": ["API_SE_002", "API_SE_009"],
       "mutation_cone": ["tests", "ci", "docs"],
       "core_outcome": "Map API suites into UNIT/CONTRACT/INTEGRATION/JOURNEY/RELIABILITY/SECURITY/PERFORMANCE/PRODUCTION_VERIFICATION classes, converge redundant orchestration and preserve sensitivity/coverage rather than deleting tests for cosmetic simplicity.",
       "published_artifacts": ["test inventory", "taxonomy mapping", "consolidation plan/evidence"],
-      "irreversible_effects": []
+      "irreversible_effects": [],
+      "completion_evidence_ref": "API_SE_018_LOCAL_PROOF_20260829"
     },
     {
       "project_id": "API_SE_019",

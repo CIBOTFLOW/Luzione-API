@@ -515,6 +515,61 @@
       "deferred_external_infra": ["preview deployment and canary", "rollback rehearsal environment", "production deployment/observation"],
       "remaining_uncertainty": ["The contract is locally proven but no release record has been produced by a deployment runtime.", "Draft PR #31 release machinery remains a non-current pending changeset requiring semantic convergence."],
       "next_proof_needed": ["Exact preview deployment record", "Preview canary/health and rollback rehearsal", "Authorized promotion and production observation"]
+    },
+    {
+      "proof_id": "API_SE_016_LOCAL_PROOF_20260829",
+      "project_id": "API_SE_016",
+      "recorded_at": "2026-08-30T00:39:30Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "9a0b8b8dfd5342b7650620bc68d4e841e3d54c46",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The existing Next.js console now has a read-only Server Component engineering portal for API-owned contracts, services, SLO/security maturity, release law, performance profiles, test gaps and safe aggregate readbacks without a new truth store or mutation surface.",
+      "exercised_boundaries": [
+        "Portal source imports canonical registries directly and contains no client component, internal fetch waterfall, form, mutation, direct environment access or secret names.",
+        "Only public aggregate GET readbacks are linked; authenticated RLS probes are absent.",
+        "Exact-SHA production build generated /engineering as a static route.",
+        "In-app browser rendered 5,184 visible-text characters with the Engineering portal heading, no framework overlay and no console errors.",
+        "Overview navigation and return to /engineering succeeded.",
+        "React/Next.js review found no RSC, serialization, waterfall or hooks violation.",
+        "Compliance, typecheck, clean lint, 136/136 tests and exact-SHA production build passed."
+      ],
+      "untested_boundaries": ["deployed portal", "authenticated operator access control", "preview/production catalog observation", "consumer-specific registries"],
+      "evidence_refs": ["src/app/engineering/page.tsx", "src/modules/platform-portal/tests/engineering-portal.test.ts", "docs/platform-engineering/API_ENGINEERING_PORTAL_V1.md", "browser localhost verification", "commit:9a0b8b8dfd5342b7650620bc68d4e841e3d54c46"],
+      "failure_refs": ["API_SE_001_DEPENDENCY_AUDIT_20260829", "API_SE_016_AGENT_BROWSER_CLI_UNAVAILABLE_20260829"],
+      "cross_repo_handoffs": ["API_SE_016_018_TO_LUZIONE_UI_V1", "API_SE_016_018_TO_SULTAN_OS_V1"],
+      "deferred_external_infra": ["preview/production deployment", "operator authentication policy", "consumer registry handoffs"],
+      "remaining_uncertainty": ["The portal is locally rendered only.", "The existing console authentication posture was not changed by this project."],
+      "next_proof_needed": ["Preview deployment/browser verification", "Authorized operator access proof", "API_SE_017 causal navigation"]
+    },
+    {
+      "proof_id": "API_SE_018_LOCAL_PROOF_20260829",
+      "project_id": "API_SE_018",
+      "recorded_at": "2026-08-30T00:39:30Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "9a0b8b8dfd5342b7650620bc68d4e841e3d54c46",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "All 25 current TypeScript suites have exactly one primary evidence class, npm test remains the single CI functional release gate, and missing journey/production-verification evidence is explicit.",
+      "exercised_boundaries": [
+        "Taxonomy registry paths exactly equal the current test filesystem.",
+        "Duplicate suite and repeated-primary fixtures fail validation.",
+        "CI invokes the canonical npm test command and focused aliases cannot claim release proof.",
+        "JOURNEY and PRODUCTION_VERIFICATION primary suite counts are explicitly zero.",
+        "No existing suite was deleted or excluded.",
+        "Compliance, typecheck, clean lint, 136/136 tests and exact-SHA production build passed."
+      ],
+      "untested_boundaries": ["cross-system journey", "deployed canary/synthetic", "UI test taxonomy", "Sultan deterministic/cognitive evaluation taxonomy"],
+      "evidence_refs": ["src/modules/platform-testing/taxonomy.ts", "src/modules/platform-testing/tests/taxonomy.test.ts", ".github/workflows/ci.yml", "docs/platform-engineering/TEST_TAXONOMY_AND_HARNESS_V1.md", "commit:9a0b8b8dfd5342b7650620bc68d4e841e3d54c46"],
+      "failure_refs": ["API_SE_001_DEPENDENCY_AUDIT_20260829"],
+      "cross_repo_handoffs": ["API_SE_016_018_TO_LUZIONE_UI_V1", "API_SE_016_018_TO_SULTAN_OS_V1"],
+      "deferred_external_infra": ["deployed production-verification environment", "independent UI/Sultan suite inventories"],
+      "remaining_uncertainty": ["Primary UNIT count is also zero because deterministic unit behavior is secondary within broader suites.", "Functional test counts do not substitute for journey or production evidence."],
+      "next_proof_needed": ["API_SE_019 cross-system journey suites", "Deployed canary/synthetic verification", "Independent UI/Sultan taxonomy handoffs"]
     }
   ]
 }

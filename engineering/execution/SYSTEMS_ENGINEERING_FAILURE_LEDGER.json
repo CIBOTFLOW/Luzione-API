@@ -313,6 +313,28 @@
       "resolution_ref": "commit:c5c0dd52b533807df5545c64ae9602ff8676d507 and API_SE_013_LOCAL_HTTP_20260829",
       "remaining_uncertainty": ["The local host does not represent preview or production network/runtime conditions."],
       "next_action": "Treat status-599 as a failed campaign and retain only permission-valid response measurements for bounded claims."
+    },
+    {
+      "failure_id": "API_SE_016_AGENT_BROWSER_CLI_UNAVAILABLE_20260829",
+      "project_id": "API_SE_016",
+      "observed_at": "2026-08-30T00:38:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "9a0b8b8dfd5342b7650620bc68d4e841e3d54c46",
+      "environment": "local",
+      "layer": "portal-browser-verification",
+      "symptom": "The preferred agent-browser CLI was not installed, and the in-app wrapper did not support the requested networkidle wait mode.",
+      "expected": "The exact local build receives browser rendering, overlay, console and navigation verification.",
+      "actual": "The CLI returned command not found; the in-app browser fallback connected successfully, used its supported DOM-content-ready wait, and completed all verification checks.",
+      "classification": { "domain": "TOOL", "class": "UNAVAILABLE", "retry": "NEVER", "severity": "INFO" },
+      "evidence_refs": ["agent-browser command-not-found output", "in-app browser DOM snapshot/screenshot/navigation result"],
+      "repair_attempts": ["Selected the available in-app browser control.", "Replaced unsupported networkidle with the documented DOM-content-ready wait and explicit rendered-state checks."],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "API_SE_016_LOCAL_PROOF_20260829 browser verification",
+      "remaining_uncertainty": ["The verification is local and not a preview/production browser observation."],
+      "next_action": "Use the in-app browser fallback on this host and repeat against the exact deployed candidate when available."
     }
   ]
 }

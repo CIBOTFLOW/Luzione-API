@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_SE_016_018_TO_SULTAN_OS_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "9a0b8b8dfd5342b7650620bc68d4e841e3d54c46",
+  "producer_ref": "codex/api-se-001-topology-inventory",
+  "contract_name": "engineering-portal-and-test-taxonomy",
+  "contract_version": "luzione-test-taxonomy/v1",
+  "consumer_repository": "CIBOTFLOW/Sultan-OS",
+  "required_consumer_behavior": [
+    "Return bounded model/agent/tool/evaluation registries for engineering navigation without exposing prompts, memory, credentials or tenant/customer data.",
+    "Classify deterministic functional tests separately from cognitive-quality evaluation, journey, reliability, performance and production verification.",
+    "Keep one canonical Sultan CI/evaluation release gate and identify focused or exploratory runs as bounded evidence.",
+    "Never let model judgment or self-reporting promote evidence maturity."
+  ],
+  "acceptance_proof_needed": ["exact Sultan SHA", "complete Sultan suite/evaluation inventory", "hidden-label cognitive evaluation evidence", "deployed production-verification evidence"],
+  "producer_evidence_refs": ["src/modules/platform-portal/tests/engineering-portal.test.ts", "src/modules/platform-testing/tests/taxonomy.test.ts", "browser verification for /engineering"],
+  "known_limitations": ["No Sultan repository was inspected.", "The portal was verified only on localhost.", "No model/tool evaluation runtime is represented by API tests."]
+}

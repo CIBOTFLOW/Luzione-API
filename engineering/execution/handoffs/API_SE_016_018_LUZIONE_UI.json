@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_SE_016_018_TO_LUZIONE_UI_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "9a0b8b8dfd5342b7650620bc68d4e841e3d54c46",
+  "producer_ref": "codex/api-se-001-topology-inventory",
+  "contract_name": "engineering-portal-and-test-taxonomy",
+  "contract_version": "luzione-test-taxonomy/v1",
+  "consumer_repository": "CIBOTFLOW/Luzione-UI",
+  "required_consumer_behavior": [
+    "Use API-owned contract/evidence meanings when rendering operational status and keep pending/local/provisional/production states visually distinct.",
+    "Return the UI test inventory classified by the same eight primary evidence classes without relabeling contract tests as journeys or production verification.",
+    "Keep one canonical UI CI command and identify focused aliases as non-release evidence.",
+    "Do not expose credentials, tenant/customer data or authenticated probe output in engineering surfaces."
+  ],
+  "acceptance_proof_needed": ["exact UI SHA", "complete UI suite inventory", "browser journey suite evidence", "deployed production-verification evidence"],
+  "producer_evidence_refs": ["src/modules/platform-portal/tests/engineering-portal.test.ts", "src/modules/platform-testing/tests/taxonomy.test.ts", "browser verification for /engineering"],
+  "known_limitations": ["No UI repository was inspected.", "The portal was verified only on localhost.", "No JOURNEY or PRODUCTION_VERIFICATION primary API suite exists."]
+}
