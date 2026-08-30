@@ -240,12 +240,13 @@
       "platform_project": "PLAT_SE_017",
       "title": "Causal Trace and Receipt Navigation Contract",
       "priority": 384,
-      "status": "READY",
+      "status": "COMPLETE",
       "depends_on": ["API_SE_006", "API_SE_008", "API_SE_016"],
       "mutation_cone": ["trace", "receipts", "api", "console", "tests"],
       "core_outcome": "Provide stable authorized navigation from request/business state to causal events, receipts, traces and source readback so consumers can answer why a state exists without code inspection.",
       "published_artifacts": ["causal navigation contract", "trace/receipt links", "consumer handoff"],
-      "irreversible_effects": []
+      "irreversible_effects": [],
+      "completion_evidence_ref": "API_SE_017_LOCAL_PROOF_20260829"
     },
     {
       "project_id": "API_SE_018",
@@ -265,7 +266,7 @@
       "platform_project": "PLAT_SE_019",
       "title": "Cross-System Certified Journeys",
       "priority": 382,
-      "status": "PLANNED",
+      "status": "READY",
       "depends_on": ["API_SE_011", "API_SE_012", "API_SE_013", "API_SE_014", "API_SE_015", "API_SE_017", "API_SE_018"],
       "mutation_cone": ["integration", "journeys", "evidence", "tests"],
       "core_outcome": "Consume independent UI and Sultan handoffs and certify representative exact-contract journeys including negative, failure, retry/recovery and authoritative readback. Never mark consumer integration complete from producer evidence alone.",

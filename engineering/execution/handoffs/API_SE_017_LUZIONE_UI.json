@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_SE_017_TO_LUZIONE_UI_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "1b1b048f5297002c992d9a715630bb92bd8916c6",
+  "producer_ref": "codex/api-se-001-topology-inventory",
+  "contract_name": "causal-trace-receipt-navigation",
+  "contract_version": "luzione-causal-navigation/v1",
+  "consumer_repository": "CIBOTFLOW/Luzione-UI",
+  "required_consumer_behavior": [
+    "Request causal evidence only through authenticated tenant/purpose context and preserve API-owned node/edge meanings.",
+    "Render why, what changes it, event/receipt/trace links and authoritative source readback without treating trace or provider acknowledgement as truth.",
+    "Reject cross-tenant, cyclic, missing-node and unconfirmed-finality graphs.",
+    "Return exact UI navigation/readback adoption evidence through a versioned handoff."
+  ],
+  "acceptance_proof_needed": ["exact UI SHA", "one request-to-source-readback navigation", "cross-tenant denial", "missing/stale evidence rendering"],
+  "producer_evidence_refs": ["src/modules/platform-causality/tests/navigation.test.ts", "docs/platform-engineering/CAUSAL_TRACE_RECEIPT_NAVIGATION_V1.md"],
+  "known_limitations": ["No durable universal evidence retrieval route exists.", "No UI repository was inspected.", "No production evidence was navigated."]
+}

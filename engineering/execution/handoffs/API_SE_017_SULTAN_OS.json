@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_SE_017_TO_SULTAN_OS_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "1b1b048f5297002c992d9a715630bb92bd8916c6",
+  "producer_ref": "codex/api-se-001-topology-inventory",
+  "contract_name": "causal-trace-receipt-navigation",
+  "contract_version": "luzione-causal-navigation/v1",
+  "consumer_repository": "CIBOTFLOW/Sultan-OS",
+  "required_consumer_behavior": [
+    "Link model, agent and tool evidence to API request/receipt/event/readback nodes without treating model or trace output as business truth.",
+    "Preserve authenticated tenant/purpose authorization and reject cross-tenant or cyclic evidence graphs.",
+    "Return bounded protected evidence references rather than prompt, memory, credential or customer content.",
+    "Return exact Sultan adoption evidence through a versioned handoff."
+  ],
+  "acceptance_proof_needed": ["exact Sultan SHA", "one model/tool-to-source-readback navigation", "cross-tenant denial", "unconfirmed-finality behavior"],
+  "producer_evidence_refs": ["src/modules/platform-causality/tests/navigation.test.ts", "docs/platform-engineering/CAUSAL_TRACE_RECEIPT_NAVIGATION_V1.md"],
+  "known_limitations": ["No durable universal evidence retrieval route exists.", "No Sultan repository was inspected.", "No production evidence was navigated."]
+}

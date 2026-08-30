@@ -570,6 +570,33 @@
       "deferred_external_infra": ["deployed production-verification environment", "independent UI/Sultan suite inventories"],
       "remaining_uncertainty": ["Primary UNIT count is also zero because deterministic unit behavior is secondary within broader suites.", "Functional test counts do not substitute for journey or production evidence."],
       "next_proof_needed": ["API_SE_019 cross-system journey suites", "Deployed canary/synthetic verification", "Independent UI/Sultan taxonomy handoffs"]
+    },
+    {
+      "proof_id": "API_SE_017_LOCAL_PROOF_20260829",
+      "project_id": "API_SE_017",
+      "recorded_at": "2026-08-30T00:43:30Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "1b1b048f5297002c992d9a715630bb92bd8916c6",
+      "engineering_state": "CONTRACT_STABLE",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "A tenant-authorized causal DAG can now connect request, decision, intent, execution, event, trace, source readback, recovery and release references while explaining why state exists and what authoritative action can change it.",
+      "exercised_boundaries": [
+        "A request/execution/event/readback chain produces a chronological timeline, evidence links, trace/correlation references, why and what-changes-it guidance.",
+        "Cross-tenant evidence is denied before navigation.",
+        "Missing edge nodes, cycles, false readbacks and authoritative traces fail validation.",
+        "The graph is explicitly non-authoritative navigation metadata and provider acknowledgement is not finality.",
+        "The taxonomy gate required the new suite to be classified in the same changeset.",
+        "Compliance, typecheck, clean lint, 140/140 tests and exact-SHA production build passed."
+      ],
+      "untested_boundaries": ["durable evidence retrieval", "authorized HTTP route", "consumer navigation", "production receipt/event/trace/readback chain"],
+      "evidence_refs": ["src/modules/platform-causality/navigation.ts", "src/modules/platform-causality/tests/navigation.test.ts", "docs/platform-engineering/CAUSAL_TRACE_RECEIPT_NAVIGATION_V1.md", "commit:1b1b048f5297002c992d9a715630bb92bd8916c6"],
+      "failure_refs": ["API_SE_001_DEPENDENCY_AUDIT_20260829", "API_SE_017_TEST_TAXONOMY_OMISSION_20260829"],
+      "cross_repo_handoffs": ["API_SE_017_TO_LUZIONE_UI_V1", "API_SE_017_TO_SULTAN_OS_V1"],
+      "deferred_external_infra": ["durable receipt/evidence store convergence", "authorized retrieval route", "consumer adoption"],
+      "remaining_uncertainty": ["The current contract assembles supplied references but does not retrieve canonical evidence.", "PR #31 durable receipt machinery is still a non-current changeset."],
+      "next_proof_needed": ["Durable authorized evidence retrieval", "Independent UI/Sultan navigation adoption", "API_SE_019 cross-system certified journey"]
     }
   ]
 }

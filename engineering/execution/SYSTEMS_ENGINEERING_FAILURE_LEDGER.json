@@ -335,6 +335,28 @@
       "resolution_ref": "API_SE_016_LOCAL_PROOF_20260829 browser verification",
       "remaining_uncertainty": ["The verification is local and not a preview/production browser observation."],
       "next_action": "Use the in-app browser fallback on this host and repeat against the exact deployed candidate when available."
+    },
+    {
+      "failure_id": "API_SE_017_TEST_TAXONOMY_OMISSION_20260829",
+      "project_id": "API_SE_017",
+      "observed_at": "2026-08-30T00:42:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": null,
+      "environment": "local",
+      "layer": "test-taxonomy-completeness",
+      "symptom": "The first full test run failed because the new causal-navigation suite was not yet present in the canonical taxonomy.",
+      "expected": "Every new test suite is classified in the same changeset.",
+      "actual": "The filesystem contained platform-causality/tests/navigation.test.ts while the taxonomy did not; 139/140 tests passed.",
+      "classification": { "domain": "PLATFORM", "class": "INVALID", "retry": "NEVER", "severity": "INFO" },
+      "evidence_refs": ["src/modules/platform-testing/tests/taxonomy.test.ts", "initial API_SE_017 139/140 output"],
+      "repair_attempts": ["Added the suite as primary CONTRACT with secondary SECURITY evidence."],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "commit:1b1b048f5297002c992d9a715630bb92bd8916c6 and subsequent 140/140 pass",
+      "remaining_uncertainty": [],
+      "next_action": "Keep the filesystem-equality taxonomy gate mandatory for every new suite."
     }
   ]
 }
