@@ -41,6 +41,10 @@ import {
   readinessEvidenceLaw,
 } from "@/modules/platform-readiness/evidence";
 import {
+  productionReadinessCertificationLaw,
+  PRODUCTION_READINESS_CERTIFICATION_VERSION,
+} from "@/modules/platform-readiness/certification";
+import {
   performanceProfileRegistry,
   PLATFORM_PERFORMANCE_PROGRAM_VERSION,
 } from "@/modules/platform-performance/program";
@@ -129,6 +133,10 @@ export async function GET(request: Request) {
         contractVersion: PLATFORM_READINESS_EVIDENCE_VERSION,
         law: readinessEvidenceLaw,
         runtimeSurface: "GET /api/v1/healthz",
+      },
+      productionReadinessCertification: {
+        contractVersion: PRODUCTION_READINESS_CERTIFICATION_VERSION,
+        law: productionReadinessCertificationLaw,
       },
       performanceProgram: {
         contractVersion: PLATFORM_PERFORMANCE_PROGRAM_VERSION,

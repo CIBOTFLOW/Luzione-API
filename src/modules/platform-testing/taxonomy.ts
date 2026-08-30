@@ -29,6 +29,7 @@ export const testSuiteTaxonomy: readonly TestSuiteDescriptor[] = Object.freeze([
   { suitePath: "src/modules/platform-performance/tests/program.test.ts", primaryClass: "PERFORMANCE", secondaryClasses: ["CONTRACT", "SECURITY"], evidenceScope: "workload profiles, percentile math and local-target guard" },
   { suitePath: "src/modules/platform-portal/tests/engineering-portal.test.ts", primaryClass: "CONTRACT", secondaryClasses: ["SECURITY"], evidenceScope: "read-only portal and safe registry exposure" },
   { suitePath: "src/modules/platform-readiness/tests/evidence.test.ts", primaryClass: "CONTRACT", secondaryClasses: ["RELIABILITY"], evidenceScope: "freshness-aware readiness evidence" },
+  { suitePath: "src/modules/platform-readiness/tests/certification.test.ts", primaryClass: "CONTRACT", secondaryClasses: ["RELIABILITY", "SECURITY", "PRODUCTION_VERIFICATION"], evidenceScope: "fail-closed exact-candidate production readiness certification" },
   { suitePath: "src/modules/platform-recovery/tests/registry.test.ts", primaryClass: "RELIABILITY", secondaryClasses: ["INTEGRATION"], evidenceScope: "recovery objectives and disposable restore harness" },
   { suitePath: "src/modules/platform-release/tests/release-contract.test.ts", primaryClass: "CONTRACT", secondaryClasses: ["RELIABILITY", "SECURITY"], evidenceScope: "release provenance, promotion and rollback gates" },
   { suitePath: "src/modules/platform-security-controls/tests/registry.test.ts", primaryClass: "SECURITY", secondaryClasses: ["CONTRACT"], evidenceScope: "zero-tolerance control evidence" },

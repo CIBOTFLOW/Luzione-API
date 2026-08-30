@@ -374,6 +374,21 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
   {
     compatibility: "NEW_MAJOR_FOR_BREAKING",
     consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
+    contractId: "production-readiness-certification",
+    currentRuntime: true,
+    maturity: "LIBRARY_ONLY",
+    name: "Exact-candidate critical-invariant production readiness certification",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: [],
+    sourcePaths: [
+      "src/modules/platform-readiness/certification.ts",
+      "docs/platform-engineering/PRODUCTION_READINESS_CERTIFICATION_V1.md"
+    ],
+    version: "luzione-production-readiness-certification/v1",
+  },
+  {
+    compatibility: "NEW_MAJOR_FOR_BREAKING",
+    consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
     contractId: "performance-program",
     currentRuntime: true,
     maturity: "IMPLEMENTED",
