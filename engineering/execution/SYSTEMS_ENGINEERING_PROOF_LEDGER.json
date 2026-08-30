@@ -597,6 +597,62 @@
       "deferred_external_infra": ["durable receipt/evidence store convergence", "authorized retrieval route", "consumer adoption"],
       "remaining_uncertainty": ["The current contract assembles supplied references but does not retrieve canonical evidence.", "PR #31 durable receipt machinery is still a non-current changeset."],
       "next_proof_needed": ["Durable authorized evidence retrieval", "Independent UI/Sultan navigation adoption", "API_SE_019 cross-system certified journey"]
+    },
+    {
+      "proof_id": "API_SE_019_QUARANTINED_PROOF_20260829",
+      "project_id": "API_SE_019",
+      "recorded_at": "2026-08-30T01:12:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "a8fa418e7e83d2857abe45e3aaa354b97d7e321a",
+      "engineering_state": "CONTRACT_STABLE",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The API now owns a fail-closed exact-version journey-certification contract, but no cross-system journey is certified because no independently authored Luzione UI or Sultan OS return evidence exists.",
+      "exercised_boundaries": [
+        "Exact-version API, UI and Sultan evidence with positive, negative, failure, recovery and authoritative-readback case references passes the contract fixture.",
+        "Producer-only evidence remains quarantined.",
+        "API-authored evidence attributed to a consumer fails independence checks.",
+        "Missing contract versions, negative cases, recovery cases and authoritative readback remain quarantined.",
+        "Repository evidence audit found only API-authored outbound handoffs and no consumer-authored return handoff.",
+        "Compliance, typecheck, clean lint, 144/144 tests and exact-SHA production build passed."
+      ],
+      "untested_boundaries": [
+        "Luzione UI journey execution",
+        "Sultan OS journey execution",
+        "shared deployed exact-contract journey",
+        "provider/source readback across all three repositories",
+        "preview and production journey observation"
+      ],
+      "evidence_refs": [
+        "src/modules/platform-journeys/certification.ts",
+        "src/modules/platform-journeys/tests/certification.test.ts",
+        "docs/platform-engineering/CROSS_SYSTEM_JOURNEY_CERTIFICATION_V1.md",
+        "engineering/execution/journeys/API_SE_019_CERTIFICATION_20260829.json",
+        "commit:a8fa418e7e83d2857abe45e3aaa354b97d7e321a"
+      ],
+      "failure_refs": [
+        "API_SE_001_DEPENDENCY_AUDIT_20260829",
+        "API_SE_019_INDEPENDENT_CONSUMER_EVIDENCE_MISSING_20260829"
+      ],
+      "cross_repo_handoffs": [
+        "API_SE_019_TO_LUZIONE_UI_V1",
+        "API_SE_019_TO_SULTAN_OS_V1"
+      ],
+      "deferred_external_infra": [
+        "independent UI repository execution",
+        "independent Sultan repository execution",
+        "shared preview/production environment"
+      ],
+      "remaining_uncertainty": [
+        "Consumer contract compatibility and end-to-end behavior are unknown.",
+        "No business outcome has been observed through authoritative cross-system readback."
+      ],
+      "next_proof_needed": [
+        "UI-authored exact-SHA journey handoff",
+        "Sultan-authored exact-SHA journey handoff",
+        "successful certification of at least one representative shared-contract journey"
+      ]
     }
   ]
 }

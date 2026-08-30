@@ -357,6 +357,51 @@
       "resolution_ref": "commit:1b1b048f5297002c992d9a715630bb92bd8916c6 and subsequent 140/140 pass",
       "remaining_uncertainty": [],
       "next_action": "Keep the filesystem-equality taxonomy gate mandatory for every new suite."
+    },
+    {
+      "failure_id": "API_SE_019_INDEPENDENT_CONSUMER_EVIDENCE_MISSING_20260829",
+      "project_id": "API_SE_019",
+      "observed_at": "2026-08-30T01:12:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "a8fa418e7e83d2857abe45e3aaa354b97d7e321a",
+      "environment": "unknown",
+      "layer": "cross-repository-journey-certification",
+      "symptom": "No independently authored exact-version Luzione UI or Sultan OS evidence is available for a representative shared journey.",
+      "expected": "API, UI and Sultan each return repository-authored exact-SHA evidence for positive, negative, failure, recovery and authoritative-readback cases.",
+      "actual": "The API repository contains producer-authored outbound handoff requests only; it contains no consumer return artifact and therefore cannot certify consumer integration.",
+      "classification": {
+        "domain": "DEPENDENCY",
+        "class": "UNAVAILABLE",
+        "retry": "HUMAN",
+        "severity": "DEGRADED"
+      },
+      "evidence_refs": [
+        "engineering/execution/handoffs/",
+        "engineering/execution/journeys/API_SE_019_CERTIFICATION_20260829.json",
+        "src/modules/platform-journeys/tests/certification.test.ts"
+      ],
+      "repair_attempts": [
+        "Audited every current API handoff for consumer-authored exact-version return evidence.",
+        "Added a fail-closed certification contract and explicit unproven-boundary inventory.",
+        "Published exact-version evidence-return handoffs for both consumers."
+      ],
+      "strategy_reset": "Stopped attempting producer-side integration inference and quarantined the entire cross-system journey claim pending independent repository evidence.",
+      "quarantine_scope": [
+        "all API_SE_019 cross-system journey certificates",
+        "all production-readiness claims that require consumer integration"
+      ],
+      "deferred_external_infra": [
+        "Luzione UI repository execution",
+        "Sultan OS repository execution",
+        "shared deployed journey environment"
+      ],
+      "resolved": false,
+      "resolution_ref": null,
+      "remaining_uncertainty": [
+        "Whether either consumer is compatible with the current exact contract versions.",
+        "Whether failure, retry/recovery and source readback work end to end."
+      ],
+      "next_action": "Consume independent UI and Sultan return handoffs when available and run the certificate against their exact contract versions without weakening the quarantine."
     }
   ]
 }

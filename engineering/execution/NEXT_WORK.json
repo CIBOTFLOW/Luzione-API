@@ -266,19 +266,20 @@
       "platform_project": "PLAT_SE_019",
       "title": "Cross-System Certified Journeys",
       "priority": 382,
-      "status": "READY",
+      "status": "QUARANTINED",
       "depends_on": ["API_SE_011", "API_SE_012", "API_SE_013", "API_SE_014", "API_SE_015", "API_SE_017", "API_SE_018"],
       "mutation_cone": ["integration", "journeys", "evidence", "tests"],
       "core_outcome": "Consume independent UI and Sultan handoffs and certify representative exact-contract journeys including negative, failure, retry/recovery and authoritative readback. Never mark consumer integration complete from producer evidence alone.",
       "published_artifacts": ["journey certificates", "cross-repo compatibility findings", "unproven boundary inventory"],
-      "irreversible_effects": []
+      "irreversible_effects": [],
+      "completion_evidence_ref": "API_SE_019_QUARANTINED_PROOF_20260829"
     },
     {
       "project_id": "API_SE_020",
       "platform_project": "PLAT_SE_020",
       "title": "Production Readiness Certification",
       "priority": 381,
-      "status": "PLANNED",
+      "status": "READY",
       "depends_on": ["API_SE_019"],
       "mutation_cone": ["readiness", "operations", "docs", "evidence"],
       "core_outcome": "Produce machine-readable and human-readable readiness certification by critical invariant with latest exact evidence, owner, failures, recovery posture, release tier and remaining uncertainty. Unsupported finality must remain impossible to express as a pass.",
