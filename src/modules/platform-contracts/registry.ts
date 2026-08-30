@@ -389,6 +389,22 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
   {
     compatibility: "NEW_MAJOR_FOR_BREAKING",
     consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
+    contractId: "causal-navigation",
+    currentRuntime: true,
+    maturity: "LIBRARY_ONLY",
+    name: "Authorized causal request/event/receipt/trace/readback navigation",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: [],
+    sourcePaths: [
+      "src/modules/platform-causality/navigation.ts",
+      "src/modules/platform-contracts/receiptContract.ts",
+      "src/modules/platform-telemetry/telemetry.ts"
+    ],
+    version: "luzione-causal-navigation/v1",
+  },
+  {
+    compatibility: "NEW_MAJOR_FOR_BREAKING",
+    consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
     contractId: "test-taxonomy",
     currentRuntime: true,
     maturity: "IMPLEMENTED",

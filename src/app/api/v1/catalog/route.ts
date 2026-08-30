@@ -53,6 +53,10 @@ import {
   testOrchestrationLaw,
   testTaxonomySummary,
 } from "@/modules/platform-testing/taxonomy";
+import {
+  causalNavigationLaw,
+  PLATFORM_CAUSAL_NAVIGATION_VERSION,
+} from "@/modules/platform-causality/navigation";
 
 export async function GET(request: Request) {
   const identity = createRequestIdentity(request.headers);
@@ -134,6 +138,10 @@ export async function GET(request: Request) {
         contractVersion: PLATFORM_TEST_TAXONOMY_VERSION,
         orchestrationLaw: testOrchestrationLaw,
         summary: testTaxonomySummary(),
+      },
+      causalNavigation: {
+        contractVersion: PLATFORM_CAUSAL_NAVIGATION_VERSION,
+        law: causalNavigationLaw,
       },
       platformAreas,
       authority: {

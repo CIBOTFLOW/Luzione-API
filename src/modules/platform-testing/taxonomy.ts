@@ -19,6 +19,7 @@ export const testSuiteTaxonomy: readonly TestSuiteDescriptor[] = Object.freeze([
   { suitePath: "src/modules/autonomy/tests/autonomy-policy.test.ts", primaryClass: "SECURITY", secondaryClasses: ["UNIT", "CONTRACT"], evidenceScope: "authority/effect policy and parser boundary" },
   { suitePath: "src/modules/autonomy/tests/constitutional-rights.test.ts", primaryClass: "SECURITY", secondaryClasses: ["CONTRACT"], evidenceScope: "protected rights, identity and petition invariants" },
   { suitePath: "src/modules/catalog-projection/tests/p113-catalog-projection.test.ts", primaryClass: "INTEGRATION", secondaryClasses: ["RELIABILITY", "CONTRACT"], evidenceScope: "P113 service/database/projection contract" },
+  { suitePath: "src/modules/platform-causality/tests/navigation.test.ts", primaryClass: "CONTRACT", secondaryClasses: ["SECURITY"], evidenceScope: "tenant-scoped causal evidence navigation" },
   { suitePath: "src/modules/platform-contracts/tests/execution-contracts.test.ts", primaryClass: "CONTRACT", secondaryClasses: ["SECURITY", "RELIABILITY"], evidenceScope: "request/failure/state contracts" },
   { suitePath: "src/modules/platform-contracts/tests/receipt-contract.test.ts", primaryClass: "CONTRACT", secondaryClasses: ["RELIABILITY"], evidenceScope: "receipt lineage and evidence separation" },
   { suitePath: "src/modules/platform-contracts/tests/registry.test.ts", primaryClass: "CONTRACT", secondaryClasses: [], evidenceScope: "contract/source-of-truth registry compatibility" },
