@@ -1,0 +1,210 @@
+{
+  "schemaVersion": "1.0",
+  "projectId": "API_SE_020",
+  "contractVersion": "luzione-production-readiness-certification/v1",
+  "input": {
+    "candidateSha": "a0869e6c0364cb97627e7ac69ec0073a9958f6a2",
+    "evaluatedAt": "2026-08-30T01:30:00.000Z",
+    "invariants": [
+      {
+        "assertionStatus": "PASS",
+        "blocking": true,
+        "evidenceCandidateSha": "a0869e6c0364cb97627e7ac69ec0073a9958f6a2",
+        "evidenceRef": "commit:a0869e6c0364cb97627e7ac69ec0073a9958f6a2:148-tests-and-build",
+        "evidenceTier": "LOCAL_PROVEN",
+        "invariantId": "identity-tenant-authority-effects",
+        "latestObservedAt": "2026-08-30T01:25:00.000Z",
+        "openFailureRefs": [],
+        "owner": "Luzione API platform and security owner",
+        "recoveryObjectiveRef": "docs/runbooks/API_READINESS.md",
+        "recoveryPosture": "DEFINED_ONLY",
+        "remainingUncertainty": [
+          "Deployed workload identity, tenant isolation and effect denial have not been observed for this candidate."
+        ],
+        "sourceEnvironment": "local",
+        "validForMs": 86400000
+      },
+      {
+        "assertionStatus": "UNKNOWN",
+        "blocking": true,
+        "evidenceCandidateSha": "a0869e6c0364cb97627e7ac69ec0073a9958f6a2",
+        "evidenceRef": "engineering/execution/LUZIONE_API_TOPOLOGY_INVENTORY_V1.json",
+        "evidenceTier": "LOCAL_PROVEN",
+        "invariantId": "canonical-truth-and-mutation-ownership",
+        "latestObservedAt": "2026-08-30T01:25:00.000Z",
+        "openFailureRefs": [
+          "API_SE_001_DEPENDENCY_AUDIT_20260829"
+        ],
+        "owner": "Luzione API platform owner with canonical business data owners",
+        "recoveryObjectiveRef": "docs/platform-engineering/SOURCE_OF_TRUTH_AND_CONSISTENCY_V1.md",
+        "recoveryPosture": "DEFINED_ONLY",
+        "remainingUncertainty": [
+          "Most business mutation owners remain unresolved and draft PR #31 is not current runtime truth."
+        ],
+        "sourceEnvironment": "local",
+        "validForMs": 86400000
+      },
+      {
+        "assertionStatus": "UNKNOWN",
+        "blocking": true,
+        "evidenceCandidateSha": "a0869e6c0364cb97627e7ac69ec0073a9958f6a2",
+        "evidenceRef": "src/modules/platform-contracts/tests/receipt-contract.test.ts",
+        "evidenceTier": "LOCAL_PROVEN",
+        "invariantId": "durable-command-event-receipt-readback",
+        "latestObservedAt": "2026-08-30T01:25:00.000Z",
+        "openFailureRefs": [
+          "API_SE_001_DEPENDENCY_AUDIT_20260829"
+        ],
+        "owner": "Luzione API deterministic runtime owner",
+        "recoveryObjectiveRef": "docs/platform-engineering/COMMAND_EVENT_RECEIPT_CONTRACTS_V1.md",
+        "recoveryPosture": "DEFINED_ONLY",
+        "remainingUncertainty": [
+          "Receipt, command and continuation contracts are not backed by a current durable universal runtime path."
+        ],
+        "sourceEnvironment": "local",
+        "validForMs": 86400000
+      },
+      {
+        "assertionStatus": "PASS",
+        "blocking": true,
+        "evidenceCandidateSha": "a0869e6c0364cb97627e7ac69ec0073a9958f6a2",
+        "evidenceRef": "src/modules/platform-slo/tests/registry.test.ts",
+        "evidenceTier": "LOCAL_PROVEN",
+        "invariantId": "telemetry-sli-slo-error-budget",
+        "latestObservedAt": "2026-08-30T01:25:00.000Z",
+        "openFailureRefs": [],
+        "owner": "Luzione API reliability owner",
+        "recoveryObjectiveRef": "docs/runbooks/API_READINESS.md",
+        "recoveryPosture": "DEFINED_ONLY",
+        "remainingUncertainty": [
+          "SLO targets are provisional; no rolling production windows, exporters, alerts or dashboards were observed."
+        ],
+        "sourceEnvironment": "local",
+        "validForMs": 86400000
+      },
+      {
+        "assertionStatus": "PASS",
+        "blocking": true,
+        "evidenceCandidateSha": "9ca81e4cbd06ce559aa19b9e9ef208e151295b63",
+        "evidenceRef": "engineering/execution/recovery/API_SE_014_DISPOSABLE_RESTORE_20260829.json",
+        "evidenceTier": "LOCAL_PROVEN",
+        "invariantId": "backup-restore-and-recovery",
+        "latestObservedAt": "2026-08-30T00:10:00.000Z",
+        "openFailureRefs": [],
+        "owner": "Luzione database and recovery owner",
+        "recoveryObjectiveRef": "docs/runbooks/DATABASE_AND_RLS.md",
+        "recoveryPosture": "LOCAL_EXERCISED",
+        "remainingUncertainty": [
+          "Managed backup, PITR and production restore objectives remain unobserved."
+        ],
+        "sourceEnvironment": "local",
+        "validForMs": 86400000
+      },
+      {
+        "assertionStatus": "PASS",
+        "blocking": true,
+        "evidenceCandidateSha": "c5c0dd52b533807df5545c64ae9602ff8676d507",
+        "evidenceRef": "engineering/execution/performance/API_SE_013_LOCAL_HTTP_20260829.json",
+        "evidenceTier": "LOCAL_PROVEN",
+        "invariantId": "performance-and-capacity",
+        "latestObservedAt": "2026-08-30T00:30:00.000Z",
+        "openFailureRefs": [],
+        "owner": "Luzione API performance owner",
+        "recoveryObjectiveRef": null,
+        "recoveryPosture": "NOT_APPLICABLE",
+        "remainingUncertainty": [
+          "Only 1,600 read-only localhost liveness requests were measured; capacity, database, provider, mutation, queue and real soak behavior are unknown."
+        ],
+        "sourceEnvironment": "local",
+        "validForMs": 86400000
+      },
+      {
+        "assertionStatus": "UNKNOWN",
+        "blocking": true,
+        "evidenceCandidateSha": "a0869e6c0364cb97627e7ac69ec0073a9958f6a2",
+        "evidenceRef": "src/modules/platform-release/tests/release-contract.test.ts",
+        "evidenceTier": "LOCAL_PROVEN",
+        "invariantId": "release-provenance-canary-rollback",
+        "latestObservedAt": "2026-08-30T01:25:00.000Z",
+        "openFailureRefs": [],
+        "owner": "Luzione API release owner",
+        "recoveryObjectiveRef": "docs/platform-engineering/DEPLOYMENT_PROVENANCE_CANARY_ROLLBACK_V1.md",
+        "recoveryPosture": "DEFINED_ONLY",
+        "remainingUncertainty": [
+          "No exact-candidate preview deployment, canary, rollback rehearsal, promotion or post-promotion readback exists."
+        ],
+        "sourceEnvironment": "local",
+        "validForMs": 86400000
+      },
+      {
+        "assertionStatus": "PASS",
+        "blocking": true,
+        "evidenceCandidateSha": "a0869e6c0364cb97627e7ac69ec0073a9958f6a2",
+        "evidenceRef": "src/modules/platform-security-controls/tests/registry.test.ts",
+        "evidenceTier": "LOCAL_PROVEN",
+        "invariantId": "zero-tolerance-security-controls",
+        "latestObservedAt": "2026-08-30T01:25:00.000Z",
+        "openFailureRefs": [],
+        "owner": "Luzione API security owner",
+        "recoveryObjectiveRef": "docs/runbooks/DATABASE_AND_RLS.md",
+        "recoveryPosture": "DEFINED_ONLY",
+        "remainingUncertainty": [
+          "Deployed denial probes, exact-release RLS posture and production secret/telemetry controls remain unobserved."
+        ],
+        "sourceEnvironment": "local",
+        "validForMs": 86400000
+      },
+      {
+        "assertionStatus": "FAIL",
+        "blocking": true,
+        "evidenceCandidateSha": "a8fa418e7e83d2857abe45e3aaa354b97d7e321a",
+        "evidenceRef": "engineering/execution/journeys/API_SE_019_CERTIFICATION_20260829.json",
+        "evidenceTier": "LOCAL_PROVEN",
+        "invariantId": "independent-cross-system-journeys",
+        "latestObservedAt": "2026-08-30T01:12:00.000Z",
+        "openFailureRefs": [
+          "API_SE_019_INDEPENDENT_CONSUMER_EVIDENCE_MISSING_20260829"
+        ],
+        "owner": "Luzione API certification owner with Luzione UI and Sultan OS evidence owners",
+        "recoveryObjectiveRef": "docs/platform-engineering/CROSS_SYSTEM_JOURNEY_CERTIFICATION_V1.md",
+        "recoveryPosture": "DEFINED_ONLY",
+        "remainingUncertainty": [
+          "No UI- or Sultan-authored exact-version journey evidence exists and no representative journey is certified."
+        ],
+        "sourceEnvironment": "local",
+        "validForMs": 86400000
+      },
+      {
+        "assertionStatus": "UNKNOWN",
+        "blocking": true,
+        "evidenceCandidateSha": null,
+        "evidenceRef": null,
+        "evidenceTier": "NOT_ASSESSED",
+        "invariantId": "production-deployment-and-authoritative-observation",
+        "latestObservedAt": null,
+        "openFailureRefs": [],
+        "owner": "Luzione production release owner",
+        "recoveryObjectiveRef": "docs/platform-engineering/DEPLOYMENT_PROVENANCE_CANARY_ROLLBACK_V1.md",
+        "recoveryPosture": "DEFINED_ONLY",
+        "remainingUncertainty": [
+          "No production deployment or authoritative post-deployment observation was performed."
+        ],
+        "sourceEnvironment": "unknown",
+        "validForMs": 300000
+      }
+    ]
+  },
+  "expectedCertificationStatus": "NOT_READY",
+  "expectedFinality": "NOT_FINAL",
+  "blockingInvariantCount": 10,
+  "productionReadyInvariantCount": 0,
+  "strongestClaim": "The exact API candidate passes local contract, compliance, type, lint, test and build gates. It is not production-ready and no production finality is claimed.",
+  "riskRegister": [
+    "canonical business mutation ownership and current durable receipt runtime are unresolved",
+    "no exact-candidate preview canary, rollback rehearsal or production observation exists",
+    "managed backup/PITR and production recovery remain unexercised",
+    "capacity and full business/provider workload behavior remain unmeasured",
+    "independent UI and Sultan journey evidence is absent",
+    "production SLO, security-control and authoritative-readback evidence is absent"
+  ]
+}
