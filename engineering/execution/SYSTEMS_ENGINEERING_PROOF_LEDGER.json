@@ -487,6 +487,34 @@
       "deferred_external_infra": ["provider simulator", "representative disposable database", "durable mutation/queue runtime", "preview/production load environment"],
       "remaining_uncertainty": ["The liveness path does not exercise database, provider or business truth.", "The local machine and short request-count campaign do not establish a capacity ceiling or production SLO."],
       "next_proof_needed": ["Representative dependency and journey workloads", "multi-minute/hour soak", "saturation and recovery evidence", "independent UI/Sultan performance receipts"]
+    },
+    {
+      "proof_id": "API_SE_012_LOCAL_PROOF_20260829",
+      "project_id": "API_SE_012",
+      "recorded_at": "2026-08-30T00:31:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "e8da43237f7838506ad239635da77a2448d5690b",
+      "engineering_state": "CONTRACT_STABLE",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "One release-evidence contract now binds exact candidate/deployment identity, contract and migration versions, verification/canary/health evidence, rollback capability, deferred evidence, promotion decision and production observation without allowing deployment acknowledgement to imply completion.",
+      "exercised_boundaries": [
+        "Local build and test evidence supports at most RELEASE_CANDIDATE.",
+        "SHA mismatch and deployment-only fixtures fail closed.",
+        "Production promotion requires preview canary, preview health and preview-rehearsed rollback.",
+        "Production finality cannot be expressed without a passing production observation.",
+        "Security failures and blocking deferred evidence block the release gate.",
+        "Catalog and contract-registry publication are additive.",
+        "Compliance, typecheck, clean lint, 130/130 tests and exact-SHA production build passed."
+      ],
+      "untested_boundaries": ["deployment creation", "preview canary", "rollback rehearsal", "promotion", "production observation", "consumer adoption"],
+      "evidence_refs": ["src/modules/platform-release/releaseContract.ts", "src/modules/platform-release/tests/release-contract.test.ts", "docs/platform-engineering/DEPLOYMENT_PROVENANCE_CANARY_ROLLBACK_V1.md", "commit:e8da43237f7838506ad239635da77a2448d5690b"],
+      "failure_refs": ["API_SE_001_DEPENDENCY_AUDIT_20260829"],
+      "cross_repo_handoffs": ["API_SE_012_TO_LUZIONE_UI_V1", "API_SE_012_TO_SULTAN_OS_V1"],
+      "deferred_external_infra": ["preview deployment and canary", "rollback rehearsal environment", "production deployment/observation"],
+      "remaining_uncertainty": ["The contract is locally proven but no release record has been produced by a deployment runtime.", "Draft PR #31 release machinery remains a non-current pending changeset requiring semantic convergence."],
+      "next_proof_needed": ["Exact preview deployment record", "Preview canary/health and rollback rehearsal", "Authorized promotion and production observation"]
     }
   ]
 }

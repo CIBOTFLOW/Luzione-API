@@ -175,12 +175,13 @@
       "platform_project": "PLAT_SE_012",
       "title": "Deployment Provenance, Canary and Rollback Contract",
       "priority": 389,
-      "status": "READY",
+      "status": "COMPLETE",
       "depends_on": ["API_SE_006", "API_SE_008", "API_SE_011"],
       "mutation_cone": ["release", "deploy", "health", "receipts", "tests"],
       "core_outcome": "Bind candidate SHA, deployment, contract/migration versions, verification, canary observations, rollback capability, promotion decision and production observation into an auditable release record.",
       "published_artifacts": ["release receipt", "canary contract", "rollback evidence contract"],
-      "irreversible_effects": []
+      "irreversible_effects": [],
+      "completion_evidence_ref": "API_SE_012_LOCAL_PROOF_20260829"
     },
     {
       "project_id": "API_SE_013",
@@ -226,7 +227,7 @@
       "platform_project": "PLAT_SE_016",
       "title": "API Engineering Portal and Contract Explorer",
       "priority": 385,
-      "status": "PLANNED",
+      "status": "READY",
       "depends_on": ["API_SE_009", "API_SE_010", "API_SE_011", "API_SE_012", "API_SE_015"],
       "mutation_cone": ["console", "ui", "api", "docs", "tests"],
       "core_outcome": "Turn api.luzione.com into an engineering control surface for services, contracts, errors, events, dependencies, SLOs, release/readiness evidence and safe bounded request exploration without exposing secrets or granting authority.",

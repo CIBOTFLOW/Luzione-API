@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_SE_012_TO_LUZIONE_UI_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "e8da43237f7838506ad239635da77a2448d5690b",
+  "producer_ref": "codex/api-se-001-topology-inventory",
+  "contract_name": "deployment-provenance-canary-rollback",
+  "contract_version": "luzione-release-evidence/v1",
+  "consumer_repository": "CIBOTFLOW/Luzione-UI",
+  "required_consumer_behavior": [
+    "Bind UI deployment, build/test, browser canary, health and rollback evidence to the same exact candidate SHA and environment.",
+    "Do not present deployment-platform success as business completion or production finality.",
+    "Block production promotion on missing preview canary/health, unrehearsed rollback, security failure or blocking deferred evidence.",
+    "Return production observation only from a deployed exact-SHA UI journey and authoritative API/provider readback."
+  ],
+  "acceptance_proof_needed": ["exact UI candidate SHA and deployment ID", "preview browser canary", "rollback rehearsal", "post-promotion production journey/readback"],
+  "producer_evidence_refs": ["src/modules/platform-release/tests/release-contract.test.ts", "docs/platform-engineering/DEPLOYMENT_PROVENANCE_CANARY_ROLLBACK_V1.md"],
+  "known_limitations": ["No deployment was performed.", "No UI repository was inspected.", "No preview or production evidence exists."]
+}
