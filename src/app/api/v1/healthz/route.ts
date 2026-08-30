@@ -19,7 +19,7 @@ export async function GET(request: Request) {
       securityReadbackError = true;
       securityReadbackErrorCode = logRlsReadbackFailure({
         error,
-        requestId: identity.requestId,
+        requestIdentity: identity,
         route: "/api/v1/healthz",
       }).failureCode;
     }

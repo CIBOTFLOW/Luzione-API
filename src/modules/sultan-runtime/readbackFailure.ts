@@ -1,3 +1,6 @@
+import type { RequestIdentityEnvelope } from "@/modules/platform-contracts/requestIdentity";
+import { emitTelemetryLog } from "@/modules/platform-telemetry/telemetry";
+
 export const SULTAN_RUNTIME_READBACK_FAILURE_CODES = Object.freeze({
   authenticationFailed: "SULTAN_RUNTIME_DATABASE_AUTHENTICATION_FAILED",
   connectionExhausted: "SULTAN_RUNTIME_DATABASE_CONNECTION_EXHAUSTED",
@@ -34,16 +37,20 @@ export function classifySultanRuntimeReadbackError(error: unknown) {
 
 export function logSultanRuntimeReadbackFailure(input: {
   error: unknown;
-  requestId: string;
+  requestIdentity: RequestIdentityEnvelope;
   route: string;
 }) {
   const classified = classifySultanRuntimeReadbackError(input.error);
-  console.error(JSON.stringify({
-    event: "sultan_runtime_readback_failed",
-    failureCode: classified.failureCode,
-    providerCode: classified.providerCode,
-    requestId: input.requestId,
-    route: input.route,
-  }));
+  emitTelemetryLog({
+    attributes: {
+      "failure.code": classified.failureCode,
+      "http.route": input.route,
+      "provider.code": classified.providerCode,
+    },
+    body: "Sultan aggregate readback failed safely.",
+    eventName: "sultan.runtime.readback.failed",
+    identity: input.requestIdentity,
+    severity: "ERROR",
+  });
   return classified;
 }

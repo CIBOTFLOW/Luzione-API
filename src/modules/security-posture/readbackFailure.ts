@@ -1,3 +1,6 @@
+import type { RequestIdentityEnvelope } from "@/modules/platform-contracts/requestIdentity";
+import { emitTelemetryLog } from "@/modules/platform-telemetry/telemetry";
+
 export const RLS_READBACK_FAILURE_CODES = Object.freeze({
   authenticationFailed: "DATABASE_AUTHENTICATION_FAILED",
   authorizationFailed: "DATABASE_AUTHORIZATION_FAILED",
@@ -63,16 +66,20 @@ export function classifyRlsReadbackError(error: unknown): {
 
 export function logRlsReadbackFailure(input: {
   error: unknown;
-  requestId: string;
+  requestIdentity: RequestIdentityEnvelope;
   route: string;
 }) {
   const failure = classifyRlsReadbackError(input.error);
-  console.error(JSON.stringify({
-    level: "error",
-    event: "rls_readback_failed",
-    route: input.route,
-    requestId: input.requestId,
-    ...failure,
-  }));
+  emitTelemetryLog({
+    attributes: {
+      "failure.code": failure.failureCode,
+      "http.route": input.route,
+      "provider.code": failure.providerCode,
+    },
+    body: "RLS catalog readback failed safely.",
+    eventName: "database.rls.readback.failed",
+    identity: input.requestIdentity,
+    severity: "ERROR",
+  });
   return failure;
 }

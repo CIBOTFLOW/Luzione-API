@@ -17,6 +17,15 @@ import {
   runbookRegistry,
   serviceCatalog,
 } from "@/modules/platform-service-catalog/registry";
+import {
+  PLATFORM_RECOVERY_CONTRACT_VERSION,
+  recoveryRegistry,
+} from "@/modules/platform-recovery/registry";
+import {
+  PLATFORM_TELEMETRY_CONTRACT_VERSION,
+  telemetryAttributeLaw,
+  telemetryMetricRegistry,
+} from "@/modules/platform-telemetry/telemetry";
 
 export async function GET(request: Request) {
   const identity = createRequestIdentity(request.headers);
@@ -61,6 +70,15 @@ export async function GET(request: Request) {
         registryVersion: PLATFORM_SERVICE_CATALOG_VERSION,
         runbooks: runbookRegistry,
         services: serviceCatalog,
+      },
+      observability: {
+        attributeLaw: telemetryAttributeLaw,
+        contractVersion: PLATFORM_TELEMETRY_CONTRACT_VERSION,
+        metrics: telemetryMetricRegistry,
+      },
+      recoveryRegistry: {
+        contractVersion: PLATFORM_RECOVERY_CONTRACT_VERSION,
+        scopes: recoveryRegistry,
       },
       platformAreas,
       authority: {

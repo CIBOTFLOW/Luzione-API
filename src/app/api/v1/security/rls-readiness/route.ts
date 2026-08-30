@@ -51,7 +51,7 @@ export async function GET(request: Request) {
   } catch (error) {
     const failure = logRlsReadbackFailure({
       error,
-      requestId: identity.requestId,
+      requestIdentity: identity,
       route: "/api/v1/security/rls-readiness",
     });
     return apiResponse(

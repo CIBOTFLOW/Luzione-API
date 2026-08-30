@@ -15,7 +15,6 @@ export async function POST(request: Request) {
   const startedAt = performance.now();
   let identity = createRequestIdentity(request.headers);
   let status = 200;
-  let tenantId: string | undefined;
   try {
     const actor = await requireServiceActor(request.headers);
     identity = bindAuthenticatedRequestIdentity(identity, actor, {
@@ -23,7 +22,6 @@ export async function POST(request: Request) {
       capability: "governance.evaluate",
       purpose: "evaluate-tenant-policy-and-constitution",
     });
-    tenantId = actor.tenantId;
     const rawBody = await request.text();
     if (Buffer.byteLength(rawBody, "utf8") > MAX_REQUEST_BYTES) {
       throw new AutonomyRequestError("INVALID_REQUEST", "Request body is too large.");
@@ -67,7 +65,7 @@ export async function POST(request: Request) {
       policy: { checksum: policy.checksum, code: policy.code, version: policy.version },
       externalEffectsAuthorized: false,
     };
-    logRequestCompletion({ requestId: identity.requestId, route: "/api/v1/governance/evaluate", status, startedAt, tenantId });
+    logRequestCompletion({ method: "POST", requestIdentity: identity, route: "/api/v1/governance/evaluate", status, startedAt });
     return apiResponse(body, { requestIdentity: identity, status, startedAt });
   } catch (error) {
     const message = error instanceof Error ? error.message : "";
@@ -76,7 +74,7 @@ export async function POST(request: Request) {
       : /authentication|tenant|actor/i.test(message)
         ? 401
         : 503;
-    logRequestCompletion({ requestId: identity.requestId, route: "/api/v1/governance/evaluate", status, startedAt, tenantId });
+    logRequestCompletion({ method: "POST", requestIdentity: identity, route: "/api/v1/governance/evaluate", status, startedAt });
     return apiResponse({
       ok: false,
       code: error instanceof AutonomyRequestError ? error.code : "POLICY_EVALUATION_FAILED",

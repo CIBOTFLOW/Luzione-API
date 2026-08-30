@@ -6,6 +6,10 @@ import {
   traceparent,
   type RequestIdentityEnvelope,
 } from "@/modules/platform-contracts/requestIdentity";
+import {
+  createHttpMetricObservations,
+  emitTelemetryLog,
+} from "@/modules/platform-telemetry/telemetry";
 
 export function requestId(headers: Headers) {
   return createRequestIdentity(headers).requestId;
@@ -62,22 +66,30 @@ export function apiResponse(
 
 
 export function logRequestCompletion(input: {
-  requestId: string;
+  method: string;
+  requestIdentity: RequestIdentityEnvelope;
   route: string;
   status: number;
   startedAt: number;
-  tenantId?: string;
 }) {
   const durationMs = Math.max(0, Math.round((performance.now() - input.startedAt) * 10) / 10);
-  console.info(JSON.stringify({
-    event: "http_request_completed",
-    level: "info",
-    requestId: input.requestId,
-    route: input.route,
-    status: input.status,
-    durationMs,
-    tenantId: input.tenantId ?? null,
-    observedAt: new Date().toISOString(),
-  }));
+  emitTelemetryLog({
+    attributes: {
+      "http.request.method": input.method,
+      "http.response.status_code": input.status,
+      "http.route": input.route,
+      duration_ms: durationMs,
+      metric_observations: createHttpMetricObservations({
+        durationMs,
+        method: input.method,
+        route: input.route,
+        status: input.status,
+      }),
+    },
+    body: "HTTP request completed.",
+    eventName: "http.server.request.completed",
+    identity: input.requestIdentity,
+    severity: input.status >= 500 ? "ERROR" : "INFO",
+  });
   return durationMs;
 }

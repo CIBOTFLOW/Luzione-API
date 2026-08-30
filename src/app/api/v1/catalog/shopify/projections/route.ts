@@ -12,6 +12,7 @@ import {
   listP113CatalogProjections,
 } from "@/modules/catalog-projection/store";
 import { bindAuthenticatedRequestIdentity } from "@/modules/platform-contracts/requestIdentity";
+import { emitTelemetryLog } from "@/modules/platform-telemetry/telemetry";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -173,13 +174,19 @@ export async function POST(request: Request) {
         { requestIdentity: identity, status: 409 },
       );
     }
-    console.error(JSON.stringify({
-      event: "p113_catalog_projection_failed",
-      requestId: identity.requestId,
-      providerCode: error && typeof error === "object" && "code" in error
-        ? String((error as { code: unknown }).code).slice(0, 64)
-        : null,
-    }));
+    emitTelemetryLog({
+      attributes: {
+        "failure.code": "P113_CATALOG_PROJECTION_FAILED",
+        "http.route": "/api/v1/catalog/shopify/projections",
+        "provider.code": error && typeof error === "object" && "code" in error
+          ? String((error as { code: unknown }).code).slice(0, 64)
+          : null,
+      },
+      body: "P113 catalog projection failed safely.",
+      eventName: "catalog.p113.projection.failed",
+      identity,
+      severity: "ERROR",
+    });
     return apiResponse(
       {
         ok: false,

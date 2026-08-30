@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_SE_008_014_TO_SULTAN_OS_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": null,
+  "producer_ref": "codex/api-se-001-topology-inventory",
+  "contract_name": "telemetry-and-recovery-semantics",
+  "contract_version": "luzione-telemetry/v1 + luzione-recovery-registry/v1",
+  "consumer_repository": "CIBOTFLOW/Sultan-OS",
+  "required_consumer_behavior": [
+    "Propagate W3C trace context across model/tool/provider calls and use shared stable failure/retry/reconciliation dimensions.",
+    "Keep prompts, completions, memory content, credentials, tenant/customer IDs and unbounded model/tool IDs out of metric dimensions and shared logs.",
+    "Publish replay/checkpoint/provider recovery objectives separately from measured evidence; a model claim or local API restore is not Sultan recovery proof.",
+    "Return exact-version AI-runtime telemetry and recovery evidence through a structured handoff."
+  ],
+  "acceptance_proof_needed": ["exact Sultan SHA", "one trace through model/tool/readback", "known-bad prompt/secret redaction", "checkpoint/replay recovery drill with measured evidence"],
+  "producer_evidence_refs": ["src/modules/platform-telemetry/tests/telemetry.test.ts", "src/modules/platform-recovery/tests/registry.test.ts", "engineering/execution/recovery/API_SE_014_DISPOSABLE_RESTORE_20260829.json"],
+  "known_limitations": ["No telemetry collector or model/tool metric exporter is configured.", "Managed backups and production restore are unverified.", "The API producer has not inspected Sultan OS."]
+}

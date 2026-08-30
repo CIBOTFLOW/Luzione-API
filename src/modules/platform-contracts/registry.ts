@@ -296,6 +296,38 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
   {
     compatibility: "NEW_MAJOR_FOR_BREAKING",
     consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
+    contractId: "telemetry-semantic-conventions",
+    currentRuntime: true,
+    maturity: "IMPLEMENTED",
+    name: "OpenTelemetry-compatible trace, structured-log and metric semantics",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: [],
+    sourcePaths: [
+      "src/modules/platform-telemetry/telemetry.ts",
+      "instrumentation.ts",
+      "src/lib/api/http.ts"
+    ],
+    version: "luzione-telemetry/v1",
+  },
+  {
+    compatibility: "NEW_MAJOR_FOR_BREAKING",
+    consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
+    contractId: "recovery-registry",
+    currentRuntime: true,
+    maturity: "IMPLEMENTED",
+    name: "Recovery ownership, RPO/RTO target and evidence registry",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: [],
+    sourcePaths: [
+      "src/modules/platform-recovery/registry.ts",
+      "scripts/run-disposable-postgres-restore-drill.sh",
+      "engineering/execution/recovery/API_SE_014_DISPOSABLE_RESTORE_20260829.json"
+    ],
+    version: "luzione-recovery-registry/v1",
+  },
+  {
+    compatibility: "NEW_MAJOR_FOR_BREAKING",
+    consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
     contractId: "release-evidence",
     currentRuntime: false,
     maturity: "SPECIFIED_ONLY",

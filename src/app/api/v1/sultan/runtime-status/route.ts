@@ -20,7 +20,7 @@ export async function GET(request: Request) {
   } catch (error) {
     const failure = logSultanRuntimeReadbackFailure({
       error,
-      requestId: identity.requestId,
+      requestIdentity: identity,
       route: "/api/v1/sultan/runtime-status",
     });
     return apiResponse(

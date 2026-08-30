@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_SE_008_014_TO_LUZIONE_UI_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": null,
+  "producer_ref": "codex/api-se-001-topology-inventory",
+  "contract_name": "telemetry-and-recovery-semantics",
+  "contract_version": "luzione-telemetry/v1 + luzione-recovery-registry/v1",
+  "consumer_repository": "CIBOTFLOW/Luzione-UI",
+  "required_consumer_behavior": [
+    "Propagate W3C trace context and use API-owned event/metric names without placing tenant, customer, request, trace or correlation IDs in metric dimensions.",
+    "Redact credentials and user/business content before telemetry export.",
+    "Render recovery targets separately from measured evidence and never present the local 10-second drill as production RTO proof.",
+    "Return UI journey telemetry and client recovery behavior through an exact-version handoff."
+  ],
+  "acceptance_proof_needed": ["exact UI SHA", "trace propagation across one UI-to-API request", "known-bad secret/content redaction", "recovery-target versus observed-evidence rendering"],
+  "producer_evidence_refs": ["src/modules/platform-telemetry/tests/telemetry.test.ts", "src/modules/platform-recovery/tests/registry.test.ts", "engineering/execution/recovery/API_SE_014_DISPOSABLE_RESTORE_20260829.json"],
+  "known_limitations": ["No telemetry collector or dashboard is configured.", "Managed backups and production restore are unverified.", "The API producer has not inspected the UI repository."]
+}
