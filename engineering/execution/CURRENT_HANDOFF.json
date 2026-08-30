@@ -3,9 +3,9 @@
   "queue_id": "LUZIONE_API_SYSTEMS_ENGINEERING_V1",
   "repository": "CIBOTFLOW/Luzione-API",
   "program_state": "IMPLEMENTATION_IN_PROGRESS",
-  "current_project": "API_SE_011_API_SE_013_CELL",
-  "next_projects": ["API_SE_011", "API_SE_013"],
-  "next_action": "Implement the production-truth/readiness evidence model and reproducible performance workload program, preserving exact evidence maturity and refusing to promote local measurements into production claims.",
+  "current_project": "API_SE_012_CELL",
+  "next_projects": ["API_SE_012"],
+  "next_action": "Implement deployment provenance, canary, rollback and promotion evidence contracts bound to exact candidate identity, without deploying or claiming preview/production observation.",
   "canonical_program": "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md",
   "failure_ledger": "engineering/execution/SYSTEMS_ENGINEERING_FAILURE_LEDGER.json",
   "proof_ledger": "engineering/execution/SYSTEMS_ENGINEERING_PROOF_LEDGER.json",
@@ -26,7 +26,9 @@
     "API_SE_008 and API_SE_014 are locally proven at 9ca81e4cbd06ce559aa19b9e9ef208e151295b63; telemetry export/production observation and managed backup/PITR/production recovery remain unproven.",
     "The local recovery drill measured 10 seconds for 50,032 rows in Docker; it is not production RTO or RPO evidence.",
     "API_SE_010 and API_SE_015 are locally proven at fdb6f452bc4e117aeaa697265af70d3518ff8daf; rolling production SLI windows, alerts/dashboards, deployed denial probes and exact-release security evidence remain unproven.",
-    "All current SLO targets are provisional and the business time-to-actionable-order SLI remains CONTRACT_ONLY pending a canonical mutation owner."
+    "All current SLO targets are provisional and the business time-to-actionable-order SLI remains CONTRACT_ONLY pending a canonical mutation owner.",
+    "API_SE_011 and API_SE_013 are locally proven at c5c0dd52b533807df5545c64ae9602ff8676d507; no preview or production readiness observation is claimed.",
+    "The performance receipt covers only 1,600 read-only localhost liveness requests; database/provider/mutation/queue/recovery/full-journey campaigns and real soak duration remain unexercised."
   ],
   "stop_code": null
 }

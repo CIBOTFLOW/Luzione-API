@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_SE_011_013_TO_SULTAN_OS_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "c5c0dd52b533807df5545c64ae9602ff8676d507",
+  "producer_ref": "codex/api-se-001-topology-inventory",
+  "contract_name": "readiness-evidence-and-performance-program",
+  "contract_version": "luzione-readiness-evidence/v1 + luzione-performance-program/v1",
+  "consumer_repository": "CIBOTFLOW/Sultan-OS",
+  "required_consumer_behavior": [
+    "Publish model, agent, tool and provider readiness as freshness-aware evidence with source, owner, threshold, environment, exact SHA and evidence tier.",
+    "Never treat configuration, model prose or API local proof as Sultan production observation.",
+    "Return reproducible concurrency, provider-slowdown, queue/backlog, cost, model/tool latency and recovery receipts through an exact-version handoff.",
+    "Keep sensitive prompt/tool evidence protected and expose only bounded aggregate readiness/performance metadata."
+  ],
+  "acceptance_proof_needed": ["exact Sultan SHA", "stale/configuration promotion negatives", "model/tool/provider load and slowdown receipts", "queue/backlog and recovery evidence"],
+  "producer_evidence_refs": ["src/modules/platform-readiness/tests/evidence.test.ts", "src/modules/platform-performance/tests/program.test.ts", "engineering/execution/performance/API_SE_013_LOCAL_HTTP_20260829.json"],
+  "known_limitations": ["No Sultan repository was inspected.", "No model/tool/provider runtime was measured.", "No preview or production evidence exists."]
+}

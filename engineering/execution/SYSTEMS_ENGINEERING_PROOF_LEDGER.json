@@ -432,6 +432,61 @@
       "deferred_external_infra": ["exact-release production denial probes", "protected production evidence storage", "preview/production observations"],
       "remaining_uncertainty": ["Local implementation evidence is not deployed-control evidence.", "No production candidate SHA/environment has been evaluated."],
       "next_proof_needed": ["API_SE_011 maturity-aware readiness aggregation", "API_SE_012 exact-release evidence binding", "Independent consumer evidence handling proof"]
+    },
+    {
+      "proof_id": "API_SE_011_LOCAL_PROOF_20260829",
+      "project_id": "API_SE_011",
+      "recorded_at": "2026-08-30T00:27:20Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "c5c0dd52b533807df5545c64ae9602ff8676d507",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "Readiness is now derivable from explicit source, threshold, actual value, owner, freshness, impact, environment, exact SHA and evidence tier while configuration and stale observations fail to masquerade as production truth.",
+      "exercised_boundaries": [
+        "Fresh local blocking evidence derives READY without deriving production release readiness.",
+        "Stale, missing and failed blocking evidence derives NOT_READY.",
+        "Configuration promotion, unbound production claims and environment mismatches violate the contract.",
+        "Healthz publishes bounded configuration and canonical Postgres RLS evidence while preserving security-readiness semantics and direct environment-access restrictions.",
+        "Catalog and contract registry publication are additive.",
+        "Compliance, typecheck, clean lint, 126/126 tests and the exact-SHA production build passed."
+      ],
+      "untested_boundaries": ["preview observation", "production observation", "exact-release canary", "consumer rendering", "production aggregation storage"],
+      "evidence_refs": ["src/modules/platform-readiness/evidence.ts", "src/modules/platform-readiness/tests/evidence.test.ts", "src/app/api/v1/healthz/route.ts", "docs/platform-engineering/PRODUCTION_TRUTH_AND_READINESS_EVIDENCE_V1.md", "commit:c5c0dd52b533807df5545c64ae9602ff8676d507"],
+      "failure_refs": ["API_SE_001_DEPENDENCY_AUDIT_20260829", "API_SE_011_HEALTH_ENV_BOUNDARY_20260829"],
+      "cross_repo_handoffs": ["API_SE_011_013_TO_LUZIONE_UI_V1", "API_SE_011_013_TO_SULTAN_OS_V1"],
+      "deferred_external_infra": ["preview and production deployment observations", "evidence retention backend", "consumer adoption"],
+      "remaining_uncertainty": ["No deployed environment has emitted this readiness contract.", "Configuration presence remains intentionally weaker than functional observation."],
+      "next_proof_needed": ["API_SE_012 exact deployment/canary/rollback binding", "Independent consumer evidence-tier tests", "Fresh production observations"]
+    },
+    {
+      "proof_id": "API_SE_013_LOCAL_PROOF_20260829",
+      "project_id": "API_SE_013",
+      "recorded_at": "2026-08-30T00:27:20Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "c5c0dd52b533807df5545c64ae9602ff8676d507",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "SANDBOX_ONLY",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "A localhost-only read-only harness and eight-campaign registry now produce exact-SHA percentile/error/throughput evidence; three bounded liveness campaigns passed provisional local thresholds without supporting a capacity or production claim.",
+      "exercised_boundaries": [
+        "Baseline processed 100 requests at concurrency 1 with zero errors and 3.263 ms p95.",
+        "Burst processed 500 requests at concurrency 20 with zero errors and 29.481 ms p95.",
+        "Short sustained load processed 1,000 requests at concurrency 5 with zero errors and 13.623 ms p95.",
+        "Remote target execution was rejected before request.",
+        "Threshold breach now returns a failing process status and known-bad profiles/samples fail validation.",
+        "The final server process was terminated after measurement.",
+        "Compliance, typecheck, clean lint, 126/126 tests and exact-SHA production build passed."
+      ],
+      "untested_boundaries": ["real soak duration", "provider slowdown/rate limiting", "database-pool pressure", "mutation/idempotency concurrency", "queue backlog", "failure/recovery", "authenticated/business journeys", "preview/production load"],
+      "evidence_refs": ["src/modules/platform-performance/program.ts", "scripts/run-http-performance-profile.ts", "engineering/execution/performance/API_SE_013_LOCAL_HTTP_20260829.json", "docs/platform-engineering/PERFORMANCE_CAPACITY_LOAD_SOAK_V1.md", "commit:c5c0dd52b533807df5545c64ae9602ff8676d507"],
+      "failure_refs": ["API_SE_001_DEPENDENCY_AUDIT_20260829", "API_SE_013_TYPESCRIPT_NARROWING_20260829", "API_SE_013_CJS_TOP_LEVEL_AWAIT_20260829", "API_SE_013_LOCAL_SOCKET_SANDBOX_20260829", "API_SE_013_LOCAL_CONNECT_SANDBOX_20260829"],
+      "cross_repo_handoffs": ["API_SE_011_013_TO_LUZIONE_UI_V1", "API_SE_011_013_TO_SULTAN_OS_V1"],
+      "deferred_external_infra": ["provider simulator", "representative disposable database", "durable mutation/queue runtime", "preview/production load environment"],
+      "remaining_uncertainty": ["The liveness path does not exercise database, provider or business truth.", "The local machine and short request-count campaign do not establish a capacity ceiling or production SLO."],
+      "next_proof_needed": ["Representative dependency and journey workloads", "multi-minute/hour soak", "saturation and recovery evidence", "independent UI/Sultan performance receipts"]
     }
   ]
 }

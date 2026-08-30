@@ -162,19 +162,20 @@
       "platform_project": "PLAT_SE_011",
       "title": "Production Truth and Readiness Evidence Model",
       "priority": 390,
-      "status": "READY",
+      "status": "COMPLETE",
       "depends_on": ["API_SE_007", "API_SE_008", "API_SE_010"],
       "mutation_cone": ["health", "evidence", "operations", "api", "tests"],
       "core_outcome": "Make status derivable from observed evidence with explicit source, freshness, threshold, impact, owner and evidence tier. Preserve distinctions among configured, bounded, preview-proven and production-observed states.",
       "published_artifacts": ["readiness contract", "evidence aggregation", "consumer handoff"],
-      "irreversible_effects": []
+      "irreversible_effects": [],
+      "completion_evidence_ref": "API_SE_011_LOCAL_PROOF_20260829"
     },
     {
       "project_id": "API_SE_012",
       "platform_project": "PLAT_SE_012",
       "title": "Deployment Provenance, Canary and Rollback Contract",
       "priority": 389,
-      "status": "PLANNED",
+      "status": "READY",
       "depends_on": ["API_SE_006", "API_SE_008", "API_SE_011"],
       "mutation_cone": ["release", "deploy", "health", "receipts", "tests"],
       "core_outcome": "Bind candidate SHA, deployment, contract/migration versions, verification, canary observations, rollback capability, promotion decision and production observation into an auditable release record.",
@@ -186,12 +187,13 @@
       "platform_project": "PLAT_SE_013",
       "title": "Performance, Capacity, Load and Soak Program",
       "priority": 388,
-      "status": "READY",
+      "status": "COMPLETE",
       "depends_on": ["API_SE_008", "API_SE_010"],
       "mutation_cone": ["performance", "database", "http", "workflows", "tests"],
       "core_outcome": "Create reproducible baseline, burst, sustained-load, provider-slowdown, database-pool-pressure and recovery workloads with p50/p95/p99, errors, saturation and capacity claims bound to exact evidence.",
       "published_artifacts": ["workload profiles", "capacity envelope", "historical performance evidence"],
-      "irreversible_effects": []
+      "irreversible_effects": [],
+      "completion_evidence_ref": "API_SE_013_LOCAL_PROOF_20260829"
     },
     {
       "project_id": "API_SE_014",
