@@ -88,6 +88,12 @@ The function locks and reads the admitted command, candidate, evaluation, policy
 
 It writes one immutable receipt, changes one stage, re-reads the authoritative row, and marks the command `SOURCE_CONFIRMED` in the same transaction. The admitted command evidence is itself immutable; its only permitted update is the exact receipt-backed source confirmation. It creates no outbox message, provider request, webhook, or external authority. A retry returns the one existing receipt. A stale command, wrong tenant, revoked actor, policy outage, digest mismatch, guardian failure, or kill switch rolls the transaction back.
 
+### Human guardian journey
+
+`GET /api/v1/commands/{commandId}/learning-review` is restricted to an active canonical `USER` membership with `learning.guardian`. It returns the exact command-bound candidate payload, evidence and feedback references, evaluation metrics and reason codes, active-policy status, configured quorum count, current immutable decisions, and the reviewer's recusal/eligibility state. Candidate content is explicitly labeled `UNTRUSTED_EVIDENCE`; it is review material, never an instruction to the guardian or application.
+
+`POST /api/v1/commands/{commandId}/learning-review/decision` accepts only `decision` (`APPROVE` or `DENY`) and a bounded human rationale. Tenant, candidate, evaluation, command digest, expiry, authority, and identity are all server-resolved. The database locks the exact command and candidate, rechecks the active tenant policy, capability and kill switches, requires exactly three configured active human guardians, enforces proposer/evaluator recusal, and records an immutable 15-minute decision. Exact retries return the same receipt; a changed decision or rationale is an idempotency conflict. An expired review requires a new evaluation and command rather than mutating old evidence. Direct `service_role` inserts are revoked; only the guarded RPC may write the ledger.
+
 Non-action memory, prompt, routing, and skill candidates do not require guardian votes, but they still require measured evaluation, an exact fresh policy receipt, rollback/readback, and the admitted A2 command. Sultan can execute these bounded transitions through its explicit tenant membership capability; it cannot grant that capability to itself.
 
 ## Release boundary

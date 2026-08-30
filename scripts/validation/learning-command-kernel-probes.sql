@@ -1402,6 +1402,7 @@ BEGIN
       guardian_identity_id,
       decision,
       content_digest,
+      rationale,
       decided_at,
       expires_at
     )
@@ -1414,6 +1415,7 @@ BEGIN
         'user:' || v_guardian_one::text,
         'APPROVED',
         v_fixture->>'contentDigest',
+        'Validation guardian one approved the exact canary evidence.',
         v_decided_at,
         v_expires_at
       ),
@@ -1425,6 +1427,7 @@ BEGIN
         'user:' || v_guardian_two::text,
         'APPROVED',
         v_fixture->>'contentDigest',
+        'Validation guardian two approved the exact canary evidence.',
         v_decided_at,
         v_expires_at
       );
@@ -1438,6 +1441,7 @@ BEGIN
         guardian_identity_id,
         decision,
         content_digest,
+        rationale,
         decided_at,
         expires_at
       )
@@ -1449,6 +1453,7 @@ BEGIN
         'user:' || v_guardian_one::text,
         'APPROVED',
         v_fixture->>'contentDigest',
+        'Conflicting duplicate guardian write.',
         v_decided_at,
         v_expires_at
       );

@@ -166,6 +166,27 @@ export function parseApprovalDecision(value: unknown) {
   };
 }
 
+export function parseLearningGuardianDecision(value: unknown) {
+  const input = object(value, "learning guardian decision");
+  const allowedKeys = new Set(["decision", "rationale"]);
+  if (Object.keys(input).some((key) => !allowedKeys.has(key))) {
+    throw new ControlPlaneRequestError(
+      "GUARDIAN_SCOPE_FORBIDDEN",
+      "A guardian may submit only a decision and rationale; all learning scope is resolved from the canonical command.",
+    );
+  }
+  if (input.decision !== "APPROVE" && input.decision !== "DENY") {
+    throw new ControlPlaneRequestError(
+      "INVALID_REQUEST",
+      "decision must be APPROVE or DENY.",
+    );
+  }
+  return {
+    decision: input.decision as "APPROVE" | "DENY",
+    rationale: textValue(input.rationale, "rationale", 2_000),
+  };
+}
+
 function principal(value: unknown): AuthenticatedPrincipal {
   const input = object(value, "actor");
   const principalType = textValue(input.principalType, "actor.principalType", 16);

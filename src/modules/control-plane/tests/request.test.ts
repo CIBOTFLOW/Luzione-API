@@ -1,7 +1,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { assertNoRawSecrets, parseCreateConnection, parseCommand } from "../request";
+import {
+  assertNoRawSecrets,
+  parseCommand,
+  parseCreateConnection,
+  parseLearningGuardianDecision,
+} from "../request";
 
 test("connection parser rejects browser tenant selection and nested raw credentials", () => {
   assert.throws(() => parseCreateConnection({
@@ -55,4 +60,29 @@ test("command parser rejects secret-bearing payloads and malformed content diges
   assert.throws(() => parseCommand({ ...base, payload: { accessToken: "raw" } }), /Raw credential field/);
   assert.throws(() => parseCommand({ ...base, action: { ...base.action, contentDigest: "short" } }), /SHA-256/);
   assert.equal(parseCommand(base).envelope.contractVersion, "luzione-authority/v2");
+});
+
+test("learning guardian parser accepts only a decision and bounded rationale", () => {
+  assert.deepEqual(
+    parseLearningGuardianDecision({
+      decision: "APPROVE",
+      rationale: "  The canary evidence supports this exact action-policy change.  ",
+    }),
+    {
+      decision: "APPROVE",
+      rationale: "The canary evidence supports this exact action-policy change.",
+    },
+  );
+  assert.throws(
+    () => parseLearningGuardianDecision({
+      candidateVersionId: "caller-selected",
+      decision: "APPROVE",
+      rationale: "Looks correct.",
+    }),
+    /scope is resolved from the canonical command/,
+  );
+  assert.throws(
+    () => parseLearningGuardianDecision({ decision: "APPROVED", rationale: "Looks correct." }),
+    /APPROVE or DENY/,
+  );
 });

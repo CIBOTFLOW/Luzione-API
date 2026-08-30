@@ -82,6 +82,20 @@ export function requireMembershipCapability(actor: CanonicalActor, capability: s
   return actor;
 }
 
+export function requireHumanMembershipCapability(
+  actor: CanonicalActor,
+  capability: string,
+) {
+  if (actor.principal.principalType !== "USER") {
+    throw new CanonicalActorError(
+      "HUMAN_MEMBERSHIP_REQUIRED",
+      `Only an active human membership may use ${capability}.`,
+      403,
+    );
+  }
+  return requireMembershipCapability(actor, capability);
+}
+
 function identityId(actor: ApiActor) {
   if (/^(user|service|agent):/.test(actor.actorId)) return actor.actorId;
   if (actor.actorType === "user") {

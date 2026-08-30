@@ -52,6 +52,36 @@ export const controlPlaneOpenApi = {
         },
       },
     },
+    "/commands/{commandId}/learning-review": {
+      get: {
+        operationId: "getLearningGuardianReview",
+        parameters: [{ $ref: "#/components/parameters/commandId" }],
+        responses: {
+          "200": { description: "Exact policy-bound learning review envelope for an authorized human guardian" },
+          "403": { description: "Active human guardian membership required" },
+          "404": { description: "Exact action-eligibility review not found" },
+        },
+      },
+    },
+    "/commands/{commandId}/learning-review/decision": {
+      post: {
+        operationId: "recordLearningGuardianDecision",
+        parameters: [{ $ref: "#/components/parameters/commandId" }],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/LearningGuardianDecision" },
+            },
+          },
+        },
+        responses: {
+          "200": { description: "Immutable human guardian decision; no external effect" },
+          "403": { description: "Human guardian, policy, or membership capability denied" },
+          "409": { description: "Recused, stale, or conflicting immutable decision" },
+        },
+      },
+    },
     "/models/catalog": {
       get: {
         operationId: "listEffectiveModelPrices",
@@ -100,6 +130,15 @@ export const controlPlaneOpenApi = {
           identityId: { type: "string", pattern: "^(user|service|agent):" },
           membershipRole: { type: "string" },
           principalType: { type: "string", enum: ["USER", "SERVICE", "AGENT"] },
+        },
+      },
+      LearningGuardianDecision: {
+        type: "object",
+        additionalProperties: false,
+        required: ["decision", "rationale"],
+        properties: {
+          decision: { type: "string", enum: ["APPROVE", "DENY"] },
+          rationale: { type: "string", minLength: 1, maxLength: 2_000 },
         },
       },
       EffectEnvelope: {

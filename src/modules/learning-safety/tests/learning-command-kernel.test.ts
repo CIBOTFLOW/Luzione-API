@@ -33,8 +33,33 @@ const guardianIndexMigration = fs.readFileSync(
   ),
   "utf8",
 );
+const guardianDecisionMigration = fs.readFileSync(
+  path.join(
+    process.cwd(),
+    "supabase/migrations/20260829055000_learning_guardian_decision_rpc.sql",
+  ),
+  "utf8",
+);
 const adapter = fs.readFileSync(
   path.join(process.cwd(), "src/lib/learning-safety/commandKernel.ts"),
+  "utf8",
+);
+const guardianAdapter = fs.readFileSync(
+  path.join(process.cwd(), "src/lib/learning-safety/guardianReview.ts"),
+  "utf8",
+);
+const guardianReviewRoute = fs.readFileSync(
+  path.join(
+    process.cwd(),
+    "src/app/api/v1/commands/[commandId]/learning-review/route.ts",
+  ),
+  "utf8",
+);
+const guardianDecisionRoute = fs.readFileSync(
+  path.join(
+    process.cwd(),
+    "src/app/api/v1/commands/[commandId]/learning-review/decision/route.ts",
+  ),
   "utf8",
 );
 const route = fs.readFileSync(
@@ -163,6 +188,40 @@ test("browser roles cannot create guardian decisions or execute learning command
     guardianIndexMigration,
     /tenant_id,\s+evaluation_receipt_id,\s+candidate_version_id/,
   );
+});
+
+test("human guardian review resolves immutable scope on the server", () => {
+  assert.match(guardianAdapter, /import "server-only"/);
+  assert.match(guardianAdapter, /record_learning_guardian_decision\(\$1::uuid, \$2::text, \$3::text, \$4::text, \$5::text\)/);
+  assert.match(guardianAdapter, /contentTrust', 'UNTRUSTED_EVIDENCE'/);
+  assert.match(guardianAdapter, /learning_command_content_digest/);
+  assert.match(guardianAdapter, /policy\.payload_hash = command\.metadata->'action'->>'contentDigest'/);
+  assert.match(guardianAdapter, /capabilityActive', capability_active/);
+  assert.match(guardianAdapter, /killSwitchActive', kill_switch_active/);
+  assert.match(guardianReviewRoute, /requireHumanMembershipCapability/);
+  assert.match(guardianReviewRoute, /"learning\.guardian"/);
+  assert.match(guardianDecisionRoute, /requireHumanMembershipCapability/);
+  assert.match(guardianDecisionRoute, /parseLearningGuardianDecision/);
+  assert.match(guardianDecisionRoute, /readBoundedJson\(request, 4 \* 1024\)/);
+  assert.doesNotMatch(guardianDecisionRoute, /candidateVersionId|evaluationReceiptId|contentDigest/);
+});
+
+test("guardian RPC is human-only, recused, policy-current, immutable, and effect-free", () => {
+  assert.match(guardianDecisionMigration, /CREATE OR REPLACE FUNCTION public\.record_learning_guardian_decision/);
+  assert.match(guardianDecisionMigration, /identity\.identity_type = 'USER'/);
+  assert.match(guardianDecisionMigration, /membership\.capabilities @> '\["learning\.guardian"\]'/);
+  assert.match(guardianDecisionMigration, /configured_guardian_count IS DISTINCT FROM 3/);
+  assert.match(guardianDecisionMigration, /proposer and evaluator are recused/i);
+  assert.match(guardianDecisionMigration, /definition\.status = 'ACTIVE'/);
+  assert.match(guardianDecisionMigration, /FOR KEY SHARE OF policy, definition/);
+  assert.match(guardianDecisionMigration, /interval '15 minutes'/);
+  assert.match(guardianDecisionMigration, /ON CONFLICT DO NOTHING/);
+  assert.match(guardianDecisionMigration, /Guardian idempotency collision/);
+  assert.match(guardianDecisionMigration, /REVOKE INSERT ON TABLE public\.learning_guardian_decisions FROM service_role/);
+  assert.match(guardianDecisionMigration, /GRANT EXECUTE ON FUNCTION public\.record_learning_guardian_decision/);
+  assert.match(guardianDecisionMigration, /'externalEffectsAuthorized', false/);
+  assert.doesNotMatch(guardianDecisionMigration, /INSERT INTO public\.p110_outbox_messages/i);
+  assert.doesNotMatch(guardianDecisionMigration, /http|webhook|provider_request/i);
 });
 
 test("the restored-clone probe pack rolls fixtures back and covers the release matrix", () => {
