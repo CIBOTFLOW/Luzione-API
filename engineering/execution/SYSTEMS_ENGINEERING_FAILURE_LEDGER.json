@@ -402,6 +402,41 @@
         "Whether failure, retry/recovery and source readback work end to end."
       ],
       "next_action": "Consume independent UI and Sultan return handoffs when available and run the certificate against their exact contract versions without weakening the quarantine."
+    },
+    {
+      "failure_id": "API_SE_020_TSX_IPC_SANDBOX_20260829",
+      "project_id": "API_SE_020",
+      "observed_at": "2026-08-30T01:31:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": null,
+      "environment": "local",
+      "layer": "scorecard-contract-verification",
+      "symptom": "The first inline TypeScript scorecard verification could not open the tsx temporary IPC socket in the default sandbox.",
+      "expected": "The machine scorecard executes through the same production-readiness certification function used by tests.",
+      "actual": "tsx returned listen EPERM before evaluating the scorecard; the unchanged verifier passed with its approved local IPC boundary and returned NOT_READY/NOT_FINAL with ten blocking invariants.",
+      "classification": {
+        "domain": "TOOL",
+        "class": "DENIED",
+        "retry": "HUMAN",
+        "severity": "INFO"
+      },
+      "evidence_refs": [
+        "initial tsx listen EPERM output",
+        "approved scorecard verifier output",
+        "engineering/execution/readiness/API_SE_020_PRODUCTION_READINESS_20260829.json"
+      ],
+      "repair_attempts": [
+        "Reran the unchanged local verifier with permission for its temporary IPC socket."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "API_SE_020_LOCAL_NOT_READY_CERTIFICATION_20260829",
+      "remaining_uncertainty": [
+        "The sandbox denial is local tool behavior and does not represent application runtime behavior."
+      ],
+      "next_action": "Use the approved npx tsx execution boundary for future local scorecard validation on this host."
     }
   ]
 }

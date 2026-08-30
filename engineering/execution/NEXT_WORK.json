@@ -279,12 +279,13 @@
       "platform_project": "PLAT_SE_020",
       "title": "Production Readiness Certification",
       "priority": 381,
-      "status": "READY",
+      "status": "COMPLETE",
       "depends_on": ["API_SE_019"],
       "mutation_cone": ["readiness", "operations", "docs", "evidence"],
       "core_outcome": "Produce machine-readable and human-readable readiness certification by critical invariant with latest exact evidence, owner, failures, recovery posture, release tier and remaining uncertainty. Unsupported finality must remain impossible to express as a pass.",
       "published_artifacts": ["production readiness scorecard", "remaining risk register", "cross-repo release handoffs"],
-      "irreversible_effects": []
+      "irreversible_effects": [],
+      "completion_evidence_ref": "API_SE_020_LOCAL_NOT_READY_CERTIFICATION_20260829"
     }
   ]
 }

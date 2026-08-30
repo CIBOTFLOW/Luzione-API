@@ -653,6 +653,64 @@
         "Sultan-authored exact-SHA journey handoff",
         "successful certification of at least one representative shared-contract journey"
       ]
+    },
+    {
+      "proof_id": "API_SE_020_LOCAL_NOT_READY_CERTIFICATION_20260829",
+      "project_id": "API_SE_020",
+      "recorded_at": "2026-08-30T01:36:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "fae8b4509ba2e486ddc5ca2e1644dd10bbfa155b",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "NOT_FINAL",
+      "claim": "The exact API candidate has a validated machine-readable and human-readable ten-invariant production-readiness scorecard. The result is NOT_READY with zero production-ready invariants; no production finality is claimed.",
+      "exercised_boundaries": [
+        "A fully fresh exact-candidate production fixture can express PRODUCTION_READY only when every blocking invariant passes.",
+        "Local evidence, SHA drift, stale evidence, open failures, incomplete recovery, remaining uncertainty and environment mismatch fail closed.",
+        "The actual scorecard was executed through the certification contract and returned NOT_READY and NOT_FINAL for all ten blocking invariants.",
+        "The human scorecard maps each invariant to its owner, evidence tier/SHA, failures, recovery posture and uncertainty.",
+        "Compliance, typecheck, clean lint, 148/148 tests and exact-SHA production build passed at fae8b4509ba2e486ddc5ca2e1644dd10bbfa155b."
+      ],
+      "untested_boundaries": [
+        "preview deployment and browser canary",
+        "rollback rehearsal",
+        "production deployment and observation",
+        "independent UI and Sultan journey execution",
+        "managed production recovery",
+        "representative capacity and full business workloads"
+      ],
+      "evidence_refs": [
+        "src/modules/platform-readiness/certification.ts",
+        "src/modules/platform-readiness/tests/certification.test.ts",
+        "engineering/execution/readiness/API_SE_020_PRODUCTION_READINESS_20260829.json",
+        "docs/platform-engineering/API_SE_020_PRODUCTION_READINESS_SCORECARD_20260829.md",
+        "commit:fae8b4509ba2e486ddc5ca2e1644dd10bbfa155b"
+      ],
+      "failure_refs": [
+        "API_SE_001_DEPENDENCY_AUDIT_20260829",
+        "API_SE_019_INDEPENDENT_CONSUMER_EVIDENCE_MISSING_20260829",
+        "API_SE_020_TSX_IPC_SANDBOX_20260829"
+      ],
+      "cross_repo_handoffs": [
+        "API_SE_020_TO_LUZIONE_UI_V1",
+        "API_SE_020_TO_SULTAN_OS_V1"
+      ],
+      "deferred_external_infra": [
+        "consumer repository execution",
+        "preview and production deployment",
+        "managed recovery environment",
+        "provider and representative workload environments"
+      ],
+      "remaining_uncertainty": [
+        "All ten critical invariants currently have at least one production blocker.",
+        "The strongest release claim remains local engineering proof for the exact repository candidate."
+      ],
+      "next_proof_needed": [
+        "Resolve the machine scorecard blockers without mutating their meanings.",
+        "Reevaluate against fresh evidence for the exact promoted candidate.",
+        "Require independent consumer and authoritative readback evidence before any production finality claim."
+      ]
     }
   ]
 }
