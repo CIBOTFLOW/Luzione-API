@@ -378,6 +378,60 @@
       "deferred_external_infra": ["managed backup/PITR inventory", "isolated production-scale restore destination", "provider reconciliation and traffic cutover"],
       "remaining_uncertainty": ["The 24-hour RPO and 8-hour RTO remain policy targets, not measured production evidence.", "The local dataset and Docker host do not represent production scale or provider controls."],
       "next_proof_needed": ["Managed provider backup/PITR evidence", "Authorized isolated production-scale restore", "RLS/application/provider verification and rollback rehearsal"]
+    },
+    {
+      "proof_id": "API_SE_010_LOCAL_PROOF_20260829",
+      "project_id": "API_SE_010",
+      "recorded_at": "2026-08-30T00:16:43Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "fdb6f452bc4e117aeaa697265af70d3518ff8daf",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The API publishes measurable platform/capability SLI definitions, an honestly contract-only business SLI, provisional SLO windows/targets and deterministic error-budget law that cannot excuse security controls.",
+      "exercised_boundaries": [
+        "Platform HTTP availability/latency, capability P113 freshness and business time-to-actionable-order layers are represented.",
+        "The unresolved business mutation owner leaves its measurement CONTRACT_ONLY with no invented metric or target.",
+        "Ratio budgets distinguish within-budget and exhausted states and reject invalid target/count inputs.",
+        "Known-bad security/tenant SLO references violate the registry.",
+        "Service and public contract catalogs publish the registry additively.",
+        "Compliance, typecheck, clean lint, 118/118 tests and production build passed."
+      ],
+      "untested_boundaries": ["rolling production metric windows", "collector/exporter aggregation", "alerts and dashboards", "consumer rendering", "production objective approval"],
+      "evidence_refs": ["src/modules/platform-slo/registry.ts", "src/modules/platform-slo/tests/registry.test.ts", "docs/platform-engineering/SLI_SLO_ERROR_BUDGET_V1.md", "commit:fdb6f452bc4e117aeaa697265af70d3518ff8daf"],
+      "failure_refs": ["API_SE_001_DEPENDENCY_AUDIT_20260829", "API_SE_010_VALIDATION_ORDER_20260829", "API_SE_010_GOOGLE_FONT_SANDBOX_20260829"],
+      "cross_repo_handoffs": ["API_SE_010_015_TO_LUZIONE_UI_V1", "API_SE_010_015_TO_SULTAN_OS_V1"],
+      "deferred_external_infra": ["time-series aggregation", "alerts and dashboards", "preview/production observations"],
+      "remaining_uncertainty": ["All current targets remain provisional.", "The business SLI cannot be measured until canonical order/commercial mutation and readback ownership is resolved."],
+      "next_proof_needed": ["API_SE_011 exact evidence maturity aggregation", "API_SE_013 reproducible workload measurements", "Independent consumer adoption proof"]
+    },
+    {
+      "proof_id": "API_SE_015_LOCAL_PROOF_20260829",
+      "project_id": "API_SE_015",
+      "recorded_at": "2026-08-30T00:16:43Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "fdb6f452bc4e117aeaa697265af70d3518ff8daf",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "Seven stable zero-tolerance controls now expose bounded local evidence maturity for identity, tenancy, authority, effects, telemetry and mutation switches without leaking sensitive probe evidence.",
+      "exercised_boundaries": [
+        "Every control resolves to existing local source/test evidence and remains IMPLEMENTED_LOCAL.",
+        "Missing, unknown or failed evidence blocks; a complete supplied pass set passes only that bounded evaluation.",
+        "Known-bad duplicate and unsupported production evidence fixtures fail validation.",
+        "Availability budgets are explicitly unable to excuse security failure.",
+        "The public catalog publishes definitions and maturity without secrets or raw probe output.",
+        "Compliance, typecheck, clean lint, 118/118 tests and production build passed."
+      ],
+      "untested_boundaries": ["production workload identity configuration", "deployed RLS denial probes", "production secret posture", "live external-effect denial", "consumer adoption"],
+      "evidence_refs": ["src/modules/platform-security-controls/registry.ts", "src/modules/platform-security-controls/tests/registry.test.ts", "docs/platform-engineering/ZERO_TOLERANCE_SECURITY_CONTROLS_V1.md", "commit:fdb6f452bc4e117aeaa697265af70d3518ff8daf"],
+      "failure_refs": ["API_SE_001_DEPENDENCY_AUDIT_20260829", "API_SE_010_GOOGLE_FONT_SANDBOX_20260829"],
+      "cross_repo_handoffs": ["API_SE_010_015_TO_LUZIONE_UI_V1", "API_SE_010_015_TO_SULTAN_OS_V1"],
+      "deferred_external_infra": ["exact-release production denial probes", "protected production evidence storage", "preview/production observations"],
+      "remaining_uncertainty": ["Local implementation evidence is not deployed-control evidence.", "No production candidate SHA/environment has been evaluated."],
+      "next_proof_needed": ["API_SE_011 maturity-aware readiness aggregation", "API_SE_012 exact-release evidence binding", "Independent consumer evidence handling proof"]
     }
   ]
 }

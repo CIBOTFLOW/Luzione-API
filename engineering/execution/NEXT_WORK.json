@@ -149,19 +149,20 @@
       "platform_project": "PLAT_SE_010",
       "title": "SLI, SLO and Error-Budget Framework",
       "priority": 391,
-      "status": "READY",
+      "status": "COMPLETE",
       "depends_on": ["API_SE_008", "API_SE_009"],
       "mutation_cone": ["metrics", "slo", "operations", "docs", "tests"],
       "core_outcome": "Define measurable platform, capability and business SLIs with windows, targets, measurement sources, ownership, alert/runbook links and error-budget semantics. Keep zero-tolerance security controls separate from ordinary availability targets.",
       "published_artifacts": ["SLI registry", "SLO registry", "consumer handoff"],
-      "irreversible_effects": []
+      "irreversible_effects": [],
+      "completion_evidence_ref": "API_SE_010_LOCAL_PROOF_20260829"
     },
     {
       "project_id": "API_SE_011",
       "platform_project": "PLAT_SE_011",
       "title": "Production Truth and Readiness Evidence Model",
       "priority": 390,
-      "status": "PLANNED",
+      "status": "READY",
       "depends_on": ["API_SE_007", "API_SE_008", "API_SE_010"],
       "mutation_cone": ["health", "evidence", "operations", "api", "tests"],
       "core_outcome": "Make status derivable from observed evidence with explicit source, freshness, threshold, impact, owner and evidence tier. Preserve distinctions among configured, bounded, preview-proven and production-observed states.",
@@ -185,7 +186,7 @@
       "platform_project": "PLAT_SE_013",
       "title": "Performance, Capacity, Load and Soak Program",
       "priority": 388,
-      "status": "PLANNED",
+      "status": "READY",
       "depends_on": ["API_SE_008", "API_SE_010"],
       "mutation_cone": ["performance", "database", "http", "workflows", "tests"],
       "core_outcome": "Create reproducible baseline, burst, sustained-load, provider-slowdown, database-pool-pressure and recovery workloads with p50/p95/p99, errors, saturation and capacity claims bound to exact evidence.",
@@ -210,12 +211,13 @@
       "platform_project": "PLAT_SE_015",
       "title": "Security Control Evidence and Zero-Tolerance Invariants",
       "priority": 386,
-      "status": "READY",
+      "status": "COMPLETE",
       "depends_on": ["API_SE_004", "API_SE_005", "API_SE_008", "API_SE_009"],
       "mutation_cone": ["security", "auth", "tenancy", "authority", "secrets", "tests"],
       "core_outcome": "Unify machine-readable evidence for tenant isolation, authority/effect boundaries, secret posture and denial probes while preserving least privilege and preventing sensitive evidence leakage.",
       "published_artifacts": ["security control registry", "probe evidence", "consumer handoff"],
-      "irreversible_effects": []
+      "irreversible_effects": [],
+      "completion_evidence_ref": "API_SE_015_LOCAL_PROOF_20260829"
     },
     {
       "project_id": "API_SE_016",
