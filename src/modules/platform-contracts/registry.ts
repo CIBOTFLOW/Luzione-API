@@ -390,16 +390,16 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
     compatibility: "NEW_MAJOR_FOR_BREAKING",
     consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
     contractId: "release-evidence",
-    currentRuntime: false,
-    maturity: "SPECIFIED_ONLY",
+    currentRuntime: true,
+    maturity: "IMPLEMENTED",
     name: "Release provenance and evidence maturity",
     ownerRepository: "CIBOTFLOW/Luzione-API",
-    pendingChangeRefs: ["pull/31:signed-release-manifest"],
+    pendingChangeRefs: [],
     sourcePaths: [
-      "AGENTS.md",
-      "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md"
+      "src/modules/platform-release/releaseContract.ts",
+      "docs/platform-engineering/DEPLOYMENT_PROVENANCE_CANARY_ROLLBACK_V1.md"
     ],
-    version: "1",
+    version: "luzione-release-evidence/v1",
   },
   {
     compatibility: "NEW_MAJOR_FOR_BREAKING",

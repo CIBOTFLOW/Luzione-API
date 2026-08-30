@@ -44,6 +44,10 @@ import {
   performanceProfileRegistry,
   PLATFORM_PERFORMANCE_PROGRAM_VERSION,
 } from "@/modules/platform-performance/program";
+import {
+  PLATFORM_RELEASE_EVIDENCE_VERSION,
+  releaseEvidenceLaw,
+} from "@/modules/platform-release/releaseContract";
 
 export async function GET(request: Request) {
   const identity = createRequestIdentity(request.headers);
@@ -116,6 +120,10 @@ export async function GET(request: Request) {
       performanceProgram: {
         contractVersion: PLATFORM_PERFORMANCE_PROGRAM_VERSION,
         profiles: performanceProfileRegistry,
+      },
+      releaseEvidence: {
+        contractVersion: PLATFORM_RELEASE_EVIDENCE_VERSION,
+        law: releaseEvidenceLaw,
       },
       platformAreas,
       authority: {
