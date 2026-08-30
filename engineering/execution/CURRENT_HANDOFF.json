@@ -3,9 +3,9 @@
   "queue_id": "LUZIONE_API_SYSTEMS_ENGINEERING_V1",
   "repository": "CIBOTFLOW/Luzione-API",
   "program_state": "IMPLEMENTATION_IN_PROGRESS",
-  "current_project": "API_SE_008_API_SE_014_CELL",
-  "next_projects": ["API_SE_008", "API_SE_014"],
-  "next_action": "Build the OpenTelemetry-compatible local observability spine, then inventory backup/restore ownership and run only safe disposable recovery proof; do not touch production data or imply production recovery evidence.",
+  "current_project": "API_SE_010_API_SE_015_CELL",
+  "next_projects": ["API_SE_010", "API_SE_015"],
+  "next_action": "Publish measurable SLI/SLO/error-budget semantics from the bounded telemetry registry and unify zero-tolerance security-control evidence without treating availability targets as permission to weaken security controls.",
   "canonical_program": "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md",
   "failure_ledger": "engineering/execution/SYSTEMS_ENGINEERING_FAILURE_LEDGER.json",
   "proof_ledger": "engineering/execution/SYSTEMS_ENGINEERING_PROOF_LEDGER.json",
@@ -23,7 +23,9 @@
     "API_SE_004, API_SE_005 and API_SE_007 are locally proven at 2d90899d3d432e8f8cab74c050d60c285a98db82; consumer adoption, provider observation and production deployment remain unproven.",
     "Gmail, Google Drive and Airtable configuration still lacks authoritative provider observation.",
     "API_SE_006 and API_SE_009 are locally proven at 518407a5e21dfb85d40ff3e92dc2526b5c0d987e; durable receipt storage, consumer adoption and production service observation remain unproven.",
-    "Backup/restore ownership and disposable recovery feasibility remain open for API_SE_014."
+    "API_SE_008 and API_SE_014 are locally proven at 9ca81e4cbd06ce559aa19b9e9ef208e151295b63; telemetry export/production observation and managed backup/PITR/production recovery remain unproven.",
+    "The local recovery drill measured 10 seconds for 50,032 rows in Docker; it is not production RTO or RPO evidence.",
+    "SLI/SLO measurement windows and unified security-control evidence remain open in API_SE_010/API_SE_015."
   ],
   "stop_code": null
 }

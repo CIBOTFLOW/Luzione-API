@@ -323,6 +323,61 @@
       "deferred_external_infra": [],
       "remaining_uncertainty": ["No UI/Sultan catalog records have been returned.", "No production release or live provider state is claimed.", "SLI/SLO/dashboard arrays remain deliberately empty."],
       "next_proof_needed": ["Versioned consumer descriptors", "API_SE_010 SLI/SLO references", "Production release observation in API_SE_011/API_SE_012"]
+    },
+    {
+      "proof_id": "API_SE_008_LOCAL_PROOF_20260829",
+      "project_id": "API_SE_008",
+      "recorded_at": "2026-08-30T00:09:35Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "9ca81e4cbd06ce559aa19b9e9ef208e151295b63",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The API has one runtime-neutral OpenTelemetry-compatible semantic layer for W3C trace lineage, structured redacted logs and bounded metric observations, and telemetry is explicitly non-authoritative.",
+      "exercised_boundaries": [
+        "Trace/span/request/correlation lineage survives structured-log creation.",
+        "Tenant and actor identity are omitted; credentials, content and contact-like fields are recursively redacted and bounded.",
+        "HTTP request/duration/error metric observations use stable route/method/status/service dimensions only.",
+        "Service bootstrap, governance completion, P113 failures, RLS failures and Sultan readback failures use the shared logger.",
+        "Known-bad invalid event names, secret/content attributes and negative durations fail closed.",
+        "The Node-crypto Edge incompatibility was detected, recorded and removed; compliance, typecheck, clean lint, 112/112 tests and production build passed."
+      ],
+      "untested_boundaries": ["telemetry collector/exporter", "sampling/retention", "dashboards/alerts", "UI/Sultan emitters", "preview and production observations"],
+      "evidence_refs": ["src/modules/platform-telemetry/telemetry.ts", "src/modules/platform-telemetry/tests/telemetry.test.ts", "instrumentation.ts", "docs/platform-engineering/OPENTELEMETRY_COMPATIBLE_OBSERVABILITY_V1.md", "commit:9ca81e4cbd06ce559aa19b9e9ef208e151295b63"],
+      "failure_refs": ["API_SE_001_DEPENDENCY_AUDIT_20260829", "API_SE_008_EDGE_NODE_CRYPTO_20260829"],
+      "cross_repo_handoffs": ["API_SE_008_014_TO_LUZIONE_UI_V1", "API_SE_008_014_TO_SULTAN_OS_V1"],
+      "deferred_external_infra": ["collector/exporter backend", "dashboards and alerts", "preview/production telemetry observation"],
+      "remaining_uncertainty": ["Only local log/metric record generation is proven.", "Consumer trace propagation remains independently unproven."],
+      "next_proof_needed": ["API_SE_010 measurable SLI sources/windows", "Independent consumer trace/redaction tests", "Exporter and deployed observation proof"]
+    },
+    {
+      "proof_id": "API_SE_014_LOCAL_PROOF_20260829",
+      "project_id": "API_SE_014",
+      "recorded_at": "2026-08-30T00:09:35Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "9ca81e4cbd06ce559aa19b9e9ef208e151295b63",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "SANDBOX_ONLY",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "Recovery ownership, target RPO/RTO and evidence maturity are explicit, and a guarded local Postgres logical restore completed with matching bounded fingerprints and verified cleanup.",
+      "exercised_boundaries": [
+        "The harness refused overwrite/source-target aliasing and used a new local Docker database only.",
+        "A 7,425,352-byte custom dump restored in 10 seconds without printing row contents.",
+        "Source/restored fingerprints matched across 545 tables, 50,032 rows, 36 functions, 1,068 indexes and 103 policies.",
+        "The target database and dump artifact were removed and cleanup was independently verified.",
+        "Known-bad duplicate/invalid-objective/unsupported-production-proof registry fixtures fail validation.",
+        "The autocommit temp-table failure and Docker sandbox contingency remain in the failure ledger.",
+        "Compliance, typecheck, clean lint, 112/112 tests and production build passed."
+      ],
+      "untested_boundaries": ["managed backup/PITR configuration", "production dataset scale and permissions", "production RPO/RTO", "traffic cutover/rollback", "post-cutover RLS denial probes", "provider reconciliation"],
+      "evidence_refs": ["src/modules/platform-recovery/registry.ts", "scripts/run-disposable-postgres-restore-drill.sh", "engineering/execution/recovery/API_SE_014_DISPOSABLE_RESTORE_20260829.json", "docs/platform-engineering/RECOVERY_RPO_RTO_PROGRAM_V1.md", "commit:9ca81e4cbd06ce559aa19b9e9ef208e151295b63"],
+      "failure_refs": ["API_SE_001_DEPENDENCY_AUDIT_20260829", "API_SE_014_DOCKER_SOCKET_SANDBOX_20260829", "API_SE_014_TEMP_TABLE_AUTOCOMMIT_20260829", "API_SE_014_TYPESCRIPT_REGEX_TARGET_20260829"],
+      "cross_repo_handoffs": ["API_SE_008_014_TO_LUZIONE_UI_V1", "API_SE_008_014_TO_SULTAN_OS_V1"],
+      "deferred_external_infra": ["managed backup/PITR inventory", "isolated production-scale restore destination", "provider reconciliation and traffic cutover"],
+      "remaining_uncertainty": ["The 24-hour RPO and 8-hour RTO remain policy targets, not measured production evidence.", "The local dataset and Docker host do not represent production scale or provider controls."],
+      "next_proof_needed": ["Managed provider backup/PITR evidence", "Authorized isolated production-scale restore", "RLS/application/provider verification and rollback rehearsal"]
     }
   ]
 }

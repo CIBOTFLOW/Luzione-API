@@ -2,7 +2,7 @@
   "schema_version": 1,
   "handoff_id": "API_SE_008_014_TO_LUZIONE_UI_V1",
   "producer_repository": "CIBOTFLOW/Luzione-API",
-  "producer_sha": null,
+  "producer_sha": "9ca81e4cbd06ce559aa19b9e9ef208e151295b63",
   "producer_ref": "codex/api-se-001-topology-inventory",
   "contract_name": "telemetry-and-recovery-semantics",
   "contract_version": "luzione-telemetry/v1 + luzione-recovery-registry/v1",

@@ -3,7 +3,7 @@
   "drill_id": "API_SE_014_DISPOSABLE_RESTORE_20260829B",
   "project_id": "API_SE_014",
   "repository": "CIBOTFLOW/Luzione-API",
-  "producer_sha": null,
+  "producer_sha": "9ca81e4cbd06ce559aa19b9e9ef208e151295b63",
   "environment": "disposable-local-docker",
   "effect_authority": "SANDBOX_ONLY",
   "source": {

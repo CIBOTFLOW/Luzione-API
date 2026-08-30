@@ -134,7 +134,7 @@
       "quarantine_scope": [],
       "deferred_external_infra": [],
       "resolved": true,
-      "resolution_ref": "npm run typecheck and 110/110 tests after repair",
+      "resolution_ref": "commit:9ca81e4cbd06ce559aa19b9e9ef208e151295b63 and subsequent typecheck/test pass",
       "remaining_uncertainty": [],
       "next_action": "Preserve the repository target in future contract-test syntax."
     },
@@ -156,7 +156,7 @@
       "quarantine_scope": [],
       "deferred_external_infra": ["Sandboxed Google Font fetch; rerun requires network access and is not telemetry capability evidence."],
       "resolved": true,
-      "resolution_ref": "cross-runtime telemetry contract plus subsequent production build",
+      "resolution_ref": "commit:9ca81e4cbd06ce559aa19b9e9ef208e151295b63 and subsequent production build",
       "remaining_uncertainty": ["No Edge deployment or telemetry exporter was exercised."],
       "next_action": "Keep the shared telemetry module runtime-neutral and perform exporter-specific crypto only in explicitly Node-owned adapters."
     }
