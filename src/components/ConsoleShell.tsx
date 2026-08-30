@@ -35,6 +35,7 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
         <p className="nav-label">API areas</p>
         <nav className="section-nav" aria-label="API platform areas">
           <Link href="/" className="nav-link">Overview</Link>
+          <Link href="/engineering" className="nav-link">Engineering portal</Link>
           {platformAreas.map((area) => (
             <Link key={area.id} href={`/${area.id}`} className="nav-link">{area.label}</Link>
           ))}

@@ -389,6 +389,21 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
   {
     compatibility: "NEW_MAJOR_FOR_BREAKING",
     consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
+    contractId: "test-taxonomy",
+    currentRuntime: true,
+    maturity: "IMPLEMENTED",
+    name: "Test evidence taxonomy and orchestration law",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: [],
+    sourcePaths: [
+      "src/modules/platform-testing/taxonomy.ts",
+      ".github/workflows/ci.yml"
+    ],
+    version: "luzione-test-taxonomy/v1",
+  },
+  {
+    compatibility: "NEW_MAJOR_FOR_BREAKING",
+    consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
     contractId: "release-evidence",
     currentRuntime: true,
     maturity: "IMPLEMENTED",

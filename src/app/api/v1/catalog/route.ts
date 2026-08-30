@@ -48,6 +48,11 @@ import {
   PLATFORM_RELEASE_EVIDENCE_VERSION,
   releaseEvidenceLaw,
 } from "@/modules/platform-release/releaseContract";
+import {
+  PLATFORM_TEST_TAXONOMY_VERSION,
+  testOrchestrationLaw,
+  testTaxonomySummary,
+} from "@/modules/platform-testing/taxonomy";
 
 export async function GET(request: Request) {
   const identity = createRequestIdentity(request.headers);
@@ -124,6 +129,11 @@ export async function GET(request: Request) {
       releaseEvidence: {
         contractVersion: PLATFORM_RELEASE_EVIDENCE_VERSION,
         law: releaseEvidenceLaw,
+      },
+      testProgram: {
+        contractVersion: PLATFORM_TEST_TAXONOMY_VERSION,
+        orchestrationLaw: testOrchestrationLaw,
+        summary: testTaxonomySummary(),
       },
       platformAreas,
       authority: {
