@@ -57,6 +57,10 @@ import {
   causalNavigationLaw,
   PLATFORM_CAUSAL_NAVIGATION_VERSION,
 } from "@/modules/platform-causality/navigation";
+import {
+  crossSystemJourneyCertificationLaw,
+  CROSS_SYSTEM_JOURNEY_CERTIFICATION_VERSION,
+} from "@/modules/platform-journeys/certification";
 
 export async function GET(request: Request) {
   const identity = createRequestIdentity(request.headers);
@@ -142,6 +146,10 @@ export async function GET(request: Request) {
       causalNavigation: {
         contractVersion: PLATFORM_CAUSAL_NAVIGATION_VERSION,
         law: causalNavigationLaw,
+      },
+      crossSystemJourneyCertification: {
+        contractVersion: CROSS_SYSTEM_JOURNEY_CERTIFICATION_VERSION,
+        law: crossSystemJourneyCertificationLaw,
       },
       platformAreas,
       authority: {

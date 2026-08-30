@@ -405,6 +405,21 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
   {
     compatibility: "NEW_MAJOR_FOR_BREAKING",
     consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
+    contractId: "cross-system-journey-certification",
+    currentRuntime: true,
+    maturity: "LIBRARY_ONLY",
+    name: "Independent exact-version cross-system journey certification",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: [],
+    sourcePaths: [
+      "src/modules/platform-journeys/certification.ts",
+      "engineering/execution/journeys/API_SE_019_CERTIFICATION_20260829.json"
+    ],
+    version: "luzione-cross-system-journey-certification/v1",
+  },
+  {
+    compatibility: "NEW_MAJOR_FOR_BREAKING",
+    consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
     contractId: "test-taxonomy",
     currentRuntime: true,
     maturity: "IMPLEMENTED",
