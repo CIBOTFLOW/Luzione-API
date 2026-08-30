@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "receipt_id": "API_SE_013_LOCAL_HTTP_20260829",
+  "contract_version": "luzione-performance-evidence/v1",
+  "project_id": "API_SE_013",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "exact_sha": "c5c0dd52b533807df5545c64ae9602ff8676d507",
+  "environment": "local",
+  "runtime": {
+    "host": "Darwin 25.6.0 arm64",
+    "node": "v24.15.0",
+    "npm": "11.12.1",
+    "application": "Next.js 16.2.4 production build",
+    "origin": "http://127.0.0.1:3107"
+  },
+  "target": {
+    "method": "GET",
+    "path": "/api/v1/livez",
+    "business_or_dependency_readback": false
+  },
+  "thresholds": {
+    "max_error_rate": 0,
+    "max_p95_ms": 750,
+    "provisional": true
+  },
+  "campaigns": [
+    {
+      "profile_id": "local-livez-baseline",
+      "measured_at": "2026-08-30T00:26:45.739Z",
+      "concurrency": 1,
+      "request_count": 100,
+      "error_count": 0,
+      "error_rate": 0,
+      "p50_ms": 0.9369580000000042,
+      "p95_ms": 3.262957999999969,
+      "p99_ms": 8.397166999999968,
+      "throughput_per_second": 490.4380903961167,
+      "evaluation": "PASS"
+    },
+    {
+      "profile_id": "local-livez-burst",
+      "measured_at": "2026-08-30T00:26:53.891Z",
+      "concurrency": 20,
+      "request_count": 500,
+      "error_count": 0,
+      "error_rate": 0,
+      "p50_ms": 8.727958000000001,
+      "p95_ms": 29.480709000000004,
+      "p99_ms": 47.641333,
+      "throughput_per_second": 1581.97435144984,
+      "evaluation": "PASS"
+    },
+    {
+      "profile_id": "local-livez-sustained",
+      "measured_at": "2026-08-30T00:27:01.166Z",
+      "concurrency": 5,
+      "request_count": 1000,
+      "error_count": 0,
+      "error_rate": 0,
+      "p50_ms": 2.1566250000000196,
+      "p95_ms": 13.62250000000006,
+      "p99_ms": 47.63987499999996,
+      "throughput_per_second": 1169.261688251444,
+      "evaluation": "PASS"
+    }
+  ],
+  "negative_proof": {
+    "remote_origin": "https://example.com",
+    "result": "REJECTED_BEFORE_REQUEST",
+    "message": "Remote performance targets are prohibited; use an isolated localhost runtime."
+  },
+  "contingencies": [
+    "The default sandbox could not bind the local server socket.",
+    "The default sandbox could not connect to the approved local server and produced 100 status-599 samples; those samples are excluded from performance claims.",
+    "The initial CLI used top-level await under CommonJS output and was repaired before final measurements.",
+    "The harness now returns a failing process status when a threshold is breached."
+  ],
+  "unexercised_campaigns": [
+    "multi-minute or multi-hour soak",
+    "provider slowdown and rate limiting",
+    "database pool pressure and saturation",
+    "concurrent mutation and idempotency",
+    "queue backlog and drain",
+    "failure injection and recovery",
+    "authenticated routes and business journeys",
+    "preview and production environments"
+  ],
+  "strongest_claim": "Three bounded read-only localhost liveness profiles passed provisional error-rate and p95 thresholds on this machine; no capacity ceiling, production SLO or scalability claim is supported."
+}

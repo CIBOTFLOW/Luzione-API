@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "drill_id": "API_SE_014_DISPOSABLE_RESTORE_20260829B",
+  "project_id": "API_SE_014",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "9ca81e4cbd06ce559aa19b9e9ef208e151295b63",
+  "environment": "disposable-local-docker",
+  "effect_authority": "SANDBOX_ONLY",
+  "source": {
+    "container": "luzione_postgres",
+    "database": "luzione",
+    "postgres_version": "16.13",
+    "production": false
+  },
+  "target": {
+    "database": "luzione_api_se014_restore_20260829b",
+    "preexisting": false,
+    "removed_after_verification": true
+  },
+  "backup_artifact": {
+    "format": "PostgreSQL custom logical dump",
+    "owner_and_privileges_included": false,
+    "sha256": "1b73a759541e5381f6f75b8dd5a7a8c332feb4cd619d4ecc27c70e6278ba1641",
+    "size_bytes": 7425352,
+    "removed_after_verification": true
+  },
+  "source_fingerprint": {
+    "catalog_fingerprint": "68e0afbb969c25e3745744b9c95f21c2",
+    "function_count": 36,
+    "index_count": 1068,
+    "policy_count": 103,
+    "row_count": 50032,
+    "table_count": 545
+  },
+  "restored_fingerprint": {
+    "catalog_fingerprint": "68e0afbb969c25e3745744b9c95f21c2",
+    "function_count": 36,
+    "index_count": 1068,
+    "policy_count": 103,
+    "row_count": 50032,
+    "table_count": 545
+  },
+  "fingerprints_match": true,
+  "measured_recovery_time_seconds": 10,
+  "measured_recovery_point_seconds": null,
+  "cleanup_verified": true,
+  "evidence_tier": "LOCAL_PROVEN",
+  "claim": "A local Postgres 16 logical dump restored into a new disposable database with matching bounded catalog/row fingerprints and verified cleanup.",
+  "does_not_prove": [
+    "managed backup or PITR configuration",
+    "production restore permissions or production dataset scale",
+    "production RPO or RTO",
+    "RLS active denial behavior after cutover",
+    "application traffic cutover or rollback",
+    "provider reconciliation"
+  ],
+  "failed_attempt_refs": ["API_SE_014_TEMP_TABLE_AUTOCOMMIT_20260829"]
+}

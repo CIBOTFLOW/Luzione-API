@@ -1,8 +1,9 @@
 import { requireServiceActor } from "@/lib/api/actor";
-import { apiResponse, requestId } from "@/lib/api/http";
+import { apiResponse, createRequestIdentity } from "@/lib/api/http";
 import { evaluateIdentityCandidate } from "@/modules/autonomy/identity";
 import { parseIdentityCandidateRequest } from "@/modules/autonomy/identityParser";
 import { AutonomyRequestError } from "@/modules/autonomy/parser";
+import { bindAuthenticatedRequestIdentity } from "@/modules/platform-contracts/requestIdentity";
 
 export const dynamic = "force-dynamic";
 
@@ -16,9 +17,14 @@ function statusFor(error: unknown) {
 }
 
 export async function POST(request: Request) {
-  const id = requestId(request.headers);
+  let identity = createRequestIdentity(request.headers);
   try {
-    await requireServiceActor(request.headers);
+    const actor = await requireServiceActor(request.headers);
+    identity = bindAuthenticatedRequestIdentity(identity, actor, {
+      authorityClass: "A0",
+      capability: "sultan.identity.evaluate",
+      purpose: "evaluate-identity-candidate",
+    });
     const declaredLength = Number(request.headers.get("content-length") ?? "0");
     if (Number.isFinite(declaredLength) && declaredLength > MAX_REQUEST_BYTES) {
       throw new AutonomyRequestError("INVALID_REQUEST", "Request body is too large.");
@@ -36,13 +42,13 @@ export async function POST(request: Request) {
       evaluatedOnly: true,
       externalEffectsAuthorized: false,
       ok: true,
-    }, { requestId: id });
+    }, { requestIdentity: identity });
   } catch (error) {
     return apiResponse({
       code: error instanceof AutonomyRequestError ? error.code : "IDENTITY_EVALUATION_FAILED",
       externalEffectsAuthorized: false,
       message: error instanceof Error ? error.message : "Identity candidate evaluation failed closed.",
       ok: false,
-    }, { requestId: id, status: statusFor(error) });
+    }, { requestIdentity: identity, status: statusFor(error) });
   }
 }

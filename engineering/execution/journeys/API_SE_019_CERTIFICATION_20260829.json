@@ -1,0 +1,58 @@
+{
+  "schema_version": "1.0",
+  "certificate_contract": "luzione-cross-system-journey-certification/v1",
+  "project_id": "API_SE_019",
+  "recorded_at": "2026-08-30T01:05:00Z",
+  "certification_status": "QUARANTINED",
+  "required_repositories": [
+    "CIBOTFLOW/Luzione-API",
+    "CIBOTFLOW/Luzione-UI",
+    "CIBOTFLOW/Sultan-OS"
+  ],
+  "repository_evidence_audit": [
+    {
+      "repository": "CIBOTFLOW/Luzione-API",
+      "state": "PRODUCER_EVIDENCE_PRESENT",
+      "evidence_refs": [
+        "engineering/execution/SYSTEMS_ENGINEERING_PROOF_LEDGER.json",
+        "engineering/execution/handoffs/"
+      ]
+    },
+    {
+      "repository": "CIBOTFLOW/Luzione-UI",
+      "state": "INDEPENDENT_RETURN_EVIDENCE_MISSING",
+      "evidence_refs": []
+    },
+    {
+      "repository": "CIBOTFLOW/Sultan-OS",
+      "state": "INDEPENDENT_RETURN_EVIDENCE_MISSING",
+      "evidence_refs": []
+    }
+  ],
+  "representative_journeys": [
+    {
+      "journey_id": "tenant-command-to-authoritative-readback",
+      "status": "QUARANTINED",
+      "missing_boundaries": [
+        "exact UI candidate SHA and repository-authored evidence",
+        "exact Sultan candidate SHA and repository-authored evidence",
+        "shared exact-contract positive journey",
+        "tenant/authority negative journey",
+        "failure and bounded retry/recovery journey",
+        "authoritative source readback"
+      ]
+    },
+    {
+      "journey_id": "release-to-causal-recovery-navigation",
+      "status": "QUARANTINED",
+      "missing_boundaries": [
+        "deployed exact-version UI navigation evidence",
+        "Sultan receipt/trace emission evidence",
+        "failure-to-recovery causal chain",
+        "source readback linked to exact release evidence"
+      ]
+    }
+  ],
+  "strongest_claim": "No cross-system journey is certified. The API-owned certification semantics are locally testable; consumer execution remains unproven.",
+  "irreversible_effects": []
+}

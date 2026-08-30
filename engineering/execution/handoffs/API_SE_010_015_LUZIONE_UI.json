@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_SE_010_015_TO_LUZIONE_UI_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "fdb6f452bc4e117aeaa697265af70d3518ff8daf",
+  "producer_ref": "codex/api-se-001-topology-inventory",
+  "contract_name": "slo-and-zero-tolerance-security-evidence",
+  "contract_version": "luzione-slo-registry/v1 + luzione-security-controls/v1",
+  "consumer_repository": "CIBOTFLOW/Luzione-UI",
+  "required_consumer_behavior": [
+    "Render SLI source, window, target and evidence maturity separately; never present a provisional target or local metric shape as production-observed performance.",
+    "Keep CONTRACT_ONLY business indicators visibly unmeasured until the canonical mutation/readback owner is resolved.",
+    "Treat missing, unknown or failed zero-tolerance security evidence as blocking and never offset it with availability budget.",
+    "Do not expose raw probes, credentials, tenant/customer data or sensitive evidence through the UI."
+  ],
+  "acceptance_proof_needed": ["exact UI SHA", "known-bad provisional-as-production rendering rejection", "known-bad security-budget rejection", "safe aggregate security evidence display"],
+  "producer_evidence_refs": ["src/modules/platform-slo/tests/registry.test.ts", "src/modules/platform-security-controls/tests/registry.test.ts", "GET /api/v1/catalog"],
+  "known_limitations": ["No rolling production metric windows, dashboards or alerts are configured.", "No deployed security denial probes were exercised.", "The API producer has not inspected the UI repository."]
+}

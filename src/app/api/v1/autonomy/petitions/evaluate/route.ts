@@ -1,8 +1,9 @@
 import { requireServiceActor } from "@/lib/api/actor";
-import { apiResponse, requestId } from "@/lib/api/http";
+import { apiResponse, createRequestIdentity } from "@/lib/api/http";
 import { AutonomyRequestError } from "@/modules/autonomy/parser";
 import { evaluateConstitutionalPetition } from "@/modules/autonomy/petition";
 import { parseConstitutionalPetitionRequest } from "@/modules/autonomy/petitionParser";
+import { bindAuthenticatedRequestIdentity } from "@/modules/platform-contracts/requestIdentity";
 
 export const dynamic = "force-dynamic";
 
@@ -16,9 +17,14 @@ function statusFor(error: unknown) {
 }
 
 export async function POST(request: Request) {
-  const id = requestId(request.headers);
+  let identity = createRequestIdentity(request.headers);
   try {
     const actor = await requireServiceActor(request.headers);
+    identity = bindAuthenticatedRequestIdentity(identity, actor, {
+      authorityClass: "A0",
+      capability: "sultan.petition.evaluate",
+      purpose: "evaluate-constitutional-petition",
+    });
     const declaredLength = Number(request.headers.get("content-length") ?? "0");
     if (Number.isFinite(declaredLength) && declaredLength > MAX_REQUEST_BYTES) {
       throw new AutonomyRequestError("INVALID_REQUEST", "Request body is too large.");
@@ -39,13 +45,13 @@ export async function POST(request: Request) {
       ),
       externalEffectsAuthorized: false,
       ok: true,
-    }, { requestId: id });
+    }, { requestIdentity: identity });
   } catch (error) {
     return apiResponse({
       code: error instanceof AutonomyRequestError ? error.code : "PETITION_EVALUATION_FAILED",
       externalEffectsAuthorized: false,
       message: error instanceof Error ? error.message : "Constitutional petition evaluation failed closed.",
       ok: false,
-    }, { requestId: id, status: statusFor(error) });
+    }, { requestIdentity: identity, status: statusFor(error) });
   }
 }

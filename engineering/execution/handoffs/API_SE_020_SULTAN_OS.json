@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_SE_020_TO_SULTAN_OS_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "fae8b4509ba2e486ddc5ca2e1644dd10bbfa155b",
+  "producer_ref": "codex/api-se-001-topology-inventory",
+  "contract_name": "production-readiness-certification",
+  "contract_version": "luzione-production-readiness-certification/v1",
+  "consumer_repository": "CIBOTFLOW/Sultan-OS",
+  "required_consumer_behavior": [
+    "Return fresh Sultan-authored release evidence bound to the exact Sultan and API candidate SHAs.",
+    "Include model/tool/provider positive, negative, failure, bounded recovery and authoritative-readback observations plus open failures and uncertainty.",
+    "Never treat model output, tool acknowledgement, trace emission, configuration or API-authored evidence as a production observation.",
+    "Preserve the API_SE_019 journey quarantine until independent UI and Sultan evidence certifies the same exact-contract journey."
+  ],
+  "acceptance_proof_needed": [
+    "exact Sultan and API release SHAs",
+    "fresh preview and production runtime observations",
+    "negative/failure/recovery model and tool journey evidence",
+    "authoritative business/provider readback",
+    "rollback/recovery posture and open-defect inventory"
+  ],
+  "producer_evidence_refs": [
+    "src/modules/platform-readiness/certification.ts",
+    "engineering/execution/readiness/API_SE_020_PRODUCTION_READINESS_20260829.json",
+    "docs/platform-engineering/API_SE_020_PRODUCTION_READINESS_SCORECARD_20260829.md"
+  ],
+  "known_limitations": [
+    "The API scorecard is NOT_READY and NOT_FINAL.",
+    "No production deployment or consumer journey was performed.",
+    "API evidence is local only."
+  ]
+}

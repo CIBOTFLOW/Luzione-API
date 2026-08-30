@@ -1,3 +1,5 @@
+import { deriveDesiredObservedState } from "@/modules/platform-contracts/stateContract";
+
 export type SultanRuntimeAggregate = {
   agentRunCount: number;
   agreementCount: number;
@@ -104,6 +106,39 @@ export function deriveSultanRuntimeStatus(
       ? "DEGRADED"
       : "ACTIVE";
 
+  const configuredConnectorState = (input: {
+    connectedCount: number;
+    nextAction: string;
+    provider: string;
+  }) => deriveDesiredObservedState({
+    desiredSource: "canonical Postgres connection registry",
+    desiredState: input.connectedCount > 0 ? "CONNECTED" : "NOT_CONFIGURED",
+    evidenceRefs: [`connection-count:${input.connectedCount}`],
+    freshnessMs: null,
+    nextAction: input.nextAction,
+    now: observedAt,
+    observedAt: null,
+    observedSource: null,
+    observedState: null,
+    owner: "CIBOTFLOW/Luzione-API integration owner",
+    scope: `provider.${input.provider}`,
+  });
+  const shopifyState = deriveDesiredObservedState({
+    desiredSource: "P113 catalog projection policy",
+    desiredState: "CURRENT",
+    evidenceRefs: ["public.p113_catalog_sync_runs", "public.p113_catalog_search_projections"],
+    freshnessMs: 48 * 60 * 60 * 1_000,
+    nextAction: shopifyStatus === "ACTIVE"
+      ? "Continue source-count and cursor reconciliation."
+      : "Run an authenticated Shopify sync and reconcile source counts before using the projection.",
+    now: observedAt,
+    observedAt: aggregate.latestShopifySyncAt,
+    observedSource: aggregate.latestShopifySyncAt ? "canonical Postgres Shopify sync ledger" : null,
+    observedState: shopifyStatus === "ACTIVE" ? "CURRENT" : shopifyStatus,
+    owner: "CIBOTFLOW/Luzione-API catalog projection owner",
+    scope: "provider.shopify.catalog-projection",
+  });
+
   return {
     overallStatus,
     observedAt,
@@ -149,16 +184,31 @@ export function deriveSultanRuntimeStatus(
         status: aggregate.googleDriveConnectionCount > 0 ? "CONNECTED" : "NOT_AVAILABLE",
         connectedAccountCount: aggregate.googleDriveConnectionCount,
         generationVerified: false,
+        stateContract: configuredConnectorState({
+          connectedCount: aggregate.googleDriveConnectionCount,
+          nextAction: "Perform authoritative Google Drive reachability and artifact readback before reporting observed connectivity.",
+          provider: "google-drive",
+        }),
       },
       email: {
         status: aggregate.gmailConnectionCount > 0 ? "CONNECTED" : "NOT_AVAILABLE",
         connectedAccountCount: aggregate.gmailConnectionCount,
         sendAuthority: "APPROVAL_REQUIRED",
+        stateContract: configuredConnectorState({
+          connectedCount: aggregate.gmailConnectionCount,
+          nextAction: "Perform authoritative Gmail reachability/readback before reporting observed connectivity or send readiness.",
+          provider: "gmail",
+        }),
       },
       airtable: {
         status: aggregate.airtableConnectionCount > 0 ? "CONNECTED" : "NOT_AVAILABLE",
         connectedAccountCount: aggregate.airtableConnectionCount,
         role: "TRANSITIONAL_WORKSPACE_ONLY",
+        stateContract: configuredConnectorState({
+          connectedCount: aggregate.airtableConnectionCount,
+          nextAction: "Perform authoritative Airtable reachability/readback before reporting observed connectivity.",
+          provider: "airtable",
+        }),
       },
       shopify: {
         status: shopifyStatus,
@@ -168,6 +218,7 @@ export function deriveSultanRuntimeStatus(
         latestSyncStatus: aggregate.latestShopifySyncStatus,
         latestSyncAt: aggregate.latestShopifySyncAt,
         syncAgeHours: shopifySyncAgeHours === null ? null : Number(shopifySyncAgeHours.toFixed(2)),
+        stateContract: shopifyState,
       },
     },
     proposals: {

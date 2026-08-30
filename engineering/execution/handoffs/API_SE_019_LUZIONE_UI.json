@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_SE_019_TO_LUZIONE_UI_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "a8fa418e7e83d2857abe45e3aaa354b97d7e321a",
+  "producer_ref": "codex/api-se-001-topology-inventory",
+  "contract_name": "cross-system-journey-certification",
+  "contract_version": "luzione-cross-system-journey-certification/v1",
+  "consumer_repository": "CIBOTFLOW/Luzione-UI",
+  "required_consumer_behavior": [
+    "Return a UI-authored evidence bundle bound to the exact UI candidate SHA and every exact API contract version exercised.",
+    "Provide separate artifact references for positive, tenant/authority negative, failure, recovery and authoritative-readback cases.",
+    "Do not treat the API-authored handoff, provider acknowledgement, local component tests or a rendered success state as consumer integration proof.",
+    "Keep unsupported or stale journey evidence quarantined."
+  ],
+  "acceptance_proof_needed": [
+    "exact UI SHA",
+    "repository-authored artifact references",
+    "positive and tenant/authority negative journeys",
+    "failure and recovery journey",
+    "authoritative business/provider readback"
+  ],
+  "producer_evidence_refs": [
+    "src/modules/platform-journeys/certification.ts",
+    "docs/platform-engineering/CROSS_SYSTEM_JOURNEY_CERTIFICATION_V1.md",
+    "engineering/execution/journeys/API_SE_019_CERTIFICATION_20260829.json"
+  ],
+  "known_limitations": [
+    "No UI-authored return evidence exists in this repository.",
+    "No cross-system journey is currently certified.",
+    "The producer contract is locally proven only."
+  ]
+}

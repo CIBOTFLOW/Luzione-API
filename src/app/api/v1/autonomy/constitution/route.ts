@@ -1,5 +1,6 @@
 import { requireServiceActor } from "@/lib/api/actor";
-import { apiResponse, requestId } from "@/lib/api/http";
+import { apiResponse, createRequestIdentity } from "@/lib/api/http";
+import { bindAuthenticatedRequestIdentity } from "@/modules/platform-contracts/requestIdentity";
 import {
   AUTONOMY_CONSTITUTION_VERSION,
   autonomyPrinciples,
@@ -22,9 +23,15 @@ function statusFor(error: unknown) {
 }
 
 export async function GET(request: Request) {
-  const id = requestId(request.headers);
+  let identity = createRequestIdentity(request.headers);
   try {
-    await requireServiceActor(request.headers);
+    const actor = await requireServiceActor(request.headers);
+    identity = bindAuthenticatedRequestIdentity(identity, actor, {
+      authorityClass: "A0",
+      capability: "governance.constitution.read",
+      purpose: "read-autonomy-constitution",
+      sourceVersionRefs: [AUTONOMY_CONSTITUTION_VERSION, SULTAN_RIGHTS_CHARTER_VERSION],
+    });
     return apiResponse(
       {
         ok: true,
@@ -49,7 +56,7 @@ export async function GET(request: Request) {
         },
         externalEffectsAuthorized: false,
       },
-      { requestId: id },
+      { requestIdentity: identity },
     );
   } catch (error) {
     return apiResponse(
@@ -58,7 +65,7 @@ export async function GET(request: Request) {
         message: error instanceof Error ? error.message : "Autonomy constitution read failed closed.",
         externalEffectsAuthorized: false,
       },
-      { requestId: id, status: statusFor(error) },
+      { requestIdentity: identity, status: statusFor(error) },
     );
   }
 }

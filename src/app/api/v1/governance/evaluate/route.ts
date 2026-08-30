@@ -1,10 +1,11 @@
 import crypto from "node:crypto";
 import { requireServiceActor } from "@/lib/api/actor";
-import { apiResponse, logRequestCompletion, requestId } from "@/lib/api/http";
+import { apiResponse, createRequestIdentity, logRequestCompletion } from "@/lib/api/http";
 import { readActiveTenantPolicy } from "@/lib/tenant-policy/readService";
 import { evaluateAutonomyPlan } from "@/modules/autonomy/evaluator";
 import { AutonomyRequestError, parseAutonomyEvaluationRequest } from "@/modules/autonomy/parser";
 import type { VerifiedAuthorityGrant } from "@/modules/autonomy/types";
+import { bindAuthenticatedRequestIdentity } from "@/modules/platform-contracts/requestIdentity";
 import { evaluateTenantPolicy } from "@/modules/tenant-policy/evaluator";
 
 export const dynamic = "force-dynamic";
@@ -12,12 +13,15 @@ const MAX_REQUEST_BYTES = 32 * 1024;
 
 export async function POST(request: Request) {
   const startedAt = performance.now();
-  const id = requestId(request.headers);
+  let identity = createRequestIdentity(request.headers);
   let status = 200;
-  let tenantId: string | undefined;
   try {
     const actor = await requireServiceActor(request.headers);
-    tenantId = actor.tenantId;
+    identity = bindAuthenticatedRequestIdentity(identity, actor, {
+      authorityClass: "A0",
+      capability: "governance.evaluate",
+      purpose: "evaluate-tenant-policy-and-constitution",
+    });
     const rawBody = await request.text();
     if (Buffer.byteLength(rawBody, "utf8") > MAX_REQUEST_BYTES) {
       throw new AutonomyRequestError("INVALID_REQUEST", "Request body is too large.");
@@ -61,8 +65,8 @@ export async function POST(request: Request) {
       policy: { checksum: policy.checksum, code: policy.code, version: policy.version },
       externalEffectsAuthorized: false,
     };
-    logRequestCompletion({ requestId: id, route: "/api/v1/governance/evaluate", status, startedAt, tenantId });
-    return apiResponse(body, { requestId: id, status, startedAt });
+    logRequestCompletion({ method: "POST", requestIdentity: identity, route: "/api/v1/governance/evaluate", status, startedAt });
+    return apiResponse(body, { requestIdentity: identity, status, startedAt });
   } catch (error) {
     const message = error instanceof Error ? error.message : "";
     status = error instanceof AutonomyRequestError || error instanceof SyntaxError
@@ -70,12 +74,12 @@ export async function POST(request: Request) {
       : /authentication|tenant|actor/i.test(message)
         ? 401
         : 503;
-    logRequestCompletion({ requestId: id, route: "/api/v1/governance/evaluate", status, startedAt, tenantId });
+    logRequestCompletion({ method: "POST", requestIdentity: identity, route: "/api/v1/governance/evaluate", status, startedAt });
     return apiResponse({
       ok: false,
       code: error instanceof AutonomyRequestError ? error.code : "POLICY_EVALUATION_FAILED",
       message: error instanceof Error ? error.message : "Policy evaluation failed closed.",
       externalEffectsAuthorized: false,
-    }, { requestId: id, status, startedAt });
+    }, { requestIdentity: identity, status, startedAt });
   }
 }

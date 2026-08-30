@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_SE_004_005_007_TO_SULTAN_OS_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "2d90899d3d432e8f8cab74c050d60c285a98db82",
+  "producer_ref": "codex/api-se-001-topology-inventory",
+  "contract_name": "request-identity-failure-and-reconciliation-state",
+  "contract_version": "luzione-request-identity/v1 + luzione-platform-failure/v1 + luzione-reconciliation-state/v1",
+  "published_paths": ["all current /api/v1 responses", "GET /api/v1/healthz", "GET /api/v1/readyz", "GET /api/v1/sultan/runtime-status"],
+  "consumer_repository": "CIBOTFLOW/Sultan-OS",
+  "required_consumer_behavior": [
+    "Propagate request, correlation and W3C trace lineage across model and tool calls while accepting server-derived actor and authority context as canonical.",
+    "Use failure.retry as bounded disposition; never let a model convert HUMAN, NEVER or unknown retry values into automatic execution.",
+    "Keep configured connectors UNKNOWN until authoritative provider observation exists and respect freshness deadlines.",
+    "Publish provider and workflow recovery as RECONCILING or BLOCKED only with evidence and an accountable owner/next action."
+  ],
+  "acceptance_proof_needed": [
+    "exact Sultan SHA and API contract versions",
+    "request lineage across one model/tool path",
+    "known-bad model-initiated retry rejection",
+    "configured-but-unobserved provider proof",
+    "stale observation and recovery-state proof"
+  ],
+  "producer_evidence_refs": [
+    "src/modules/platform-contracts/tests/execution-contracts.test.ts",
+    "src/lib/tests/sultan-runtime-status.test.ts",
+    "docs/platform-engineering/REQUEST_IDENTITY_AND_CORRELATION_V1.md",
+    "docs/platform-engineering/UNIVERSAL_FAILURE_AND_RETRY_V1.md",
+    "docs/platform-engineering/DESIRED_OBSERVED_RECONCILIATION_STATE_V1.md"
+  ],
+  "known_limitations": [
+    "The producer has not inspected or modified the Sultan OS repository.",
+    "Connector observation is still absent for Gmail, Drive and Airtable.",
+    "No telemetry backend or automatic retry engine is added."
+  ]
+}

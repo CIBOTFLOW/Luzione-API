@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_SE_001_TO_SULTAN_OS_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "f9bdff24c09e22f1a3f514ed30deb0590eb20792",
+  "producer_ref": "codex/api-se-001-topology-inventory",
+  "contract_name": "luzione-api-topology/v1",
+  "contract_version": 1,
+  "published_path": "engineering/execution/LUZIONE_API_TOPOLOGY_INVENTORY_V1.json",
+  "consumer_repository": "CIBOTFLOW/Sultan-OS",
+  "required_consumer_behavior": [
+    "Inventory Sultan model, agent, tool, memory, evaluation and provider runtimes plus every API call and direct operational write.",
+    "Treat the current main autonomy/governance routes as evaluate-only and PR #31 command/model/ledger routes as pending until a merged API handoff publishes them.",
+    "Report direct database or provider mutation paths that bypass the API command/readback boundary.",
+    "Map Sultan status claims to their real evidence source and flag any model output used as authority or finality."
+  ],
+  "compatibility_expectation": "Sultan owns AI runtime semantics and may emit intent/evidence, but API-owned identity, authority, commands, failures, receipts and readiness meanings remain canonical.",
+  "acceptance_proof_needed": [
+    "exact Sultan SHA and component/dependency inventory",
+    "negative proof that Sultan cannot supply tenant, approval or lower effect class",
+    "inventory of direct provider and Postgres effects",
+    "mapping of cognition/learning/model/provider status to authoritative observations and freshness"
+  ],
+  "producer_evidence_refs": [
+    "docs/platform-engineering/CROSS_SYSTEM_TOPOLOGY_AND_OWNERSHIP_V1.md",
+    "src/modules/platform-topology/tests/topology-inventory.test.ts"
+  ],
+  "known_limitations": [
+    "The API session did not inspect or edit the Sultan OS repository.",
+    "The main API runtime-status endpoint is aggregate readback, not proof of Sultan consumer integration.",
+    "PR #31 and its dependent Sultan runtime PR remain draft/pending evidence."
+  ],
+  "remaining_uncertainty": [
+    "Which Sultan paths still call providers or operational stores directly.",
+    "Whether all model/tool failures map to a stable shared failure contract.",
+    "Whether Sultan deployment identity can currently obtain a valid production workload token."
+  ]
+}

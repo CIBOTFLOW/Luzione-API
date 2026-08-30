@@ -11,6 +11,8 @@
     "typecheck": "tsc --noEmit",
     "test": "node --import tsx --test src/lib/tests/*.test.ts src/modules/*/tests/*.test.ts",
     "test:security-posture": "node --import tsx --test src/lib/tests/*.test.ts src/modules/security-posture/tests/*.test.ts",
+    "test:taxonomy": "node --import tsx --test src/modules/platform-testing/tests/taxonomy.test.ts",
+    "performance:local": "node --import tsx scripts/run-http-performance-profile.ts",
     "verify": "npm run typecheck && npm run lint && npm test && npm run build",
     "compliance:verify": "node scripts/verify-compliance.mjs"
   },

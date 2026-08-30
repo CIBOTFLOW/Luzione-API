@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_SE_010_015_TO_SULTAN_OS_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "fdb6f452bc4e117aeaa697265af70d3518ff8daf",
+  "producer_ref": "codex/api-se-001-topology-inventory",
+  "contract_name": "slo-and-zero-tolerance-security-evidence",
+  "contract_version": "luzione-slo-registry/v1 + luzione-security-controls/v1",
+  "consumer_repository": "CIBOTFLOW/Sultan-OS",
+  "required_consumer_behavior": [
+    "Return model, agent, tool and provider SLIs with stable bounded dimensions, explicit windows/owners and evidence maturity through an exact-version handoff.",
+    "Do not let model quality, latency or availability budgets excuse authority, privacy, tenancy, secret or prohibited-effect failures.",
+    "Treat missing, unknown or failed zero-tolerance evidence as blocking and keep raw prompt/tool/security evidence in its protected canonical store.",
+    "Never infer production observation from API local tests or a model-generated claim."
+  ],
+  "acceptance_proof_needed": ["exact Sultan SHA", "bounded model/tool/provider SLI definitions", "known-bad security-budget rejection", "exact-release protected security evidence readback"],
+  "producer_evidence_refs": ["src/modules/platform-slo/tests/registry.test.ts", "src/modules/platform-security-controls/tests/registry.test.ts", "GET /api/v1/catalog"],
+  "known_limitations": ["No Sultan model/tool/provider measurements were observed.", "No deployed security denial probes were exercised.", "The API producer has not inspected Sultan OS."]
+}

@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_SE_011_013_TO_LUZIONE_UI_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "c5c0dd52b533807df5545c64ae9602ff8676d507",
+  "producer_ref": "codex/api-se-001-topology-inventory",
+  "contract_name": "readiness-evidence-and-performance-program",
+  "contract_version": "luzione-readiness-evidence/v1 + luzione-performance-program/v1",
+  "consumer_repository": "CIBOTFLOW/Luzione-UI",
+  "required_consumer_behavior": [
+    "Render source, threshold, actual value, owner, freshness, environment, exact SHA and evidence tier without rounding CONFIGURED or LOCAL_PROVEN into production readiness.",
+    "Treat stale, missing or failed blocking evidence as not ready and preserve the separate dependency-readiness and security-readiness meanings.",
+    "Return browser/journey performance profiles and exact-SHA receipts through a versioned handoff; do not use API localhost liveness results as UI capacity evidence.",
+    "Reject remote or effectful performance targets unless separately authorized and isolated."
+  ],
+  "acceptance_proof_needed": ["exact UI SHA", "stale and configured-as-production negative rendering", "browser journey baseline/burst/soak receipts", "failure/recovery behavior"],
+  "producer_evidence_refs": ["src/modules/platform-readiness/tests/evidence.test.ts", "src/modules/platform-performance/tests/program.test.ts", "engineering/execution/performance/API_SE_013_LOCAL_HTTP_20260829.json"],
+  "known_limitations": ["No UI repository was inspected.", "No preview or production evidence exists.", "API measurements cover only local liveness GET requests."]
+}

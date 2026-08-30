@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_SE_004_005_007_TO_LUZIONE_UI_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "2d90899d3d432e8f8cab74c050d60c285a98db82",
+  "producer_ref": "codex/api-se-001-topology-inventory",
+  "contract_name": "request-identity-failure-and-reconciliation-state",
+  "contract_version": "luzione-request-identity/v1 + luzione-platform-failure/v1 + luzione-reconciliation-state/v1",
+  "published_paths": ["all current /api/v1 responses", "GET /api/v1/healthz", "GET /api/v1/readyz", "GET /api/v1/sultan/runtime-status"],
+  "consumer_repository": "CIBOTFLOW/Luzione-UI",
+  "required_consumer_behavior": [
+    "Propagate bounded request, correlation and W3C trace identifiers without attempting to set actor, tenant, purpose, capability or authority context.",
+    "Branch retry UX on failure.retry and fail closed on unknown domain, class, retry or severity values.",
+    "Render desired, observed, freshness and reconciliation separately; never label configuration as provider health.",
+    "Keep dependency readiness and security readiness distinct."
+  ],
+  "acceptance_proof_needed": [
+    "exact UI SHA and API contract versions",
+    "request/correlation propagation test",
+    "known-bad unknown failure enum rejection",
+    "configured-but-unobserved provider display test",
+    "stale and drifted state display test"
+  ],
+  "producer_evidence_refs": [
+    "src/modules/platform-contracts/tests/execution-contracts.test.ts",
+    "docs/platform-engineering/REQUEST_IDENTITY_AND_CORRELATION_V1.md",
+    "docs/platform-engineering/UNIVERSAL_FAILURE_AND_RETRY_V1.md",
+    "docs/platform-engineering/DESIRED_OBSERVED_RECONCILIATION_STATE_V1.md"
+  ],
+  "known_limitations": [
+    "The producer has not inspected or modified the UI repository.",
+    "No telemetry backend or automatic retry engine is added.",
+    "Existing response fields remain for compatibility."
+  ]
+}
