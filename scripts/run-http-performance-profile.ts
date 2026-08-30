@@ -60,6 +60,7 @@ async function main() {
     evaluation,
     strongestClaim: "LOCAL_MEASUREMENT_ONLY",
   }, null, 2));
+  if (evaluation.status === "FAIL") process.exitCode = 2;
 }
 
 main().catch((error: unknown) => {

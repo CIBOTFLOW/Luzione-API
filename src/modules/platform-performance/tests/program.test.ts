@@ -42,6 +42,7 @@ test("localhost harness is bounded and cannot target remote systems", () => {
   const script = readFileSync(scriptPath, "utf8");
   assert.match(script, /localhost|127\.0\.0\.1/);
   assert.match(script, /Remote performance targets are prohibited/);
+  assert.match(script, /evaluation\.status === "FAIL"/);
   assert.doesNotMatch(script, /method:\s*["']POST/);
   const catalog = readFileSync("src/app/api/v1/catalog/route.ts", "utf8");
   assert.match(catalog, /performanceProgram:/);
