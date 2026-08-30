@@ -3,6 +3,7 @@ import { runtimeConfig } from "@/lib/api/config";
 import { readRlsReadiness } from "@/lib/security-posture/readService";
 import { logRlsReadbackFailure } from "@/modules/security-posture/readbackFailure";
 import { deriveDesiredObservedState } from "@/modules/platform-contracts/stateContract";
+import { deriveReadinessEvidenceSummary, runtimeReadinessEvidenceContext, type ReadinessEvidence } from "@/modules/platform-readiness/evidence";
 
 export const dynamic = "force-dynamic";
 
@@ -37,6 +38,46 @@ export async function GET(request: Request) {
       ? "SECURITY_POSTURE_REQUIRED"
       : "FOUNDATION_CONFIGURATION_REQUIRED";
   const observedAt = new Date().toISOString();
+  const { environment, exactSha, observedTier } = runtimeReadinessEvidenceContext();
+  const configurationEvidence: ReadinessEvidence[] = [
+    ["database-configuration", "database connection configuration", config.databaseConfigured],
+    ["service-authentication-configuration", "service authentication configuration", config.serviceTokenConfigured],
+    ["continuation-signing-configuration", "continuation signing configuration", config.continuationSecretConfigured],
+  ].map(([evidenceId, threshold, passed]) => ({
+    actual: passed === true ? "CONFIGURED" : "MISSING",
+    environment,
+    evidenceId: String(evidenceId),
+    evidenceTier: "CONFIGURED",
+    exactSha,
+    impact: "BLOCKING",
+    observedAt,
+    owner: "Luzione API platform owner",
+    scope: "service.security-readiness",
+    source: "runtimeConfig",
+    sourceKind: "CONFIGURATION",
+    status: passed === true ? "PASS" : "FAIL",
+    threshold: String(threshold),
+    validForMs: 60_000,
+  }));
+  const readinessEvidence = deriveReadinessEvidenceSummary([
+    ...configurationEvidence,
+    {
+      actual: security?.status ?? "UNAVAILABLE",
+      environment,
+      evidenceId: "canonical-postgres-rls-readback",
+      evidenceTier: observedTier,
+      exactSha,
+      impact: "BLOCKING",
+      observedAt: security ? observedAt : null,
+      owner: "Luzione database and security owner",
+      scope: "service.security-readiness",
+      source: "canonical Postgres catalog",
+      sourceKind: "CANONICAL_READBACK",
+      status: securityReady ? "PASS" : securityReadbackError ? "UNKNOWN" : "FAIL",
+      threshold: "all expected server-only relations pass RLS/grant posture",
+      validForMs: 60_000,
+    },
+  ]);
   const stateContract = deriveDesiredObservedState({
     desiredSource: "luzione-api deployment readiness policy",
     desiredState: "READY",
@@ -82,6 +123,7 @@ export async function GET(request: Request) {
       externalEffectsAuthorized: false,
       observedAt,
       stateContract,
+      readinessEvidence,
     },
     { requestIdentity: identity, status: ready ? 200 : 503 },
   );

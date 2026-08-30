@@ -36,6 +36,14 @@ import {
   PLATFORM_SECURITY_CONTROL_REGISTRY_VERSION,
   securityControlRegistry,
 } from "@/modules/platform-security-controls/registry";
+import {
+  PLATFORM_READINESS_EVIDENCE_VERSION,
+  readinessEvidenceLaw,
+} from "@/modules/platform-readiness/evidence";
+import {
+  performanceProfileRegistry,
+  PLATFORM_PERFORMANCE_PROGRAM_VERSION,
+} from "@/modules/platform-performance/program";
 
 export async function GET(request: Request) {
   const identity = createRequestIdentity(request.headers);
@@ -99,6 +107,15 @@ export async function GET(request: Request) {
       securityControls: {
         contractVersion: PLATFORM_SECURITY_CONTROL_REGISTRY_VERSION,
         controls: securityControlRegistry,
+      },
+      readinessEvidence: {
+        contractVersion: PLATFORM_READINESS_EVIDENCE_VERSION,
+        law: readinessEvidenceLaw,
+        runtimeSurface: "GET /api/v1/healthz",
+      },
+      performanceProgram: {
+        contractVersion: PLATFORM_PERFORMANCE_PROGRAM_VERSION,
+        profiles: performanceProfileRegistry,
       },
       platformAreas,
       authority: {

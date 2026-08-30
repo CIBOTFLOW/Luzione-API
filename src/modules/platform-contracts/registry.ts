@@ -359,6 +359,36 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
   {
     compatibility: "NEW_MAJOR_FOR_BREAKING",
     consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
+    contractId: "readiness-evidence",
+    currentRuntime: true,
+    maturity: "IMPLEMENTED",
+    name: "Freshness-aware production truth and readiness evidence",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: [],
+    sourcePaths: [
+      "src/modules/platform-readiness/evidence.ts",
+      "src/app/api/v1/healthz/route.ts"
+    ],
+    version: "luzione-readiness-evidence/v1",
+  },
+  {
+    compatibility: "NEW_MAJOR_FOR_BREAKING",
+    consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
+    contractId: "performance-program",
+    currentRuntime: true,
+    maturity: "IMPLEMENTED",
+    name: "Performance workload profiles and bounded measurement evidence",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: [],
+    sourcePaths: [
+      "src/modules/platform-performance/program.ts",
+      "scripts/run-http-performance-profile.ts"
+    ],
+    version: "luzione-performance-program/v1",
+  },
+  {
+    compatibility: "NEW_MAJOR_FOR_BREAKING",
+    consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
     contractId: "release-evidence",
     currentRuntime: false,
     maturity: "SPECIFIED_ONLY",
