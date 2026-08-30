@@ -7,11 +7,11 @@ Registry version: `luzione-service-catalog/v1`
 
 ## Working contract
 
-The catalog publishes the two deployables proven by the API topology inventory: the Next.js API/engineering console and the additive Postgres migration bundle. Each descriptor carries owner, repository, runtime, criticality, truth scope, dependencies, contracts, SLI/SLO placeholders, runbooks, dashboards, health probes, data class, effect boundary, deployable reference and observed release SHA.
+The catalog publishes the two deployables proven by the API topology inventory: the Next.js API/engineering console and the additive Postgres migration bundle. Each descriptor carries owner, repository, runtime, criticality, truth scope, dependencies, contracts, SLI/SLO references, runbooks, dashboards, health probes, data class, effect boundary, deployable reference and observed release SHA.
 
 Dependencies are separate typed nodes for canonical Postgres, Vercel hosting/workload identity, indirect Shopify source, and the UI/Sultan consumers. UI and Sultan remain `UNVERIFIED_CONSUMER`; Shopify remains `INDIRECT_SOURCE`. No consumer runtime metadata is guessed.
 
-`lastObservedReleaseSha` remains null because local source/build evidence is not a production observation. Empty SLI/SLO/dashboard arrays are deliberate inputs to later projects, not implicit absence of ownership.
+`lastObservedReleaseSha` remains null because local source/build evidence is not a production observation. SLI/SLO references now resolve to the provisional API-owned registry; empty dashboard arrays remain an explicit future input, not implicit absence of ownership.
 
 The runbook registry resolves to bounded containment, diagnosis/recovery, verification and escalation guidance for API readiness, database/RLS, P113 projection and Sultan aggregate readback.
 

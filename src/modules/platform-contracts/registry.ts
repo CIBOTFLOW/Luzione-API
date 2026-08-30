@@ -328,6 +328,37 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
   {
     compatibility: "NEW_MAJOR_FOR_BREAKING",
     consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
+    contractId: "sli-slo-error-budget-registry",
+    currentRuntime: true,
+    maturity: "IMPLEMENTED",
+    name: "Platform, capability and business SLI/SLO/error-budget semantics",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: [],
+    sourcePaths: [
+      "src/modules/platform-slo/registry.ts",
+      "src/app/api/v1/catalog/route.ts"
+    ],
+    version: "luzione-slo-registry/v1",
+  },
+  {
+    compatibility: "NEW_MAJOR_FOR_BREAKING",
+    consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
+    contractId: "security-control-evidence",
+    currentRuntime: true,
+    maturity: "IMPLEMENTED",
+    name: "Zero-tolerance security control and denial-probe evidence registry",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: [],
+    sourcePaths: [
+      "src/modules/platform-security-controls/registry.ts",
+      "src/modules/security-posture/rlsPosture.ts",
+      "src/app/api/v1/security/rls-readiness/route.ts"
+    ],
+    version: "luzione-security-controls/v1",
+  },
+  {
+    compatibility: "NEW_MAJOR_FOR_BREAKING",
+    consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
     contractId: "release-evidence",
     currentRuntime: false,
     maturity: "SPECIFIED_ONLY",

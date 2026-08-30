@@ -26,6 +26,16 @@ import {
   telemetryAttributeLaw,
   telemetryMetricRegistry,
 } from "@/modules/platform-telemetry/telemetry";
+import {
+  errorBudgetLaw,
+  PLATFORM_SLO_REGISTRY_VERSION,
+  sliRegistry,
+  sloRegistry,
+} from "@/modules/platform-slo/registry";
+import {
+  PLATFORM_SECURITY_CONTROL_REGISTRY_VERSION,
+  securityControlRegistry,
+} from "@/modules/platform-security-controls/registry";
 
 export async function GET(request: Request) {
   const identity = createRequestIdentity(request.headers);
@@ -79,6 +89,16 @@ export async function GET(request: Request) {
       recoveryRegistry: {
         contractVersion: PLATFORM_RECOVERY_CONTRACT_VERSION,
         scopes: recoveryRegistry,
+      },
+      sloRegistry: {
+        contractVersion: PLATFORM_SLO_REGISTRY_VERSION,
+        errorBudgetLaw,
+        slis: sliRegistry,
+        slos: sloRegistry,
+      },
+      securityControls: {
+        contractVersion: PLATFORM_SECURITY_CONTROL_REGISTRY_VERSION,
+        controls: securityControlRegistry,
       },
       platformAreas,
       authority: {
