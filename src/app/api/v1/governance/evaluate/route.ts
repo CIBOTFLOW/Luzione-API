@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
-import { requireServiceActor } from "@/lib/api/actor";
 import { apiResponse, logRequestCompletion, requestId } from "@/lib/api/http";
+import { CanonicalActorError, requireCanonicalActor, requireWorkloadCapability } from "@/lib/control-plane/actor";
 import { readActiveTenantPolicy } from "@/lib/tenant-policy/readService";
 import { evaluateAutonomyPlan } from "@/modules/autonomy/evaluator";
 import { AutonomyRequestError, parseAutonomyEvaluationRequest } from "@/modules/autonomy/parser";
@@ -16,15 +16,20 @@ export async function POST(request: Request) {
   let status = 200;
   let tenantId: string | undefined;
   try {
-    const actor = await requireServiceActor(request.headers);
+    const actor = requireWorkloadCapability(
+      await requireCanonicalActor(request.headers),
+      "governance.evaluate",
+    );
     tenantId = actor.tenantId;
     const rawBody = await request.text();
     if (Buffer.byteLength(rawBody, "utf8") > MAX_REQUEST_BYTES) {
       throw new AutonomyRequestError("INVALID_REQUEST", "Request body is too large.");
     }
     const plan = parseAutonomyEvaluationRequest(JSON.parse(rawBody));
-    const policy = await readActiveTenantPolicy(actor.tenantId);
-    const tenantDecision = evaluateTenantPolicy({ actorType: actor.actorType, plan, policy });
+    const policy = await readActiveTenantPolicy(actor.tenantCode);
+    const actorType = actor.principal.principalType.toLowerCase() as "user" | "service" | "agent";
+    const actorId = actor.principal.identityId;
+    const tenantDecision = evaluateTenantPolicy({ actorType, plan, policy });
     let authorityGrant: VerifiedAuthorityGrant | undefined;
     if (tenantDecision.allowedByPolicy && plan.declaredEffectClass !== "A0" && plan.declaredEffectClass !== "A3" && plan.declaredEffectClass !== "A4") {
       authorityGrant = {
@@ -36,7 +41,7 @@ export async function POST(request: Request) {
         effectClassMaximum: plan.declaredEffectClass,
         expiresAt: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
         grantId: crypto.randomUUID(),
-        granteeActorId: actor.actorId,
+        granteeActorId: actorId,
         oneTime: plan.declaredEffectClass === "A2",
         purpose: plan.purpose,
         source: "POLICY_GRANT",
@@ -46,7 +51,7 @@ export async function POST(request: Request) {
     }
     const constitutionalDecision = tenantDecision.allowedByPolicy
       ? evaluateAutonomyPlan(plan, {
-          actor: { actorId: actor.actorId, actorType: actor.actorType, tenantId: actor.tenantId },
+          actor: { actorId, actorType, tenantId: actor.tenantId },
           authorityGrant,
           now: new Date().toISOString(),
         })
@@ -67,6 +72,8 @@ export async function POST(request: Request) {
     const message = error instanceof Error ? error.message : "";
     status = error instanceof AutonomyRequestError || error instanceof SyntaxError
       ? 400
+      : error instanceof CanonicalActorError
+        ? error.status
       : /authentication|tenant|actor/i.test(message)
         ? 401
         : 503;
