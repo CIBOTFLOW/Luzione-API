@@ -440,14 +440,14 @@
       "platform_project": "PRODUCTION_CONVERGENCE_WAVE_3",
       "title": "Provider Adapter and Worker Runtime",
       "priority": 490,
-      "status": "READY",
+      "status": "COMPLETE",
       "depends_on": ["API-PC-006"],
       "mutation_cone": ["providers", "workers", "outbox", "reconciliation", "operations"],
       "core_outcome": "Wrap existing integrations behind durable provider adapters and restart-safe workers with acknowledgement/readback separation.",
       "published_artifacts": ["provider adapter contract", "worker runtime", "reconciliation controls"],
       "required_evidence": ["sandbox/live canary", "ambiguous outcome reconciliation", "rollback", "operator visibility"],
       "irreversible_effects": ["live provider effects require explicit effect and release authority"],
-      "completion_evidence_ref": null
+      "completion_evidence_ref": "API_PC_011_LOCAL_PROVIDER_WORKER_20260831"
     },
     {
       "project_id": "API-PC-012",

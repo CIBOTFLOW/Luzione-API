@@ -92,6 +92,14 @@
       "entrypoint": "GET|POST /api/v1/commands/orders and GET|POST /api/v1/commands/fulfillment-intents"
     },
     {
+      "capabilityId": "provider-adapter-worker-runtime",
+      "owner": "CIBOTFLOW/Luzione-API",
+      "effectClass": "SANDBOX_ONLY_LIVE_EXTERNAL_EFFECT_DISABLED",
+      "runtimeState": "IMPLEMENTED_NOT_DEPLOYED_SANDBOX_AND_LIVE_DEFAULT_OFF",
+      "contractVersion": "luzione-provider-adapter/v0.1",
+      "entrypoint": "worker:providers and GET /api/v1/provider-operations"
+    },
+    {
       "capabilityId": "sultan-reasoning-and-memory",
       "owner": "CIBOTFLOW/Sultan-OS",
       "effectClass": "NO_CANONICAL_BUSINESS_WRITE",

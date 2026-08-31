@@ -31,3 +31,20 @@ function domainCommandTenantAllowlist() {
 export function domainCommandsEnabledForTenant(tenantId: string) {
   return runtimeConfig().mutationsEnabled && domainCommandTenantAllowlist().has(tenantId);
 }
+
+function allowlist(name: string) {
+  return new Set(
+    (process.env[name] ?? "")
+      .split(",")
+      .map((value) => value.trim())
+      .filter(Boolean),
+  );
+}
+
+export function providerAdapterEnabled(input: { destination: string; mode: "LIVE" | "SANDBOX"; tenantId: string }) {
+  const prefix = input.mode === "LIVE" ? "LUZIONE_API_PROVIDER_LIVE" : "LUZIONE_API_PROVIDER_SANDBOX";
+  return runtimeConfig().mutationsEnabled
+    && process.env[`${prefix}_ENABLED`] === "true"
+    && allowlist(`${prefix}_TENANTS`).has(input.tenantId)
+    && allowlist(`${prefix}_DESTINATIONS`).has(input.destination);
+}

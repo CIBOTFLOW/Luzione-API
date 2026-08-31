@@ -492,6 +492,18 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
     version: "luzione-order-fulfillment-intent/v0.1",
   },
   {
+    compatibility: "EXACT_VERSION",
+    consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
+    contractId: "provider-adapter-runtime",
+    currentRuntime: false,
+    maturity: "IMPLEMENTED_TRANSITIONAL",
+    name: "Typed provider adapter, restart-safe dispatch and exact source reconciliation boundary",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: [],
+    sourcePaths: ["src/modules/provider-runtime/contracts.ts", "src/modules/provider-runtime/runtime.ts", "src/lib/platform-guarantees/postgresWorkflowDeliveryStore.ts", "src/app/api/v1/provider-operations/route.ts", "supabase/migrations/20260831080000_provider_worker_runtime.sql"],
+    version: "luzione-provider-adapter/v0.1",
+  },
+  {
     compatibility: "NEW_MAJOR_FOR_BREAKING",
     consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
     contractId: "cross-system-journey-certification",

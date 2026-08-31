@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_PC_011_TO_LUZIONE_UI_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "e523fc6fc642f808d9a764f5828232dc1ecab827",
+  "producer_ref": "codex/api-pc-011-provider-worker",
+  "contract_name": "provider-adapter-runtime",
+  "contract_version": "luzione-provider-adapter/v0.1",
+  "consumer_repository": "CIBOTFLOW/Luzione-UI",
+  "consumer_project_paths": ["UI-PC-010"],
+  "stable_paths": {
+    "contract": "src/modules/provider-runtime/contracts.ts",
+    "operator_route": "GET /api/v1/provider-operations",
+    "causal_receipt_route": "GET /api/v1/platform-guarantees?receiptId=<receipt>",
+    "working_contract": "architecture/production-convergence/API_PC_011_WORKING_CONTRACT.md",
+    "manifest": "contracts/contract-manifest.v0.1.json"
+  },
+  "required_consumer_behavior": [
+    "Render provider intent, dispatch-start, acknowledgement, reconciliation, source confirmation, retry, block and dead letter as distinct states.",
+    "Never label provider acknowledgement or worker success as business completion; require SOURCE_CONFIRMED plus the authoritative readback reference.",
+    "Read only tenant-bound aggregates from provider-operations and use receipt readback for object-level evidence; do not query or mutate P110 tables directly.",
+    "Expose kill-switch, retry and reconciliation state without exposing payloads, credentials, raw provider errors or cross-tenant identifiers.",
+    "Do not add a browser dispatch endpoint or enable sandbox/live adapter configuration from UI state.",
+    "Keep current provider paths active until an exact adapter-specific shadow comparison, rollback and writer-retirement plan pass independently."
+  ],
+  "activation_requirements": [
+    "an approved real provider sandbox account and adapter-specific contract",
+    "exact API and worker release identity plus managed migration evidence",
+    "separate global, tenant and destination allowlists for the provider mode",
+    "adapter-specific idempotency, acknowledgement, exact source readback and compensation or non-compensability proof",
+    "documented rollback and kill-switch procedure",
+    "separate one-time human effect and release authority before any live canary"
+  ],
+  "acceptance_proof_needed": [
+    "exact UI and API SHAs plus luzione-provider-adapter/v0.1",
+    "operator rendering for pending, acknowledged, reconciling, confirmed, retry, blocked and dead-lettered states",
+    "configured/default-off state never displayed as connected or healthy",
+    "tenant and capability denial plus payload/error redaction",
+    "receipt navigation to exact provider acknowledgement and source readback evidence",
+    "tested kill-switch and rollback behavior without direct provider or P110 writes"
+  ],
+  "producer_evidence_refs": [
+    "src/modules/production-convergence/tests/provider-runtime.test.ts",
+    "scripts/validation/run-api-pc-011-disposable-proof.sh",
+    "architecture/production-convergence/API_PC_011_WORKING_CONTRACT.md",
+    "commit:e523fc6fc642f808d9a764f5828232dc1ecab827"
+  ],
+  "known_limitations": [
+    "No Luzione UI repository edit or independent operations-console journey was performed.",
+    "Only a deterministic local sandbox adapter exists; it is not a real provider.",
+    "The worker is implemented but not deployed, and sandbox/live modes remain default-off.",
+    "No real credential, provider canary, compensation, managed failover or production observation exists."
+  ]
+}
