@@ -9,7 +9,8 @@
     "requestContext": "contracts/context/request-context-v0.1.schema.json",
     "failure": "contracts/errors/platform-failure-v0.1.schema.json",
     "receiptReference": "contracts/receipts/receipt-reference-v0.1.schema.json",
-    "tableObject": "contracts/objects/luzione-table-object-registry-v1.schema.json"
+    "tableObject": "contracts/objects/luzione-table-object-registry-v1.schema.json",
+    "productionConvergenceEvidence": "contracts/operations/luzione-production-convergence-evidence-v0.1.schema.json"
   },
   "components": [
     "api-http-response/1.0",
@@ -21,6 +22,7 @@
     "luzione-proposal-quote-approval/v0.1",
     "luzione-order-fulfillment-intent/v0.1",
     "luzione-provider-adapter/v0.1",
+    "luzione-production-convergence-evidence/v0.1",
     "luzione-request-identity/v1",
     "luzione-table-object-registry/v1",
     "luzione-platform-failure/v1",

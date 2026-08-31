@@ -108,6 +108,14 @@
       "entrypoint": "GET /api/v1/security/rls-readiness"
     },
     {
+      "capabilityId": "production-operations-evidence",
+      "owner": "CIBOTFLOW/Luzione-API",
+      "effectClass": "NO_EFFECT_EVIDENCE_COMPILATION",
+      "runtimeState": "IMPLEMENTED_LOCAL_DASHBOARDS_AND_ALERTS_NOT_DEPLOYED",
+      "contractVersion": "luzione-production-convergence-evidence/v0.1",
+      "entrypoint": "GET /api/v1/catalog and npm run evidence:production"
+    },
+    {
       "capabilityId": "sultan-reasoning-and-memory",
       "owner": "CIBOTFLOW/Sultan-OS",
       "effectClass": "NO_CANONICAL_BUSINESS_WRITE",

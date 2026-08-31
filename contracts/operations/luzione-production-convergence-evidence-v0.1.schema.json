@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/operations/luzione-production-convergence-evidence-v0.1.schema.json",
+  "title": "Luzione Production Convergence Evidence v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contractVersion", "candidateSha", "environment", "evaluatedAt", "dashboardIds", "alertIds", "releaseRecord", "sloWindows", "recoveryObservations", "rollbackObservations", "securityObservations", "productionObservation", "deferredEvidence"],
+  "properties": {
+    "contractVersion": { "const": "luzione-production-convergence-evidence/v0.1" },
+    "candidateSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "environment": { "enum": ["LOCAL", "PREVIEW", "PRODUCTION"] },
+    "evaluatedAt": { "type": "string", "format": "date-time" },
+    "dashboardIds": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+    "alertIds": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+    "releaseRecord": { "type": "object" },
+    "sloWindows": { "type": "array", "items": { "$ref": "#/$defs/observation" } },
+    "recoveryObservations": { "type": "array", "items": { "$ref": "#/$defs/observation" } },
+    "rollbackObservations": { "type": "array", "items": { "$ref": "#/$defs/observation" } },
+    "securityObservations": { "type": "array", "items": { "$ref": "#/$defs/observation" } },
+    "productionObservation": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/observation" }] },
+    "deferredEvidence": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["blocking", "description"], "properties": { "blocking": { "type": "boolean" }, "description": { "type": "string", "minLength": 1 } } } }
+  },
+  "$defs": {
+    "observation": {
+      "type": "object",
+      "required": ["evidenceId", "exactSha", "observedAt", "sourceRef", "status"],
+      "properties": {
+        "evidenceId": { "type": "string", "minLength": 1 },
+        "exactSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "observedAt": { "type": "string", "format": "date-time" },
+        "sourceRef": { "type": "string", "minLength": 1 },
+        "status": { "enum": ["FAIL", "PASS", "UNKNOWN"] }
+      }
+    }
+  }
+}

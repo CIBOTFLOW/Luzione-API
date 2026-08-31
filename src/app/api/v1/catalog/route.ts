@@ -76,6 +76,12 @@ import {
   crossSystemJourneyCertificationLaw,
   CROSS_SYSTEM_JOURNEY_CERTIFICATION_VERSION,
 } from "@/modules/platform-journeys/certification";
+import {
+  operationalAlertRegistry,
+  operationalDashboardRegistry,
+  PLATFORM_OPERATIONS_REGISTRY_VERSION,
+} from "@/modules/platform-operations/registry";
+import { PRODUCTION_CONVERGENCE_EVIDENCE_VERSION } from "@/modules/platform-operations/evidence";
 
 export async function GET(request: Request) {
   const identity = createRequestIdentity(request.headers);
@@ -131,6 +137,13 @@ export async function GET(request: Request) {
         attributeLaw: telemetryAttributeLaw,
         contractVersion: PLATFORM_TELEMETRY_CONTRACT_VERSION,
         metrics: telemetryMetricRegistry,
+      },
+      operations: {
+        alerts: operationalAlertRegistry,
+        contractVersion: PLATFORM_OPERATIONS_REGISTRY_VERSION,
+        dashboards: operationalDashboardRegistry,
+        evidenceContractVersion: PRODUCTION_CONVERGENCE_EVIDENCE_VERSION,
+        evidenceSchemaPath: "contracts/operations/luzione-production-convergence-evidence-v0.1.schema.json",
       },
       recoveryRegistry: {
         contractVersion: PLATFORM_RECOVERY_CONTRACT_VERSION,

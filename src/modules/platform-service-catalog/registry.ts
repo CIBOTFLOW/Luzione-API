@@ -43,7 +43,7 @@ export const serviceCatalog: readonly ServiceDescriptor[] = Object.freeze([
   {
     consumedContracts: ["postgres-wire", "vercel-oidc", "shopify-p113-ingest"],
     criticalityTier: "TIER_1",
-    dashboards: [],
+    dashboards: ["luzione-api-runtime", "luzione-durable-delivery", "luzione-release-security-recovery"],
     dataClassification: "INTERNAL_AND_TENANT_RESTRICTED",
     dependencies: ["canonical-postgres", "luzione-ui-consumer", "shopify-source", "sultan-os-consumer", "vercel-hosting-identity"],
     deployableRef: "vercel.json",
@@ -52,9 +52,9 @@ export const serviceCatalog: readonly ServiceDescriptor[] = Object.freeze([
     humanOwnerRole: "Luzione API platform owner",
     lastObservedReleaseSha: null,
     name: "Luzione API and restricted engineering console",
-    publishedContracts: ["luzione-platform-contract-registry/v1", "luzione-source-of-truth-registry/v1", "luzione-table-object-registry/v1", "luzione-request-identity/v1", "luzione-platform-failure/v1", "luzione-reconciliation-state/v1", "luzione-service-catalog/v1", "luzione-slo-registry/v1", "luzione-security-controls/v1", "luzione-readiness-evidence/v1", "luzione-production-readiness-certification/v1", "luzione-performance-program/v1", "luzione-release-evidence/v1", "luzione-release-identity/v0.1", "luzione-api-contract/v0.1", "luzione-test-taxonomy/v1", "luzione-causal-navigation/v1", "luzione-cross-system-journey-certification/v1"],
+    publishedContracts: ["luzione-platform-contract-registry/v1", "luzione-source-of-truth-registry/v1", "luzione-table-object-registry/v1", "luzione-request-identity/v1", "luzione-platform-failure/v1", "luzione-reconciliation-state/v1", "luzione-service-catalog/v1", "luzione-slo-registry/v1", "luzione-security-controls/v1", "luzione-readiness-evidence/v1", "luzione-production-readiness-certification/v1", "luzione-performance-program/v1", "luzione-release-evidence/v1", "luzione-release-identity/v0.1", "luzione-production-convergence-evidence/v0.1", "luzione-api-contract/v0.1", "luzione-test-taxonomy/v1", "luzione-causal-navigation/v1", "luzione-cross-system-journey-certification/v1"],
     repository: "CIBOTFLOW/Luzione-API",
-    runbookRefs: ["api-readiness", "database-rls", "p113-catalog", "sultan-readback"],
+    runbookRefs: ["api-readiness", "database-rls", "postgres-restore", "p113-catalog", "sultan-readback"],
     runtime: "Next.js 16 on Node.js, deployed to Vercel iad1",
     serviceId: "luzione-api-nextjs",
     slis: ["api-http-success-ratio", "api-http-p95-duration", "p113-current-projection-ratio"],
@@ -76,7 +76,7 @@ export const serviceCatalog: readonly ServiceDescriptor[] = Object.freeze([
     name: "Luzione API additive Postgres migration bundle",
     publishedContracts: ["versioned SQL migrations"],
     repository: "CIBOTFLOW/Luzione-API",
-    runbookRefs: ["database-rls"],
+    runbookRefs: ["database-rls", "postgres-restore"],
     runtime: "PostgreSQL migration artifacts; no main-branch migration runner",
     serviceId: "luzione-api-schema-bundle",
     slis: [],
@@ -97,6 +97,7 @@ export const dependencyCatalog: readonly DependencyDescriptor[] = Object.freeze(
 export const runbookRegistry: readonly RunbookDescriptor[] = Object.freeze([
   { owner: "Luzione API platform owner", path: "docs/runbooks/API_READINESS.md", runbookId: "api-readiness", scopes: ["livez", "readyz", "healthz"], title: "API readiness triage" },
   { owner: "Luzione database and security owner", path: "docs/runbooks/DATABASE_AND_RLS.md", runbookId: "database-rls", scopes: ["Postgres", "RLS", "TLS"], title: "Database and RLS recovery" },
+  { owner: "Luzione database and recovery owner", path: "docs/runbooks/POSTGRES_RESTORE_DRILL.md", runbookId: "postgres-restore", scopes: ["logical restore", "fingerprint", "managed restore boundary"], title: "Postgres restore drill" },
   { owner: "Luzione catalog projection owner", path: "docs/runbooks/P113_CATALOG_PROJECTION.md", runbookId: "p113-catalog", scopes: ["Shopify", "P113", "reconciliation"], title: "P113 catalog projection recovery" },
   { owner: "Luzione Sultan integration owner", path: "docs/runbooks/SULTAN_RUNTIME_READBACK.md", runbookId: "sultan-readback", scopes: ["Sultan aggregate", "provider observation"], title: "Sultan runtime readback triage" },
 ]);

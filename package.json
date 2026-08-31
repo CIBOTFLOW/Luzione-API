@@ -14,6 +14,7 @@
     "test:taxonomy": "node --import tsx --test src/modules/platform-testing/tests/taxonomy.test.ts",
     "performance:local": "node --import tsx scripts/run-http-performance-profile.ts",
     "worker:providers": "node --import tsx scripts/run-provider-worker.ts",
+    "evidence:production": "node --import tsx scripts/validate-production-convergence-evidence.ts",
     "verify": "npm run typecheck && npm run lint && npm test && npm run build",
     "compliance:verify": "node scripts/verify-compliance.mjs"
   },

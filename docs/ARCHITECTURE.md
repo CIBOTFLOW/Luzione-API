@@ -43,6 +43,12 @@ The service connects directly to Postgres for canonical P110/P111 records. If Su
 
 The public health endpoint reports only aggregate pass/fail posture and returns 503 unless configuration and this RLS gate pass. Authorized callers may add `?activeProbes=true` to prove that `anon` and `authenticated` reads against both server-only and convergence relations fail with PostgreSQL `42501 permission_denied`. No row values, credentials or connection details are returned. Production migration application and deployed credential membership remain separate release-authorized operations.
 
+## Production operations evidence
+
+`luzione-production-convergence-evidence/v0.1` binds the telemetry, dashboard/alert, provisional SLO, release, security, restore and rollback contracts to one exact candidate SHA and environment. `GET /api/v1/catalog` publishes three provider-neutral dashboard definitions and seven alert definitions, all marked `DEFINED_NOT_DEPLOYED`. The offline validator refuses to promote local evidence into preview or production and keeps managed restore, preview rollback, production SLO windows, production security readback and post-release observation independently blocking.
+
+The API-PC-014 restore proof extends the disposable logical restore with exact migration reapplication and post-restore role/RLS/canonical-row readback. It is local portability evidence only; production backup, PITR, RPO/RTO, traffic rollback and production finality remain external release evidence.
+
 ## Autonomy boundary
 
 The autonomy constitution in `src/modules/autonomy` assigns every registered capability an effect class. A model or client may describe an intent, but it cannot choose a lower class, submit tenant or actor identity, assert approval, or mint authority.
