@@ -989,6 +989,66 @@
         "independent exact-version UI and Sultan command consumer tests",
         "managed preview migration and authenticated domain command evidence before release activation"
       ]
+    },
+    {
+      "proof_id": "API_PC_006_LOCAL_WORKFLOW_DELIVERY_20260831",
+      "project_id": "API-PC-006",
+      "recorded_at": "2026-08-31T03:10:27Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "df7de049d48b993635e7e7b51854da63b040e080",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The exact API candidate provides an additive fresh/upgrade P110/P111 workflow-delivery baseline and a tenant-bound worker store for restart leases, bounded retries, inbox deduplication, dead letters, reconciliation/readback and workflow version transitions; no worker, provider adapter or external effect is activated.",
+      "exercised_boundaries": [
+        "The API-PC-005 plus API-PC-006 migration chain applied to a fresh disposable PostgreSQL database.",
+        "The same chain upgraded the observed legacy shapes for command, outbox, inbox, delivery, DLQ, reconciliation and P111 workflow relations.",
+        "Thirteen workflow/delivery relations had RLS enabled and forced; a restricted tenant-b role saw no tenant-a workflow and could not insert a tenant-a inbox row.",
+        "A due outbox row was claimed once with lease evidence; a competing claim observed no eligible row; an expired lease returned to retryable state.",
+        "Ambiguous acknowledgement produced delivery and reconciliation evidence, and SOURCE_CONFIRMED was reached only with a source readback reference.",
+        "Inbox producer/message identity deduplicated and stale workflow state-version mutation changed no row.",
+        "The store source proves SKIP LOCKED claims for outbox, inbox and timers, lease ownership checks, bounded retry/DLQ routing, advisory-locked inbox admission and kill-switch admission.",
+        "Compliance verification, typecheck, clean lint, 166/166 tests and production build passed."
+      ],
+      "untested_boundaries": [
+        "managed or production Postgres migration application",
+        "real process crash and multi-host lease recovery",
+        "live worker activation and scheduling",
+        "provider adapter dispatch, acknowledgement and authoritative readback",
+        "operator DLQ review/replay",
+        "UI and Sultan consumer integration",
+        "representative throughput, failover and recovery objectives"
+      ],
+      "evidence_refs": [
+        "supabase/migrations/20260831030000_p110_p111_workflow_delivery_baseline.sql",
+        "src/lib/platform-guarantees/postgresWorkflowDeliveryStore.ts",
+        "src/modules/platform-guarantees/stateMachine.ts",
+        "src/modules/production-convergence/tests/workflow-delivery.test.ts",
+        "scripts/validation/api-pc-006-workflow-delivery.sql",
+        "architecture/production-convergence/API_PC_006_WORKING_CONTRACT.md",
+        "commit:df7de049d48b993635e7e7b51854da63b040e080"
+      ],
+      "failure_refs": ["API_PC_006_DYNAMIC_SQL_ASSERTION_20260831"],
+      "cross_repo_handoffs": ["API_PC_006_TO_LUZIONE_UI_V1", "API_PC_006_TO_SULTAN_OS_V1"],
+      "deferred_external_infra": [
+        "managed canonical Postgres",
+        "worker scheduler and provider sandboxes",
+        "independent consumer repositories",
+        "preview and production environments"
+      ],
+      "remaining_uncertainty": [
+        "Local transaction simulation does not establish multi-host crash recovery or production capacity.",
+        "The worker store is implemented but no runtime loop is activated.",
+        "Dead-letter replay remains deliberately operator/reconciliation gated and was not activated.",
+        "The broader draft control plane contains authority-v2 and provider-effect objects that remain outside this contract."
+      ],
+      "next_proof_needed": [
+        "API-PC-007 causal projection/readback and freshness proof",
+        "API-PC-011 provider adapter sandbox/reconciliation proof under explicit effect authority",
+        "independent UI and Sultan exact-version workflow consumer tests",
+        "managed preview migration plus restart/failover rehearsal before activation"
+      ]
     }
   ]
 }

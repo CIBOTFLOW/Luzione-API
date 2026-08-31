@@ -33,6 +33,19 @@ export function allowedCommandsFor(snapshot: FlowSnapshot) {
   return Object.keys(transitions[snapshot.state]) as FlowCommandType[];
 }
 
+export function nextWorkflowState(input: {
+  commandType: FlowCommandType;
+  currentState: WorkflowState;
+  killSwitchActive: boolean;
+}) {
+  if (input.killSwitchActive && !["CANCEL_FUTURE_WORK", "QUARANTINE_FLOW", "RECONCILE_SOURCE", "SUPERSEDE_FLOW"].includes(input.commandType)) {
+    throw new Error("Kill switch blocks this workflow command.");
+  }
+  const nextState = transitions[input.currentState][input.commandType];
+  if (!nextState) throw new Error(`${input.commandType} is not allowed from ${input.currentState}.`);
+  return nextState;
+}
+
 export function transitionFlow(input: {
   commandType: FlowCommandType;
   expectedStateVersion: number;
@@ -42,11 +55,11 @@ export function transitionFlow(input: {
   if (input.expectedStateVersion !== input.snapshot.stateVersion) {
     throw new Error(`Stale flow version: expected ${input.snapshot.stateVersion}, received ${input.expectedStateVersion}.`);
   }
-  if (input.snapshot.killSwitchActive && !["CANCEL_FUTURE_WORK", "QUARANTINE_FLOW", "RECONCILE_SOURCE", "SUPERSEDE_FLOW"].includes(input.commandType)) {
-    throw new Error("Kill switch blocks this workflow command.");
-  }
-  const nextState = transitions[input.snapshot.state][input.commandType];
-  if (!nextState) throw new Error(`${input.commandType} is not allowed from ${input.snapshot.state}.`);
+  const nextState = nextWorkflowState({
+    commandType: input.commandType,
+    currentState: input.snapshot.state,
+    killSwitchActive: input.snapshot.killSwitchActive,
+  });
   return {
     ...input.snapshot,
     lastTransitionAt: new Date(input.now).toISOString(),
