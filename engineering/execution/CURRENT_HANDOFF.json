@@ -2,10 +2,10 @@
   "schema_version": 2,
   "queue_id": "LUZIONE_API_SYSTEMS_ENGINEERING_V1",
   "repository": "CIBOTFLOW/Luzione-API",
-  "program_state": "IMPLEMENTATION_IN_PROGRESS",
-  "current_project": "API-PC-015",
-  "next_projects": ["API-PC-015"],
-  "next_action": "Merge the rebased API-PC-012 producer, then merge the independently proven Sultan consumer. API-PC-014 retains its bounded local operations evidence and external-production quarantine; API-PC-015 remains gated by those external observations. Next prove a signed tenant-bound Sultan read-only journey before any authority or effect promotion.",
+  "program_state": "S4_QUEUE_EXHAUSTED",
+  "current_project": null,
+  "next_projects": ["API-PC-014", "API-PC-015"],
+  "next_action": "Resume API-PC-014 only with an exact deployed preview candidate, managed recovery environment and authorized observation window. Revalidate the independent Sultan consumer against API-PC-012 hardening merge fe2430cccd8d3927996eea3e6f502acc9bb31547, including <agentId>:<agentVersion> credential identity and additive tenant-policy/context-verification fields, before a signed deployed HTTP canary. API-PC-015 remains dependency-blocked by API-PC-014's external quarantine and incomplete independent production evidence.",
   "canonical_program": "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md",
   "failure_ledger": "engineering/execution/SYSTEMS_ENGINEERING_FAILURE_LEDGER.json",
   "proof_ledger": "engineering/execution/SYSTEMS_ENGINEERING_PROOF_LEDGER.json",
@@ -33,13 +33,15 @@
     {
       "repository": "CIBOTFLOW/Sultan-OS",
       "sha": "123246edbab978c48b58a45e1936a039018da615",
-      "state": "BOUNDED_AGENT_CONTRACT_CONSUMER_CANDIDATE_PR_307",
+      "state": "BOUNDED_AGENT_CONTRACT_CONSUMER_CANDIDATE_PR_307_HARDENING_REVALIDATION_REQUIRED",
       "bounded_complete": [
         "SULTAN_SE_001",
         "API-PC-012 exact v0.1 consumer"
       ],
       "next": [
-        "merge Sultan PR #307",
+        "revalidate Sultan PR #307 against API hardening merge fe2430cccd8d3927996eea3e6f502acc9bb31547",
+        "use credential actor ID <agentId>:<agentVersion> and consume or tolerate additive policy/context-verification fields",
+        "merge Sultan PR #307 only after the hardening revalidation",
         "signed tenant-bound read-only API journey",
         "SULTAN_SE_002",
         "SULTAN_SE_003",
@@ -63,7 +65,8 @@
     "The 713-table production metadata snapshot is now bounded by an API-owned table-object contract: exactly 22 Supplier Portal browser surfaces have explicit capability ownership, while all other ownership, lifecycle and retirement decisions remain unclaimed.",
     "API-PC-013 converges thirty admitted P110/P111 and commercial/order relations on forced tenant RLS, removes browser and legacy service-role table authority, and publishes exact non-login API-runtime/provider-worker privilege ceilings; fresh and observed-shape local proofs pass without applying any production migration or credential membership.",
     "API-PC-014 publishes exact-SHA operations evidence, three dashboard definitions and seven alert definitions and proves a disposable logical restore with post-restore least-privilege and authoritative readback; the evaluator remains LOCAL_EVIDENCE_BOUNDED and productionReady=false.",
-    "API-PC-012 publishes exact v0.1 agent context/intent/policy/outcome contracts and a credential-bound no-effect evaluator; independent Sultan OS PR #307 consumes all four versions, prepares the exact authority-free request body and passes 13/13 focused tests at a Vercel-READY exact implementation SHA."
+    "API-PC-012 publishes exact v0.1 agent context/intent/policy/outcome contracts and a credential-bound no-effect evaluator; independent Sultan OS PR #307 consumes all four versions, prepares the exact authority-free request body and passes 13/13 focused tests at a Vercel-READY exact implementation SHA.",
+    "API-PC-012 hardening merge fe2430cccd8d3927996eea3e6f502acc9bb31547 removes client freshness authority, verifies FULFILLMENT Order context by tenant-scoped canonical readback, evaluates the active tenant policy, fixes credential-ID syntax and proves current/stale/policy/cross-tenant/identity/zero-write behavior in disposable Postgres."
   ],
   "deferred_external_infra": [
     "owner-authenticated UI representative journey replay",
@@ -94,14 +97,17 @@
     "API-PC-013 is locally proven only: role creation, grant convergence, forced RLS, exact runtime/worker ceilings, idempotent fresh/observed-shape migration and negative browser/missing-tenant/cross-tenant/worker-scope probes passed in disposable Postgres; managed migration, deployed login membership, credential rotation, UI/Sultan canaries and production observation remain unproven.",
     "API-PC-014 is locally proven and externally quarantined: the exact evidence bundle, operations registry, production build and logical restore/readback pass, while deployed telemetry/dashboards/alerts, exact production SLO windows, managed backup/PITR, preview rollback, production observation and independent consumers remain unproven.",
     "API_SE_003_BF1 is locally proven only: the API producer declares 22 of 713 observed table objects and keeps retirement fail closed, while UI/Sultan exact-version consumption, recurring source snapshots and deployed catalog evidence remain unobserved.",
-    "API-PC-012 is bounded integrated in code only: no signed live Sultan HTTP request, deployed workload credential, canonical context observation, business command receipt/readback, model-quality result or production autonomy is proven."
+    "API-PC-012 hardening is locally proven only: the disposable authenticated route-handler/Postgres journey is not a deployed signed workload-identity request; independent Sultan compatibility with the corrected credential ID and additive decision fields, managed canonical context, business command receipt/readback, model-quality results and production autonomy remain unproven."
   ],
-  "stop_code": null,
-  "updated_at": "2026-08-31T06:25:33.743Z",
+  "stop_code": "S4_QUEUE_EXHAUSTED",
+  "updated_at": "2026-08-31T18:32:00.000Z",
   "api_pc_012": {
     "status": "BOUNDED_INTEGRATED_PASS_NO_EFFECT",
-    "producer_candidate_sha": "7d015fffd0b3a099f83cc7a73e1af02bc4dd1e28",
-    "producer_pr": 49,
+    "producer_candidate_sha": "2249637d5359332e53b66b00fefba311146d0892",
+    "producer_pr": 52,
+    "producer_merge_sha": "fe2430cccd8d3927996eea3e6f502acc9bb31547",
+    "baseline_contract_pr": 49,
+    "baseline_contract_sha": "7d015fffd0b3a099f83cc7a73e1af02bc4dd1e28",
     "consumer_repository": "CIBOTFLOW/Sultan-OS",
     "consumer_implementation_sha": "6f477c0525141ced3ae87c9dc631e92a981af120",
     "consumer_proof_head_sha": "123246edbab978c48b58a45e1936a039018da615",
@@ -121,15 +127,26 @@
       "status": "PASS_CONTRACT_EQUIVALENT_CANDIDATE_F18F838"
     },
     "rebased_local_verification": {
-      "candidate_sha": "7d015fffd0b3a099f83cc7a73e1af02bc4dd1e28",
+      "candidate_sha": "2249637d5359332e53b66b00fefba311146d0892",
       "compliance_controls": "PASS_7",
       "typecheck": "PASS",
       "lint": "PASS",
-      "tests": "PASS_216_OF_216",
+      "tests": "PASS_220_OF_220",
       "production_build": "PASS"
     },
+    "canonical_context_proof": {
+      "environment": "local-disposable",
+      "authentication": "PASS_STATIC_SERVICE_TOKEN_NOT_SIGNED_DEPLOYED_WORKLOAD_IDENTITY",
+      "postgres_readback": "PASS_ORDER_AND_LINES_TENANT_SCOPED",
+      "current_context": "PASS_ADMIT_READ_ONLY",
+      "stale_version_and_hash": "PASS_ABSTAIN",
+      "tenant_policy_denial": "PASS_BLOCKED",
+      "cross_tenant": "PASS_UNKNOWN_ABSTAIN_NO_DISCLOSURE",
+      "identity_mismatch": "PASS_REDACTED_401",
+      "business_writes": "PASS_ZERO_FULFILLMENT_INTENTS_RECEIPTS_EVENTS_OUTBOX"
+    },
     "effect_authority": "NO_EFFECT",
-    "live_http_journey": "NOT_RUN",
+    "live_http_journey": "LOCAL_DISPOSABLE_ROUTE_HANDLER_AND_POSTGRES_PROVEN_DEPLOYED_SIGNED_HTTP_NOT_RUN",
     "business_receipt_readback": "NOT_APPLICABLE_TO_EVALUATION_ONLY_PATH_AND_NOT_PROVEN_FOR_EFFECTS",
     "production_observation": "NOT_RUN"
   }

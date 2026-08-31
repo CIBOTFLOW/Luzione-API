@@ -26,6 +26,8 @@
   "credential_actor_id_format": "<agentId>:<agentVersion>",
   "producer_hardening": {
     "candidate_sha": "2249637d5359332e53b66b00fefba311146d0892",
+    "pull_request": 52,
+    "merge_sha": "fe2430cccd8d3927996eea3e6f502acc9bb31547",
     "context_semantics": "Client freshness, sourceVersion and integrityHash are assertions. FULFILLMENT context at api:orders:<orderId> is admitted only after tenant-scoped canonical Order/line readback derives exact freshness and integrity.",
     "policy_semantics": "The active canonical tenant policy and the API autonomy constitution must both admit the plan.",
     "additive_response_fields": [
