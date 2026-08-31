@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_PC_004_TO_LUZIONE_UI_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "babde601a874a50d18ffdbb0fac7df11108c2b55",
+  "producer_ref": "codex/api-pc-004-authority-kernel",
+  "contract_name": "authority-subject",
+  "contract_version": "luzione-authority-subject/v0.1",
+  "consumer_repository": "CIBOTFLOW/Luzione-UI",
+  "stable_paths": {
+    "runtime": "src/lib/api/actor.ts",
+    "working_contract": "architecture/production-convergence/API_PC_004_WORKING_CONTRACT.md",
+    "manifest": "contracts/contract-manifest.v0.1.json",
+    "catalog": "GET /api/v1/catalog"
+  },
+  "required_consumer_behavior": [
+    "Use the production Vercel workload credential mapped by the API; identity headers may only repeat the mapped actor and tenant and cannot select another subject.",
+    "Request only capabilities assigned to the Luzione UI workload mapping.",
+    "Treat capability or tenant denial as fail-closed and never retry with broader caller-supplied identity."
+  ],
+  "acceptance_proof_needed": [
+    "exact UI and API candidate SHAs",
+    "positive protected-route request with the mapped workload credential",
+    "cross-tenant assertion denial",
+    "ungranted-capability denial"
+  ],
+  "producer_evidence_refs": [
+    "src/lib/tests/api-actor.test.ts",
+    "architecture/production-convergence/API_PC_004_WORKING_CONTRACT.md"
+  ],
+  "known_limitations": [
+    "No UI repository test or hosted authenticated request was executed.",
+    "The server-token mapping requires deployment configuration and has not been changed in production.",
+    "Canonical database membership persistence remains deferred."
+  ]
+}

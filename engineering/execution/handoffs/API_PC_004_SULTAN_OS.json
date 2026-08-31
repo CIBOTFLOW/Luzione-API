@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_PC_004_TO_SULTAN_OS_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "babde601a874a50d18ffdbb0fac7df11108c2b55",
+  "producer_ref": "codex/api-pc-004-authority-kernel",
+  "contract_name": "authority-subject",
+  "contract_version": "luzione-authority-subject/v0.1",
+  "consumer_repository": "CIBOTFLOW/Sultan-OS",
+  "stable_paths": {
+    "runtime": "src/lib/api/actor.ts",
+    "working_contract": "architecture/production-convergence/API_PC_004_WORKING_CONTRACT.md",
+    "manifest": "contracts/contract-manifest.v0.1.json",
+    "catalog": "GET /api/v1/catalog"
+  },
+  "required_consumer_behavior": [
+    "Authenticate with a server-configured workload identity whose actor, tenant and capability set are mapped by the API.",
+    "Never place model-proposed actor, tenant, capability or authority into identity assertion headers.",
+    "Treat missing capability as denial; model output cannot broaden the credential mapping or create a canonical grant."
+  ],
+  "acceptance_proof_needed": [
+    "exact Sultan and API candidate SHAs",
+    "positive protected-route request with a mapped Sultan workload credential",
+    "cross-tenant assertion denial",
+    "ungranted-capability and model-authority-smuggling denial"
+  ],
+  "producer_evidence_refs": [
+    "src/lib/tests/api-actor.test.ts",
+    "architecture/production-convergence/API_PC_004_WORKING_CONTRACT.md"
+  ],
+  "known_limitations": [
+    "No Sultan repository test or hosted authenticated request was executed.",
+    "No Sultan production credential mapping was modified.",
+    "Canonical database membership persistence remains deferred."
+  ]
+}
