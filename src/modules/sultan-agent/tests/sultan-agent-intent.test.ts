@@ -2,11 +2,27 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import type { ApiActor } from "@/lib/api/actor";
+import type { TenantPolicySnapshot } from "@/modules/tenant-policy/types";
 import { SULTAN_AGENT_CONTEXT_CONTRACT_VERSION, SULTAN_AGENT_INTENT_CONTRACT_VERSION } from "../contracts";
+import { canonicalOrderContextHash, verifySultanAgentContext, type SultanOrderReadback } from "../contextVerifier";
 import { evaluateSultanAgentIntent } from "../evaluator";
 import { parseSultanAgentIntent, SultanAgentIntentError } from "../parser";
 
 const NOW = "2026-08-31T12:00:00.000Z";
+const POLICY: TenantPolicySnapshot = {
+  checksum: "test-checksum",
+  code: "sultan.autonomy",
+  defaultDecision: "BLOCK",
+  maximumDataClassification: "CONFIDENTIAL",
+  maximumEffectClass: "A3",
+  policyDefinitionId: "policy-test-v1",
+  rules: [
+    { capability: "analysis.read", decision: "ALLOW", actorTypes: ["agent", "service"], purposes: [], maximumEffectClass: "A0" },
+    { capability: "task.internal.create", decision: "ALLOW", actorTypes: ["agent"], purposes: [], maximumEffectClass: "A1" },
+  ],
+  tenantId: "luzione",
+  version: 1,
+};
 
 function request(overrides: Record<string, unknown> = {}) {
   return {
@@ -53,7 +69,7 @@ function request(overrides: Record<string, unknown> = {}) {
 
 function actor(overrides: Partial<ApiActor> = {}): ApiActor {
   return {
-    actorId: "agent.luzione.revenue-steward@v1",
+    actorId: "agent.luzione.revenue-steward:v1",
     actorType: "agent",
     capabilities: ["sultan.agent.intent.evaluate", "analysis.read", "task.internal.create"],
     source: "service-token",
@@ -62,9 +78,23 @@ function actor(overrides: Partial<ApiActor> = {}): ApiActor {
   };
 }
 
+function evaluate(intent: ReturnType<typeof parseSultanAgentIntent>, authenticatedActor = actor(), options: {
+  policy?: TenantPolicySnapshot;
+  verification?: "CANONICAL_READBACK" | "SYNTHETIC_SIMULATION" | "UNVERIFIED";
+} = {}) {
+  const kind = options.verification ?? "CANONICAL_READBACK";
+  return evaluateSultanAgentIntent({
+    actor: authenticatedActor,
+    contextVerification: { kind, verifiedCount: kind === "CANONICAL_READBACK" ? 1 : 0 },
+    intent,
+    now: NOW,
+    tenantPolicy: options.policy ?? POLICY,
+  });
+}
+
 test("credential-bound agent may be admitted for fresh A0 read-only work only", () => {
   const intent = parseSultanAgentIntent(request());
-  const decision = evaluateSultanAgentIntent({ actor: actor(), intent, now: NOW });
+  const decision = evaluate(intent);
   assert.equal(decision.status, "ADMIT_READ_ONLY");
   assert.equal(decision.agentDefinitionVerified, true);
   assert.equal(decision.autonomy.decision, "ALLOW");
@@ -74,11 +104,7 @@ test("credential-bound agent may be admitted for fresh A0 read-only work only", 
 
 test("generic Sultan service identity cannot impersonate a registered agent", () => {
   const intent = parseSultanAgentIntent(request());
-  const decision = evaluateSultanAgentIntent({
-    actor: actor({ actorId: "service:sultan-os", actorType: "service" }),
-    intent,
-    now: NOW,
-  });
+  const decision = evaluate(intent, actor({ actorId: "service:sultan-os", actorType: "service" }));
   assert.equal(decision.status, "SIMULATE_ONLY");
   assert.equal(decision.agentDefinitionVerified, false);
   assert.ok(decision.reasonCodes.includes("AGENT_DEFINITION_NOT_BOUND_TO_CREDENTIAL"));
@@ -89,15 +115,11 @@ test("agent capability is constrained by credential and constitution", () => {
     capability: "task.internal.create",
     declaredEffectClass: "A1",
   }));
-  const denied = evaluateSultanAgentIntent({
-    actor: actor({ capabilities: ["sultan.agent.intent.evaluate", "analysis.read"] }),
-    intent: missingCredentialCapability,
-    now: NOW,
-  });
+  const denied = evaluate(missingCredentialCapability, actor({ capabilities: ["sultan.agent.intent.evaluate", "analysis.read"] }));
   assert.equal(denied.status, "BLOCKED");
   assert.ok(denied.reasonCodes.includes("AGENT_CAPABILITY_NOT_BOUND_TO_CREDENTIAL"));
 
-  const shadow = evaluateSultanAgentIntent({ actor: actor(), intent: missingCredentialCapability, now: NOW });
+  const shadow = evaluate(missingCredentialCapability);
   assert.equal(shadow.status, "SIMULATE_ONLY");
   assert.equal(shadow.autonomy.decision, "REQUIRE_APPROVAL");
   assert.equal(shadow.externalEffectsAuthorized, false);
@@ -108,7 +130,7 @@ test("stale canonical context forces abstention before agent reasoning", () => {
   const intent = parseSultanAgentIntent(request({
     sourceContext: [{ ...original.sourceContext[0], freshness: "STALE" }],
   }));
-  const decision = evaluateSultanAgentIntent({ actor: actor(), intent, now: NOW });
+  const decision = evaluate(intent);
   assert.equal(decision.status, "ABSTAIN_STALE_CONTEXT");
   assert.ok(decision.reasonCodes.includes("SOURCE_CONTEXT_NOT_FRESH"));
 });
@@ -118,14 +140,74 @@ test("FEP authority and synthetic context cannot leak into a Luzione shadow case
   const fep = parseSultanAgentIntent(request({
     agent: { ...base.agent, authorityDomain: "FEP" },
   }));
-  assert.equal(evaluateSultanAgentIntent({ actor: actor(), intent: fep, now: NOW }).status, "BLOCKED");
+  assert.equal(evaluate(fep).status, "BLOCKED");
 
   const synthetic = parseSultanAgentIntent(request({
     sourceContext: [{ ...base.sourceContext[0], sourceOwner: "SYNTHETIC_LUZIONE" }],
   }));
-  const decision = evaluateSultanAgentIntent({ actor: actor(), intent: synthetic, now: NOW });
+  const decision = evaluate(synthetic, actor(), { verification: "SYNTHETIC_SIMULATION" });
   assert.equal(decision.status, "BLOCKED");
   assert.ok(decision.reasonCodes.includes("SYNTHETIC_CONTEXT_REQUIRES_SIMULATION"));
+});
+
+test("client-declared fresh context cannot be admitted without canonical verification", () => {
+  const intent = parseSultanAgentIntent(request());
+  const decision = evaluate(intent, actor(), { verification: "UNVERIFIED" });
+  assert.equal(decision.status, "ABSTAIN_STALE_CONTEXT");
+  assert.ok(decision.reasonCodes.includes("SOURCE_CONTEXT_NOT_CANONICALLY_VERIFIED"));
+  assert.equal(decision.sourceContext.verifiedCount, 0);
+});
+
+test("canonical Order readback derives freshness and rejects version or hash drift", () => {
+  const readback: SultanOrderReadback = {
+    contractVersion: "luzione-order-fulfillment-intent/v0.1",
+    objectVersion: "order:order-1:v1:screated",
+    order: { orderId: "order-1", lines: [{ lineNumber: 1, quantity: 2 }], updatedAt: NOW },
+    sourceOfTruth: "orders+order_lines",
+  };
+  const integrityHash = canonicalOrderContextHash(readback);
+  const canonical = parseSultanAgentIntent(request({
+    caseRef: { caseId: "order-1", caseType: "FULFILLMENT", expectedVersion: readback.objectVersion },
+    sourceContext: [{
+      ...request().intent.sourceContext[0],
+      integrityHash,
+      sourceRef: "api:orders:order-1",
+      sourceVersion: readback.objectVersion,
+    }],
+  }));
+  const current = verifySultanAgentContext({ intent: canonical, orderReadback: readback });
+  assert.equal(current.verification.kind, "CANONICAL_READBACK");
+  assert.equal(current.intent.sourceContext[0].freshness, "FRESH");
+
+  const drifted = parseSultanAgentIntent(request({
+    ...canonical,
+    caseRef: canonical.caseRef,
+    sourceContext: [{ ...canonical.sourceContext[0], freshness: "FRESH", integrityHash: "b".repeat(64) }],
+  }));
+  const stale = verifySultanAgentContext({ intent: drifted, orderReadback: readback });
+  assert.equal(stale.intent.sourceContext[0].freshness, "STALE");
+  assert.equal(stale.intent.sourceContext[0].integrityHash, integrityHash);
+});
+
+test("unsupported or missing API context is replaced with unknown freshness", () => {
+  const intent = parseSultanAgentIntent(request());
+  const result = verifySultanAgentContext({ intent, orderReadback: null });
+  assert.equal(result.verification.kind, "UNVERIFIED");
+  assert.equal(result.intent.sourceContext[0].freshness, "UNKNOWN");
+});
+
+test("active tenant policy denial blocks an otherwise constitutional plan", () => {
+  const intent = parseSultanAgentIntent(request());
+  const deniedPolicy: TenantPolicySnapshot = {
+    ...POLICY,
+    policyDefinitionId: "policy-denied-v2",
+    rules: [{ capability: "analysis.read", decision: "ALLOW", actorTypes: ["agent"], purposes: ["different-purpose"], maximumEffectClass: "A0" }],
+    version: 2,
+  };
+  const decision = evaluate(intent, actor(), { policy: deniedPolicy });
+  assert.equal(decision.status, "BLOCKED");
+  assert.equal(decision.tenantPolicy.allowedByPolicy, false);
+  assert.ok(decision.reasonCodes.includes("PURPOSE_NOT_ALLOWED"));
 });
 
 test("parser rejects caller-supplied tenant, actor, role, approval, and authority claims", () => {

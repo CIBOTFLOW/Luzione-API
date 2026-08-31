@@ -25,7 +25,7 @@ authenticated Sultan workload
 
 ## Invariants
 
-- Agent identity is verified only when the credential-derived actor is `agent.<id>@v<major>` for the exact asserted definition.
+- Agent identity is verified only when the credential-derived actor is `agent.<id>:v<major>` for the exact asserted definition; the separator stays inside the platform's canonical credential-ID alphabet.
 - Tenant, actor, roles, approval, grants and verified deployment cannot be supplied by the request body.
 - The requested capability must be credential-bound and constitutionally registered.
 - Stale or unknown non-synthetic context forces abstention.
@@ -33,6 +33,9 @@ authenticated Sultan workload
 - A0 may be admitted only as read-only work; A1-A3 remain simulation/approval states because no canonical grant adapter is present.
 - A4, wrong authority domain, wrong source owner and capability mismatch fail closed.
 - Every response says that it evaluated only, mutated no business state and authorized no external effect.
+- Client-declared API context freshness, version and integrity are assertions only. The runtime may admit non-synthetic context only after an API-owned adapter reads the canonical source and derives freshness and integrity server-side.
+- The first canonical adapter is the exact tenant-scoped Order/line readback for a `FULFILLMENT` case at `api:orders:<orderId>`; unsupported API context abstains rather than inheriting the client's `FRESH` label.
+- The API autonomy constitution and the active canonical tenant policy must both allow the plan before `ADMIT_READ_ONLY` is possible.
 
 ## Acceptance proof
 
@@ -42,6 +45,7 @@ authenticated Sultan workload
 - Stale context abstains.
 - Client-supplied tenant/actor/role/approval/authority claims are rejected.
 - Registry, manifest and OpenAPI publish the same additive v0.1 contract.
+- A disposable authenticated HTTP journey proves current Order admission, stale/hash drift abstention, cross-tenant non-disclosure, tenant-policy denial and zero business writes.
 
 ## Explicit non-scope
 
