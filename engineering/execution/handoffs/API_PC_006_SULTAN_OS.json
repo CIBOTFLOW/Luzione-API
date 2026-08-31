@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_PC_006_TO_SULTAN_OS_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "df7de049d48b993635e7e7b51854da63b040e080",
+  "producer_ref": "codex/api-pc-006-workflow-substrate",
+  "contract_name": "workflow-delivery",
+  "contract_version": "luzione-workflow-delivery/v0.1",
+  "consumer_repository": "CIBOTFLOW/Sultan-OS",
+  "stable_paths": {
+    "workflow_and_delivery_types": "src/modules/platform-guarantees/types.ts",
+    "state_machine": "src/modules/platform-guarantees/stateMachine.ts",
+    "retry_policy": "src/modules/platform-guarantees/retryPolicy.ts",
+    "worker_store": "src/lib/platform-guarantees/postgresWorkflowDeliveryStore.ts",
+    "migration": "supabase/migrations/20260831030000_p110_p111_workflow_delivery_baseline.sql",
+    "working_contract": "architecture/production-convergence/API_PC_006_WORKING_CONTRACT.md",
+    "manifest": "contracts/contract-manifest.v0.1.json"
+  },
+  "required_consumer_behavior": [
+    "Propose typed workflow intent and safe recovery commands only; never own or mutate API worker leases, retry budgets, dead letters or reconciliation state.",
+    "Preserve exact workflow state versions and abstain when a continuation is stale or a kill switch is active.",
+    "Classify ambiguous acknowledgement for reconciliation before retry and require source readback before claiming completion.",
+    "Never let model output broaden attempt budgets, replay authority, tenant identity or effect authority."
+  ],
+  "acceptance_proof_needed": [
+    "exact Sultan and API SHAs and luzione-workflow-delivery/v0.1",
+    "stale-version and kill-switch abstention",
+    "ambiguous acknowledgement routed to reconciliation",
+    "receipt/readback closure without a competing Sultan persistence path"
+  ],
+  "producer_evidence_refs": [
+    "src/modules/platform-guarantees/tests/platform-guarantees.test.ts",
+    "src/modules/production-convergence/tests/workflow-delivery.test.ts",
+    "scripts/validation/api-pc-006-workflow-delivery.sql",
+    "architecture/production-convergence/API_PC_006_WORKING_CONTRACT.md"
+  ],
+  "known_limitations": [
+    "No Sultan repository test or cross-system workflow was executed.",
+    "No worker, provider adapter or live effect was activated.",
+    "Managed restart/failover, throughput and production recovery remain unobserved."
+  ]
+}

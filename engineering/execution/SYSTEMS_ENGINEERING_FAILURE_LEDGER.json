@@ -581,6 +581,32 @@
       "resolution_ref": "API_PC_005_LOCAL_COMMAND_LEDGER_20260831",
       "remaining_uncertainty": ["This local dependency reachability does not prove preview or production font delivery."],
       "next_action": "Retain the exact build gate and do not treat sandbox font reachability as application capability evidence."
+    },
+    {
+      "failure_id": "API_PC_006_DYNAMIC_SQL_ASSERTION_20260831",
+      "project_id": "API-PC-006",
+      "observed_at": "2026-08-31T03:02:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": null,
+      "environment": "local",
+      "layer": "workflow-delivery-contract-test",
+      "symptom": "The first API-PC-006 full suite failed one migration source assertion after 165 tests passed.",
+      "expected": "The fixture recognizes the initplan-safe tenant context inside the migration's dynamically formatted policy statement.",
+      "actual": "The test expected single SQL quotes while the PL/pgSQL format string correctly used doubled quotes; the assertion was corrected and the unchanged migration subsequently passed fresh and upgrade execution plus 166/166 tests.",
+      "classification": { "domain": "TOOL", "class": "INVALID", "retry": "NEVER", "severity": "INFO" },
+      "evidence_refs": [
+        "initial API-PC-006 165/166 test output",
+        "src/modules/production-convergence/tests/workflow-delivery.test.ts",
+        "supabase/migrations/20260831030000_p110_p111_workflow_delivery_baseline.sql"
+      ],
+      "repair_attempts": ["Updated the source assertion to match valid PL/pgSQL doubled-quote syntax."],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "commit:df7de049d48b993635e7e7b51854da63b040e080 and subsequent database/test passes",
+      "remaining_uncertainty": [],
+      "next_action": "Keep source assertions aware of the SQL language context they inspect and retain execution proof as the stronger migration signal."
     }
   ]
 }
