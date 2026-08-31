@@ -4,6 +4,7 @@ import type { PoolClient } from "pg";
 
 import type { ApiActor } from "@/lib/api/actor";
 import { databasePool } from "@/lib/db";
+import { buildProjectionFreshness } from "@/modules/platform-contracts/readbackContract";
 import {
   buildP113Completion,
   hashP113Payload,
@@ -16,6 +17,7 @@ import {
 } from "@/modules/catalog-projection/runtime";
 
 const P113_POLICY_VERSION = "2026-08-26.p113.api-runtime.v1";
+const P113_FRESHNESS_POLICY_MS = 15 * 60 * 1000;
 
 export type P113IngestReceipt = {
   blockedVariantCount: number;
@@ -539,6 +541,13 @@ export async function listP113CatalogProjections(input: {
         vendor: input.vendor,
       },
       latestRun: latest,
+      readback: buildProjectionFreshness({
+        freshnessPolicyMs: P113_FRESHNESS_POLICY_MS,
+        observedAt: latest?.completed_at ?? null,
+        owner: "CIBOTFLOW/Luzione-API:P113",
+        source: "shopify",
+        sourceVersion: latest?.sync_run_id ?? null,
+      }),
       selections: page.map((row) => row.payload),
       sourceOfTruth: P113_SOURCE_OF_TRUTH,
     };
