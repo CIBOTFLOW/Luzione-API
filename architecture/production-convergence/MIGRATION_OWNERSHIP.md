@@ -8,6 +8,7 @@ The API/data authority lane owns new production-convergence DDL artifacts. This 
 | `20260828213000_workflow_pack_foreign_key_indexes.sql` | Tracked additive artifact | API repository owns the file; production application is unobserved |
 | P110 command receipt/event/conflict/outbox baseline | `20260831022000_p110_command_ledger_baseline.sql` is tracked and locally proven | API repository owns the additive file; fresh and legacy-upgrade rehearsal passed in disposable Postgres; managed/production application remains unauthorized and unobserved |
 | P110 delivery/inbox/DLQ/reconciliation and P111 workflow baseline | `20260831030000_p110_p111_workflow_delivery_baseline.sql` is tracked and locally proven | API repository owns the additive file; fresh and observed legacy-shape upgrade rehearsal passed in disposable Postgres; managed/production application and worker activation remain unauthorized and unobserved |
+| Lead and Commercial Case API dark-path convergence | `20260831050000_lead_commercial_case_dark_path.sql` is tracked and locally proven | API repository owns the additive transfer-pending artifact; fresh and observed UI-shaped upgrade plus compatibility readback passed in disposable Postgres; Luzione UI remains the active writer and managed application, domain-role/RLS convergence and tenant cutover remain unauthorized and unobserved |
 
 ## API-PC-004 authority migration design
 

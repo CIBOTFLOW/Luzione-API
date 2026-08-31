@@ -1107,6 +1107,76 @@
         "managed preview authenticated readback bound to exact release identity",
         "production source freshness observation before any production-final claim"
       ]
+    },
+    {
+      "proof_id": "API_PC_008_LOCAL_LEAD_COMMERCIAL_CASE_20260831",
+      "project_id": "API-PC-008",
+      "recorded_at": "2026-08-31T04:32:37Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "a9321b88ce5bcc36c4c9c93baef902d394f55585",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "SANDBOX_ONLY",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The exact API candidate publishes luzione-lead-commercial-case/v0.1 as authenticated Lead and Commercial Case command/readback routes against the existing canonical rows, with exact tenant/cohort default-off activation, object-version and origin invariants, P110 atomic evidence, compatibility readback and reconcile-first receipt recovery; the current UI writer, production schema and all live effects remain unchanged.",
+      "exercised_boundaries": [
+        "The API-PC-005/006 plus API-PC-008 migration chain applied to a fresh disposable PostgreSQL database.",
+        "The same chain upgraded an observed UI-shaped Lead/Commercial Case schema while preserving uuid relationship columns, lower-case integrity semantics and existing legacy rows.",
+        "Authenticated HTTP POST and GET exercised Lead create, Commercial Case create from the exact Lead version and same-row tenant-bound readback.",
+        "The global mutation switch and exact tenant allowlist jointly denied a non-admitted tenant/cohort; service identity also denied a conflicting tenant header.",
+        "Exact idempotency replay returned the original receipt, changed-payload key reuse recorded one conflict, duplicate Lead origin created no second case, stale case version changed no row and cross-tenant reads returned no object.",
+        "A forced Commercial Case constraint failure after identity admission rolled back the identity and all command evidence, leaving zero partial identity rows.",
+        "Each successful mutation atomically produced one receipt, event and NO_EFFECT outbox message; the proof observed 3 Leads, 2 cases, 6 receipts, 6 events, 6 outbox messages and 1 conflict in each schema shape.",
+        "Lead source versions preserve Postgres microseconds; Lead-only cases remain legacy_unverified and expose null opportunity readback.",
+        "Post-commit readback uncertainty carries the durable receipt ID, committed object version and RECONCILE_FIRST semantics.",
+        "Compliance verification, typecheck, clean lint, 180/180 tests and the production build passed for the implementation candidate."
+      ],
+      "untested_boundaries": [
+        "managed or production Postgres migration application and exact migration-ledger provenance",
+        "domain-table least-privilege roles and forced RLS, which remain API-PC-013 scope",
+        "independent UI shadow-read, canary, rollback and writer-retirement evidence",
+        "independent Sultan intent/receipt/readback consumption",
+        "preview and production workload authentication for the new capabilities",
+        "concurrent multi-process idempotency/origin races against managed Postgres",
+        "provider effects, live tenant activation and production observation"
+      ],
+      "evidence_refs": [
+        "src/modules/lead-commercial-case/contracts.ts",
+        "src/modules/lead-commercial-case/store.ts",
+        "src/app/api/v1/commands/leads/route.ts",
+        "src/app/api/v1/commands/commercial-cases/route.ts",
+        "supabase/migrations/20260831050000_lead_commercial_case_dark_path.sql",
+        "src/modules/production-convergence/tests/lead-commercial-case.test.ts",
+        "scripts/validation/run-api-pc-008-disposable-proof.sh",
+        "scripts/validation/api-pc-008-lead-commercial-case.ts",
+        "architecture/production-convergence/API_PC_008_WORKING_CONTRACT.md",
+        "commit:a9321b88ce5bcc36c4c9c93baef902d394f55585"
+      ],
+      "failure_refs": [
+        "API_PC_008_UI_RELATIONSHIP_SEMANTIC_CONFLICT_20260831",
+        "API_PC_008_REPOSITORY_GATE_FIXTURES_20260831",
+        "API_PC_008_DISPOSABLE_PROOF_HARNESS_20260831"
+      ],
+      "cross_repo_handoffs": ["API_PC_008_TO_LUZIONE_UI_V1", "API_PC_008_TO_SULTAN_OS_V1"],
+      "deferred_external_infra": [
+        "managed canonical Postgres",
+        "independent consumer repositories",
+        "preview and production workload credentials",
+        "tenant/cohort canary and writer cutover",
+        "production deployment and observation"
+      ],
+      "remaining_uncertainty": [
+        "The API path is implemented but remains globally and tenant-default-off; the UI remains the active writer and rollback path.",
+        "Domain rows use explicit tenant predicates locally, while database-enforced least privilege and RLS remain unproven until API-PC-013.",
+        "A replay after the domain row has advanced returns the original receipt plus current readback and explicitly reports that the versions no longer match.",
+        "Local disposable proof cannot establish production compatibility, capacity, failover or finality."
+      ],
+      "next_proof_needed": [
+        "independent UI exact-version shadow-read and authorized cohort canary with rollback evidence",
+        "independent Sultan exact-version command-intent and receipt/readback abstention tests",
+        "API-PC-013 role/RLS fresh-upgrade and negative permission proof for the domain rows",
+        "managed preview migration and authenticated route evidence before any tenant activation"
+      ]
     }
   ]
 }

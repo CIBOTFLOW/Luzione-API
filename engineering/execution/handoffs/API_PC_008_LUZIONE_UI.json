@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_PC_008_TO_LUZIONE_UI_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "a9321b88ce5bcc36c4c9c93baef902d394f55585",
+  "producer_ref": "codex/api-pc-008-lead-commercial-case",
+  "contract_name": "lead-commercial-case-command",
+  "contract_version": "luzione-lead-commercial-case/v0.1",
+  "consumer_repository": "CIBOTFLOW/Luzione-UI",
+  "consumer_project_paths": ["UI-PC-007"],
+  "stable_paths": {
+    "contract": "src/modules/lead-commercial-case/contracts.ts",
+    "lead_route": "GET|POST /api/v1/commands/leads",
+    "commercial_case_route": "GET|POST /api/v1/commands/commercial-cases",
+    "causal_receipt_route": "GET /api/v1/platform-guarantees?receiptId=<receipt>",
+    "working_contract": "architecture/production-convergence/API_PC_008_WORKING_CONTRACT.md",
+    "manifest": "contracts/contract-manifest.v0.1.json"
+  },
+  "required_consumer_behavior": [
+    "Keep the existing UI CRM and Commercial Case writer/facade as the active mutation and rollback path until an independently observed cohort cutover is approved.",
+    "Consume only luzione-lead-commercial-case/v0.1 and send no actor, tenant, authority or effect fields; those values are credential-bound by the API.",
+    "Use lead.read, lead.command, commercial_case.read and commercial_case.command as exact workload capabilities and preserve the API idempotency key and expected object version across retry.",
+    "Treat a Lead-only Commercial Case as legacy_unverified; do not render it as a verified account/contact/opportunity relationship.",
+    "On READBACK_UNCONFIRMED, navigate through the returned receiptId with RECONCILE_FIRST behavior before retrying or claiming completion.",
+    "Shadow-compare the API readback against the same crm_leads and commercial_cases rows and never create a UI-local duplicate truth store."
+  ],
+  "activation_requirements": [
+    "LUZIONE_API_MUTATIONS_ENABLED=true in the selected non-production or approved preview environment",
+    "the exact canary tenant ID present in LUZIONE_API_DOMAIN_COMMAND_TENANTS",
+    "verified workload credential and exact route capabilities",
+    "documented UI rollback to the existing writer/facade",
+    "no production or broad-tenant activation from this handoff alone"
+  ],
+  "acceptance_proof_needed": [
+    "exact UI and API SHAs plus luzione-lead-commercial-case/v0.1",
+    "shadow Lead create/read and Lead-to-Commercial-Case create/read against the same canonical rows",
+    "same-key replay, changed-payload conflict, stale-version and duplicate-origin behavior",
+    "wrong-tenant and non-allowlisted-tenant denial",
+    "READBACK_UNCONFIRMED receipt reconciliation and tested rollback to the UI writer",
+    "explicit evidence that no non-canary tenant or provider effect was activated"
+  ],
+  "producer_evidence_refs": [
+    "src/modules/production-convergence/tests/lead-commercial-case.test.ts",
+    "scripts/validation/run-api-pc-008-disposable-proof.sh",
+    "architecture/production-convergence/API_PC_008_WORKING_CONTRACT.md",
+    "commit:a9321b88ce5bcc36c4c9c93baef902d394f55585"
+  ],
+  "known_limitations": [
+    "No Luzione UI repository edit or independent UI journey was performed by the API project.",
+    "The API path remains globally and tenant-default-off and is not the active writer.",
+    "Managed migration, preview workload identity, domain-table RLS, canary rollback and production observation remain unproven."
+  ]
+}

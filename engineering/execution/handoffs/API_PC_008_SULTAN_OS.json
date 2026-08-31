@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_PC_008_TO_SULTAN_OS_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "a9321b88ce5bcc36c4c9c93baef902d394f55585",
+  "producer_ref": "codex/api-pc-008-lead-commercial-case",
+  "contract_name": "lead-commercial-case-command",
+  "contract_version": "luzione-lead-commercial-case/v0.1",
+  "consumer_repository": "CIBOTFLOW/Sultan-OS",
+  "consumer_project_paths": ["SULTAN_SE_002", "SULTAN_SE_003", "SULTAN_SE_005"],
+  "stable_paths": {
+    "contract": "src/modules/lead-commercial-case/contracts.ts",
+    "lead_route": "GET|POST /api/v1/commands/leads",
+    "commercial_case_route": "GET|POST /api/v1/commands/commercial-cases",
+    "causal_receipt_route": "GET /api/v1/platform-guarantees?receiptId=<receipt>",
+    "working_contract": "architecture/production-convergence/API_PC_008_WORKING_CONTRACT.md",
+    "manifest": "contracts/contract-manifest.v0.1.json"
+  },
+  "required_consumer_behavior": [
+    "Produce only bounded command intent; never write crm_leads, commercial_case_identities or commercial_cases directly and never persist a competing command or finality definition.",
+    "Never supply actor, tenant, authority or effect fields; use credential-bound lead/commercial_case capabilities selected outside model output.",
+    "Bind every proposal to the exact expected object version and idempotency key and abstain on stale, missing, denied or unsupported evidence.",
+    "Treat DOMAIN_COMMITTED, READBACK_UNCONFIRMED and SOURCE_CONFIRMED as distinct states; reconcile the returned durable receipt before retrying an unconfirmed readback.",
+    "Do not infer a verified business relationship from a Lead-only case whose relationshipIntegrityState is legacy_unverified.",
+    "Do not request or infer tenant activation; the global and exact-tenant mutation gates are deployment/release authority outside Sultan reasoning."
+  ],
+  "acceptance_proof_needed": [
+    "exact Sultan and API SHAs plus luzione-lead-commercial-case/v0.1",
+    "typed intent to authenticated API command without direct database write",
+    "same-key replay and exact receipt/object/source lineage preservation",
+    "stale-version, wrong-tenant, missing-readback and non-allowlisted abstention",
+    "READBACK_UNCONFIRMED reconcile-first continuation",
+    "evidence that model/tool output cannot activate a tenant, broaden capability or claim completion"
+  ],
+  "producer_evidence_refs": [
+    "src/modules/production-convergence/tests/lead-commercial-case.test.ts",
+    "scripts/validation/run-api-pc-008-disposable-proof.sh",
+    "architecture/production-convergence/API_PC_008_WORKING_CONTRACT.md",
+    "commit:a9321b88ce5bcc36c4c9c93baef902d394f55585"
+  ],
+  "known_limitations": [
+    "No Sultan repository consumer test or cross-system journey was executed.",
+    "The API path remains globally and tenant-default-off and no provider effect is part of this contract.",
+    "API-PC-012 remains the dedicated Sultan context/intent/policy/outcome convergence cell."
+  ]
+}
