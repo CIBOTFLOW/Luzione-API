@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_PC_013_TO_SULTAN_OS_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "543ede82f51df373b26ba73842f2391b27acf4fe",
+  "producer_ref": "codex/api-pc-013-security-rls",
+  "contract_name": "database-least-privilege-and-tenant-rls",
+  "contract_version": "luzione-security-controls/v1",
+  "consumer_repository": "CIBOTFLOW/Sultan-OS",
+  "consumer_project_paths": ["SULTAN-SE-002", "SULTAN-SE-003", "SULTAN-SE-005"],
+  "stable_paths": {
+    "working_contract": "architecture/production-convergence/API_PC_013_WORKING_CONTRACT.md",
+    "ownership_manifest": "architecture/production-convergence/API_PC_013_OWNERSHIP_MANIFEST.json",
+    "readiness_route": "GET /api/v1/security/rls-readiness"
+  },
+  "required_consumer_behavior": [
+    "Consume canonical API contracts and receipts; do not grant Sultan or its tools direct Postgres table authority.",
+    "Do not create a Sultan-side database role, RLS policy, tenant context or shadow business store that redefines this API-owned boundary.",
+    "Treat missing/stale/unauthorized API evidence as abstention, never as permission to read or mutate canonical relations directly.",
+    "Do not treat local migration proof as deployed reachability or production readiness."
+  ],
+  "acceptance_proof_needed": [
+    "exact Sultan and API SHAs and luzione-security-controls/v1",
+    "authenticated API-only context/intent/receipt journey with no direct database credential",
+    "cross-tenant and missing-capability abstention",
+    "deployed RLS-readiness evidence and rollback linkage before production certification"
+  ],
+  "producer_evidence_refs": [
+    "scripts/validation/run-api-pc-013-disposable-proof.sh",
+    "architecture/production-convergence/API_PC_013_OWNERSHIP_MANIFEST.json",
+    "commit:543ede82f51df373b26ba73842f2391b27acf4fe"
+  ],
+  "known_limitations": [
+    "No Sultan OS repository was edited or independently tested.",
+    "No managed migration, deployed API role membership or production denial probe was observed.",
+    "Canonical membership persistence from API-PC-004 remains a separate unimplemented boundary."
+  ]
+}

@@ -1462,6 +1462,77 @@
         "Sultan consumes the exact contract and proves stale/unknown abstention plus no direct database effect path",
         "an exact preview/production API release exposes the registry before any deployed-release claim"
       ]
+    },
+    {
+      "proof_id": "API_PC_013_LOCAL_LEAST_PRIVILEGE_RLS_20260831",
+      "project_id": "API-PC-013",
+      "recorded_at": "2026-08-31T05:48:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "543ede82f51df373b26ba73842f2391b27acf4fe",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The exact API candidate publishes non-login, non-owner, non-bypass API runtime and provider-worker roles plus forced tenant RLS for thirty admitted P110/P111 and commercial/order relations; exact local privilege ceilings, browser/legacy-role denial, missing-tenant and cross-tenant non-disclosure and worker scope were proven in fresh and observed-shape disposable PostgreSQL databases, while no managed or production migration, credential membership or cutover occurred.",
+      "exercised_boundaries": [
+        "The complete API-PC-005/006/008/009/010/011 migration chain plus API-PC-013 applied to a fresh disposable PostgreSQL database.",
+        "The same migration upgraded observed Lead/Commercial Case, Proposal/Quote and P110 worker rows and preserved tenant-authorized legacy readback.",
+        "API-PC-013 reapplied idempotently in both schema shapes.",
+        "Thirty admitted relations had RLS enabled and forced with no policy granted to PUBLIC.",
+        "luzione_api_runtime and luzione_provider_worker were NOLOGIN, NOSUPERUSER, NOCREATEDB, NOCREATEROLE, NOREPLICATION and NOBYPASSRLS and owned no admitted relation.",
+        "The API runtime had exact per-table SELECT/INSERT/UPDATE grants matching the ownership manifest and no DELETE, TRUNCATE, REFERENCES or TRIGGER authority.",
+        "The provider worker had exact per-operation privileges on six P110 delivery/reconciliation relations and no access to domain, inbox or P111 workflow relations.",
+        "anon, authenticated and service_role had no SELECT/INSERT/UPDATE/DELETE authority on all thirty relations, producing ninety catalog denial checks per schema shape.",
+        "Runtime reads with tenant A saw only tenant A Order and indirect Quote-line rows; tenant B and missing tenant context observed zero rows.",
+        "A tenant A runtime transaction could not insert a tenant B Order and could not DELETE its own Order.",
+        "The worker saw only its tenant's kill-switch row and received PostgreSQL 42501 for an Order read and out-of-scope Inbox insert.",
+        "The RLS-readiness contract now checks forced RLS, legacy service-role removal, non-login role attributes, relation ownership, runtime read coverage, forbidden privileges and worker scope drift.",
+        "Compliance verification, typecheck, clean lint, 203/203 tests, disposable database proof and production build passed for the rebased implementation candidate."
+      ],
+      "untested_boundaries": [
+        "managed Supabase or production PostgreSQL migration application",
+        "actual deployed login membership in luzione_api_runtime or luzione_provider_worker",
+        "production credential rotation and legacy service_role removal impact",
+        "managed migration rollback and restored privilege/readback state",
+        "independent UI and Sultan consumer canaries",
+        "deployed active denial probes and production catalog observation",
+        "the legacy workflow-pack relations outside the thirty-relation admitted convergence surface",
+        "canonical identity/membership persistence deferred by API-PC-004"
+      ],
+      "evidence_refs": [
+        "supabase/migrations/20260831090000_api_pc_013_least_privilege_roles_rls.sql",
+        "architecture/production-convergence/API_PC_013_OWNERSHIP_MANIFEST.json",
+        "architecture/production-convergence/API_PC_013_WORKING_CONTRACT.md",
+        "src/modules/security-posture/rlsPosture.ts",
+        "src/lib/security-posture/readService.ts",
+        "scripts/validation/run-api-pc-013-disposable-proof.sh",
+        "scripts/validation/api-pc-013-security-rls.ts",
+        "src/modules/production-convergence/tests/security-roles-rls.test.ts",
+        "commit:543ede82f51df373b26ba73842f2391b27acf4fe"
+      ],
+      "failure_refs": ["API_PC_013_PROOF_HARNESS_COMPATIBILITY_20260831"],
+      "cross_repo_handoffs": ["API_PC_013_TO_LUZIONE_UI_V1", "API_PC_013_TO_SULTAN_OS_V1"],
+      "deferred_external_infra": [
+        "managed canonical PostgreSQL",
+        "deployed API and worker database credentials",
+        "preview and production environments",
+        "independent UI and Sultan repositories",
+        "authorized migration, credential rotation, canary and rollback window"
+      ],
+      "remaining_uncertainty": [
+        "The migration deliberately revokes legacy service_role authority and therefore must not be applied until deployed login memberships and rollback are prepared together.",
+        "The local proof used superuser-created disposable group membership and cannot establish managed platform role-creation permissions or deployed pooler behavior.",
+        "Catalog and denial evidence is local, not evidence that any production relation or credential has converged.",
+        "The runtime role is bounded to the API-owned admitted surface but remains a shared API group role; canonical credential-to-actor membership persistence remains separate work."
+      ],
+      "next_proof_needed": [
+        "managed preview migration with exact checksum and release SHA",
+        "deployed login membership inventory proving no owner or BYPASSRLS path",
+        "authenticated API command/readback canary plus active browser, missing-tenant and cross-tenant denial probes",
+        "credential rollback and database migration rollback/readback rehearsal",
+        "independent UI and Sultan API-only consumer evidence",
+        "production catalog observation only after separate release authority"
+      ]
     }
   ]
 }
