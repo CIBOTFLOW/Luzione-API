@@ -1599,6 +1599,80 @@
         "collect exact-SHA production SLO and security observations",
         "obtain independent Luzione UI and Sultan OS exact-version consumer evidence"
       ]
+    },
+    {
+      "proof_id": "API_PC_012_LOCAL_SULTAN_AGENT_CONTRACTS_20260831",
+      "project_id": "API-PC-012",
+      "recorded_at": "2026-08-31T06:25:33.743Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "7d015fffd0b3a099f83cc7a73e1af02bc4dd1e28",
+      "engineering_state": "INTEGRATED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The exact API candidate publishes four strict Sultan agent context, intent, policy-decision and outcome contracts plus a credential-bound evaluation-only endpoint. The boundary derives actor, tenant and capability from the authenticated credential; rejects client authority; abstains on stale context; isolates synthetic and FEP domains; returns explicit no-effect outcomes; and is independently consumed by the exact Sultan OS agent-runtime candidate without granting a business write or external effect.",
+      "exercised_boundaries": [
+        "The contract manifest, registry, service catalog and OpenAPI publish luzione-sultan-agent-context/v0.1, luzione-sultan-agent-intent/v0.1, luzione-sultan-agent-policy/v0.1 and luzione-sultan-agent-outcome/v0.1.",
+        "POST /api/v1/sultan/agent-intents/evaluate requires sultan.agent.intent.evaluate and derives actor, tenant and credential capabilities server-side.",
+        "A credential-bound exact agent identity with an A0 capability reaches ADMIT_READ_ONLY while executionAttempted=false, businessStateMutated=false and externalEffectAuthorized=false.",
+        "Generic service identity cannot impersonate an agent; missing capability, definition mismatch, FEP authority crossover and unsupported autonomy fail closed.",
+        "Stale or unknown non-synthetic context abstains; synthetic context is simulation-only.",
+        "Tenant, actor, role, grant, approval and verified-deployment fields are rejected as client-supplied authority.",
+        "The evaluated-only outcome closes with null commandReceiptRef and sourceReadbackRef because no command or effect was attempted; it is not presented as an effect receipt.",
+        "Independent Sultan OS candidate 6f477c0525141ced3ae87c9dc631e92a981af120 pins all four versions, prepares the exact request body without tenant/actor/authority fields, denies FEP leakage and synthetic shadow execution, passes 13/13 focused tests and builds READY on Vercel.",
+        "On rebased exact implementation candidate 7d015fffd0b3a099f83cc7a73e1af02bc4dd1e28, local compliance verification, typecheck, lint, 216/216 tests and the production build passed; the pre-rebase contract-equivalent candidate f18f8382ab5076f01a97d53b693e34d5b1bf2a2f also passed API release gate run 33363131683 and CodeQL run 33363131688."
+      ],
+      "untested_boundaries": [
+        "signed tenant-bound Sultan HTTP request against a deployed non-production API",
+        "live canonical Luzione context retrieval and freshness observation",
+        "A1-A3 grant/approval adapter and any A4 path",
+        "business command execution, provider effect, source-owner command receipt and post-effect readback",
+        "production agent deployment registry or per-agent workload credential rotation",
+        "model judgment quality, calibrated confidence, longitudinal reliability and real business value",
+        "Luzione UI case-centered agent projection",
+        "preview or production API deployment and production observation"
+      ],
+      "evidence_refs": [
+        "src/modules/sultan-agent/contracts.ts",
+        "src/modules/sultan-agent/parser.ts",
+        "src/modules/sultan-agent/evaluator.ts",
+        "src/app/api/v1/sultan/agent-intents/evaluate/route.ts",
+        "src/modules/sultan-agent/tests/sultan-agent-intent.test.ts",
+        "contracts/sultan/agent-context-v0.1.schema.json",
+        "contracts/sultan/agent-intent-v0.1.schema.json",
+        "contracts/sultan/agent-policy-decision-v0.1.schema.json",
+        "contracts/sultan/agent-outcome-v0.1.schema.json",
+        "architecture/production-convergence/API_PC_012_WORKING_CONTRACT.md",
+        "engineering/execution/handoffs/API_PC_012_SULTAN_OS.json",
+        "commit:7d015fffd0b3a099f83cc7a73e1af02bc4dd1e28",
+        "CIBOTFLOW/Sultan-OS@6f477c0525141ced3ae87c9dc631e92a981af120"
+      ],
+      "failure_refs": [
+        "API_PC_012_TOPOLOGY_AND_TEST_TAXONOMY_COMPLETENESS_20260831"
+      ],
+      "cross_repo_handoffs": [
+        "API_PC_012_TO_SULTAN_OS_V1"
+      ],
+      "deferred_external_infra": [
+        "deployed signed Sultan workload credential",
+        "preview and production API environments",
+        "live canonical Luzione context and source readback",
+        "separately authorized reversible command/effect pilot",
+        "Luzione UI consumer implementation"
+      ],
+      "remaining_uncertainty": [
+        "The API endpoint evaluates and returns policy only; it does not dispatch a Sultan work order or execute a Luzione command.",
+        "Sultan consumption is exact-SHA and independently tested, but the consumer candidate is not evidence of signed live HTTP reachability or deployed credential correctness.",
+        "The null command/source references are truthful closure for an evaluated-only no-effect outcome, not evidence that effect receipts work.",
+        "Synthetic functional evaluation cannot establish model quality or real economic value."
+      ],
+      "next_proof_needed": [
+        "merge the exact API producer and Sultan consumer candidates and record their resulting main SHAs",
+        "exercise a signed tenant-bound read-only HTTP journey with live canonical context and explicit stale-context denial",
+        "run model-backed hidden-label shadow evaluation with calibration and adversarial cases",
+        "implement the case-centered Luzione UI projection without UI-selected authority",
+        "only after separate authorization, prove a reversible command through receipt and post-effect source readback"
+      ]
     }
   ]
 }

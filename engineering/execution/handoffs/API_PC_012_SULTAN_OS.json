@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_PC_012_TO_SULTAN_OS_V1",
+  "recorded_at": "2026-08-31T06:25:33.743Z",
+  "producer": {
+    "repository": "CIBOTFLOW/Luzione-API",
+    "candidate_sha": "7d015fffd0b3a099f83cc7a73e1af02bc4dd1e28",
+    "pull_request": 49,
+    "project_id": "API-PC-012"
+  },
+  "consumer": {
+    "repository": "CIBOTFLOW/Sultan-OS",
+    "implementation_sha": "6f477c0525141ced3ae87c9dc631e92a981af120",
+    "proof_head_sha": "123246edbab978c48b58a45e1936a039018da615",
+    "pull_request": 307
+  },
+  "status": "BOUNDED_EXACT_VERSION_CONSUMPTION_PROVEN",
+  "contract_versions": [
+    "luzione-sultan-agent-context/v0.1",
+    "luzione-sultan-agent-intent/v0.1",
+    "luzione-sultan-agent-policy/v0.1",
+    "luzione-sultan-agent-outcome/v0.1"
+  ],
+  "endpoint": "POST /api/v1/sultan/agent-intents/evaluate",
+  "credential_capability": "sultan.agent.intent.evaluate",
+  "ownership": {
+    "Sultan_OS": "agent definitions, case reasoning, model/tool selection, work orders, simulations and cognitive evaluation",
+    "Luzione_API": "credential-bound actor/tenant/capability, contract meaning, deterministic policy and command admission",
+    "canonical_source": "business state, mutation receipt and authoritative readback",
+    "FEP": "separate authority domain"
+  },
+  "verified": [
+    "Sultan pins all four exact contract versions in its service catalog.",
+    "Sultan prepares the exact intent request body without tenant, actor, role, grant, approval or executable-authority fields.",
+    "Sultan rejects FEP work on the Luzione intent adapter.",
+    "Sultan rejects synthetic context outside simulation.",
+    "Focused Sultan registry/adapter tests passed 13/13 and exact implementation built READY on Vercel.",
+    "API release gate and CodeQL passed at the exact producer candidate."
+  ],
+  "remaining": [
+    "merge producer and consumer candidates",
+    "signed tenant-bound deployed HTTP request",
+    "live canonical context freshness and stale denial",
+    "source-owned effect receipt/readback only under separate effect authorization"
+  ],
+  "non_claims": [
+    "production deployment",
+    "live credential correctness",
+    "model judgment quality",
+    "business value",
+    "Luzione mutation",
+    "external effect",
+    "business finality"
+  ]
+}

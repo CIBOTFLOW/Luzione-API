@@ -50,4 +50,4 @@ authenticated Sultan workload
 - no business command execution;
 - no provider effects;
 - no production migration;
-- no claim that Sultan has consumed or certified the contract.
+- no claim that a signed deployed Sultan workload has exercised the contract, or that any command receipt, post-effect source readback, model-quality threshold or production-autonomy gate has passed.

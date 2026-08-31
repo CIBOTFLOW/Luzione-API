@@ -3,9 +3,9 @@
   "queue_id": "LUZIONE_API_SYSTEMS_ENGINEERING_V1",
   "repository": "CIBOTFLOW/Luzione-API",
   "program_state": "IMPLEMENTATION_IN_PROGRESS",
-  "current_project": "API-PC-012",
-  "next_projects": ["API-PC-012", "API-PC-015", "API-PC-014"],
-  "next_action": "Merge the locally proven API-PC-014 operations-evidence producer, then compile API-PC-012 against the existing causal readback, Order/Fulfillment Intent, authority, policy, receipt and outcome contracts; publish exact-version Sultan context/intent/policy/outcome contracts with fail-closed stale and unauthorized abstention while leaving independent Sultan consumer certification external.",
+  "current_project": "API-PC-015",
+  "next_projects": ["API-PC-015"],
+  "next_action": "Merge the rebased API-PC-012 producer, then merge the independently proven Sultan consumer. API-PC-014 retains its bounded local operations evidence and external-production quarantine; API-PC-015 remains gated by those external observations. Next prove a signed tenant-bound Sultan read-only journey before any authority or effect promotion.",
   "canonical_program": "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md",
   "failure_ledger": "engineering/execution/SYSTEMS_ENGINEERING_FAILURE_LEDGER.json",
   "proof_ledger": "engineering/execution/SYSTEMS_ENGINEERING_PROOF_LEDGER.json",
@@ -15,15 +15,36 @@
       "repository": "CIBOTFLOW/Luzione-UI",
       "sha": "7d03bbdae207e79083d8bb1e8dbb46a38a099fd3",
       "state": "BOUNDED_TABLE_ESTATE_SECURITY_CONVERGED_API_REGISTRY_CONSUMPTION_PENDING",
-      "bounded_complete": ["LUZIONE_SE_001","LUZIONE_SE_002","LUZIONE_SE_003","LUZIONE_SE_005","LUZIONE_SE_008_BF3"],
-      "next": ["consume API_SE_003_BF1","LUZIONE_SE_004","LUZIONE_SE_007","LUZIONE_SE_008","LUZIONE_SE_009"]
+      "bounded_complete": [
+        "LUZIONE_SE_001",
+        "LUZIONE_SE_002",
+        "LUZIONE_SE_003",
+        "LUZIONE_SE_005",
+        "LUZIONE_SE_008_BF3"
+      ],
+      "next": [
+        "consume API_SE_003_BF1",
+        "LUZIONE_SE_004",
+        "LUZIONE_SE_007",
+        "LUZIONE_SE_008",
+        "LUZIONE_SE_009"
+      ]
     },
     {
       "repository": "CIBOTFLOW/Sultan-OS",
-      "sha": "ef35670205eb980ab28c3c5896b628edf04bb04d",
-      "state": "RECONCILIATION_COMPLETE_API_CONVERGENCE_PENDING",
-      "bounded_complete": ["SULTAN_SE_001"],
-      "next": ["SULTAN_SE_002", "SULTAN_SE_003", "SULTAN_SE_005"]
+      "sha": "123246edbab978c48b58a45e1936a039018da615",
+      "state": "BOUNDED_AGENT_CONTRACT_CONSUMER_CANDIDATE_PR_307",
+      "bounded_complete": [
+        "SULTAN_SE_001",
+        "API-PC-012 exact v0.1 consumer"
+      ],
+      "next": [
+        "merge Sultan PR #307",
+        "signed tenant-bound read-only API journey",
+        "SULTAN_SE_002",
+        "SULTAN_SE_003",
+        "SULTAN_SE_005"
+      ]
     }
   ],
   "open_quarantines": [
@@ -41,21 +62,21 @@
     "API-PC-011 extends the existing P110/P111 worker substrate rather than creating a second queue: durable dispatch-start, restart-safe reconciliation leases, exact source-version closure and tenant-bound operator aggregates are implemented, while the only adapter is a deterministic local simulator and every sandbox/live activation remains default-off.",
     "The 713-table production metadata snapshot is now bounded by an API-owned table-object contract: exactly 22 Supplier Portal browser surfaces have explicit capability ownership, while all other ownership, lifecycle and retirement decisions remain unclaimed.",
     "API-PC-013 converges thirty admitted P110/P111 and commercial/order relations on forced tenant RLS, removes browser and legacy service-role table authority, and publishes exact non-login API-runtime/provider-worker privilege ceilings; fresh and observed-shape local proofs pass without applying any production migration or credential membership.",
-    "API-PC-014 publishes exact-SHA operations evidence, three dashboard definitions and seven alert definitions and proves a disposable logical restore with post-restore least-privilege and authoritative readback; the evaluator remains LOCAL_EVIDENCE_BOUNDED and productionReady=false."
+    "API-PC-014 publishes exact-SHA operations evidence, three dashboard definitions and seven alert definitions and proves a disposable logical restore with post-restore least-privilege and authoritative readback; the evaluator remains LOCAL_EVIDENCE_BOUNDED and productionReady=false.",
+    "API-PC-012 publishes exact v0.1 agent context/intent/policy/outcome contracts and a credential-bound no-effect evaluator; independent Sultan OS PR #307 consumes all four versions, prepares the exact authority-free request body and passes 13/13 focused tests at a Vercel-READY exact implementation SHA."
   ],
   "deferred_external_infra": [
     "owner-authenticated UI representative journey replay",
-    "Sultan exact API V1 consumer convergence and independent certification journey",
     "distributed trace/telemetry export observation",
     "preview deployment, canary and rollback rehearsal",
     "production deployment and authoritative observation",
     "managed backup/PITR and production recovery exercise",
-    "representative database/provider/mutation/queue/full-journey performance campaigns"
+    "representative database/provider/mutation/queue/full-journey performance campaigns",
+    "signed tenant-bound Sultan read-only API journey against a deployed environment"
   ],
   "remaining_uncertainty": [
     "Most API systems contracts are locally proven, not production-observed.",
     "UI SE004/007/008/009 remain genuine consumer implementation/evidence projects before later UI certification dependencies can close.",
-    "Sultan SE002/003/005 exact API V1 compatibility has not yet been independently proven.",
     "Sultan SE008 measured capacity/soak and SE012 independent exact-version cross-system certification are genuinely missing evidence programs.",
     "The API performance evidence remains a bounded localhost liveness campaign rather than representative database/provider/mutation/queue/full-journey capacity proof.",
     "Managed backup/PITR and production recovery remain unproven despite bounded local recovery evidence.",
@@ -70,10 +91,46 @@
     "API-PC-009 is locally proven only: fresh and observed UI-shaped Quote/Proposal migration, safe integer cents/currency, exact-version human approval denial, typed confirmation, replay/conflict, atomic rollback and tenant-bound readback passed in disposable Postgres; API-PC-013 now supplies local domain-RLS proof, while delegated user identity, managed application, consumer canary/rollback, provider/customer effects and production cutover remain unobserved.",
     "API-PC-010 is locally proven only: fresh and observed UI-shaped Order migration, exact accepted Quote/economics binding, line copying, replay/conflict, invalid-intent rollback, tenant-bound readback and a database-constrained no-effect Fulfillment Intent passed in disposable Postgres; API-PC-013 now supplies local domain-RLS proof, while customer-acceptance provenance, competing UI-route convergence, managed application, consumer canary/rollback, provider effects and production cutover remain unobserved.",
     "API-PC-011 is locally proven only: fresh and observed-worker migration, durable pre-call dispatch checkpoint, ambiguous/crash reconciliation, exact-version sandbox readback, bounded retry/dead-letter, kill-switch exclusion, competing reconciliation claims and tenant-bound operator aggregates passed in disposable Postgres; real-provider sandboxes, credentials, deployed worker lifecycle, compensation, managed failover, independent consumers, live canary and production observation remain unproven.",
-    "API-PC-012 dependencies are complete but its required Sultan consumer certification remains an independent cross-repository obligation.",
     "API-PC-013 is locally proven only: role creation, grant convergence, forced RLS, exact runtime/worker ceilings, idempotent fresh/observed-shape migration and negative browser/missing-tenant/cross-tenant/worker-scope probes passed in disposable Postgres; managed migration, deployed login membership, credential rotation, UI/Sultan canaries and production observation remain unproven.",
     "API-PC-014 is locally proven and externally quarantined: the exact evidence bundle, operations registry, production build and logical restore/readback pass, while deployed telemetry/dashboards/alerts, exact production SLO windows, managed backup/PITR, preview rollback, production observation and independent consumers remain unproven.",
-    "API_SE_003_BF1 is locally proven only: the API producer declares 22 of 713 observed table objects and keeps retirement fail closed, while UI/Sultan exact-version consumption, recurring source snapshots and deployed catalog evidence remain unobserved."
+    "API_SE_003_BF1 is locally proven only: the API producer declares 22 of 713 observed table objects and keeps retirement fail closed, while UI/Sultan exact-version consumption, recurring source snapshots and deployed catalog evidence remain unobserved.",
+    "API-PC-012 is bounded integrated in code only: no signed live Sultan HTTP request, deployed workload credential, canonical context observation, business command receipt/readback, model-quality result or production autonomy is proven."
   ],
-  "stop_code": null
+  "stop_code": null,
+  "updated_at": "2026-08-31T06:25:33.743Z",
+  "api_pc_012": {
+    "status": "BOUNDED_INTEGRATED_PASS_NO_EFFECT",
+    "producer_candidate_sha": "7d015fffd0b3a099f83cc7a73e1af02bc4dd1e28",
+    "producer_pr": 49,
+    "consumer_repository": "CIBOTFLOW/Sultan-OS",
+    "consumer_implementation_sha": "6f477c0525141ced3ae87c9dc631e92a981af120",
+    "consumer_proof_head_sha": "123246edbab978c48b58a45e1936a039018da615",
+    "consumer_pr": 307,
+    "contract_versions": [
+      "luzione-sultan-agent-context/v0.1",
+      "luzione-sultan-agent-intent/v0.1",
+      "luzione-sultan-agent-policy/v0.1",
+      "luzione-sultan-agent-outcome/v0.1"
+    ],
+    "pre_rebase_API_release_gate": {
+      "run_id": 33363131683,
+      "status": "PASS_CONTRACT_EQUIVALENT_CANDIDATE_F18F838"
+    },
+    "pre_rebase_codeql": {
+      "run_id": 33363131688,
+      "status": "PASS_CONTRACT_EQUIVALENT_CANDIDATE_F18F838"
+    },
+    "rebased_local_verification": {
+      "candidate_sha": "7d015fffd0b3a099f83cc7a73e1af02bc4dd1e28",
+      "compliance_controls": "PASS_7",
+      "typecheck": "PASS",
+      "lint": "PASS",
+      "tests": "PASS_216_OF_216",
+      "production_build": "PASS"
+    },
+    "effect_authority": "NO_EFFECT",
+    "live_http_journey": "NOT_RUN",
+    "business_receipt_readback": "NOT_APPLICABLE_TO_EVALUATION_ONLY_PATH_AND_NOT_PROVEN_FOR_EFFECTS",
+    "production_observation": "NOT_RUN"
+  }
 }
