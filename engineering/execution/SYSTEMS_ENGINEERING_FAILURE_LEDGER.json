@@ -703,6 +703,60 @@
         "Disposable local PostgreSQL does not prove managed migration permissions, production workload identity or production failure recovery."
       ],
       "next_action": "Reuse the cleanup-safe harness for regression proof and separately obtain managed preview evidence before activation."
+    },
+    {
+      "failure_id": "API_PC_009_LOCAL_HARNESS_AND_INVENTORY_20260831",
+      "project_id": "API-PC-009",
+      "observed_at": "2026-08-31T04:49:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "d66d215e630881e19a5695e654616c92f7172507",
+      "environment": "local-disposable",
+      "layer": "test-and-postgres-proof-harness",
+      "symptom": "The first focused test imported a server-only store without the standalone stub, the first disposable rollback proof role did not own the receipt table used for its deliberate constraint, and the first full suite reported the three new routes absent from the topology inventory.",
+      "expected": "Standalone tests remain server-only aware, the cleanup-safe proof can deliberately force atomic rollback, and every route is represented in the canonical inventory.",
+      "actual": "The focused test now inspects the store source without runtime import, the disposable role owns only the disposable receipt table needed for the rollback probe, and the canonical topology plus route-completeness fixtures include all six new GET/POST operations; both database shapes and 184/184 tests passed.",
+      "classification": { "domain": "TOOL", "class": "INVALID", "retry": "IMMEDIATE", "severity": "INFO" },
+      "evidence_refs": [
+        "src/modules/production-convergence/tests/proposal-quote-approval.test.ts",
+        "scripts/validation/run-api-pc-009-disposable-proof.sh",
+        "engineering/execution/LUZIONE_API_TOPOLOGY_INVENTORY_V1.json",
+        "fresh and observed_ui PASS output",
+        "final 184/184 test output"
+      ],
+      "repair_attempts": [
+        "Removed the standalone runtime dependency on server-only while retaining source-sensitive authority checks.",
+        "Scoped temporary table ownership inside each disposable database to the proof-only login.",
+        "Published every new route and method through the existing canonical topology and completeness tests."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "API_PC_009_LOCAL_PROPOSAL_QUOTE_APPROVAL_20260831",
+      "remaining_uncertainty": ["Disposable role ownership does not model managed production migration authority."],
+      "next_action": "Retain cleanup-safe disposable proof and filesystem-equality topology gates."
+    },
+    {
+      "failure_id": "API_PC_009_BUILD_FONT_NETWORK_20260831",
+      "project_id": "API-PC-009",
+      "observed_at": "2026-08-31T04:53:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "d66d215e630881e19a5695e654616c92f7172507",
+      "environment": "local",
+      "layer": "nextjs-production-build",
+      "symptom": "The sandboxed production build could not fetch the repository's existing Geist and Geist Mono Google Font assets.",
+      "expected": "The unchanged candidate completes its production build when the declared font dependency is reachable.",
+      "actual": "The unchanged network-enabled build compiled, typechecked, generated every route and completed successfully.",
+      "classification": { "domain": "DEPENDENCY", "class": "UNAVAILABLE", "retry": "IMMEDIATE", "severity": "INFO" },
+      "evidence_refs": ["first npm run build Google Fonts failure", "approved unchanged npm run build pass"],
+      "repair_attempts": ["Reran the unchanged build with explicit network access for the existing font dependency."],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": ["Google Fonts reachability in the default sandbox"],
+      "resolved": true,
+      "resolution_ref": "API_PC_009_LOCAL_PROPOSAL_QUOTE_APPROVAL_20260831",
+      "remaining_uncertainty": ["This local dependency reachability does not prove preview or production font delivery."],
+      "next_action": "Retain the exact build gate and do not treat font reachability as application capability evidence."
     }
   ]
 }

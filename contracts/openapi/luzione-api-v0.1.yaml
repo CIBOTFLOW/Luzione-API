@@ -49,6 +49,18 @@
         "summary": "Read API-owned contract and source-of-truth registries",
         "responses": { "200": { "description": "Bounded catalog metadata" } }
       }
+    },
+    "/api/v1/commands/quotes": {
+      "get": { "operationId": "getQuote", "summary": "Read a tenant-bound canonical Quote and immutable economics", "responses": { "200": { "description": "Quote readback" }, "404": { "description": "Quote not found" } } },
+      "post": { "operationId": "createQuote", "summary": "Create a default-off canonical Quote and immutable economics version", "responses": { "201": { "description": "Quote committed with P110 receipt" }, "409": { "description": "Version or idempotency conflict" }, "503": { "description": "Mutation path disabled or unavailable" } } }
+    },
+    "/api/v1/commands/quote-approvals": {
+      "get": { "operationId": "getQuoteApproval", "summary": "Read an exact-version Quote margin decision", "responses": { "200": { "description": "Quote approval readback" }, "404": { "description": "Quote not found" } } },
+      "post": { "operationId": "decideQuoteMarginApproval", "summary": "Record a credential-bound human decision for exact Quote economics", "responses": { "200": { "description": "Decision committed with P110 receipt" }, "403": { "description": "Human or role authority denied" }, "409": { "description": "Version or decision conflict" }, "503": { "description": "Mutation path disabled or unavailable" } } }
+    },
+    "/api/v1/commands/proposal-reviews": {
+      "get": { "operationId": "getProposalReview", "summary": "Read the latest exact-version Proposal review", "responses": { "200": { "description": "Proposal review readback" }, "404": { "description": "Proposal review not found" } } },
+      "post": { "operationId": "decideProposalReview", "summary": "Record a credential-bound human review for the exact current Proposal artifact", "responses": { "201": { "description": "Review committed with P110 receipt" }, "403": { "description": "Human, role, or typed-confirmation authority denied" }, "409": { "description": "Version or blocker conflict" }, "503": { "description": "Mutation path disabled or unavailable" } } }
     }
   }
 }

@@ -461,6 +461,25 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
     version: "luzione-lead-commercial-case/v0.1",
   },
   {
+    compatibility: "ADDITIVE_MINOR",
+    consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
+    contractId: "proposal-quote-approval-command",
+    currentRuntime: true,
+    maturity: "IMPLEMENTED_TRANSITIONAL",
+    name: "Default-off Quote, margin approval and exact-version Proposal review boundary",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: [],
+    sourcePaths: [
+      "src/modules/proposal-quote-approval/contracts.ts",
+      "src/modules/proposal-quote-approval/store.ts",
+      "src/app/api/v1/commands/quotes/route.ts",
+      "src/app/api/v1/commands/quote-approvals/route.ts",
+      "src/app/api/v1/commands/proposal-reviews/route.ts",
+      "supabase/migrations/20260831060000_proposal_quote_approval_dark_path.sql"
+    ],
+    version: "luzione-proposal-quote-approval/v0.1",
+  },
+  {
     compatibility: "NEW_MAJOR_FOR_BREAKING",
     consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
     contractId: "cross-system-journey-certification",

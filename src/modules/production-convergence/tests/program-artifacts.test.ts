@@ -44,6 +44,10 @@ test("ownership registry names every first-journey object and binds reconciled c
   assert.equal(byObject.get("Lead")?.migrationState, "API_DARK_PATH_TRANSFER_PENDING");
   assert.equal(byObject.get("CommercialCase")?.currentOwner, "CIBOTFLOW/Luzione-UI");
   assert.equal(byObject.get("CommercialCase")?.migrationState, "API_DARK_PATH_TRANSFER_PENDING");
+  assert.equal(byObject.get("Proposal")?.currentOwner, "CIBOTFLOW/Luzione-UI");
+  assert.match(byObject.get("Proposal")?.migrationState ?? "", /API_DARK_PATH_TRANSFER_PENDING/);
+  assert.equal(byObject.get("Quote")?.currentOwner, "CIBOTFLOW/Luzione-UI");
+  assert.equal(byObject.get("Quote")?.migrationState, "API_DARK_PATH_TRANSFER_PENDING");
   assert.equal(byObject.get("Product")?.currentOwner, "external:shopify");
   assert.equal(new Set(registry.objects.map((item) => item.object)).size, registry.objects.length);
 });
@@ -78,6 +82,9 @@ test("contract v0.1 manifest and JSON-compatible OpenAPI publish the same bounde
   assert.equal(openApi.info.version, "0.1.0");
   assert.deepEqual(Object.keys(openApi.paths).sort(), [
     "/api/v1/catalog",
+    "/api/v1/commands/proposal-reviews",
+    "/api/v1/commands/quote-approvals",
+    "/api/v1/commands/quotes",
     "/api/v1/healthz",
     "/api/v1/livez",
     "/api/v1/readyz",

@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_PC_009_TO_LUZIONE_UI_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "d66d215e630881e19a5695e654616c92f7172507",
+  "producer_ref": "codex/api-pc-009-proposal-quote-approval",
+  "contract_name": "proposal-quote-approval-command",
+  "contract_version": "luzione-proposal-quote-approval/v0.1",
+  "consumer_repository": "CIBOTFLOW/Luzione-UI",
+  "consumer_project_paths": ["UI-PC-008"],
+  "stable_paths": {
+    "contract": "src/modules/proposal-quote-approval/contracts.ts",
+    "quote_route": "GET|POST /api/v1/commands/quotes",
+    "quote_approval_route": "GET|POST /api/v1/commands/quote-approvals",
+    "proposal_review_route": "GET|POST /api/v1/commands/proposal-reviews",
+    "causal_receipt_route": "GET /api/v1/platform-guarantees?receiptId=<receipt>",
+    "working_contract": "architecture/production-convergence/API_PC_009_WORKING_CONTRACT.md",
+    "manifest": "contracts/contract-manifest.v0.1.json"
+  },
+  "required_consumer_behavior": [
+    "Keep the UI Quote and Proposal services as the active writer and rollback path until an independently observed cohort cutover is approved.",
+    "Send integer cents and three-letter uppercase currency only; never submit totals, margin, actor, tenant, roles, authority or effect claims.",
+    "Bind Quote margin decisions to the exact returned Quote objectVersion and quoteEconomicsVersionId and preserve the API idempotency key across retry.",
+    "Bind Proposal reviews to the exact current Commercial Case version and proposal document version; approval additionally requires a credential-bound human user, eligible policy-role capability, verified renderer readback and exact typed confirmation.",
+    "Do not interpret Proposal review as customer send, acceptance, signature, binding quote, order, payment or provider authority.",
+    "Use the same canonical Postgres rows for shadow comparison and never create a UI-local replacement truth store."
+  ],
+  "activation_requirements": [
+    "independent user-bound UI authentication evidence rather than a caller-supplied role",
+    "LUZIONE_API_MUTATIONS_ENABLED=true only in the selected approved environment",
+    "the exact canary tenant in LUZIONE_API_DOMAIN_COMMAND_TENANTS",
+    "verified exact route and approval-role capabilities",
+    "documented rollback to the existing UI writer",
+    "no production or broad-tenant activation from this handoff alone"
+  ],
+  "acceptance_proof_needed": [
+    "exact UI and API SHAs plus luzione-proposal-quote-approval/v0.1",
+    "shadow Quote/economics/readback equality including cents and currency",
+    "credential-bound human denial and authorized exact-version Quote and Proposal decisions",
+    "same-key replay, changed-payload conflict, stale/superseded version and cross-tenant denial",
+    "receipt reconciliation and tested rollback to the UI writer",
+    "evidence that no customer, provider, order or payment effect was activated"
+  ],
+  "producer_evidence_refs": [
+    "src/modules/production-convergence/tests/proposal-quote-approval.test.ts",
+    "scripts/validation/run-api-pc-009-disposable-proof.sh",
+    "architecture/production-convergence/API_PC_009_WORKING_CONTRACT.md",
+    "commit:d66d215e630881e19a5695e654616c92f7172507"
+  ],
+  "known_limitations": [
+    "No Luzione UI repository edit or independent UI journey was performed.",
+    "The API paths remain globally and tenant-default-off and are not active writers.",
+    "P15 Proposal document composition remains UI-owned.",
+    "Managed migration, delegated user identity, domain RLS, canary rollback and production observation remain unproven."
+  ]
+}

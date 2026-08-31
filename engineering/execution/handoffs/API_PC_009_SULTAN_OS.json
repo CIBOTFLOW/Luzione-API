@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_PC_009_TO_SULTAN_OS_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "d66d215e630881e19a5695e654616c92f7172507",
+  "producer_ref": "codex/api-pc-009-proposal-quote-approval",
+  "contract_name": "proposal-quote-approval-command",
+  "contract_version": "luzione-proposal-quote-approval/v0.1",
+  "consumer_repository": "CIBOTFLOW/Sultan-OS",
+  "consumer_project_paths": ["SULTAN_SE_002", "SULTAN_SE_003", "SULTAN_SE_005"],
+  "stable_paths": {
+    "contract": "src/modules/proposal-quote-approval/contracts.ts",
+    "quote_route": "GET|POST /api/v1/commands/quotes",
+    "quote_approval_route": "GET|POST /api/v1/commands/quote-approvals",
+    "proposal_review_route": "GET|POST /api/v1/commands/proposal-reviews",
+    "causal_receipt_route": "GET /api/v1/platform-guarantees?receiptId=<receipt>"
+  },
+  "required_consumer_behavior": [
+    "Produce bounded Quote or review intent only and never write canonical Quote, economics, approval or Proposal review rows directly.",
+    "Never supply actor, tenant, roles, capabilities, authority, totals, margin or effect fields from model output.",
+    "Preserve integer cents, uppercase currency, exact object/economics/proposal versions and idempotency keys without reinterpretation.",
+    "A model may propose approval but cannot satisfy the credential-bound human actor, policy-role or typed-confirmation boundary.",
+    "Treat domain commit, approval evidence, provider readback and customer/business finality as distinct states.",
+    "Abstain on stale, missing, denied, superseded or readback-unconfirmed evidence and reconcile through the durable receipt."
+  ],
+  "acceptance_proof_needed": [
+    "exact Sultan and API SHAs plus luzione-proposal-quote-approval/v0.1",
+    "typed intent to authenticated API command without direct database write",
+    "safe integer/currency and exact-version preservation",
+    "service/agent approval denial and no model-derived role or typed confirmation",
+    "same-key replay, stale/superseded/wrong-tenant abstention and receipt reconciliation",
+    "evidence that no tenant activation, provider effect or business finality is inferred"
+  ],
+  "producer_evidence_refs": [
+    "src/modules/production-convergence/tests/proposal-quote-approval.test.ts",
+    "scripts/validation/run-api-pc-009-disposable-proof.sh",
+    "architecture/production-convergence/API_PC_009_WORKING_CONTRACT.md",
+    "commit:d66d215e630881e19a5695e654616c92f7172507"
+  ],
+  "known_limitations": [
+    "No Sultan repository consumer test or cross-system journey was executed.",
+    "The API paths remain default-off and include no provider or customer effect.",
+    "API-PC-012 remains the dedicated Sultan context/intent/policy/outcome convergence cell."
+  ]
+}
