@@ -151,16 +151,18 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
     consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
     contractId: "workflow-state-and-continuation",
     currentRuntime: false,
-    maturity: "LIBRARY_ONLY",
+    maturity: "IMPLEMENTED",
     name: "Workflow state, checkpoint and signed continuation contract",
     ownerRepository: "CIBOTFLOW/Luzione-API",
-    pendingChangeRefs: ["pull/31:durable-execution-runtime"],
+    pendingChangeRefs: [],
     sourcePaths: [
       "src/modules/platform-guarantees/types.ts",
       "src/modules/platform-guarantees/stateMachine.ts",
-      "src/modules/platform-guarantees/eventContract.ts"
+      "src/modules/platform-guarantees/eventContract.ts",
+      "src/lib/platform-guarantees/postgresWorkflowDeliveryStore.ts",
+      "supabase/migrations/20260831030000_p110_p111_workflow_delivery_baseline.sql"
     ],
-    version: "1.0",
+    version: "luzione-workflow-delivery/v0.1",
   },
   {
     compatibility: "NEW_MAJOR_FOR_BREAKING",

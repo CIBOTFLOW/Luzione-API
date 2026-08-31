@@ -55,9 +55,9 @@
       "capabilityId": "durable-workflow-execution",
       "owner": "CIBOTFLOW/Luzione-API",
       "effectClass": "ASYNC_INTERNAL_AND_PROVIDER_EFFECT",
-      "runtimeState": "TRANSFER_PENDING",
-      "contractVersion": "1.0",
-      "entrypoint": null
+      "runtimeState": "IMPLEMENTED_WORKER_STORE_ACTIVATION_DISABLED",
+      "contractVersion": "luzione-workflow-delivery/v0.1",
+      "entrypoint": "PostgresWorkflowDeliveryStore (system worker library entrypoint; no worker or provider adapter activated)"
     },
     {
       "capabilityId": "sultan-reasoning-and-memory",

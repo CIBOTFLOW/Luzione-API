@@ -7,8 +7,7 @@ The API/data authority lane owns new production-convergence DDL artifacts. This 
 | `20260828210000_tenant_ai_governance_and_workflow_packs.sql` | Tracked additive artifact | API repository owns the file; application history and workflow-pack parity remain unproven |
 | `20260828213000_workflow_pack_foreign_key_indexes.sql` | Tracked additive artifact | API repository owns the file; production application is unobserved |
 | P110 command receipt/event/conflict/outbox baseline | `20260831022000_p110_command_ledger_baseline.sql` is tracked and locally proven | API repository owns the additive file; fresh and legacy-upgrade rehearsal passed in disposable Postgres; managed/production application remains unauthorized and unobserved |
-| P111 workflow schema | Referenced by current reads, migration absent from main | API-PC-006 must reconcile production history and pending-change evidence before claiming migration ownership |
-| API-PC-006 workflow/inbox/DLQ/reconciliation substrate | Not yet authored | API/data lane target; fresh/upgrade validation required before any application |
+| P110 delivery/inbox/DLQ/reconciliation and P111 workflow baseline | `20260831030000_p110_p111_workflow_delivery_baseline.sql` is tracked and locally proven | API repository owns the additive file; fresh and observed legacy-shape upgrade rehearsal passed in disposable Postgres; managed/production application and worker activation remain unauthorized and unobserved |
 
 ## API-PC-004 authority migration design
 
