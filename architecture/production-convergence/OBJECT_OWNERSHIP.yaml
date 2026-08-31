@@ -50,6 +50,16 @@
       "sourceVersion": "luzione-source-of-truth-registry/v1:commerce:Order"
     },
     {
+      "object": "SupplierPortalBrowserSurface",
+      "tier": "TIER_1",
+      "currentOwner": "CIBOTFLOW/Luzione-Supplier-Portal",
+      "targetMutationOwner": "CIBOTFLOW/Luzione-Supplier-Portal",
+      "physicalSchemaOwner": "CIBOTFLOW/Luzione-UI",
+      "truthStore": "canonical-postgres:22-declared-public-portal-relations",
+      "migrationState": "CAPABILITY_OWNER_APPROVED_LIFECYCLE_REVIEW_RETIREMENT_DENIED",
+      "sourceVersion": "luzione-table-object-registry/v1@CIBOTFLOW/Luzione-UI:d6b23f6f97ac065b6af3572ab010c478ae9d9b24"
+    },
+    {
       "object": "FulfillmentIntent",
       "tier": "TIER_1",
       "currentOwner": "CIBOTFLOW/Luzione-API",

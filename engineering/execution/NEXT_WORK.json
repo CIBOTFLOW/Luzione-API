@@ -436,6 +436,41 @@
       "completion_evidence_ref": "API_PC_010_LOCAL_ORDER_FULFILLMENT_20260831"
     },
     {
+      "project_id": "API_SE_003_BF1",
+      "platform_project": "PLAT_SE_003_BF1",
+      "title": "Table Object Ownership, Lifecycle and Retirement Registry",
+      "priority": 490,
+      "status": "COMPLETE",
+      "depends_on": [
+        "API_SE_003",
+        "API_SE_009",
+        "API_SE_017"
+      ],
+      "mutation_cone": [
+        "contracts",
+        "source-of-truth",
+        "service-catalog",
+        "table-metadata",
+        "tests",
+        "handoffs"
+      ],
+      "core_outcome": "Extend the canonical API catalog with a strict metadata-only table-object contract and explicitly approve the Supplier Portal capability owner for the 22 observed browser surfaces without copying the 713-table catalog or authorizing retirement.",
+      "published_artifacts": [
+        "luzione-table-object-registry/v1",
+        "strict JSON schema",
+        "catalog read surface",
+        "UI and Sultan consumer handoffs"
+      ],
+      "required_evidence": [
+        "exact object-set and owner separation",
+        "fail-closed unknown enum and retirement fixtures",
+        "bounded 22-of-713 coverage accounting",
+        "independent consumer adoption"
+      ],
+      "irreversible_effects": [],
+      "completion_evidence_ref": "API_SE_003_BF1_LOCAL_TABLE_OBJECT_REGISTRY_20260831"
+    },
+    {
       "project_id": "API-PC-011",
       "platform_project": "PRODUCTION_CONVERGENCE_WAVE_3",
       "title": "Provider Adapter and Worker Runtime",

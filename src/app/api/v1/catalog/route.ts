@@ -12,6 +12,11 @@ import {
   sourceOfTruthRegistry,
 } from "@/modules/platform-contracts/truthRegistry";
 import {
+  TABLE_OBJECT_REGISTRY_VERSION,
+  tableObjectRegistry,
+  tableObjectRegistryCoverage,
+} from "@/modules/platform-contracts/tableObjectRegistry";
+import {
   dependencyCatalog,
   dependencyGraph,
   PLATFORM_SERVICE_CATALOG_VERSION,
@@ -108,6 +113,12 @@ export async function GET(request: Request) {
         entries: sourceOfTruthRegistry,
         mutationPathFindings,
         registryVersion: SOURCE_OF_TRUTH_REGISTRY_VERSION,
+      },
+      tableObjectRegistry: {
+        coverage: tableObjectRegistryCoverage,
+        entries: tableObjectRegistry,
+        registryVersion: TABLE_OBJECT_REGISTRY_VERSION,
+        schemaPath: "contracts/objects/luzione-table-object-registry-v1.schema.json",
       },
       serviceCatalog: {
         dependencies: dependencyCatalog,

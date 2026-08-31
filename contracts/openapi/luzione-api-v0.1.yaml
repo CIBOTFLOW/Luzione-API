@@ -46,7 +46,7 @@
     "/api/v1/catalog": {
       "get": {
         "operationId": "getContractCatalog",
-        "summary": "Read API-owned contract and source-of-truth registries",
+        "summary": "Read API-owned contract, source-of-truth and table-object registries",
         "responses": { "200": { "description": "Bounded catalog metadata" } }
       }
     },

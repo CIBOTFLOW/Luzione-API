@@ -302,6 +302,22 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
     version: "luzione-service-catalog/v1",
   },
   {
+    compatibility: "ADDITIVE_MINOR",
+    consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
+    contractId: "table-object-descriptor",
+    currentRuntime: true,
+    maturity: "IMPLEMENTED",
+    name: "Physical table ownership, lifecycle, reconciliation, security and retirement gate",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: [],
+    sourcePaths: [
+      "src/modules/platform-contracts/tableObjectRegistry.ts",
+      "contracts/objects/luzione-table-object-registry-v1.schema.json",
+      "src/app/api/v1/catalog/route.ts"
+    ],
+    version: "luzione-table-object-registry/v1",
+  },
+  {
     compatibility: "NEW_MAJOR_FOR_BREAKING",
     consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
     contractId: "telemetry-semantic-conventions",

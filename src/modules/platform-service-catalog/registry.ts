@@ -52,7 +52,7 @@ export const serviceCatalog: readonly ServiceDescriptor[] = Object.freeze([
     humanOwnerRole: "Luzione API platform owner",
     lastObservedReleaseSha: null,
     name: "Luzione API and restricted engineering console",
-    publishedContracts: ["luzione-platform-contract-registry/v1", "luzione-source-of-truth-registry/v1", "luzione-request-identity/v1", "luzione-platform-failure/v1", "luzione-reconciliation-state/v1", "luzione-service-catalog/v1", "luzione-slo-registry/v1", "luzione-security-controls/v1", "luzione-readiness-evidence/v1", "luzione-production-readiness-certification/v1", "luzione-performance-program/v1", "luzione-release-evidence/v1", "luzione-release-identity/v0.1", "luzione-api-contract/v0.1", "luzione-test-taxonomy/v1", "luzione-causal-navigation/v1", "luzione-cross-system-journey-certification/v1"],
+    publishedContracts: ["luzione-platform-contract-registry/v1", "luzione-source-of-truth-registry/v1", "luzione-table-object-registry/v1", "luzione-request-identity/v1", "luzione-platform-failure/v1", "luzione-reconciliation-state/v1", "luzione-service-catalog/v1", "luzione-slo-registry/v1", "luzione-security-controls/v1", "luzione-readiness-evidence/v1", "luzione-production-readiness-certification/v1", "luzione-performance-program/v1", "luzione-release-evidence/v1", "luzione-release-identity/v0.1", "luzione-api-contract/v0.1", "luzione-test-taxonomy/v1", "luzione-causal-navigation/v1", "luzione-cross-system-journey-certification/v1"],
     repository: "CIBOTFLOW/Luzione-API",
     runbookRefs: ["api-readiness", "database-rls", "p113-catalog", "sultan-readback"],
     runtime: "Next.js 16 on Node.js, deployed to Vercel iad1",

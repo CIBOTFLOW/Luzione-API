@@ -24,7 +24,7 @@
       "owner": "CIBOTFLOW/Luzione-API",
       "effectClass": "NO_EFFECT",
       "runtimeState": "IMPLEMENTED_READ_ONLY",
-      "contractVersion": "luzione-platform-contract-registry/v1",
+      "contractVersion": "luzione-platform-contract-registry/v1 + luzione-table-object-registry/v1",
       "entrypoint": "GET /api/v1/catalog"
     },
     {

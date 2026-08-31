@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/objects/luzione-table-object-registry-v1.schema.json",
+  "title": "Luzione table object descriptor",
+  "description": "Metadata-only ownership, lifecycle, reconciliation, security and retirement contract for a physical table object. It never carries table contents, credentials or destructive authority.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "authorityStatus",
+    "canonicalSuccessor",
+    "capabilityOwner",
+    "dataRole",
+    "domain",
+    "evidenceRefs",
+    "freshness",
+    "lifecycle",
+    "physicalSchemaOwner",
+    "projectionOf",
+    "qualifiedName",
+    "reconciliationPosture",
+    "retirementGate",
+    "securityPosture",
+    "sourceVersion"
+  ],
+  "properties": {
+    "authorityStatus": {
+      "enum": ["CAPABILITY_OWNER_APPROVED", "REJECTED", "UNCONFIRMED"]
+    },
+    "canonicalSuccessor": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "capabilityOwner": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "dataRole": {
+      "enum": ["CANONICAL", "INTEGRATION", "LEDGER", "PROJECTION", "TEMPORARY", "UNCLASSIFIED"]
+    },
+    "domain": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{0,62}$"
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1, "maxLength": 500 }
+    },
+    "freshness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maxAgeSeconds", "observedAt", "status"],
+      "properties": {
+        "maxAgeSeconds": { "type": ["integer", "null"], "minimum": 1 },
+        "observedAt": { "type": "string", "format": "date-time" },
+        "status": { "const": "SNAPSHOT_ONLY" }
+      }
+    },
+    "lifecycle": {
+      "enum": ["ACTIVE", "QUARANTINED", "RETIRED", "REVIEW"]
+    },
+    "physicalSchemaOwner": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "projectionOf": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "qualifiedName": {
+      "type": "string",
+      "pattern": "^public\\.[a-z][a-z0-9_]{0,62}$"
+    },
+    "reconciliationPosture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "status", "strategy"],
+      "properties": {
+        "source": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "status": { "const": "SOURCE_SNAPSHOT_REQUIRED" },
+        "strategy": { "const": "REFRESH_FROM_PRODUCTION_METADATA" }
+      }
+    },
+    "retirementGate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["allowed", "requiredEvidence"],
+      "properties": {
+        "allowed": { "type": "boolean" },
+        "requiredEvidence": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1, "maxLength": 300 }
+        }
+      }
+    },
+    "securityPosture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "anonAccess",
+        "authenticatedAccess",
+        "browserBoundary",
+        "policyCount",
+        "rls",
+        "serviceRoleAccess"
+      ],
+      "properties": {
+        "anonAccess": { "const": false },
+        "authenticatedAccess": { "const": true },
+        "browserBoundary": { "const": "AUTHENTICATED_RLS" },
+        "policyCount": { "type": "integer", "minimum": 1 },
+        "rls": { "const": "ENABLED" },
+        "serviceRoleAccess": { "const": true }
+      }
+    },
+    "sourceVersion": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "retirementGate": {
+            "properties": { "allowed": { "const": true } },
+            "required": ["allowed"]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "canonicalSuccessor": { "type": "string", "minLength": 1 },
+          "lifecycle": { "const": "RETIRED" }
+        }
+      }
+    }
+  ]
+}
