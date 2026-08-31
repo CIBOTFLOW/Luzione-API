@@ -1249,6 +1249,78 @@
         "API-PC-013 role/RLS fresh-upgrade and negative permission proof",
         "managed preview migration and authenticated route evidence before tenant activation"
       ]
+    },
+    {
+      "proof_id": "API_PC_010_LOCAL_ORDER_FULFILLMENT_20260831",
+      "project_id": "API-PC-010",
+      "recorded_at": "2026-08-31T05:28:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "3636c1dc2bc37405fcea6539a998d2fff1dc3607",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "SANDBOX_ONLY",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The exact API candidate publishes luzione-order-fulfillment-intent/v0.1 as authenticated, tenant-default-off Order creation from an exact customer-accepted Quote and exact approved economics when required, followed by a canonical no-effect Fulfillment Intent bound to every exact Order line; Luzione UI remains the active Order writer and no dispatch, provider, payment, booking or fulfillment effect is authorized.",
+      "exercised_boundaries": [
+        "The API-PC-005/006/008/009 plus API-PC-010 migration chain applied to a fresh disposable PostgreSQL database.",
+        "The same chain upgraded an observed UI-shaped Quote, Order and Order-line schema additively and preserved the same canonical rows.",
+        "Order creation required the exact current Quote object version, exact economics version, customer_accepted status, exact approval when required and absence of a prior converted Order.",
+        "The committed Order copied every canonical Quote line, retained integer cents and uppercase currency, linked the source Quote and atomically marked the Quote converted_to_order.",
+        "Fulfillment Intent required the exact current Order version plus one exact positive safe-integer quantity for every canonical line and rejected provider, recipient, supplier, payment, booking, send and dispatch fields.",
+        "The canonical Fulfillment Intent row is database-constrained to RECORDED_NO_EFFECT, NO_EFFECT and false dispatch, provider-acknowledgement and source-confirmation flags.",
+        "Exact replay returned the original P110 receipt, changed-payload key reuse recorded one conflict, a forced invalid line intent created no partial intent and tenant B read neither tenant A Order nor intent.",
+        "Both schema shapes observed 1 Order, 1 Order line, 1 Fulfillment Intent, 3 P110 receipts and 1 idempotency conflict.",
+        "Contract registry, OpenAPI, topology, capability, ownership, migration and test-taxonomy artifacts were updated consistently.",
+        "Compliance verification, typecheck, clean lint, 188/188 tests and the production build passed for the implementation candidate."
+      ],
+      "untested_boundaries": [
+        "managed or production Postgres migration application and exact migration-ledger provenance",
+        "domain-table least-privilege roles and forced RLS, which remain API-PC-013 scope",
+        "independent UI shadow-read, accepted-Quote transition provenance, canary, rollback and competing Order-route retirement",
+        "independent Sultan exact-version intent/receipt/readback behavior",
+        "concurrent multi-process Quote-to-Order races against managed Postgres",
+        "provider adapter execution, dispatch, acknowledgement, source readback and live fulfillment effects",
+        "preview and production deployment, capacity, recovery and observation"
+      ],
+      "evidence_refs": [
+        "src/modules/order-fulfillment/contracts.ts",
+        "src/modules/order-fulfillment/store.ts",
+        "src/app/api/v1/commands/orders/route.ts",
+        "src/app/api/v1/commands/fulfillment-intents/route.ts",
+        "supabase/migrations/20260831070000_order_fulfillment_intent_dark_path.sql",
+        "src/modules/production-convergence/tests/order-fulfillment.test.ts",
+        "scripts/validation/run-api-pc-010-disposable-proof.sh",
+        "scripts/validation/api-pc-010-order-fulfillment.ts",
+        "architecture/production-convergence/API_PC_010_WORKING_CONTRACT.md",
+        "commit:3636c1dc2bc37405fcea6539a998d2fff1dc3607"
+      ],
+      "failure_refs": [
+        "API_PC_010_REPOSITORY_FIXTURE_20260831",
+        "API_PC_010_DISPOSABLE_SCHEMA_GAP_20260831"
+      ],
+      "cross_repo_handoffs": ["API_PC_010_TO_LUZIONE_UI_V1", "API_PC_010_TO_SULTAN_OS_V1"],
+      "deferred_external_infra": [
+        "managed canonical Postgres",
+        "independent consumer repositories",
+        "tenant/cohort canary and writer cutover",
+        "provider sandbox and live credentials",
+        "preview and production environments"
+      ],
+      "remaining_uncertainty": [
+        "The API paths remain globally and tenant-default-off and Luzione UI remains the active Order writer and rollback path.",
+        "Customer acceptance is intentionally not minted by this contract; the Order command consumes the current canonical customer_accepted Quote state and independent acceptance provenance remains a UI/cutover proof obligation.",
+        "The current UI has more than one Order creation surface, so UI-PC-009 must converge those paths before writer transfer.",
+        "The Fulfillment Intent is a new canonical internal no-effect record and is not evidence of dispatch, provider acknowledgement, source confirmation or fulfillment completion.",
+        "Domain rows use explicit tenant predicates locally while database-enforced least privilege and RLS remain unproven until API-PC-013.",
+        "Local disposable proof cannot establish production compatibility, capacity, failover, recovery or finality."
+      ],
+      "next_proof_needed": [
+        "API-PC-011 provider adapter and restart-safe worker proof with acknowledgement/readback separation and no live activation",
+        "independent UI exact-version shadow read, accepted-Quote provenance, competing-route convergence, canary and rollback evidence",
+        "independent Sultan exact-version Fulfillment Intent abstention and receipt/readback tests",
+        "API-PC-013 role/RLS fresh-upgrade and negative permission proof",
+        "managed preview migration and authenticated route evidence before tenant activation"
+      ]
     }
   ]
 }

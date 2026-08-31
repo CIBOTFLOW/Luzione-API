@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_PC_010_TO_LUZIONE_UI_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "3636c1dc2bc37405fcea6539a998d2fff1dc3607",
+  "producer_ref": "codex/api-pc-010-order-fulfillment",
+  "contract_name": "order-fulfillment-intent-command",
+  "contract_version": "luzione-order-fulfillment-intent/v0.1",
+  "consumer_repository": "CIBOTFLOW/Luzione-UI",
+  "consumer_project_paths": ["UI-PC-009"],
+  "stable_paths": {
+    "contract": "src/modules/order-fulfillment/contracts.ts",
+    "order_route": "GET|POST /api/v1/commands/orders",
+    "fulfillment_intent_route": "GET|POST /api/v1/commands/fulfillment-intents",
+    "causal_receipt_route": "GET /api/v1/platform-guarantees?receiptId=<receipt>",
+    "working_contract": "architecture/production-convergence/API_PC_010_WORKING_CONTRACT.md",
+    "manifest": "contracts/contract-manifest.v0.1.json"
+  },
+  "required_consumer_behavior": [
+    "Keep the existing UI Order writer as the active path and rollback authority until an independently observed cohort cutover is approved.",
+    "Converge the competing UI Order-create surfaces onto one API command before writer transfer; do not leave /api/quotes/[quoteId]/convert and /api/orders/create as independent canonical mutation paths.",
+    "Submit an Order only from a canonical Quote already in customer_accepted state and bind the command to the exact Quote objectVersion and quoteEconomicsVersionId returned by API readback.",
+    "Do not reinterpret margin approval as customer acceptance and do not let model, browser or caller fields mint acceptance, actor, tenant, authority or effect state.",
+    "Submit one exact positive integer quantity for every canonical Order line when recording a Fulfillment Intent and preserve idempotency keys across retries.",
+    "Treat RECORDED_NO_EFFECT as internal intent only; it is not dispatch, supplier contact, provider acknowledgement, source confirmation or fulfillment completion."
+  ],
+  "activation_requirements": [
+    "independent UI evidence for customer-acceptance provenance and exact Quote version preservation",
+    "LUZIONE_API_MUTATIONS_ENABLED=true only in the selected approved environment",
+    "the exact canary tenant in LUZIONE_API_DOMAIN_COMMAND_TENANTS",
+    "verified exact order and fulfillment-intent route capabilities",
+    "documented rollback to the existing UI writer and tested retirement/disablement of the competing create route",
+    "no provider or broad-tenant activation from this handoff alone"
+  ],
+  "acceptance_proof_needed": [
+    "exact UI and API SHAs plus luzione-order-fulfillment-intent/v0.1",
+    "accepted exact Quote to Order shadow equality including lines, cents, currency and linkage",
+    "wrong-status, stale-version, prior-conversion, missing-approval and cross-tenant denial",
+    "same-key replay, changed-payload conflict, receipt reconciliation and tested rollback",
+    "exact Fulfillment Intent line matching and evidence that no dispatch/provider/payment/booking effect was activated",
+    "one canonical UI mutation path after cutover"
+  ],
+  "producer_evidence_refs": [
+    "src/modules/production-convergence/tests/order-fulfillment.test.ts",
+    "scripts/validation/run-api-pc-010-disposable-proof.sh",
+    "architecture/production-convergence/API_PC_010_WORKING_CONTRACT.md",
+    "commit:3636c1dc2bc37405fcea6539a998d2fff1dc3607"
+  ],
+  "known_limitations": [
+    "No Luzione UI repository edit or independent UI journey was performed.",
+    "The API paths remain globally and tenant-default-off and are not active writers.",
+    "Customer acceptance remains an input from the current canonical UI path; API-PC-010 does not define a customer-acceptance command.",
+    "Managed migration, domain RLS, canary rollback, competing-route retirement and production observation remain unproven."
+  ]
+}

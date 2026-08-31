@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_PC_010_TO_SULTAN_OS_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "3636c1dc2bc37405fcea6539a998d2fff1dc3607",
+  "producer_ref": "codex/api-pc-010-order-fulfillment",
+  "contract_name": "order-fulfillment-intent-command",
+  "contract_version": "luzione-order-fulfillment-intent/v0.1",
+  "consumer_repository": "CIBOTFLOW/Sultan-OS",
+  "consumer_project_paths": ["SULTAN_SE_002", "SULTAN_SE_003", "SULTAN_SE_005"],
+  "stable_paths": {
+    "contract": "src/modules/order-fulfillment/contracts.ts",
+    "order_route": "GET|POST /api/v1/commands/orders",
+    "fulfillment_intent_route": "GET|POST /api/v1/commands/fulfillment-intents",
+    "causal_receipt_route": "GET /api/v1/platform-guarantees?receiptId=<receipt>"
+  },
+  "required_consumer_behavior": [
+    "Produce bounded Order or Fulfillment Intent proposals only and never write Quote, Order, Order-line or Fulfillment Intent rows directly.",
+    "Never supply actor, tenant, roles, capabilities, authority, effect, provider, recipient, payment, booking or dispatch fields from model output.",
+    "Preserve exact Quote, economics and Order versions, exact integer line quantities and idempotency keys without reinterpretation.",
+    "Do not infer customer acceptance from margin approval, conversation state or model confidence.",
+    "Treat a Fulfillment Intent as NO_EFFECT and abstain from claiming dispatch, acknowledgement, source confirmation or business completion.",
+    "Abstain on stale, missing, denied, already-converted, line-conflicting or readback-unconfirmed evidence and reconcile through the durable receipt."
+  ],
+  "acceptance_proof_needed": [
+    "exact Sultan and API SHAs plus luzione-order-fulfillment-intent/v0.1",
+    "typed intent to authenticated API command without direct database or provider write",
+    "exact-version and exact-line preservation",
+    "wrong-status, stale, duplicate, wrong-tenant and effect-field abstention",
+    "same-key replay and receipt/readback reconciliation",
+    "evidence that no tenant activation, provider effect or business finality is inferred"
+  ],
+  "producer_evidence_refs": [
+    "src/modules/production-convergence/tests/order-fulfillment.test.ts",
+    "scripts/validation/run-api-pc-010-disposable-proof.sh",
+    "architecture/production-convergence/API_PC_010_WORKING_CONTRACT.md",
+    "commit:3636c1dc2bc37405fcea6539a998d2fff1dc3607"
+  ],
+  "known_limitations": [
+    "No Sultan repository consumer test or cross-system journey was executed.",
+    "The API paths remain default-off and include no provider, dispatch or customer effect.",
+    "API-PC-012 remains the dedicated Sultan context/intent/policy/outcome convergence cell."
+  ]
+}

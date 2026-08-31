@@ -757,6 +757,65 @@
       "resolution_ref": "API_PC_009_LOCAL_PROPOSAL_QUOTE_APPROVAL_20260831",
       "remaining_uncertainty": ["This local dependency reachability does not prove preview or production font delivery."],
       "next_action": "Retain the exact build gate and do not treat font reachability as application capability evidence."
+    },
+    {
+      "failure_id": "API_PC_010_REPOSITORY_FIXTURE_20260831",
+      "project_id": "API-PC-010",
+      "observed_at": "2026-08-31T05:12:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "3636c1dc2bc37405fcea6539a998d2fff1dc3607",
+      "environment": "local",
+      "layer": "contract-release-fixture",
+      "symptom": "The first full suite reported only that the expected OpenAPI path-order fixture had not been advanced with the two new API-PC-010 paths.",
+      "expected": "The manifest, OpenAPI document and source-sensitive release fixture publish the same bounded route set in deterministic order.",
+      "actual": "The expected route order was extended without weakening equality; the final candidate passed all 188 tests.",
+      "classification": { "domain": "TOOL", "class": "INVALID", "retry": "IMMEDIATE", "severity": "INFO" },
+      "evidence_refs": [
+        "contracts/openapi/luzione-api-v0.1.yaml",
+        "src/modules/platform-contracts/tests/execution-contracts.test.ts",
+        "final 188/188 test output"
+      ],
+      "repair_attempts": [
+        "Updated the exact expected path ordering to include Orders and Fulfillment Intents while retaining the manifest/OpenAPI equality gate."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "API_PC_010_LOCAL_ORDER_FULFILLMENT_20260831",
+      "remaining_uncertainty": [],
+      "next_action": "Retain exact manifest/OpenAPI route equality for each new contract surface."
+    },
+    {
+      "failure_id": "API_PC_010_DISPOSABLE_SCHEMA_GAP_20260831",
+      "project_id": "API-PC-010",
+      "observed_at": "2026-08-31T05:18:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "3636c1dc2bc37405fcea6539a998d2fff1dc3607",
+      "environment": "local-disposable",
+      "layer": "fresh-schema-migration-proof",
+      "symptom": "The first fresh disposable proof found that the API-PC-009 fresh Quote schema did not contain the UI-observed converted_order_id linkage consumed by Order conversion.",
+      "expected": "API-PC-010 must upgrade both fresh API migration chains and observed UI-shaped schemas to the same Order linkage without relying on an implicit predecessor column.",
+      "actual": "The API-PC-010 migration now adds quotes.converted_order_id additively before creating Order truth; fresh and observed UI-shaped proofs both pass and clean up their disposable resources.",
+      "classification": { "domain": "DATA", "class": "INVALID", "retry": "IMMEDIATE", "severity": "INFO" },
+      "evidence_refs": [
+        "supabase/migrations/20260831070000_order_fulfillment_intent_dark_path.sql",
+        "scripts/validation/run-api-pc-010-disposable-proof.sh",
+        "fresh and observed_ui PASS output"
+      ],
+      "repair_attempts": [
+        "Added the missing Quote-to-Order linkage in the consuming API-PC-010 migration rather than rewriting the already-proven predecessor migration.",
+        "Reran both disposable schema shapes through the complete runtime journey."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "API_PC_010_LOCAL_ORDER_FULFILLMENT_20260831",
+      "remaining_uncertainty": [
+        "Managed migration history and independently deployed UI compatibility remain unobserved."
+      ],
+      "next_action": "Keep both fresh and observed-schema proof shapes mandatory for subsequent domain migrations."
     }
   ]
 }
