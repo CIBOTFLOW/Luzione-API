@@ -28,8 +28,51 @@ function protectedRows(): RlsPostureRow[] {
     authenticated_access: false,
     service_role_select: true,
     policy_count: 0,
+    rls_forced: true,
   }));
 }
+
+test("API-PC-013 forced RLS and runtime-role drift fail closed", () => {
+  const rows: RlsPostureRow[] = [{
+    table_name: "orders",
+    rls_enabled: true,
+    rls_forced: false,
+    anon_access: false,
+    authenticated_access: false,
+    service_role_select: true,
+    policy_count: 1,
+  }];
+  const result = evaluateRlsPosture({
+    clientDefaultPrivileges: false,
+    expectedTables: ["orders"],
+    forceRlsTables: ["orders"],
+    globalExposure: { ...protectedGlobalExposure, public_table_count: 1 },
+    roleRows: [
+      {
+        role_name: "luzione_api_runtime", table_name: "orders", role_exists: true,
+        superuser: false, create_db: false, create_role: false, can_login: false,
+        replication: false, bypass_rls: false, owns_table: false,
+        select_access: false, insert_access: true, update_access: false,
+        delete_access: false, truncate_access: false, trigger_access: false,
+      },
+      {
+        role_name: "luzione_provider_worker", table_name: "orders", role_exists: true,
+        superuser: false, create_db: false, create_role: false, can_login: false,
+        replication: false, bypass_rls: false, owns_table: false,
+        select_access: true, insert_access: false, update_access: false,
+        delete_access: false, truncate_access: false, trigger_access: false,
+      },
+    ],
+    rows,
+  });
+  assert.equal(result.status, "FAIL");
+  assert.deepEqual(result.violations, [
+    { code: "RLS_NOT_FORCED", table: "orders" },
+    { code: "LEGACY_SERVICE_ROLE_PRIVILEGE_PRESENT", role: "service_role", table: "orders" },
+    { code: "ROLE_ACCESS_MISSING", role: "luzione_api_runtime", table: "orders" },
+    { code: "WORKER_SCOPE_DRIFT", role: "luzione_provider_worker", table: "orders" },
+  ]);
+});
 
 test("P175 security posture passes only for the complete denied client surface", () => {
   const result = evaluateRlsPosture({

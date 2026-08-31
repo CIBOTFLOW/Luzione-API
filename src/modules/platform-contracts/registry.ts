@@ -376,7 +376,9 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
     sourcePaths: [
       "src/modules/platform-security-controls/registry.ts",
       "src/modules/security-posture/rlsPosture.ts",
-      "src/app/api/v1/security/rls-readiness/route.ts"
+      "src/app/api/v1/security/rls-readiness/route.ts",
+      "supabase/migrations/20260831090000_api_pc_013_least_privilege_roles_rls.sql",
+      "architecture/production-convergence/API_PC_013_OWNERSHIP_MANIFEST.json"
     ],
     version: "luzione-security-controls/v1",
   },

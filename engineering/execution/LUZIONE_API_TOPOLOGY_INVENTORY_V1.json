@@ -364,7 +364,7 @@
       "path": "/api/v1/security/rls-readiness",
       "source_path": "src/app/api/v1/security/rls-readiness/route.ts",
       "authentication": "service token or exact Luzione UI Vercel OIDC workload",
-      "canonical_readback": "Postgres catalog and optional role-denial probes",
+      "canonical_readback": "Postgres catalog forced-RLS, role/grant/ownership posture and optional role-denial probes",
       "effect": "NO_EFFECT"
     },
     {
