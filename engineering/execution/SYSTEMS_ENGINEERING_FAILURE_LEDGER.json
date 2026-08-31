@@ -607,6 +607,102 @@
       "resolution_ref": "commit:df7de049d48b993635e7e7b51854da63b040e080 and subsequent database/test passes",
       "remaining_uncertainty": [],
       "next_action": "Keep source assertions aware of the SQL language context they inspect and retain execution proof as the stronger migration signal."
+    },
+    {
+      "failure_id": "API_PC_008_UI_RELATIONSHIP_SEMANTIC_CONFLICT_20260831",
+      "project_id": "API-PC-008",
+      "observed_at": "2026-08-31T04:05:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": null,
+      "environment": "local",
+      "layer": "canonical-schema-compatibility",
+      "symptom": "The inherited API-PC-008 work in progress proposed text relationship identifiers and uppercase VERIFIED/UNVERIFIED states that did not match the active Luzione UI canonical Commercial Case schema.",
+      "expected": "The dark path must extend the same canonical rows without redefining account/opportunity types or relationship-integrity meaning.",
+      "actual": "Read-only UI migration and store evidence selected uuid account/opportunity identifiers plus legacy_unverified/verified semantics; Lead-only API case creation now preserves legacy_unverified until account, contact and opportunity are all present.",
+      "classification": { "domain": "DATA", "class": "CONFLICT", "retry": "NEVER", "severity": "DEGRADED" },
+      "evidence_refs": [
+        "architecture/production-convergence/API_PC_008_WORKING_CONTRACT.md",
+        "supabase/migrations/20260831050000_lead_commercial_case_dark_path.sql",
+        "src/modules/lead-commercial-case/store.ts",
+        "Luzione UI packages/db-schema/105_crm_conversion_and_commercial_case_relationships.sql at c858bb2890d8a8ca5bf6118618435b893e02958c"
+      ],
+      "repair_attempts": [
+        "Reconciled the migration and store with the exact UI-owned column types, lower-case relationship states and verified-state completeness constraint.",
+        "Added fresh and observed UI-shaped disposable migration proof plus source-sensitive compatibility tests."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "API_PC_008_LOCAL_LEAD_COMMERCIAL_CASE_20260831",
+      "remaining_uncertainty": [
+        "Managed canonical migration history and independent UI shadow-read compatibility remain unobserved."
+      ],
+      "next_action": "Keep the API route dark and require independent UI canary/cutover evidence before changing the current writer."
+    },
+    {
+      "failure_id": "API_PC_008_REPOSITORY_GATE_FIXTURES_20260831",
+      "project_id": "API-PC-008",
+      "observed_at": "2026-08-31T04:14:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": null,
+      "environment": "local",
+      "layer": "repository-completeness-and-lint",
+      "symptom": "Initial gates reported the new suite missing from the taxonomy, both route files missing from topology, an authority-test capability regex that excluded underscores, and two explicit-any lint violations in the proof harness.",
+      "expected": "Every new suite, route, environment key and protected capability remains machine-inventoried and the candidate passes clean lint.",
+      "actual": "The canonical taxonomy/topology/authority fixtures were extended for the new surfaces and proof response types were made explicit; the final candidate passed compliance, typecheck, lint, 180/180 tests and build.",
+      "classification": { "domain": "TOOL", "class": "INVALID", "retry": "NEVER", "severity": "INFO" },
+      "evidence_refs": [
+        "initial API-PC-008 177/179 full test output",
+        "initial API-PC-008 lint output",
+        "src/modules/platform-testing/taxonomy.ts",
+        "engineering/execution/LUZIONE_API_TOPOLOGY_INVENTORY_V1.json",
+        "src/lib/tests/api-actor.test.ts",
+        "scripts/validation/api-pc-008-lead-commercial-case.ts"
+      ],
+      "repair_attempts": [
+        "Published the routes, runtime key and suite through the existing canonical inventories.",
+        "Broadened the protected-capability fixture only to the valid underscore character and replaced explicit-any proof casts with exact bounded response shapes."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "commit:a9321b88ce5bcc36c4c9c93baef902d394f55585",
+      "remaining_uncertainty": [],
+      "next_action": "Retain filesystem-equality taxonomy/topology gates for every new command surface."
+    },
+    {
+      "failure_id": "API_PC_008_DISPOSABLE_PROOF_HARNESS_20260831",
+      "project_id": "API-PC-008",
+      "observed_at": "2026-08-31T04:23:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": null,
+      "environment": "disposable",
+      "layer": "local-postgres-proof-harness",
+      "symptom": "The first runtime attempts hit sandbox IPC denial, Docker SCRAM credential absence, insufficient ALTER ownership for the deliberate rollback constraint and an incorrect expected aggregate caused by exact-ID count predicates.",
+      "expected": "A repeatable harness should exercise fresh and observed schema shapes without reading existing secrets, should prove rollback, and should remove all proof resources.",
+      "actual": "A scoped disposable login, two isolated databases, exact grants and cleanup trap were encoded in a reusable harness; both shapes passed identical vertical-slice evidence and a final catalog query confirmed that no proof database or login remained.",
+      "classification": { "domain": "TOOL", "class": "INVALID", "retry": "IMMEDIATE", "severity": "INFO" },
+      "evidence_refs": [
+        "scripts/validation/run-api-pc-008-disposable-proof.sh",
+        "scripts/validation/api-pc-008-lead-commercial-case.ts",
+        "fresh and observed_ui_legacy PASS output"
+      ],
+      "repair_attempts": [
+        "Avoided inspecting the container credential and created a disposable proof-only login.",
+        "Made the proof role owner only of the disposable Commercial Case table so the forced rollback constraint could be installed and removed.",
+        "Corrected aggregate queries to count all tenant-scoped proof rows and added automatic database/login cleanup."
+      ],
+      "strategy_reset": "Replaced manual one-off database setup with a single reusable, cleanup-safe proof harness.",
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "API_PC_008_LOCAL_LEAD_COMMERCIAL_CASE_20260831",
+      "remaining_uncertainty": [
+        "Disposable local PostgreSQL does not prove managed migration permissions, production workload identity or production failure recovery."
+      ],
+      "next_action": "Reuse the cleanup-safe harness for regression proof and separately obtain managed preview evidence before activation."
     }
   ]
 }

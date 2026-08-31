@@ -443,6 +443,24 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
     version: "luzione-causal-readback/v0.1",
   },
   {
+    compatibility: "ADDITIVE_MINOR",
+    consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
+    contractId: "lead-commercial-case-command",
+    currentRuntime: true,
+    maturity: "IMPLEMENTED_TRANSITIONAL",
+    name: "Default-off Lead and Commercial Case command/readback boundary",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: [],
+    sourcePaths: [
+      "src/modules/lead-commercial-case/contracts.ts",
+      "src/modules/lead-commercial-case/store.ts",
+      "src/app/api/v1/commands/leads/route.ts",
+      "src/app/api/v1/commands/commercial-cases/route.ts",
+      "supabase/migrations/20260831050000_lead_commercial_case_dark_path.sql"
+    ],
+    version: "luzione-lead-commercial-case/v0.1",
+  },
+  {
     compatibility: "NEW_MAJOR_FOR_BREAKING",
     consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
     contractId: "cross-system-journey-certification",

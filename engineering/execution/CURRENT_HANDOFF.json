@@ -3,9 +3,9 @@
   "queue_id": "LUZIONE_API_SYSTEMS_ENGINEERING_V1",
   "repository": "CIBOTFLOW/Luzione-API",
   "program_state": "IMPLEMENTATION_IN_PROGRESS",
-  "current_project": "API-PC-008",
-  "next_projects": ["API-PC-008", "API-PC-011", "API-PC-013", "API-PC-014"],
-  "next_action": "Merge the locally proven API-PC-007 causal readback/freshness contract, then implement API-PC-008 lead and commercial-case commands against the existing canonical domain schema with compatibility readback; keep tenant/cohort cutover and provider effects unactivated.",
+  "current_project": "API-PC-009",
+  "next_projects": ["API-PC-009", "API-PC-011", "API-PC-013", "API-PC-014"],
+  "next_action": "Merge the locally proven API-PC-008 Lead/Commercial Case dark path, then compile API-PC-009 against the existing Proposal, Quote, money/currency and approval schema; keep every domain mutation tenant-default-off and do not activate provider or production effects.",
   "canonical_program": "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md",
   "failure_ledger": "engineering/execution/SYSTEMS_ENGINEERING_FAILURE_LEDGER.json",
   "proof_ledger": "engineering/execution/SYSTEMS_ENGINEERING_PROOF_LEDGER.json",
@@ -33,7 +33,8 @@
   "resolved_or_narrowed_uncertainty": [
     "The blanket statement that UI consumer mappings are absent is resolved: UI now has bounded exact-version API-consumer evidence across request identity/trace, telemetry, desired/observed state and failure/recovery semantics.",
     "The blanket statement that Sultan repository reality is unreconciled is resolved: Sultan SE001 reconciliation is complete and the remaining projects are classified by evidence.",
-    "API architecture work does not need to restart while consumer adoption/release evidence matures."
+    "API architecture work does not need to restart while consumer adoption/release evidence matures.",
+    "Luzione UI source and schema evidence now select CIBOTFLOW/Luzione-UI as the current Lead/Commercial Case writer and the API as the transfer-pending target; API-PC-008 reuses the same canonical rows without activating cutover."
   ],
   "deferred_external_infra": [
     "owner-authenticated UI representative journey replay",
@@ -57,7 +58,8 @@
     "API-PC-004 is locally proven only: production credential mappings, canonical membership persistence and independent UI/Sultan authenticated requests remain unobserved.",
     "API-PC-005 is locally proven only: the P110 baseline was rehearsed against fresh and observed legacy shapes in disposable Postgres, while managed/production migration application, domain HTTP commands and independent UI/Sultan command journeys remain unobserved.",
     "API-PC-006 is locally proven only: restart leases, inbox deduplication, DLQ/reconciliation and workflow CAS were exercised in disposable Postgres, while managed failover, live worker activation, provider effects and independent consumer journeys remain unobserved.",
-    "API-PC-007 is locally proven only: causal command/projection readback, stale/missing semantics and cross-tenant non-disclosure were exercised locally, while independent UI/Sultan consumption and production source freshness remain unobserved."
+    "API-PC-007 is locally proven only: causal command/projection readback, stale/missing semantics and cross-tenant non-disclosure were exercised locally, while independent UI/Sultan consumption and production source freshness remain unobserved.",
+    "API-PC-008 is locally proven only: fresh and observed UI-shaped migration, authenticated Lead/Commercial Case routes, replay/conflict, stale/origin/tenant denial, atomic rollback and compatibility readback passed in disposable Postgres, while managed migration, API-PC-013 domain RLS, independent consumer canary/rollback and production cutover remain unobserved."
   ],
   "stop_code": null
 }
