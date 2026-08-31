@@ -1,8 +1,10 @@
 # Luzione API Production Convergence Program
 
-Program extension: `LUZIONE_API_PRODUCTION_CONVERGENCE_V1`  
-Canonical live scheduler: `engineering/execution/NEXT_WORK.json`  
-Charter input: `Luzione_Production_Convergence_Implementation_Charter_2026-08-30.md`  
+Program extension: `LUZIONE_API_PRODUCTION_CONVERGENCE_V1`
+
+Canonical live scheduler: `engineering/execution/NEXT_WORK.json`
+
+Charter input: `Luzione_Production_Convergence_Implementation_Charter_2026-08-30.md`
 Repository owner: `CIBOTFLOW/Luzione-API`
 
 This program starts the API lane described by Section 20 of the production-convergence charter. The charter is planning context; repository instructions and evidence law remain authoritative for execution. `engineering/production-convergence/QUEUE.md` is a human-readable projection only and never a second scheduling authority.
