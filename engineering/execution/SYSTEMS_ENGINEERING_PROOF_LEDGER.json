@@ -717,7 +717,7 @@
       "project_id": "API-PC-001",
       "recorded_at": "2026-08-31T01:51:31Z",
       "repository": "CIBOTFLOW/Luzione-API",
-      "exact_sha": "49d3c803a18ced4c273bbb96e30cea1f93292154",
+      "exact_sha": "8dccb0315819a6142acaefdd6dafa59b8be13354",
       "engineering_state": "BOUNDED_PASS",
       "release_evidence": "LOCAL_PROVEN",
       "effect_authority": "NO_EFFECT",
@@ -742,7 +742,7 @@
         "architecture/production-convergence/CAPABILITY_REGISTRY.yaml",
         "architecture/production-convergence/DEPENDENCY_GRAPH.yaml",
         "src/modules/production-convergence/tests/program-artifacts.test.ts",
-        "commit:49d3c803a18ced4c273bbb96e30cea1f93292154"
+        "commit:8dccb0315819a6142acaefdd6dafa59b8be13354"
       ],
       "failure_refs": [
         "API_PC_001_HANDOFF_REBASE_CONFLICT_20260831"
@@ -771,7 +771,7 @@
       "project_id": "API-PC-002",
       "recorded_at": "2026-08-31T01:51:31Z",
       "repository": "CIBOTFLOW/Luzione-API",
-      "exact_sha": "49d3c803a18ced4c273bbb96e30cea1f93292154",
+      "exact_sha": "8dccb0315819a6142acaefdd6dafa59b8be13354",
       "engineering_state": "BOUNDED_PASS",
       "release_evidence": "LOCAL_PROVEN",
       "effect_authority": "NO_EFFECT",
@@ -794,7 +794,7 @@
         "src/modules/production-convergence/releaseIdentity.ts",
         "src/app/api/v1/release/route.ts",
         "src/modules/production-convergence/tests/release-identity.test.ts",
-        "commit:49d3c803a18ced4c273bbb96e30cea1f93292154"
+        "commit:8dccb0315819a6142acaefdd6dafa59b8be13354"
       ],
       "failure_refs": [],
       "cross_repo_handoffs": [
@@ -821,7 +821,7 @@
       "project_id": "API-PC-003",
       "recorded_at": "2026-08-31T01:51:31Z",
       "repository": "CIBOTFLOW/Luzione-API",
-      "exact_sha": "49d3c803a18ced4c273bbb96e30cea1f93292154",
+      "exact_sha": "8dccb0315819a6142acaefdd6dafa59b8be13354",
       "engineering_state": "CONTRACT_STABLE",
       "release_evidence": "LOCAL_PROVEN",
       "effect_authority": "NO_EFFECT",
@@ -847,7 +847,7 @@
         "contracts/errors/platform-failure-v0.1.schema.json",
         "contracts/receipts/receipt-reference-v0.1.schema.json",
         "src/modules/production-convergence/tests/program-artifacts.test.ts",
-        "commit:49d3c803a18ced4c273bbb96e30cea1f93292154"
+        "commit:8dccb0315819a6142acaefdd6dafa59b8be13354"
       ],
       "failure_refs": [],
       "cross_repo_handoffs": [
