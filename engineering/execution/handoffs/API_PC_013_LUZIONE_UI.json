@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_PC_013_TO_LUZIONE_UI_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "543ede82f51df373b26ba73842f2391b27acf4fe",
+  "producer_ref": "codex/api-pc-013-security-rls",
+  "contract_name": "database-least-privilege-and-tenant-rls",
+  "contract_version": "luzione-security-controls/v1",
+  "consumer_repository": "CIBOTFLOW/Luzione-UI",
+  "consumer_project_paths": ["UI-PC-009", "UI-PC-010"],
+  "stable_paths": {
+    "working_contract": "architecture/production-convergence/API_PC_013_WORKING_CONTRACT.md",
+    "ownership_manifest": "architecture/production-convergence/API_PC_013_OWNERSHIP_MANIFEST.json",
+    "migration": "supabase/migrations/20260831090000_api_pc_013_least_privilege_roles_rls.sql",
+    "readiness_route": "GET /api/v1/security/rls-readiness"
+  },
+  "required_consumer_behavior": [
+    "Do not query the admitted Postgres relations from browser or UI state; use authenticated API commands and readbacks.",
+    "Do not retain or add anon, authenticated or service_role table grants as a compatibility path.",
+    "Keep current UI writers active until the managed migration, API credential membership, exact UI/API canary and rollback plan are authorized together.",
+    "Treat a 503 RLS-readiness result as a release blocker and never suppress role, forced-RLS, missing-table or denial-probe drift.",
+    "Do not infer production application from the tracked migration or local proof."
+  ],
+  "acceptance_proof_needed": [
+    "exact UI and API SHAs plus the migration checksum",
+    "managed preview migration and post-application catalog readback",
+    "deployed API login membership in luzione_api_runtime with no direct owner/BYPASSRLS authority",
+    "authenticated UI command/readback canary plus anon/authenticated direct-table denial",
+    "cross-tenant negative journey and tested rollback before writer retirement"
+  ],
+  "producer_evidence_refs": [
+    "scripts/validation/run-api-pc-013-disposable-proof.sh",
+    "src/modules/production-convergence/tests/security-roles-rls.test.ts",
+    "architecture/production-convergence/API_PC_013_OWNERSHIP_MANIFEST.json",
+    "commit:543ede82f51df373b26ba73842f2391b27acf4fe"
+  ],
+  "known_limitations": [
+    "No Luzione UI repository was edited or independently tested.",
+    "No managed database migration, deployed role membership, credential rotation or traffic cutover was performed.",
+    "The legacy workflow-pack surface is not part of the thirty-relation API-PC-013 proof."
+  ]
+}

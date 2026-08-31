@@ -100,6 +100,14 @@
       "entrypoint": "worker:providers and GET /api/v1/provider-operations"
     },
     {
+      "capabilityId": "database-least-privilege-and-tenant-rls",
+      "owner": "CIBOTFLOW/Luzione-API",
+      "effectClass": "NO_RUNTIME_EFFECT_MIGRATION_APPLICATION_SEPARATELY_AUTHORIZED",
+      "runtimeState": "IMPLEMENTED_LOCALLY_NOT_APPLIED_TO_PRODUCTION",
+      "contractVersion": "luzione-security-controls/v1",
+      "entrypoint": "GET /api/v1/security/rls-readiness"
+    },
+    {
       "capabilityId": "sultan-reasoning-and-memory",
       "owner": "CIBOTFLOW/Sultan-OS",
       "effectClass": "NO_CANONICAL_BUSINESS_WRITE",

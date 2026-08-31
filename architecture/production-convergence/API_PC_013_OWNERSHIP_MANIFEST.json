@@ -1,0 +1,64 @@
+{
+  "schema_version": "luzione-database-ownership/v0.1",
+  "project_id": "API-PC-013",
+  "repository_owner": "CIBOTFLOW/Luzione-API",
+  "migration_artifact": "supabase/migrations/20260831090000_api_pc_013_least_privilege_roles_rls.sql",
+  "physical_relation_owner": {
+    "authority": "release-authorized database migration principal",
+    "runtime_roles_must_not_own_relations": true,
+    "production_transfer_authorized": false
+  },
+  "tenant_context": {
+    "setting": "app.tenant_id",
+    "binding": "transaction-local after authenticated tenant resolution",
+    "missing_context_behavior": "no tenant row is visible or writable"
+  },
+  "roles": [
+    {
+      "role": "luzione_api_runtime",
+      "login": false,
+      "bypass_rls": false,
+      "relation_owner": false,
+      "maximum_privileges": ["SELECT", "INSERT", "UPDATE"],
+      "prohibited_privileges": ["DELETE", "TRUNCATE", "REFERENCES", "TRIGGER"],
+      "scope": "30 admitted P110/P111 and commercial/order relations"
+    },
+    {
+      "role": "luzione_provider_worker",
+      "login": false,
+      "bypass_rls": false,
+      "relation_owner": false,
+      "maximum_privileges": ["SELECT", "INSERT", "UPDATE"],
+      "prohibited_privileges": ["DELETE", "TRUNCATE", "REFERENCES", "TRIGGER"],
+      "scope": [
+        "p110_command_receipts",
+        "p110_outbox_messages",
+        "p110_kill_switches",
+        "p110_delivery_attempts",
+        "p110_dead_letters",
+        "p110_reconciliation_checkpoints"
+      ]
+    }
+  ],
+  "denied_roles": ["PUBLIC", "anon", "authenticated", "service_role"],
+  "policy_contract": {
+    "forced_rls": true,
+    "direct_tenant_tables": 29,
+    "indirect_tenant_tables": {
+      "quote_lines": "quote_lines.quote_id -> quotes.id -> quotes.tenant_id"
+    },
+    "permissive_public_policies_allowed": false
+  },
+  "deployment_boundary": {
+    "migration_applied": false,
+    "credential_membership_configured": false,
+    "production_cutover_authorized": false,
+    "required_before_cutover": [
+      "managed backup and rollback evidence",
+      "exact release SHA binding",
+      "deployed login membership inventory",
+      "UI and Sultan consumer canary",
+      "post-application catalog and active denial probes"
+    ]
+  }
+}

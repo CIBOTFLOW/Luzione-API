@@ -39,9 +39,9 @@ The service connects directly to Postgres for canonical P110/P111 records. If Su
 
 ## Database security readiness
 
-`GET /api/v1/security/rls-readiness` is a service-authenticated, read-only contract over the canonical Postgres catalog. It verifies the first server-only control-plane boundary: ten credential, authentication, connector, service-client and migration relations must exist, have RLS enabled and grant no access to `anon` or `authenticated`. It also rejects unsafe default grants for future tables.
+`GET /api/v1/security/rls-readiness` is a service-authenticated, read-only contract over the canonical Postgres catalog. It verifies the first server-only control-plane boundary and the API-PC-013 production-convergence surface: ten credential, authentication, connector, service-client and migration relations plus thirty admitted P110/P111 and commercial/order relations must exist and have the required RLS posture. The admitted convergence relations must force RLS, remove direct `anon`, `authenticated` and legacy `service_role` table authority, keep the non-login API runtime and provider-worker roles from owning or bypassing relations, and constrain the worker to its six delivery/reconciliation relations. Unsafe default grants for future tables also fail readiness.
 
-The public health endpoint reports only aggregate pass/fail posture and returns 503 unless configuration and this RLS gate pass. Authorized callers may add `?activeProbes=true` to prove that `anon` and `authenticated` reads fail with PostgreSQL `42501 permission_denied`. No row values, credentials or connection details are returned.
+The public health endpoint reports only aggregate pass/fail posture and returns 503 unless configuration and this RLS gate pass. Authorized callers may add `?activeProbes=true` to prove that `anon` and `authenticated` reads against both server-only and convergence relations fail with PostgreSQL `42501 permission_denied`. No row values, credentials or connection details are returned. Production migration application and deployed credential membership remain separate release-authorized operations.
 
 ## Autonomy boundary
 

@@ -11,9 +11,57 @@ export const SENSITIVE_SERVER_ONLY_TABLES = Object.freeze([
   "service_auth_clients",
 ]);
 
+export const PRODUCTION_CONVERGENCE_TENANT_TABLES = Object.freeze([
+  "p110_command_receipts",
+  "p110_event_envelopes",
+  "p110_idempotency_conflicts",
+  "p110_outbox_messages",
+  "p110_kill_switches",
+  "p110_inbox_messages",
+  "p110_delivery_attempts",
+  "p110_dead_letters",
+  "p110_reconciliation_checkpoints",
+  "p111_workflow_instances",
+  "p111_workflow_checkpoints",
+  "p111_step_attempts",
+  "p111_workflow_timers",
+  "p111_human_task_refs",
+  "p111_compensation_intents",
+  "p111_recovery_receipts",
+  "crm_leads",
+  "commercial_case_identities",
+  "commercial_cases",
+  "commercial_policy_configurations",
+  "quotes",
+  "quote_lines",
+  "quote_economics_versions",
+  "quote_margin_approval_records",
+  "commercial_case_proposal_context_versions",
+  "commercial_case_proposal_document_versions",
+  "commercial_case_proposal_review_versions",
+  "orders",
+  "order_lines",
+  "order_fulfillment_intents",
+]);
+
+export const EXPECTED_RLS_TABLES = Object.freeze([
+  ...new Set([...SENSITIVE_SERVER_ONLY_TABLES, ...PRODUCTION_CONVERGENCE_TENANT_TABLES]),
+]);
+
+export const PROVIDER_WORKER_TABLES = Object.freeze([
+  "p110_command_receipts",
+  "p110_outbox_messages",
+  "p110_kill_switches",
+  "p110_delivery_attempts",
+  "p110_dead_letters",
+  "p110_reconciliation_checkpoints",
+]);
+
 export const ACTIVE_DENIAL_PROBES = Object.freeze([
   Object.freeze({ role: "anon", table: "secret_registry" }),
   Object.freeze({ role: "authenticated", table: "auth_users" }),
+  Object.freeze({ role: "anon", table: "orders" }),
+  Object.freeze({ role: "authenticated", table: "p110_outbox_messages" }),
 ]);
 
 export type RlsPostureRow = {
@@ -21,8 +69,28 @@ export type RlsPostureRow = {
   authenticated_access: boolean;
   policy_count: number;
   rls_enabled: boolean;
+  rls_forced: boolean;
   service_role_select: boolean;
   table_name: string;
+};
+
+export type RoleTablePostureRow = {
+  bypass_rls: boolean | null;
+  can_login: boolean | null;
+  create_db: boolean | null;
+  create_role: boolean | null;
+  delete_access: boolean | null;
+  insert_access: boolean | null;
+  owns_table: boolean;
+  replication: boolean | null;
+  role_exists: boolean;
+  role_name: string;
+  select_access: boolean | null;
+  superuser: boolean | null;
+  table_name: string;
+  trigger_access: boolean | null;
+  truncate_access: boolean | null;
+  update_access: boolean | null;
 };
 
 export type GlobalClientExposureRow = {
@@ -48,8 +116,16 @@ export type RlsViolation = {
     | "CLIENT_ACCESS_TO_RLS_DISABLED_TABLE"
     | "CLIENT_DEFAULT_PRIVILEGE_PRESENT"
     | "CLIENT_WRITE_TO_RLS_DISABLED_TABLE"
+    | "FORBIDDEN_RUNTIME_PRIVILEGE_PRESENT"
+    | "LEGACY_SERVICE_ROLE_PRIVILEGE_PRESENT"
     | "PUBLIC_RLS_DISABLED"
     | "RLS_DISABLED"
+    | "RLS_NOT_FORCED"
+    | "ROLE_ACCESS_MISSING"
+    | "ROLE_MISSING"
+    | "ROLE_OWNS_RUNTIME_TABLE"
+    | "ROLE_UNSAFE_ATTRIBUTE"
+    | "WORKER_SCOPE_DRIFT"
     | "TABLE_MISSING";
   count?: number;
   reason?: string;
@@ -97,11 +173,14 @@ export async function probeDeniedRead(
 export function evaluateRlsPosture(input: {
   clientDefaultPrivileges: boolean;
   expectedTables?: readonly string[];
+  forceRlsTables?: readonly string[];
   globalExposure: GlobalClientExposureRow;
   probes?: readonly RlsProbeResult[];
+  roleRows?: readonly RoleTablePostureRow[];
   rows: readonly RlsPostureRow[];
 }) {
   const expectedTables = input.expectedTables ?? SENSITIVE_SERVER_ONLY_TABLES;
+  const forceRlsTables = new Set(input.forceRlsTables ?? []);
   const byName = new Map(input.rows.map((row) => [row.table_name, row]));
   const violations: RlsViolation[] = [];
 
@@ -112,6 +191,8 @@ export function evaluateRlsPosture(input: {
       continue;
     }
     if (!row.rls_enabled) violations.push({ code: "RLS_DISABLED", table });
+    if (forceRlsTables.has(table) && !row.rls_forced) violations.push({ code: "RLS_NOT_FORCED", table });
+    if (forceRlsTables.has(table) && row.service_role_select) violations.push({ code: "LEGACY_SERVICE_ROLE_PRIVILEGE_PRESENT", role: "service_role", table });
     if (row.anon_access) violations.push({ code: "ANON_PRIVILEGE_PRESENT", table });
     if (row.authenticated_access) {
       violations.push({ code: "AUTHENTICATED_PRIVILEGE_PRESENT", table });
@@ -153,12 +234,41 @@ export function evaluateRlsPosture(input: {
     }
   }
 
+  const roleRows = input.roleRows ?? [];
+  const workerScope = new Set<string>(PROVIDER_WORKER_TABLES);
+  for (const roleName of ["luzione_api_runtime", "luzione_provider_worker"]) {
+    const rows = roleRows.filter((row) => row.role_name === roleName);
+    if (roleRows.length > 0 && !rows.some((row) => row.role_exists)) {
+      violations.push({ code: "ROLE_MISSING", role: roleName, table: "<role>" });
+      continue;
+    }
+    const first = rows[0];
+    if (first && (first.superuser || first.create_db || first.create_role || first.can_login || first.replication || first.bypass_rls)) {
+      violations.push({ code: "ROLE_UNSAFE_ATTRIBUTE", role: roleName, table: "<role>" });
+    }
+    for (const row of rows) {
+      if (row.owns_table) violations.push({ code: "ROLE_OWNS_RUNTIME_TABLE", role: roleName, table: row.table_name });
+      const forbidden = row.delete_access || row.truncate_access || row.trigger_access;
+      if (forbidden) violations.push({ code: "FORBIDDEN_RUNTIME_PRIVILEGE_PRESENT", role: roleName, table: row.table_name });
+      if (roleName === "luzione_api_runtime" && !row.select_access) {
+        violations.push({ code: "ROLE_ACCESS_MISSING", role: roleName, table: row.table_name });
+      }
+      if (roleName === "luzione_provider_worker") {
+        const anyAccess = row.select_access || row.insert_access || row.update_access || row.delete_access || row.truncate_access || row.trigger_access;
+        if (workerScope.has(row.table_name) ? !row.select_access : anyAccess) {
+          violations.push({ code: "WORKER_SCOPE_DRIFT", role: roleName, table: row.table_name });
+        }
+      }
+    }
+  }
+
   return {
     status: violations.length === 0 ? "PASS" as const : "FAIL" as const,
     expectedTableCount: expectedTables.length,
     globalExposure: input.globalExposure,
     observedTableCount: input.rows.length,
     probes: input.probes ?? [],
+    rolePostureRowsObserved: roleRows.length,
     violations,
   };
 }

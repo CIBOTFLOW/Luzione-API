@@ -944,6 +944,36 @@
       "resolution_ref": "branch:codex/api-se-003-bf1-table-object-registry",
       "remaining_uncertainty": [],
       "next_action": "Use the authenticated repository connector for this workspace's write operations."
+    },
+    {
+      "failure_id": "API_PC_013_PROOF_HARNESS_COMPATIBILITY_20260831",
+      "project_id": "API-PC-013",
+      "observed_at": "2026-08-31T05:43:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "543ede82f51df373b26ba73842f2391b27acf4fe",
+      "environment": "local-disposable",
+      "layer": "security-proof-harness",
+      "symptom": "The first proof runner used top-level await under the repository's CommonJS tsx output, and the repaired runner then left a PostgreSQL format parameter without an inferable type in a catalog privilege query.",
+      "expected": "The disposable security harness must execute through the repository's supported Node mode and perform unambiguous parameterized catalog queries before any proof claim is recorded.",
+      "actual": "The harness now uses an async main entrypoint and passes fully qualified relation names as typed values; the strengthened final version validates individual privileges and passes both fresh and observed-upgrade shapes.",
+      "classification": { "domain": "TOOL", "class": "INVALID", "retry": "IMMEDIATE", "severity": "INFO" },
+      "evidence_refs": [
+        "scripts/validation/api-pc-013-security-rls.ts",
+        "scripts/validation/run-api-pc-013-disposable-proof.sh",
+        "final fresh and observed_upgrade PASS output"
+      ],
+      "repair_attempts": [
+        "Wrapped the proof in async main and retained deterministic Pool cleanup.",
+        "Replaced SQL-side identifier formatting parameters with fully qualified relation-name values.",
+        "Strengthened the repaired query to compare every role/table SELECT, INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES and TRIGGER privilege against the exact ceiling."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "API_PC_013_LOCAL_LEAST_PRIVILEGE_RLS_20260831",
+      "remaining_uncertainty": ["The local harness cannot establish managed platform role-creation or pooler behavior."],
+      "next_action": "Retain CommonJS-compatible entrypoints and exact per-privilege comparisons in future database security proofs."
     }
   ]
 }

@@ -8,6 +8,7 @@ const requiredProgramFiles = [
   "architecture/production-convergence/CAPABILITY_REGISTRY.yaml",
   "architecture/production-convergence/DEPENDENCY_GRAPH.yaml",
   "architecture/production-convergence/MIGRATION_OWNERSHIP.md",
+  "architecture/production-convergence/API_PC_013_OWNERSHIP_MANIFEST.json",
   "architecture/production-convergence/RELEASE_GATES.md",
   "architecture/production-convergence/CROSS_SYSTEM_JOURNEYS.md",
   "engineering/production-convergence/QUEUE.md",
