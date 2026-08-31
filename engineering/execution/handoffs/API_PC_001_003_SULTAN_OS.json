@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_PC_001_003_TO_SULTAN_OS_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "a3b288da526cce801842c296455fbc7c9a37637e",
+  "producer_ref": "codex/api-pc-001-program-contract-v01",
+  "contract_name": "luzione-api-contract",
+  "contract_version": "luzione-api-contract/v0.1",
+  "consumer_repository": "CIBOTFLOW/Sultan-OS",
+  "stable_paths": {
+    "manifest": "contracts/contract-manifest.v0.1.json",
+    "openapi": "contracts/openapi/luzione-api-v0.1.yaml",
+    "request_context": "contracts/context/request-context-v0.1.schema.json",
+    "platform_failure": "contracts/errors/platform-failure-v0.1.schema.json",
+    "receipt_reference": "contracts/receipts/receipt-reference-v0.1.schema.json",
+    "release_identity": "GET /api/v1/release",
+    "catalog": "GET /api/v1/catalog"
+  },
+  "required_consumer_behavior": [
+    "Consume the published v0.1 schemas and OpenAPI contract without redefining API-owned identity, failure, receipt or release semantics.",
+    "Treat model output as a proposal only and never as actor, tenant, capability or effect authority.",
+    "Use receipt and authoritative readback semantics to close future intents; tool or provider acknowledgement alone is not completion.",
+    "Return independently authored exact-version contract tests before any cross-repository integration claim."
+  ],
+  "acceptance_proof_needed": [
+    "exact Sultan and API candidate SHAs",
+    "Sultan-authored request-context, failure-envelope and receipt-reference contract tests",
+    "negative tests for authority smuggling and acknowledgement/readback conflation",
+    "preview readback of GET /api/v1/release bound to the deployed API SHA"
+  ],
+  "producer_evidence_refs": [
+    "architecture/production-convergence/PROGRAM.md",
+    "contracts/contract-manifest.v0.1.json",
+    "contracts/openapi/luzione-api-v0.1.yaml",
+    "src/modules/production-convergence/tests/program-artifacts.test.ts",
+    "src/modules/production-convergence/tests/release-identity.test.ts"
+  ],
+  "known_limitations": [
+    "Producer proof is local only.",
+    "No Sultan repository code or consumer test was executed.",
+    "No preview or production deployment identity was observed.",
+    "The contract grants Sultan no direct business-write authority."
+  ]
+}
