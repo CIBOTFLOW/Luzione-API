@@ -107,7 +107,7 @@ test("hashes payloads and idempotent run identity deterministically", () => {
 test("the service boundary is authenticated, idempotent, and never authorizes external writes", () => {
   const route = readFileSync("src/app/api/v1/catalog/shopify/projections/route.ts", "utf8");
   const store = readFileSync("src/modules/catalog-projection/store.ts", "utf8");
-  assert.match(route, /requireServiceActor\(request\.headers\)/);
+  assert.match(route, /requireServiceActor\(request\.headers, "catalog\.projection\.(read|ingest)"\)/);
   assert.match(route, /Idempotency-Key header is required/);
   assert.match(route, /internalProjectionsEnabled/);
   assert.match(store, /pg_advisory_xact_lock/);

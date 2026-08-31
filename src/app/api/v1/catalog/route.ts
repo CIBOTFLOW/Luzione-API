@@ -1,3 +1,4 @@
+import { AUTHORITY_SUBJECT_CONTRACT_VERSION } from "@/lib/api/actor";
 import { apiResponse, createRequestIdentity } from "@/lib/api/http";
 import { canonicalObjects, platformAreas } from "@/lib/platformCatalog";
 import {
@@ -176,6 +177,7 @@ export async function GET(request: Request) {
       authority: {
         app: "Human records, queues, actions, documents and approvals",
         api: "Deterministic truth, commands, events, workflow, integration, access, reliability and audit",
+        subjectContractVersion: AUTHORITY_SUBJECT_CONTRACT_VERSION,
         os: "Reasoning, agents, tools, models, memory, simulations and AI governance",
       },
     },

@@ -3,7 +3,17 @@ import crypto from "node:crypto";
 export type ApiActor = {
   actorId: string;
   actorType: "agent" | "service" | "user";
+  capabilities: readonly string[];
   source: "service-token" | "vercel-oidc";
+  tenantId: string;
+};
+
+export const AUTHORITY_SUBJECT_CONTRACT_VERSION = "luzione-authority-subject/v0.1";
+
+export type CredentialActorIdentity = {
+  actorId: string;
+  actorType: ApiActor["actorType"];
+  capabilities: readonly string[];
   tenantId: string;
 };
 
@@ -19,6 +29,8 @@ type VercelJwk = crypto.JsonWebKey & {
 type JwksLoader = (issuer: string, forceRefresh?: boolean) => Promise<readonly VercelJwk[]>;
 
 const VERCEL_CALLER = Object.freeze({
+  actorId: "service:luzione-ui",
+  actorType: "service" as const,
   audience: "https://vercel.com/connor-spiegelmans-projects",
   environment: "production",
   owner: "connor-spiegelmans-projects",
@@ -26,6 +38,13 @@ const VERCEL_CALLER = Object.freeze({
   project: "luzione_ui",
   projectId: "prj_WGbFwkzAYBij46rrVUqNPGEeWzCP",
   tenantId: "luzione",
+  capabilities: Object.freeze([
+    "catalog.projection.read",
+    "governance.constitution.read",
+    "governance.evaluate",
+    "platform.guarantees.read",
+    "security.rls.read",
+  ]),
 });
 
 const ALLOWED_VERCEL_ISSUERS = new Set([
@@ -179,7 +198,64 @@ export async function verifyVercelWorkloadToken(
   }
 }
 
-export async function requireServiceActor(headers: Headers): Promise<ApiActor> {
+function boundedIdentityValue(value: string, field: string) {
+  const normalized = value.trim();
+  if (!/^[A-Za-z0-9][A-Za-z0-9._:-]{1,255}$/.test(normalized)) {
+    throw new Error(`${field} is not a valid canonical identity value.`);
+  }
+  return normalized;
+}
+
+function serviceTokenIdentity(): CredentialActorIdentity {
+  const actorType = process.env.LUZIONE_API_SERVICE_ACTOR_TYPE?.trim();
+  if (actorType !== "agent" && actorType !== "service" && actorType !== "user") {
+    throw new Error("Service credential actor identity is not configured.");
+  }
+  const capabilities = (process.env.LUZIONE_API_SERVICE_CAPABILITIES ?? "")
+    .split(",")
+    .map((capability) => capability.trim())
+    .filter(Boolean);
+  return {
+    actorId: boundedIdentityValue(process.env.LUZIONE_API_SERVICE_ACTOR_ID ?? "", "actorId"),
+    actorType,
+    capabilities,
+    tenantId: boundedIdentityValue(process.env.LUZIONE_API_SERVICE_TENANT_ID ?? "", "tenantId"),
+  };
+}
+
+/**
+ * Binds actor, tenant and capabilities from the verified credential adapter.
+ * Legacy headers are assertions only: they may match, but can never select or
+ * broaden the canonical subject associated with the credential.
+ */
+export function bindCredentialActor(
+  headers: Headers,
+  source: ApiActor["source"],
+  identity: CredentialActorIdentity,
+  requiredCapability?: string,
+): ApiActor {
+  const actorId = boundedIdentityValue(identity.actorId, "actorId");
+  const tenantId = boundedIdentityValue(identity.tenantId, "tenantId");
+  const capabilities = Object.freeze([...new Set(identity.capabilities.map((value) =>
+    boundedIdentityValue(value, "capability")))].sort());
+  const assertedTenant = headers.get("x-luzione-tenant")?.trim();
+  const assertedActor = headers.get("x-luzione-actor")?.trim();
+  const assertedActorType = headers.get("x-luzione-actor-type")?.trim();
+  if ((assertedTenant && assertedTenant !== tenantId)
+    || (assertedActor && assertedActor !== actorId)
+    || (assertedActorType && assertedActorType !== identity.actorType)) {
+    throw new Error("Caller identity assertions do not match the authenticated credential.");
+  }
+  if (requiredCapability && !capabilities.includes(requiredCapability)) {
+    throw new Error("Authenticated actor lacks the required capability.");
+  }
+  return { actorId, actorType: identity.actorType, capabilities, source, tenantId };
+}
+
+export async function requireServiceActor(
+  headers: Headers,
+  requiredCapability?: string,
+): Promise<ApiActor> {
   const configured = process.env.LUZIONE_API_SERVICE_TOKEN?.trim();
   const authorization = headers.get("authorization") ?? "";
   const received = authorization.startsWith("Bearer ") ? authorization.slice(7) : "";
@@ -196,15 +272,6 @@ export async function requireServiceActor(headers: Headers): Promise<ApiActor> {
     throw new Error("Service authentication failed.");
   }
 
-  const tenantId = headers.get("x-luzione-tenant")?.trim();
-  const actorId = headers.get("x-luzione-actor")?.trim();
-  const actorType = headers.get("x-luzione-actor-type")?.trim();
-  if (!tenantId || !actorId) throw new Error("Tenant and actor headers are required.");
-  if (actorType !== "agent" && actorType !== "service" && actorType !== "user") {
-    throw new Error("Actor type must be agent, service or user.");
-  }
-  if (source === "vercel-oidc" && tenantId !== VERCEL_CALLER.tenantId) {
-    throw new Error("Vercel workload tenant is not authorized.");
-  }
-  return { actorId, actorType, source, tenantId };
+  const identity = source === "vercel-oidc" ? VERCEL_CALLER : serviceTokenIdentity();
+  return bindCredentialActor(headers, source, identity, requiredCapability);
 }

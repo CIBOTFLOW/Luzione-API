@@ -16,7 +16,7 @@ function statusFor(error: unknown) {
 export async function GET(request: Request) {
   let identity = createRequestIdentity(request.headers);
   try {
-    const actor = await requireServiceActor(request.headers);
+    const actor = await requireServiceActor(request.headers, "platform.guarantees.read");
     identity = bindAuthenticatedRequestIdentity(identity, actor, {
       authorityClass: "A0",
       capability: "platform.guarantees.read",

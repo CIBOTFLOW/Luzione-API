@@ -14,7 +14,7 @@ test("canonical reads are tenant scoped and transactionally read only", () => {
 });
 
 test("the API derives authority from authenticated request context", () => {
-  assert.match(route, /requireServiceActor\(request\.headers\)/);
+  assert.match(route, /requireServiceActor\(request\.headers, "platform\.guarantees\.read"\)/);
   assert.doesNotMatch(route, /tenantId\s*:\s*body\./);
   assert.doesNotMatch(route, /actorId\s*:\s*body\./);
 });

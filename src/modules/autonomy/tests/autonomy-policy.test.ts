@@ -220,7 +220,7 @@ test("request parser rejects client-supplied authority and tenant claims", () =>
 
 test("API boundary authenticates the actor and never accepts a grant from the body", () => {
   const route = readFileSync("src/app/api/v1/autonomy/evaluate/route.ts", "utf8");
-  assert.match(route, /requireServiceActor\(request\.headers\)/);
+  assert.match(route, /requireServiceActor\(request\.headers, "governance\.evaluate"\)/);
   assert.match(route, /parseAutonomyEvaluationRequest\(body\)/);
   assert.doesNotMatch(route, /authorityGrant:\s*body/);
   assert.match(route, /evaluatedOnly:\s*true/);

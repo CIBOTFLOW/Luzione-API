@@ -58,12 +58,15 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
     consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
     contractId: "api-service-actor",
     currentRuntime: true,
-    maturity: "IMPLEMENTED_TRANSITIONAL",
-    name: "Initial authenticated service actor and tenant context",
+    maturity: "IMPLEMENTED",
+    name: "Credential-bound actor, tenant and capability subject",
     ownerRepository: "CIBOTFLOW/Luzione-API",
     pendingChangeRefs: ["pull/31:canonical-membership-resolution"],
-    sourcePaths: ["src/lib/api/actor.ts", "docs/ARCHITECTURE.md"],
-    version: "1.0",
+    sourcePaths: [
+      "src/lib/api/actor.ts",
+      "architecture/production-convergence/API_PC_004_WORKING_CONTRACT.md"
+    ],
+    version: "luzione-authority-subject/v0.1",
   },
   {
     compatibility: "NEW_MAJOR_FOR_BREAKING",

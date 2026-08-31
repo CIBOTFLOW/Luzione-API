@@ -22,7 +22,7 @@ function statusFor(error: unknown) {
 export async function POST(request: Request) {
   let identity = createRequestIdentity(request.headers);
   try {
-    const actor = await requireServiceActor(request.headers);
+    const actor = await requireServiceActor(request.headers, "governance.evaluate");
     identity = bindAuthenticatedRequestIdentity(identity, actor, {
       authorityClass: "A0",
       capability: "governance.evaluate",

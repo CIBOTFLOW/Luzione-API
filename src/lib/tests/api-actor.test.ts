@@ -3,7 +3,7 @@ import crypto from "node:crypto";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-import { verifyVercelWorkloadToken } from "@/lib/api/actor";
+import { bindCredentialActor, verifyVercelWorkloadToken } from "@/lib/api/actor";
 
 const ISSUER = "https://oidc.vercel.com/connor-spiegelmans-projects";
 const AUDIENCE = "https://vercel.com/connor-spiegelmans-projects";
@@ -93,11 +93,59 @@ test("all protected API routes await the asynchronous workload identity boundary
     "src/app/api/v1/platform-guarantees/route.ts",
     "src/app/api/v1/security/rls-readiness/route.ts",
   ]) {
-    assert.match(readFileSync(path, "utf8"), /await requireServiceActor\(request\.headers\)/);
+    assert.match(readFileSync(path, "utf8"), /await requireServiceActor\(request\.headers, "[a-z.]+"\)/);
   }
   const actor = readFileSync("src/lib/api/actor.ts", "utf8");
   assert.match(actor, /projectId: "prj_WGbFwkzAYBij46rrVUqNPGEeWzCP"/);
-  assert.match(actor, /tenantId !== VERCEL_CALLER\.tenantId/);
+  assert.match(actor, /bindCredentialActor\(headers, source, identity, requiredCapability\)/);
   assert.match(actor, /crypto\.verify/);
   assert.match(actor, /AbortSignal\.timeout\(JWKS_TIMEOUT_MS\)/);
+});
+
+test("credential identity is server-bound and matching legacy headers cannot select it", () => {
+  const identity = {
+    actorId: "service:luzione-ui",
+    actorType: "service" as const,
+    capabilities: ["catalog.projection.read"],
+    tenantId: "luzione",
+  };
+  const actor = bindCredentialActor(new Headers({
+    "x-luzione-actor": identity.actorId,
+    "x-luzione-actor-type": identity.actorType,
+    "x-luzione-tenant": identity.tenantId,
+  }), "vercel-oidc", identity, "catalog.projection.read");
+  assert.deepEqual(actor, {
+    ...identity,
+    capabilities: ["catalog.projection.read"],
+    source: "vercel-oidc",
+  });
+});
+
+test("credential identity denies cross-tenant assertions and missing capabilities", () => {
+  const identity = {
+    actorId: "service:luzione-ui",
+    actorType: "service" as const,
+    capabilities: ["catalog.projection.read"],
+    tenantId: "luzione",
+  };
+  assert.throws(
+    () => bindCredentialActor(
+      new Headers({ "x-luzione-tenant": "another-tenant" }),
+      "vercel-oidc",
+      identity,
+      "catalog.projection.read",
+    ),
+    /do not match the authenticated credential/,
+  );
+  assert.throws(
+    () => bindCredentialActor(new Headers(), "vercel-oidc", identity, "catalog.projection.ingest"),
+    /lacks the required capability/,
+  );
+});
+
+test("governance evaluation never manufactures a canonical authority grant", () => {
+  const route = readFileSync("src/app/api/v1/governance/evaluate/route.ts", "utf8");
+  assert.doesNotMatch(route, /verification:\s*"CANONICAL_STORE"/);
+  assert.doesNotMatch(route, /crypto\.randomUUID/);
+  assert.match(route, /evaluateAutonomyPlan\(plan/);
 });
