@@ -1673,6 +1673,74 @@
         "implement the case-centered Luzione UI projection without UI-selected authority",
         "only after separate authorization, prove a reversible command through receipt and post-effect source readback"
       ]
+    },
+    {
+      "proof_id": "API_PC_012_LOCAL_CANONICAL_CONTEXT_HARDENING_20260831",
+      "project_id": "API-PC-012",
+      "recorded_at": "2026-08-31T18:25:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "2249637d5359332e53b66b00fefba311146d0892",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The exact API candidate hardens the canonical Sultan agent-intent evaluator so client freshness, source version and integrity are assertions only; a FULFILLMENT intent can reach read-only admission only after tenant-scoped canonical Order/line readback and the active tenant policy plus API constitution all admit it. The route remains evaluation-only and creates no command, event, outbox or business-state write.",
+      "exercised_boundaries": [
+        "The credential actor ID convention uses <agentId>:<agentVersion>, which passes the canonical credential identifier parser and binds the exact agent definition.",
+        "The authenticated route reads one exact tenant-scoped canonical Order plus lines and derives source version, observed timestamp, integrity hash and freshness server-side.",
+        "A current exact-version/hash FULFILLMENT context and allowed active tenant policy reaches ADMIT_READ_ONLY.",
+        "A client that still claims FRESH while supplying stale version and integrity hash receives ABSTAIN_STALE_CONTEXT.",
+        "An otherwise constitutional plan with a purpose excluded by active tenant policy is BLOCKED with PURPOSE_NOT_ALLOWED.",
+        "The same Order claim under a second authenticated tenant yields UNKNOWN, zero verified contexts and abstention without disclosing Order data.",
+        "A mismatched tenant identity assertion returns a redacted 401.",
+        "Post-journey readback proves zero fulfillment intents, command receipts, events and outbox messages.",
+        "At exact SHA 2249637d5359332e53b66b00fefba311146d0892, typecheck, clean lint, 220/220 tests, seven compliance controls, production build and the disposable authenticated HTTP-handler/Postgres proof passed."
+      ],
+      "untested_boundaries": [
+        "deployed network HTTP, signed workload identity and credential rotation",
+        "managed or production PostgreSQL context readback and policy tables",
+        "independent Sultan consumption of the corrected colon-separated actor ID and additive policy/source-verification response fields",
+        "non-Order canonical context adapters",
+        "A1-A3 grant/approval adapter, command execution or provider effects",
+        "preview and production observation, model quality and business value"
+      ],
+      "evidence_refs": [
+        "src/modules/sultan-agent/contextVerifier.ts",
+        "src/modules/sultan-agent/evaluator.ts",
+        "src/app/api/v1/sultan/agent-intents/evaluate/route.ts",
+        "contracts/sultan/agent-policy-decision-v0.1.schema.json",
+        "scripts/validation/api-pc-012-canonical-context.ts",
+        "scripts/validation/api-pc-012-canonical-context-fixture.sql",
+        "scripts/validation/run-api-pc-012-canonical-context-proof.sh",
+        "src/modules/sultan-agent/tests/sultan-agent-intent.test.ts",
+        "commit:2249637d5359332e53b66b00fefba311146d0892"
+      ],
+      "failure_refs": [
+        "API_PC_012_DUPLICATE_CONTRACT_CONVERGENCE_20260831",
+        "API_PC_012_CREDENTIAL_AND_CONTEXT_ADMISSION_REPAIRS_20260831",
+        "API_PC_012_SANDBOX_FONT_FETCH_20260831"
+      ],
+      "cross_repo_handoffs": ["API_PC_012_TO_SULTAN_OS_V1"],
+      "deferred_external_infra": [
+        "deployed signed Sultan workload credential",
+        "preview and production API environments",
+        "managed canonical PostgreSQL",
+        "independent Sultan hardening revalidation",
+        "separately authorized command/effect pilot"
+      ],
+      "remaining_uncertainty": [
+        "The proof invokes the real route handler with an authenticated disposable service token and real Postgres, but it is not evidence of deployed network reachability or signed workload identity.",
+        "The policy-decision additions are schema-additive, but independent Sultan tolerance and use are not yet re-certified.",
+        "Only the canonical Order/line context adapter is implemented; unsupported non-synthetic API contexts fail closed as UNKNOWN.",
+        "Evaluation admission remains no-effect and does not prove downstream reasoning, command or provider completion."
+      ],
+      "next_proof_needed": [
+        "independent Sultan consumer revalidation of actor ID format and additive decision fields",
+        "signed tenant-bound deployed HTTP canary against managed canonical context",
+        "managed stale/version/hash and cross-tenant negative proof",
+        "model-backed hidden-label shadow evaluation",
+        "separately authorized reversible command proof with receipt and authoritative post-effect readback"
+      ]
     }
   ]
 }

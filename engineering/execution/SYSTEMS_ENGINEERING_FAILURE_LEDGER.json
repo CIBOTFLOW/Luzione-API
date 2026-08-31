@@ -1044,6 +1044,94 @@
         "No local or configuration-only result can establish managed recovery, rollback effectiveness or production finality."
       ],
       "next_action": "Resume API-PC-014 only when an exact deployed candidate and named preview/managed-recovery/production proof window are available; until then preserve LOCAL_EVIDENCE_BOUNDED."
+    },
+    {
+      "failure_id": "API_PC_012_DUPLICATE_CONTRACT_CONVERGENCE_20260831",
+      "project_id": "API-PC-012",
+      "observed_at": "2026-08-31T17:45:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "c7a4387692940306e1d0198330fbb4d40b2678e0",
+      "environment": "local",
+      "layer": "contract-ownership-convergence",
+      "symptom": "A locally completed API-PC-012 implementation used a second /api/v1/sultan/intents/evaluate path while origin/main independently gained the canonical /api/v1/sultan/agent-intents/evaluate contract family.",
+      "expected": "One Sultan outcome has one API-owned canonical contract and mutation/admission path.",
+      "actual": "The duplicate branch was preserved but not published; work restarted from the merged canonical implementation and extended that route additively.",
+      "classification": { "domain": "PLATFORM", "class": "CONFLICT", "retry": "NEVER", "severity": "INFO" },
+      "evidence_refs": [
+        "local branch codex/api-pc-012-sultan-contracts",
+        "origin/main merge 772dc91",
+        "architecture/production-convergence/API_PC_012_WORKING_CONTRACT.md"
+      ],
+      "repair_attempts": [
+        "Compared the two contract families and selected the already-merged, independently consumed agent-intents path as canonical.",
+        "Carried only the missing server-owned context and tenant-policy guarantees into the canonical implementation."
+      ],
+      "strategy_reset": "Abandon publication of the duplicate route and converge on origin/main.",
+      "quarantine_scope": ["local unpublished duplicate API-PC-012 branch"],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "commit:2249637d5359332e53b66b00fefba311146d0892",
+      "remaining_uncertainty": [],
+      "next_action": "Retain /api/v1/sultan/agent-intents/evaluate as the sole canonical Sultan admission path."
+    },
+    {
+      "failure_id": "API_PC_012_CREDENTIAL_AND_CONTEXT_ADMISSION_REPAIRS_20260831",
+      "project_id": "API-PC-012",
+      "observed_at": "2026-08-31T18:18:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "7d015fffd0b3a099f83cc7a73e1af02bc4dd1e28",
+      "environment": "local-disposable",
+      "layer": "authenticated-context-admission",
+      "symptom": "The merged evaluator trusted client-declared FRESH context and bound agent definitions with an @ separator that the canonical credential parser rejects; the first hardening pass also recorded UNVERIFIED without forcing abstention, and identity assertion mismatch initially mapped to 503.",
+      "expected": "A syntactically valid credential-bound agent reaches admission only after canonical context and active tenant-policy verification, while identity mismatch is a redacted 401.",
+      "actual": "The final candidate uses <agentId>:<agentVersion>, derives Order context freshness/hash from tenant-scoped readback, forces unverified non-synthetic context to abstain, evaluates active tenant policy, and returns a generic 401 for credential mismatch.",
+      "classification": { "domain": "PLATFORM", "class": "INVALID", "retry": "IMMEDIATE", "severity": "ERROR" },
+      "evidence_refs": [
+        "src/modules/sultan-agent/contextVerifier.ts",
+        "src/modules/sultan-agent/evaluator.ts",
+        "src/app/api/v1/sultan/agent-intents/evaluate/route.ts",
+        "scripts/validation/run-api-pc-012-canonical-context-proof.sh",
+        "exact-SHA disposable proof PASS"
+      ],
+      "repair_attempts": [
+        "Added canonical Order/line context verification and active tenant-policy evaluation.",
+        "Made canonical verification a status-level admission prerequisite outside simulation.",
+        "Converged the agent credential binding onto the allowed colon separator and aligned authentication failure classification."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "API_PC_012_LOCAL_CANONICAL_CONTEXT_HARDENING_20260831",
+      "remaining_uncertainty": [
+        "The independent Sultan consumer has not yet revalidated the corrected credential actor ID convention or additive response fields."
+      ],
+      "next_action": "Require Sultan consumer revalidation before deployed credential proof."
+    },
+    {
+      "failure_id": "API_PC_012_SANDBOX_FONT_FETCH_20260831",
+      "project_id": "API-PC-012",
+      "observed_at": "2026-08-31T18:20:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "2249637d5359332e53b66b00fefba311146d0892",
+      "environment": "local-sandbox",
+      "layer": "production-build-external-font",
+      "symptom": "The first full verification build could not fetch the configured Geist fonts because restricted sandbox networking denied Google Fonts.",
+      "expected": "The exact candidate production build completes with its declared font dependency available.",
+      "actual": "The exact candidate built successfully with scoped network access; TypeScript, static generation and route collection passed.",
+      "classification": { "domain": "TOOL", "class": "UNAVAILABLE", "retry": "IMMEDIATE", "severity": "INFO" },
+      "evidence_refs": [
+        "npm run build sandbox font-fetch failure",
+        "npm run build exact SHA 2249637d5359332e53b66b00fefba311146d0892 PASS with scoped network access"
+      ],
+      "repair_attempts": ["Repeated the same build with network access for the configured font dependency."],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "API_PC_012_LOCAL_CANONICAL_CONTEXT_HARDENING_20260831",
+      "remaining_uncertainty": ["Cold offline builds remain dependent on the configured external font."],
+      "next_action": "Preserve the exact-SHA successful build evidence without treating the sandbox denial as an application failure."
     }
   ]
 }
