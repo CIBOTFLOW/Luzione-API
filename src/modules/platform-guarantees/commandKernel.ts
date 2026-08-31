@@ -71,6 +71,7 @@ export class LifecycleCommandKernel<Transaction> {
             throw new IdempotencyConflictError({
               commandId: request.commandId,
               conflictId: `conflict_${crypto.randomUUID()}`,
+              correlationId: request.correlationId,
               existingPayloadHash: existing.payloadHash,
               idempotencyKey: request.idempotencyKey,
               receivedPayloadHash: request.payloadHash,

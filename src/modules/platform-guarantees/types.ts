@@ -222,6 +222,7 @@ export type LifecycleCommandReceipt = {
 export type IdempotencyConflict = {
   commandId: string;
   conflictId: string;
+  correlationId: string;
   existingPayloadHash: string;
   idempotencyKey: string;
   receivedPayloadHash: string;

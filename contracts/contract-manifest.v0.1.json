@@ -13,6 +13,7 @@
   "components": [
     "api-http-response/1.0",
     "luzione-authority-subject/v0.1",
+    "luzione-command-ledger/v0.1",
     "luzione-request-identity/v1",
     "luzione-platform-failure/v1",
     "luzione-readiness-evidence/v1",
