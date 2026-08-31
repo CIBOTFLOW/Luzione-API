@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_SE_003_BF1_TO_LUZIONE_UI_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "c6a839163759ecfd86eb66d3c75781ff0731be14",
+  "producer_ref": "codex/api-se-003-bf1-table-object-registry",
+  "contract_name": "table-object-ownership-lifecycle-and-retirement-registry",
+  "contract_version": "luzione-table-object-registry/v1",
+  "published_path": "GET /api/v1/catalog -> tableObjectRegistry",
+  "schema_path": "contracts/objects/luzione-table-object-registry-v1.schema.json",
+  "consumer_repository": "CIBOTFLOW/Luzione-UI",
+  "consumed_source": {
+    "repository": "CIBOTFLOW/Luzione-UI",
+    "implementation_sha": "d6b23f6f97ac065b6af3572ab010c478ae9d9b24",
+    "production_migration": "repo_150_browser_privilege_and_crm_identity_convergence_20260831",
+    "metadata_snapshot": "architecture/data/table-estate/production-registry-2026-08-31.json",
+    "observed_at": "2026-08-31T04:16:58.706Z"
+  },
+  "approved_scope": {
+    "observed_estate_tables": 713,
+    "declared_objects": 22,
+    "capability_owner": "CIBOTFLOW/Luzione-Supplier-Portal",
+    "physical_schema_owner": "CIBOTFLOW/Luzione-UI",
+    "authority_status": "CAPABILITY_OWNER_APPROVED",
+    "lifecycle": "REVIEW",
+    "retirement_allowed": false,
+    "table_contents_read": false
+  },
+  "required_consumer_behavior": [
+    "Match declarations only by exact qualifiedName and exact sourceVersion; a different or missing source version is stale/unreconciled, not approved.",
+    "Replace the heuristic capability-owner finding only for the exact 22 declared browser surfaces; do not infer approval for the remaining 691 estate objects or the private Supplier Portal support table.",
+    "Preserve CIBOTFLOW/Luzione-UI as physical schema owner and CIBOTFLOW/Luzione-Supplier-Portal as capability owner; these are separate responsibilities.",
+    "Keep lifecycle REVIEW and retirement_allowed false until every retirementGate evidence item is independently proven.",
+    "Keep unknown authority, data-role, lifecycle, security and reconciliation enum values fail closed.",
+    "Continue recurring metadata/activity snapshots and repository-reference scans without reading table contents or bulk-dropping indexes/tables."
+  ],
+  "acceptance_proof_needed": [
+    "exact UI and API SHAs plus contract-version match",
+    "22 exact owner upgrades and zero upgrades outside the declared set",
+    "known-bad stale source version and unknown enum rejection",
+    "rendered distinction among capability owner, physical owner, lifecycle and retirement authority",
+    "recurring repository-reference/activity snapshot before any quarantine simulation"
+  ],
+  "producer_evidence_refs": [
+    "src/modules/platform-contracts/tableObjectRegistry.ts",
+    "src/modules/platform-contracts/tests/table-object-registry.test.ts",
+    "contracts/objects/luzione-table-object-registry-v1.schema.json",
+    "docs/platform-engineering/TABLE_OBJECT_REGISTRY_V1.md",
+    "commit:c6a839163759ecfd86eb66d3c75781ff0731be14"
+  ],
+  "known_limitations": [
+    "The declaration covers 22 of 713 observed tables and intentionally does not claim full-estate mapping.",
+    "Most declared data roles remain UNCLASSIFIED and projection lineage remains unresolved rather than guessed.",
+    "The source is one production metadata snapshot; continuous freshness and repository references are not yet observed.",
+    "Producer tests are local and do not prove UI consumption or a deployed API release."
+  ]
+}

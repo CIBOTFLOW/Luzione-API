@@ -5,7 +5,7 @@
   "program_state": "IMPLEMENTATION_IN_PROGRESS",
   "current_project": "API-PC-013",
   "next_projects": ["API-PC-013", "API-PC-014", "API-PC-012", "API-PC-015"],
-  "next_action": "Merge the locally proven API-PC-011 provider adapter/worker runtime, then compile API-PC-013 least-privilege role, RLS and migration-ownership convergence across the admitted domain and P110/P111 relations; keep production migration application and all live provider effects unauthorized.",
+  "next_action": "Have Luzione UI and Sultan consume luzione-table-object-registry/v1 at the exact API version while API-PC-013 advances least-privilege role, RLS and migration-ownership convergence; keep production migration application and all live provider effects unauthorized.",
   "canonical_program": "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md",
   "failure_ledger": "engineering/execution/SYSTEMS_ENGINEERING_FAILURE_LEDGER.json",
   "proof_ledger": "engineering/execution/SYSTEMS_ENGINEERING_PROOF_LEDGER.json",
@@ -13,10 +13,10 @@
   "cross_repo_consumers": [
     {
       "repository": "CIBOTFLOW/Luzione-UI",
-      "sha": "f2b9c66ba5d92fb6b9403d28a64309bf83999d24",
-      "state": "BOUNDED_API_CONSUMER_CONVERGENCE_ADVANCED",
-      "bounded_complete": ["LUZIONE_SE_001", "LUZIONE_SE_002", "LUZIONE_SE_003", "LUZIONE_SE_005"],
-      "next": ["LUZIONE_SE_004", "LUZIONE_SE_007", "LUZIONE_SE_008", "LUZIONE_SE_009"]
+      "sha": "7d03bbdae207e79083d8bb1e8dbb46a38a099fd3",
+      "state": "BOUNDED_TABLE_ESTATE_SECURITY_CONVERGED_API_REGISTRY_CONSUMPTION_PENDING",
+      "bounded_complete": ["LUZIONE_SE_001","LUZIONE_SE_002","LUZIONE_SE_003","LUZIONE_SE_005","LUZIONE_SE_008_BF3"],
+      "next": ["consume API_SE_003_BF1","LUZIONE_SE_004","LUZIONE_SE_007","LUZIONE_SE_008","LUZIONE_SE_009"]
     },
     {
       "repository": "CIBOTFLOW/Sultan-OS",
@@ -37,7 +37,8 @@
     "Luzione UI source and schema evidence now select CIBOTFLOW/Luzione-UI as the current Lead/Commercial Case writer and the API as the transfer-pending target; API-PC-008 reuses the same canonical rows without activating cutover.",
     "Luzione UI source, migrations and services select CIBOTFLOW/Luzione-UI as the current Proposal/Quote/Approval writer; API-PC-009 reuses the same canonical rows, preserves P15 composition in UI and adds only default-off transfer-pending commands.",
     "Luzione UI source selects the current Quote-to-Order path and also exposes a competing Order-create route; API-PC-010 reuses the canonical Order rows, requires exact customer-accepted Quote/economics evidence, and publishes only a new canonical no-effect Fulfillment Intent record while UI-PC-009 retains route-convergence and cutover responsibility.",
-    "API-PC-011 extends the existing P110/P111 worker substrate rather than creating a second queue: durable dispatch-start, restart-safe reconciliation leases, exact source-version closure and tenant-bound operator aggregates are implemented, while the only adapter is a deterministic local simulator and every sandbox/live activation remains default-off."
+    "API-PC-011 extends the existing P110/P111 worker substrate rather than creating a second queue: durable dispatch-start, restart-safe reconciliation leases, exact source-version closure and tenant-bound operator aggregates are implemented, while the only adapter is a deterministic local simulator and every sandbox/live activation remains default-off.",
+    "The 713-table production metadata snapshot is now bounded by an API-owned table-object contract: exactly 22 Supplier Portal browser surfaces have explicit capability ownership, while all other ownership, lifecycle and retirement decisions remain unclaimed."
   ],
   "deferred_external_infra": [
     "owner-authenticated UI representative journey replay",
@@ -66,7 +67,8 @@
     "API-PC-009 is locally proven only: fresh and observed UI-shaped Quote/Proposal migration, safe integer cents/currency, exact-version human approval denial, typed confirmation, replay/conflict, atomic rollback and tenant-bound readback passed in disposable Postgres; delegated user identity, managed migration/RLS, consumer canary/rollback, provider/customer effects and production cutover remain unobserved.",
     "API-PC-010 is locally proven only: fresh and observed UI-shaped Order migration, exact accepted Quote/economics binding, line copying, replay/conflict, invalid-intent rollback, tenant-bound readback and a database-constrained no-effect Fulfillment Intent passed in disposable Postgres; customer-acceptance provenance, competing UI-route convergence, managed migration/RLS, consumer canary/rollback, provider effects and production cutover remain unobserved.",
     "API-PC-011 is locally proven only: fresh and observed-worker migration, durable pre-call dispatch checkpoint, ambiguous/crash reconciliation, exact-version sandbox readback, bounded retry/dead-letter, kill-switch exclusion, competing reconciliation claims and tenant-bound operator aggregates passed in disposable Postgres; real-provider sandboxes, credentials, deployed worker lifecycle, compensation, managed failover, independent consumers, live canary and production observation remain unproven.",
-    "API-PC-012 dependencies are complete but its required Sultan consumer certification remains an independent cross-repository obligation; API-PC-013 is the highest-priority READY project that can advance locally without inventing consumer evidence."
+    "API-PC-012 dependencies are complete but its required Sultan consumer certification remains an independent cross-repository obligation; API-PC-013 is the highest-priority READY project that can advance locally without inventing consumer evidence.",
+    "API_SE_003_BF1 is locally proven only: the API producer declares 22 of 713 observed table objects and keeps retirement fail closed, while UI/Sultan exact-version consumption, recurring source snapshots and deployed catalog evidence remain unobserved."
   ],
   "stop_code": null
 }

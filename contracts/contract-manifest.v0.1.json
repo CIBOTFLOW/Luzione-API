@@ -8,7 +8,8 @@
     "openapi": "contracts/openapi/luzione-api-v0.1.yaml",
     "requestContext": "contracts/context/request-context-v0.1.schema.json",
     "failure": "contracts/errors/platform-failure-v0.1.schema.json",
-    "receiptReference": "contracts/receipts/receipt-reference-v0.1.schema.json"
+    "receiptReference": "contracts/receipts/receipt-reference-v0.1.schema.json",
+    "tableObject": "contracts/objects/luzione-table-object-registry-v1.schema.json"
   },
   "components": [
     "api-http-response/1.0",
@@ -21,6 +22,7 @@
     "luzione-order-fulfillment-intent/v0.1",
     "luzione-provider-adapter/v0.1",
     "luzione-request-identity/v1",
+    "luzione-table-object-registry/v1",
     "luzione-platform-failure/v1",
     "luzione-readiness-evidence/v1",
     "luzione-release-identity/v0.1",

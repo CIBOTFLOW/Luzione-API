@@ -4,6 +4,7 @@ export const API_CONTRACT_RELEASE_VERSION = "luzione-api-contract/v0.1";
 export const API_CONTRACT_RELEASE_COMPONENTS = Object.freeze([
   "api-http-response/1.0",
   "luzione-request-identity/v1",
+  "luzione-table-object-registry/v1",
   "luzione-platform-failure/v1",
   "luzione-readiness-evidence/v1",
   "luzione-release-identity/v0.1",

@@ -878,6 +878,72 @@
       "resolution_ref": "API_PC_011_LOCAL_PROVIDER_WORKER_20260831",
       "remaining_uncertainty": ["No deployed process manager, autoscaling behavior or production shutdown observation exists."],
       "next_action": "Bind any deployed worker to an exact release identity and exercise restart/shutdown under managed load before activation."
+    },
+    {
+      "failure_id": "API_SE_003_BF1_TEST_TAXONOMY_REGISTRATION_20260831",
+      "project_id": "API_SE_003_BF1",
+      "observed_at": "2026-08-31T05:33:31Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "a2a2f60cd48a24d86a481b0d2fc76443f87cf2ea",
+      "environment": "local",
+      "layer": "canonical-test-taxonomy",
+      "symptom": "The first full suite rejected the new table-object registry test file because it was not yet registered in the canonical test taxonomy.",
+      "expected": "Every TypeScript test suite has exactly one primary taxonomy class before release evidence is accepted.",
+      "actual": "The focused contract tests passed, while the full taxonomy sensitivity gate identified the single missing suite descriptor before the production build ran.",
+      "classification": {
+        "domain": "TOOL",
+        "class": "INVALID",
+        "retry": "IMMEDIATE",
+        "severity": "INFO"
+      },
+      "evidence_refs": [
+        "src/modules/platform-contracts/tests/table-object-registry.test.ts",
+        "src/modules/platform-testing/taxonomy.ts",
+        "src/modules/platform-testing/tests/taxonomy.test.ts",
+        "first full npm test output: 192/193"
+      ],
+      "repair_attempts": [
+        "Registered the suite as primary CONTRACT with secondary SECURITY while retaining exact test-file inventory equality."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "API_SE_003_BF1_LOCAL_TABLE_OBJECT_REGISTRY_20260831",
+      "remaining_uncertainty": [],
+      "next_action": "Keep the canonical taxonomy inventory gate mandatory whenever a test suite is added or moved."
+    },
+    {
+      "failure_id": "API_SE_003_BF1_DIRECT_GIT_PUSH_CREDENTIAL_20260831",
+      "project_id": "API_SE_003_BF1",
+      "observed_at": "2026-08-31T05:37:14Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": null,
+      "environment": "local",
+      "layer": "repository-delivery",
+      "symptom": "The local HTTPS remote had read access but no interactive write credential, so direct git push could not authenticate.",
+      "expected": "The exact locally verified candidate is published to a review branch through an authorized repository write path.",
+      "actual": "The authenticated GitHub connector created the review branch from exact main SHA f22efef945bda20cba1c68a84707b45b9cfb0295; the tested tree is published through Git data instead of changing credentials.",
+      "classification": {
+        "domain": "TOOL",
+        "class": "DENIED",
+        "retry": "HUMAN",
+        "severity": "INFO"
+      },
+      "evidence_refs": [
+        "git push stderr: could not read Username for https://github.com",
+        "GitHub connector branch:codex/api-se-003-bf1-table-object-registry"
+      ],
+      "repair_attempts": [
+        "Used the already-authorized GitHub connector rather than requesting or repurposing repository credentials."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "branch:codex/api-se-003-bf1-table-object-registry",
+      "remaining_uncertainty": [],
+      "next_action": "Use the authenticated repository connector for this workspace's write operations."
     }
   ]
 }
