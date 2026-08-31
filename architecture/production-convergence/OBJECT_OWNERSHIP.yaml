@@ -1,0 +1,107 @@
+{
+  "schemaVersion": "1.0",
+  "registryVersion": "luzione-object-ownership/v0.1",
+  "ownerRepository": "CIBOTFLOW/Luzione-API",
+  "evidenceBoundary": "Current UI writers and table shapes require an independent Luzione UI inventory; unresolved values are not inferred.",
+  "objects": [
+    {
+      "object": "Lead",
+      "tier": "TIER_1",
+      "currentOwner": "UNRESOLVED_EXTERNAL_EVIDENCE_REQUIRED",
+      "targetMutationOwner": "CIBOTFLOW/Luzione-API",
+      "truthStore": "canonical-postgres",
+      "migrationState": "INVENTORIED_UNCONFIRMED",
+      "sourceVersion": "luzione-source-of-truth-registry/v1:growth:Lead"
+    },
+    {
+      "object": "CommercialCase",
+      "tier": "TIER_1",
+      "currentOwner": "UNRESOLVED_EXTERNAL_EVIDENCE_REQUIRED",
+      "targetMutationOwner": "CIBOTFLOW/Luzione-API",
+      "truthStore": "canonical-postgres",
+      "migrationState": "INVENTORIED_UNCONFIRMED",
+      "sourceVersion": "luzione-source-of-truth-registry/v1:commercial:CommercialCase"
+    },
+    {
+      "object": "Proposal",
+      "tier": "TIER_1",
+      "currentOwner": "UNRESOLVED_EXTERNAL_EVIDENCE_REQUIRED",
+      "targetMutationOwner": "CIBOTFLOW/Luzione-API",
+      "truthStore": "canonical-postgres",
+      "migrationState": "INVENTORIED_UNCONFIRMED",
+      "sourceVersion": "luzione-source-of-truth-registry/v1:commercial:Proposal"
+    },
+    {
+      "object": "Quote",
+      "tier": "TIER_1",
+      "currentOwner": "UNRESOLVED_EXTERNAL_EVIDENCE_REQUIRED",
+      "targetMutationOwner": "CIBOTFLOW/Luzione-API",
+      "truthStore": "canonical-postgres",
+      "migrationState": "INVENTORIED_UNCONFIRMED",
+      "sourceVersion": "luzione-source-of-truth-registry/v1:commercial:Quote"
+    },
+    {
+      "object": "Order",
+      "tier": "TIER_1",
+      "currentOwner": "UNRESOLVED_EXTERNAL_EVIDENCE_REQUIRED",
+      "targetMutationOwner": "CIBOTFLOW/Luzione-API",
+      "truthStore": "canonical-postgres",
+      "migrationState": "INVENTORIED_UNCONFIRMED",
+      "sourceVersion": "luzione-source-of-truth-registry/v1:commerce:Order"
+    },
+    {
+      "object": "FulfillmentIntent",
+      "tier": "TIER_1",
+      "currentOwner": "UNRESOLVED_NOT_IN_CURRENT_API_TRUTH_REGISTRY",
+      "targetMutationOwner": "CIBOTFLOW/Luzione-API",
+      "truthStore": null,
+      "migrationState": "DISCOVERY_REQUIRED",
+      "sourceVersion": "production-convergence-charter/2026-08-30"
+    },
+    {
+      "object": "Product",
+      "tier": "TIER_1",
+      "currentOwner": "external:shopify",
+      "targetMutationOwner": "external:shopify",
+      "truthStore": "external:shopify",
+      "migrationState": "PROVIDER_AUTHORITATIVE_PROJECTION_CONFIRMED",
+      "sourceVersion": "luzione-source-of-truth-registry/v1:catalog:Product"
+    },
+    {
+      "object": "Workflow",
+      "tier": "PLATFORM",
+      "currentOwner": "TRANSFER_PENDING",
+      "targetMutationOwner": "CIBOTFLOW/Luzione-API",
+      "truthStore": "canonical-postgres",
+      "migrationState": "P110_P111_HISTORY_RECONCILIATION_REQUIRED",
+      "sourceVersion": "luzione-source-of-truth-registry/v1:workflow:Workflow"
+    },
+    {
+      "object": "Approval",
+      "tier": "PLATFORM",
+      "currentOwner": "UNRESOLVED_EXTERNAL_EVIDENCE_REQUIRED",
+      "targetMutationOwner": "CIBOTFLOW/Luzione-API",
+      "truthStore": null,
+      "migrationState": "DISCOVERY_REQUIRED",
+      "sourceVersion": "luzione-source-of-truth-registry/v1:governance:Approval"
+    },
+    {
+      "object": "Memory",
+      "tier": "SULTAN",
+      "currentOwner": "CIBOTFLOW/Sultan-OS",
+      "targetMutationOwner": "CIBOTFLOW/Sultan-OS",
+      "truthStore": null,
+      "migrationState": "SULTAN_EVIDENCE_REQUIRED",
+      "sourceVersion": "luzione-source-of-truth-registry/v1:sultan:Memory"
+    },
+    {
+      "object": "AIGeneration",
+      "tier": "SULTAN",
+      "currentOwner": "CIBOTFLOW/Sultan-OS",
+      "targetMutationOwner": "CIBOTFLOW/Sultan-OS",
+      "truthStore": null,
+      "migrationState": "SULTAN_EVIDENCE_REQUIRED",
+      "sourceVersion": "luzione-source-of-truth-registry/v1:sultan:AIGeneration"
+    }
+  ]
+}

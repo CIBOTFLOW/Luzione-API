@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.0",
+  "graphVersion": "luzione-production-dependency-graph/v0.1",
+  "nodes": [
+    { "id": "luzione-api", "kind": "SERVICE", "owner": "CIBOTFLOW/Luzione-API" },
+    { "id": "luzione-ui", "kind": "CONSUMER", "owner": "CIBOTFLOW/Luzione-UI" },
+    { "id": "sultan-os", "kind": "CONSUMER", "owner": "CIBOTFLOW/Sultan-OS" },
+    { "id": "canonical-postgres", "kind": "DATA_STORE", "owner": "canonical business data owners" },
+    { "id": "vercel", "kind": "HOST_IDENTITY", "owner": "Vercel/Luzione release owner" },
+    { "id": "shopify", "kind": "SOURCE_PROVIDER", "owner": "Shopify source owner" },
+    { "id": "gmail-drive-airtable", "kind": "PROVIDER_GROUP", "owner": "provider and Luzione integration owners" }
+  ],
+  "edges": [
+    { "from": "luzione-ui", "to": "luzione-api", "relationship": "CONSUMES_VERSIONED_CONTRACTS", "state": "UNVERIFIED_CONSUMER" },
+    { "from": "sultan-os", "to": "luzione-api", "relationship": "CONSUMES_VERSIONED_EVIDENCE_AND_INTENTS", "state": "UNVERIFIED_CONSUMER" },
+    { "from": "luzione-api", "to": "canonical-postgres", "relationship": "SERVER_ONLY_READ_AND_BOUNDED_CURRENT_WRITES", "state": "DIRECT_RUNTIME" },
+    { "from": "luzione-api", "to": "vercel", "relationship": "DEPLOYED_RUNTIME_AND_WORKLOAD_IDENTITY", "state": "DIRECT_RUNTIME" },
+    { "from": "luzione-api", "to": "shopify", "relationship": "PROVIDER_AUTHORITATIVE_CATALOG_PROJECTION", "state": "INDIRECT_SOURCE" },
+    { "from": "luzione-api", "to": "gmail-drive-airtable", "relationship": "AGGREGATE_STATUS_READBACK", "state": "CONFIGURATION_NOT_REACHABILITY" }
+  ]
+}

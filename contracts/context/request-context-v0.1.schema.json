@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/context/request-context-v0.1.schema.json",
+  "title": "Luzione API Request Context v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contractVersion", "requestId", "correlationId", "traceId", "spanId", "requestedAt"],
+  "properties": {
+    "contractVersion": { "const": "luzione-request-identity/v1" },
+    "requestId": { "type": "string", "minLength": 8, "maxLength": 200 },
+    "correlationId": { "type": "string", "minLength": 8, "maxLength": 200 },
+    "traceId": { "type": "string", "pattern": "^[a-f0-9]{32}$" },
+    "spanId": { "type": "string", "pattern": "^[a-f0-9]{16}$" },
+    "actorId": { "type": ["string", "null"], "maxLength": 256 },
+    "actorType": { "type": ["string", "null"], "enum": ["agent", "service", "user", null] },
+    "tenantId": { "type": ["string", "null"], "maxLength": 256 },
+    "purpose": { "type": ["string", "null"], "maxLength": 256 },
+    "capability": { "type": ["string", "null"], "maxLength": 256 },
+    "authorityClass": { "type": ["string", "null"], "maxLength": 256 },
+    "idempotencyKey": { "type": ["string", "null"], "maxLength": 256 },
+    "requestedAt": { "type": "string", "format": "date-time" },
+    "sourceVersionRefs": { "type": "array", "uniqueItems": true, "items": { "type": "string" } }
+  }
+}

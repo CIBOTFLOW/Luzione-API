@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/receipts/receipt-reference-v0.1.schema.json",
+  "title": "Luzione Receipt Reference v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contractVersion", "receiptId", "statusUrl", "readbackUrl"],
+  "properties": {
+    "contractVersion": { "const": "luzione-receipt-reference/v0.1" },
+    "receiptId": { "type": "string", "minLength": 8, "maxLength": 256 },
+    "statusUrl": { "type": "string", "format": "uri-reference" },
+    "readbackUrl": { "type": ["string", "null"], "format": "uri-reference" }
+  }
+}

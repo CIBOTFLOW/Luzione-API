@@ -45,6 +45,11 @@ import {
   PRODUCTION_READINESS_CERTIFICATION_VERSION,
 } from "@/modules/platform-readiness/certification";
 import {
+  API_CONTRACT_RELEASE_COMPONENTS,
+  API_CONTRACT_RELEASE_VERSION,
+  RELEASE_IDENTITY_CONTRACT_VERSION,
+} from "@/modules/production-convergence/releaseIdentity";
+import {
   performanceProfileRegistry,
   PLATFORM_PERFORMANCE_PROGRAM_VERSION,
 } from "@/modules/platform-performance/program";
@@ -145,6 +150,14 @@ export async function GET(request: Request) {
       releaseEvidence: {
         contractVersion: PLATFORM_RELEASE_EVIDENCE_VERSION,
         law: releaseEvidenceLaw,
+      },
+      productionConvergenceContract: {
+        components: API_CONTRACT_RELEASE_COMPONENTS,
+        manifestPath: "contracts/contract-manifest.v0.1.json",
+        openApiPath: "contracts/openapi/luzione-api-v0.1.yaml",
+        releaseIdentityContractVersion: RELEASE_IDENTITY_CONTRACT_VERSION,
+        releaseVersion: API_CONTRACT_RELEASE_VERSION,
+        runtimeSurface: "GET /api/v1/release",
       },
       testProgram: {
         contractVersion: PLATFORM_TEST_TAXONOMY_VERSION,
