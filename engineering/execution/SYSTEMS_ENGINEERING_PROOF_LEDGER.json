@@ -1397,6 +1397,71 @@
         "API-PC-013 least-privilege worker role, P110/domain RLS and negative permission proof",
         "explicitly authorized live canary only after sandbox, rollback and release gates pass"
       ]
+    },
+    {
+      "proof_id": "API_SE_003_BF1_LOCAL_TABLE_OBJECT_REGISTRY_20260831",
+      "project_id": "API_SE_003_BF1",
+      "recorded_at": "2026-08-31T05:33:31Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "c6a839163759ecfd86eb66d3c75781ff0731be14",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The exact API candidate publishes luzione-table-object-registry/v1 additively through the canonical catalog, explicitly approving the Supplier Portal capability owner for the 22 production-observed authenticated browser surfaces while preserving Luzione UI physical schema ownership, REVIEW lifecycle, snapshot-only freshness and fail-closed retirement; it does not copy the 713-table catalog, read table contents, authorize DDL or claim independent consumer adoption.",
+      "exercised_boundaries": [
+        "The API reconciled the metadata-only Luzione UI snapshot at exact implementation SHA d6b23f6f97ac065b6af3572ab010c478ae9d9b24 and production migration repo_150_browser_privilege_and_crm_identity_convergence_20260831.",
+        "The registry declares exactly 22 unique Supplier Portal browser relations out of 713 observed tables and reports 691 objects outside the approval instead of inferring full-estate coverage.",
+        "Every declaration separates CIBOTFLOW/Luzione-Supplier-Portal capability ownership from CIBOTFLOW/Luzione-UI physical schema ownership and binds evidence to an exact source version.",
+        "Every declared surface preserves anonymous denial, authenticated RLS, one or more policies and service-role access as metadata observed in the source snapshot.",
+        "Every declaration remains lifecycle REVIEW, freshness SNAPSHOT_ONLY, canonical successor null and retirement denied behind six explicit evidence gates.",
+        "Known-bad duplicate, unknown authority, zero-policy browser posture and retirement-without-successor fixtures fail validation.",
+        "The strict JSON Schema, platform contract registry, service catalog, object/capability ownership registries, contract manifest, OpenAPI summary and release components publish one versioned contract without a new endpoint or truth store.",
+        "Compliance verification, typecheck, clean lint, 198/198 tests and the production build passed after rebasing over API-PC-011 and registering the new suite in the canonical test taxonomy."
+      ],
+      "untested_boundaries": [
+        "independent Luzione UI exact-version consumption and owner-finding convergence",
+        "independent Sultan exact-version abstention, simulation and no-direct-write behavior",
+        "preview or production deployment of the API catalog version",
+        "continuous production freshness after the single metadata observation",
+        "repository-reference scans, multi-window activity evidence and inbound dependency closure for the 713-table estate",
+        "policy semantic correctness beyond the observed RLS/policy-count metadata",
+        "quarantine, retirement, DDL, index changes or any database mutation"
+      ],
+      "evidence_refs": [
+        "src/modules/platform-contracts/tableObjectRegistry.ts",
+        "src/modules/platform-contracts/tests/table-object-registry.test.ts",
+        "contracts/objects/luzione-table-object-registry-v1.schema.json",
+        "src/app/api/v1/catalog/route.ts",
+        "docs/platform-engineering/TABLE_OBJECT_REGISTRY_V1.md",
+        "engineering/execution/handoffs/API_SE_003_BF1_LUZIONE_UI.json",
+        "engineering/execution/handoffs/API_SE_003_BF1_SULTAN_OS.json",
+        "commit:c6a839163759ecfd86eb66d3c75781ff0731be14"
+      ],
+      "failure_refs": [
+        "API_SE_003_BF1_TEST_TAXONOMY_REGISTRATION_20260831"
+      ],
+      "cross_repo_handoffs": [
+        "API_SE_003_BF1_TO_LUZIONE_UI_V1",
+        "API_SE_003_BF1_TO_SULTAN_OS_V1"
+      ],
+      "deferred_external_infra": [
+        "independent consumer repositories",
+        "preview and production API environments",
+        "future production metadata snapshots"
+      ],
+      "remaining_uncertainty": [
+        "Most declared data roles remain UNCLASSIFIED and projection lineage remains null rather than guessed.",
+        "The private portal_lead_partner_assignments relation and every non-browser table remain outside this approval.",
+        "One production metadata snapshot does not establish ongoing use, zero use or retirement safety.",
+        "Local producer proof cannot establish consumer integration, deployment freshness or production finality."
+      ],
+      "next_proof_needed": [
+        "Luzione UI consumes the exact contract, upgrades exactly 22 owner findings and rejects stale/unknown fixtures",
+        "Luzione UI records recurring repository-reference and activity snapshots before any quarantine proposal",
+        "Sultan consumes the exact contract and proves stale/unknown abstention plus no direct database effect path",
+        "an exact preview/production API release exposes the registry before any deployed-release claim"
+      ]
     }
   ]
 }

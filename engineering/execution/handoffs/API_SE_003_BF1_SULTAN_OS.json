@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_SE_003_BF1_TO_SULTAN_OS_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "c6a839163759ecfd86eb66d3c75781ff0731be14",
+  "producer_ref": "codex/api-se-003-bf1-table-object-registry",
+  "contract_name": "table-object-ownership-lifecycle-and-retirement-registry",
+  "contract_version": "luzione-table-object-registry/v1",
+  "published_path": "GET /api/v1/catalog -> tableObjectRegistry",
+  "schema_path": "contracts/objects/luzione-table-object-registry-v1.schema.json",
+  "consumer_repository": "CIBOTFLOW/Sultan-OS",
+  "required_consumer_behavior": [
+    "Use the registry as read-only evidence for table ownership and lifecycle reasoning; never turn a table declaration into direct database mutation authority.",
+    "Treat the source as SNAPSHOT_ONLY and abstain when its exact sourceVersion is absent, stale or contradicted by newer evidence.",
+    "Distinguish capability ownership, physical schema ownership, data role, source authority and retirement authority in plans, simulations and evaluations.",
+    "Keep unknown authority, data-role, lifecycle, security and reconciliation enum values fail closed.",
+    "Do not infer full-estate coverage: 22 Supplier Portal browser surfaces are declared and 691 observed tables remain outside this approval.",
+    "Require API command/receipt/readback contracts for business effects; table metadata is not an effect path."
+  ],
+  "acceptance_proof_needed": [
+    "exact Sultan and API SHAs plus contract-version match",
+    "known-bad stale source and unknown enum abstention",
+    "simulation that refuses retirement while retirementGate.allowed is false",
+    "plan output that preserves separate physical and capability owners",
+    "no direct Supabase/Postgres mutation path derived from table metadata"
+  ],
+  "producer_evidence_refs": [
+    "src/modules/platform-contracts/tableObjectRegistry.ts",
+    "src/modules/platform-contracts/tests/table-object-registry.test.ts",
+    "contracts/objects/luzione-table-object-registry-v1.schema.json",
+    "docs/platform-engineering/TABLE_OBJECT_REGISTRY_V1.md",
+    "commit:c6a839163759ecfd86eb66d3c75781ff0731be14"
+  ],
+  "known_limitations": [
+    "The producer has not independently executed Sultan consumer tests.",
+    "This contract carries metadata only and provides no memory, model, tool or effect authority.",
+    "The API contract is locally proven, not preview- or production-observed as a deployed consumer surface."
+  ]
+}
