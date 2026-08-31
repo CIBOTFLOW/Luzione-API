@@ -15,7 +15,7 @@ import type {
 
 export const POSTGRES_COMMAND_LEDGER_VERSION = "luzione-command-ledger/v0.1";
 
-type CommandTransaction = {
+export type CommandTransaction = {
   client: PoolClient;
   tenantId: string | null;
 };

@@ -31,7 +31,7 @@ test("program artifacts exist and the human queue cannot become a second schedul
   assert.match(queueView, /only live scheduler is `engineering\/execution\/NEXT_WORK\.json`/);
 });
 
-test("ownership registry names every first-journey object without inventing current owners", () => {
+test("ownership registry names every first-journey object and binds reconciled current-writer evidence", () => {
   const registry = jsonArtifact("architecture/production-convergence/OBJECT_OWNERSHIP.yaml") as {
     objects: Array<{ currentOwner: string; migrationState: string; object: string; targetMutationOwner: string }>;
   };
@@ -40,7 +40,10 @@ test("ownership registry names every first-journey object without inventing curr
     assert.ok(byObject.has(object), object);
     assert.equal(byObject.get(object)?.targetMutationOwner, "CIBOTFLOW/Luzione-API");
   }
-  assert.match(byObject.get("Lead")?.currentOwner ?? "", /UNRESOLVED/);
+  assert.equal(byObject.get("Lead")?.currentOwner, "CIBOTFLOW/Luzione-UI");
+  assert.equal(byObject.get("Lead")?.migrationState, "API_DARK_PATH_TRANSFER_PENDING");
+  assert.equal(byObject.get("CommercialCase")?.currentOwner, "CIBOTFLOW/Luzione-UI");
+  assert.equal(byObject.get("CommercialCase")?.migrationState, "API_DARK_PATH_TRANSFER_PENDING");
   assert.equal(byObject.get("Product")?.currentOwner, "external:shopify");
   assert.equal(new Set(registry.objects.map((item) => item.object)).size, registry.objects.length);
 });

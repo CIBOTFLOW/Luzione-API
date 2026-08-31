@@ -68,6 +68,14 @@
       "entrypoint": "GET /api/v1/platform-guarantees?receiptId=<receipt> and GET /api/v1/catalog/shopify/projections"
     },
     {
+      "capabilityId": "lead-commercial-case-command-path",
+      "owner": "CIBOTFLOW/Luzione-API",
+      "effectClass": "INTERNAL_DOMAIN_MUTATION",
+      "runtimeState": "IMPLEMENTED_DARK_PATH_GLOBAL_AND_TENANT_DEFAULT_OFF",
+      "contractVersion": "luzione-lead-commercial-case/v0.1",
+      "entrypoint": "GET|POST /api/v1/commands/leads and GET|POST /api/v1/commands/commercial-cases"
+    },
+    {
       "capabilityId": "sultan-reasoning-and-memory",
       "owner": "CIBOTFLOW/Sultan-OS",
       "effectClass": "NO_CANONICAL_BUSINESS_WRITE",

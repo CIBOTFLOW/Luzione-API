@@ -18,3 +18,16 @@ export function runtimeConfig() {
     serviceTokenConfigured,
   };
 }
+
+function domainCommandTenantAllowlist() {
+  return new Set(
+    (process.env.LUZIONE_API_DOMAIN_COMMAND_TENANTS ?? "")
+      .split(",")
+      .map((tenantId) => tenantId.trim())
+      .filter(Boolean),
+  );
+}
+
+export function domainCommandsEnabledForTenant(tenantId: string) {
+  return runtimeConfig().mutationsEnabled && domainCommandTenantAllowlist().has(tenantId);
+}

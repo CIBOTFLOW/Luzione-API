@@ -2,24 +2,24 @@
   "schemaVersion": "1.0",
   "registryVersion": "luzione-object-ownership/v0.1",
   "ownerRepository": "CIBOTFLOW/Luzione-API",
-  "evidenceBoundary": "Current UI writers and table shapes require an independent Luzione UI inventory; unresolved values are not inferred.",
+  "evidenceBoundary": "Lead and Commercial Case current-writer evidence is bound to the reconciled Luzione UI inventory and implementation SHAs recorded in API_PC_008_WORKING_CONTRACT.md; other unresolved values are not inferred.",
   "objects": [
     {
       "object": "Lead",
       "tier": "TIER_1",
-      "currentOwner": "UNRESOLVED_EXTERNAL_EVIDENCE_REQUIRED",
+      "currentOwner": "CIBOTFLOW/Luzione-UI",
       "targetMutationOwner": "CIBOTFLOW/Luzione-API",
       "truthStore": "canonical-postgres",
-      "migrationState": "INVENTORIED_UNCONFIRMED",
+      "migrationState": "API_DARK_PATH_TRANSFER_PENDING",
       "sourceVersion": "luzione-source-of-truth-registry/v1:growth:Lead"
     },
     {
       "object": "CommercialCase",
       "tier": "TIER_1",
-      "currentOwner": "UNRESOLVED_EXTERNAL_EVIDENCE_REQUIRED",
+      "currentOwner": "CIBOTFLOW/Luzione-UI",
       "targetMutationOwner": "CIBOTFLOW/Luzione-API",
       "truthStore": "canonical-postgres",
-      "migrationState": "INVENTORIED_UNCONFIRMED",
+      "migrationState": "API_DARK_PATH_TRANSFER_PENDING",
       "sourceVersion": "luzione-source-of-truth-registry/v1:commercial:CommercialCase"
     },
     {

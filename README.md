@@ -18,6 +18,8 @@ This first release is intentionally fail-closed:
 - `GET /api/v1/healthz` reports configuration and aggregate database-security readiness without exposing secret values.
 - `GET /api/v1/catalog` publishes the object and platform ownership contract.
 - `GET /api/v1/platform-guarantees` reads the existing P110/P111 canonical tables when authenticated and configured.
+- `GET /api/v1/commands/leads` and `GET /api/v1/commands/commercial-cases` provide authenticated tenant-scoped compatibility readback from the existing canonical rows.
+- The matching `POST` command routes remain a dark path: they require `LUZIONE_API_MUTATIONS_ENABLED=true`, the exact tenant in `LUZIONE_API_DOMAIN_COMMAND_TENANTS`, and an exact command capability.
 - `GET /api/v1/security/rls-readiness` authenticates a service actor and verifies the sensitive server-only RLS boundary; `?activeProbes=true` adds live role-denial probes.
 - `POST /api/v1/platform-guarantees` remains disabled until command-service extraction, database proof, actor authority and recovery verification are complete.
 - No provider calls or external effects are authorized.
@@ -38,6 +40,7 @@ Configure the following encrypted server-only values in Preview and Production:
 - `PLATFORM_CONTINUATION_SECRET`
 - `APP_ENV=production`
 - `LUZIONE_API_MUTATIONS_ENABLED=false`
+- `LUZIONE_API_DOMAIN_COMMAND_TENANTS=` (empty until an exact tenant/cohort cutover is authorized)
 - `LUZIONE_CANONICAL_TENANT_CODE=LUZIONE_INTERNAL`
 - `DATABASE_POOL_MAX=3`
 
