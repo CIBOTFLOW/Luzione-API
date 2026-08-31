@@ -4,6 +4,7 @@ import type {
   DataClassification,
   EffectClass,
 } from "@/modules/autonomy/types";
+import type { TenantPolicyDecision } from "@/modules/tenant-policy/types";
 
 export const SULTAN_AGENT_INTENT_CONTRACT_VERSION = "luzione-sultan-agent-intent/v0.1" as const;
 export const SULTAN_AGENT_POLICY_CONTRACT_VERSION = "luzione-sultan-agent-policy/v0.1" as const;
@@ -92,8 +93,11 @@ export type SultanAgentPolicyDecision = {
     acceptedCount: number;
     freshness: "FRESH" | "STALE" | "UNKNOWN";
     synthetic: boolean;
+    verification: "CANONICAL_READBACK" | "SYNTHETIC_SIMULATION" | "UNVERIFIED";
+    verifiedCount: number;
   };
   status: SultanAgentAdmissionStatus;
+  tenantPolicy: TenantPolicyDecision;
 };
 
 export type SultanAgentOutcomeReceipt = {

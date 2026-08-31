@@ -1,6 +1,9 @@
 import { requireServiceActor } from "@/lib/api/actor";
-import { apiResponse, createRequestIdentity } from "@/lib/api/http";
+import { apiResponse, createRequestIdentity, logRequestCompletion } from "@/lib/api/http";
+import { readActiveTenantPolicy } from "@/lib/tenant-policy/readService";
+import { OrderFulfillmentStore } from "@/modules/order-fulfillment/store";
 import { bindAuthenticatedRequestIdentity } from "@/modules/platform-contracts/requestIdentity";
+import { verifySultanAgentContext } from "@/modules/sultan-agent/contextVerifier";
 import { evaluateSultanAgentIntent } from "@/modules/sultan-agent/evaluator";
 import { parseSultanAgentIntent, SultanAgentIntentError } from "@/modules/sultan-agent/parser";
 
@@ -11,12 +14,23 @@ const MAX_REQUEST_BYTES = 64 * 1024;
 function statusFor(error: unknown) {
   if (error instanceof SultanAgentIntentError) return error.code === "CLIENT_AUTHORITY_REJECTED" ? 403 : 400;
   const message = error instanceof Error ? error.message : "Unknown failure";
-  if (/authentication|tenant|actor|capability/i.test(message)) return 401;
+  if (/authentication|credential|identity|tenant|actor|capability/i.test(message)) return 401;
   return 503;
 }
 
+function publicMessage(error: unknown) {
+  if (error instanceof SultanAgentIntentError) return error.message;
+  const message = error instanceof Error ? error.message : "";
+  if (/authentication|credential|identity|tenant|actor|capability/i.test(message)) {
+    return "Service authentication failed.";
+  }
+  return "Sultan agent intent evaluation failed closed.";
+}
+
 export async function POST(request: Request) {
+  const startedAt = performance.now();
   let identity = createRequestIdentity(request.headers);
+  let status = 200;
   try {
     const actor = await requireServiceActor(request.headers, "sultan.agent.intent.evaluate");
     identity = bindAuthenticatedRequestIdentity(identity, actor, {
@@ -39,7 +53,26 @@ export async function POST(request: Request) {
       throw new SultanAgentIntentError("INVALID_AGENT_INTENT", "Request body must be valid JSON.");
     }
     const intent = parseSultanAgentIntent(body);
-    const decision = evaluateSultanAgentIntent({ actor, intent });
+    const context = intent.sourceContext[0];
+    const supportedOrderId = intent.caseRef.caseType === "FULFILLMENT"
+      && intent.sourceContext.length === 1
+      && context.sourceOwner === "CIBOTFLOW/Luzione-API"
+      && context.sourceRef === `api:orders:${intent.caseRef.caseId}`
+      ? intent.caseRef.caseId
+      : null;
+    const [orderReadback, tenantPolicy] = await Promise.all([
+      supportedOrderId ? new OrderFulfillmentStore().readOrder(actor, supportedOrderId) : Promise.resolve(null),
+      readActiveTenantPolicy(actor.tenantId),
+    ]);
+    const verified = verifySultanAgentContext({ intent, orderReadback });
+    const decision = evaluateSultanAgentIntent({
+      actor,
+      contextVerification: verified.verification,
+      intent: verified.intent,
+      tenantPolicy,
+    });
+    status = decision.status === "BLOCKED" ? 422 : 200;
+    logRequestCompletion({ method: "POST", requestIdentity: identity, route: "/api/v1/sultan/agent-intents/evaluate", status, startedAt });
     return apiResponse(
       {
         ok: true,
@@ -48,19 +81,21 @@ export async function POST(request: Request) {
         businessStateMutated: false,
         externalEffectsAuthorized: false,
       },
-      { requestIdentity: identity, status: decision.status === "BLOCKED" ? 422 : 200 },
+      { requestIdentity: identity, status, startedAt },
     );
   } catch (error) {
+    status = statusFor(error);
+    logRequestCompletion({ method: "POST", requestIdentity: identity, route: "/api/v1/sultan/agent-intents/evaluate", status, startedAt });
     return apiResponse(
       {
         ok: false,
         code: error instanceof SultanAgentIntentError ? error.code : "SULTAN_AGENT_INTENT_EVALUATION_FAILED",
-        message: error instanceof Error ? error.message : "Sultan agent intent evaluation failed closed.",
+        message: publicMessage(error),
         evaluatedOnly: true,
         businessStateMutated: false,
         externalEffectsAuthorized: false,
       },
-      { requestIdentity: identity, status: statusFor(error) },
+      { requestIdentity: identity, status, startedAt },
     );
   }
 }

@@ -497,6 +497,7 @@
       "required_evidence": ["Sultan consumer certification", "stale/unauthorized abstention", "receipt closure"],
       "irreversible_effects": [],
       "completion_evidence_ref": "API_PC_012_LOCAL_SULTAN_AGENT_CONTRACTS_20260831",
+      "hardening_evidence_ref": "API_PC_012_LOCAL_CANONICAL_CONTEXT_HARDENING_20260831",
       "release_evidence": "LOCAL_PROVEN",
       "effect_authority": "NO_EFFECT",
       "finality": "BOUNDED_CLAIM"

@@ -1,12 +1,15 @@
 import type { ApiActor } from "@/lib/api/actor";
 import { evaluateAutonomyPlan } from "@/modules/autonomy/evaluator";
 import type { AutonomyEvaluation } from "@/modules/autonomy/types";
+import { evaluateTenantPolicy } from "@/modules/tenant-policy/evaluator";
+import type { TenantPolicySnapshot } from "@/modules/tenant-policy/types";
 import {
   SULTAN_AGENT_POLICY_CONTRACT_VERSION,
   type SultanAgentAdmissionStatus,
   type SultanAgentIntent,
   type SultanAgentPolicyDecision,
 } from "./contracts";
+import type { SultanAgentContextVerification } from "./contextVerifier";
 
 function overallFreshness(intent: SultanAgentIntent) {
   if (intent.sourceContext.some((context) => context.freshness === "STALE")) return "STALE" as const;
@@ -15,7 +18,7 @@ function overallFreshness(intent: SultanAgentIntent) {
 }
 
 function expectedCredentialActorId(intent: SultanAgentIntent) {
-  return `${intent.agent.agentId}@${intent.agent.agentVersion}`;
+  return `${intent.agent.agentId}:${intent.agent.agentVersion}`;
 }
 
 function statusFromAutonomy(input: {
@@ -36,11 +39,15 @@ function statusFromAutonomy(input: {
 
 export function evaluateSultanAgentIntent(input: {
   actor: ApiActor;
+  contextVerification: SultanAgentContextVerification;
   intent: SultanAgentIntent;
   now?: string;
+  tenantPolicy: TenantPolicySnapshot;
 }): SultanAgentPolicyDecision {
   const freshness = overallFreshness(input.intent);
   const synthetic = input.intent.sourceContext.some((context) => context.sourceOwner === "SYNTHETIC_LUZIONE");
+  const canonicalContextUnavailable = !synthetic
+    && input.contextVerification.kind !== "CANONICAL_READBACK";
   const identityVerified = input.actor.actorType === "agent"
     && input.actor.actorId === expectedCredentialActorId(input.intent);
   const reasons: string[] = [];
@@ -53,7 +60,7 @@ export function evaluateSultanAgentIntent(input: {
     reasons.push("SOURCE_OWNER_MISMATCH");
   }
 
-  const autonomy = evaluateAutonomyPlan({
+  const plan = {
     actionId: input.intent.actionId,
     actionVersion: input.intent.actionVersion,
     capability: input.intent.capability,
@@ -61,7 +68,13 @@ export function evaluateSultanAgentIntent(input: {
     dataClassification: input.intent.dataClassification,
     declaredEffectClass: input.intent.declaredEffectClass,
     purpose: input.intent.purpose,
-  }, {
+  };
+  const tenantPolicy = evaluateTenantPolicy({
+    actorType: input.actor.actorType,
+    plan,
+    policy: input.tenantPolicy,
+  });
+  const autonomy = evaluateAutonomyPlan(plan, {
     actor: {
       actorId: input.actor.actorId,
       actorType: input.actor.actorType,
@@ -70,14 +83,18 @@ export function evaluateSultanAgentIntent(input: {
     now: input.now ?? new Date().toISOString(),
   });
 
-  if (freshness !== "FRESH" && input.intent.runMode !== "SIMULATION") {
+  if ((freshness !== "FRESH" || canonicalContextUnavailable) && input.intent.runMode !== "SIMULATION") {
     reasons.push("SOURCE_CONTEXT_NOT_FRESH");
   }
+  if (canonicalContextUnavailable) {
+    reasons.push("SOURCE_CONTEXT_NOT_CANONICALLY_VERIFIED");
+  }
+  reasons.push(...tenantPolicy.reasonCodes);
   reasons.push(...autonomy.reasonCodes);
   const uniqueReasons = Object.freeze([...new Set(reasons)]);
 
   let status: SultanAgentAdmissionStatus;
-  if (freshness !== "FRESH" && input.intent.runMode !== "SIMULATION") {
+  if ((freshness !== "FRESH" || canonicalContextUnavailable) && input.intent.runMode !== "SIMULATION") {
     status = "ABSTAIN_STALE_CONTEXT";
   } else if (uniqueReasons.some((reason) => [
     "AGENT_CAPABILITY_NOT_BOUND_TO_CREDENTIAL",
@@ -86,6 +103,10 @@ export function evaluateSultanAgentIntent(input: {
     "SYNTHETIC_CONTEXT_REQUIRES_SIMULATION",
   ].includes(reason))) {
     status = "BLOCKED";
+  } else if (!tenantPolicy.allowedByPolicy) {
+    status = tenantPolicy.capabilityDecision === "APPROVAL"
+      ? input.intent.runMode === "ASSISTED" ? "REQUIRE_APPROVAL" : "SIMULATE_ONLY"
+      : "BLOCKED";
   } else {
     status = statusFromAutonomy({ autonomy, identityVerified, intent: input.intent });
   }
@@ -118,7 +139,10 @@ export function evaluateSultanAgentIntent(input: {
       acceptedCount: input.intent.sourceContext.length,
       freshness,
       synthetic,
+      verification: input.contextVerification.kind,
+      verifiedCount: input.contextVerification.verifiedCount,
     }),
     status,
+    tenantPolicy,
   });
 }

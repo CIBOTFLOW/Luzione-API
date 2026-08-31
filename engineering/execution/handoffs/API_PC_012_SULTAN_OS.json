@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "handoff_id": "API_PC_012_TO_SULTAN_OS_V1",
-  "recorded_at": "2026-08-31T06:25:33.743Z",
+  "recorded_at": "2026-08-31T18:25:00.000Z",
   "producer": {
     "repository": "CIBOTFLOW/Luzione-API",
     "candidate_sha": "7d015fffd0b3a099f83cc7a73e1af02bc4dd1e28",
@@ -14,7 +14,7 @@
     "proof_head_sha": "123246edbab978c48b58a45e1936a039018da615",
     "pull_request": 307
   },
-  "status": "BOUNDED_EXACT_VERSION_CONSUMPTION_PROVEN",
+  "status": "BOUNDED_EXACT_VERSION_CONSUMPTION_PROVEN_PRODUCER_HARDENING_REVALIDATION_REQUIRED",
   "contract_versions": [
     "luzione-sultan-agent-context/v0.1",
     "luzione-sultan-agent-intent/v0.1",
@@ -23,6 +23,18 @@
   ],
   "endpoint": "POST /api/v1/sultan/agent-intents/evaluate",
   "credential_capability": "sultan.agent.intent.evaluate",
+  "credential_actor_id_format": "<agentId>:<agentVersion>",
+  "producer_hardening": {
+    "candidate_sha": "2249637d5359332e53b66b00fefba311146d0892",
+    "context_semantics": "Client freshness, sourceVersion and integrityHash are assertions. FULFILLMENT context at api:orders:<orderId> is admitted only after tenant-scoped canonical Order/line readback derives exact freshness and integrity.",
+    "policy_semantics": "The active canonical tenant policy and the API autonomy constitution must both admit the plan.",
+    "additive_response_fields": [
+      "decision.tenantPolicy",
+      "decision.sourceContext.verification",
+      "decision.sourceContext.verifiedCount"
+    ],
+    "consumer_action": "Revalidate the credential actor ID using the canonical colon separator and tolerate/consume the additive policy and source-verification fields before deployed HTTP proof."
+  },
   "ownership": {
     "Sultan_OS": "agent definitions, case reasoning, model/tool selection, work orders, simulations and cognitive evaluation",
     "Luzione_API": "credential-bound actor/tenant/capability, contract meaning, deterministic policy and command admission",
@@ -38,9 +50,9 @@
     "API release gate and CodeQL passed at the exact producer candidate."
   ],
   "remaining": [
-    "merge producer and consumer candidates",
-    "signed tenant-bound deployed HTTP request",
-    "live canonical context freshness and stale denial",
+    "merge the producer hardening and revalidate the independent Sultan consumer against its additive response and credential-ID convention",
+    "signed tenant-bound deployed HTTP request; the local disposable bearer-token handler proof is not deployed workload-identity evidence",
+    "managed or deployed canonical context freshness and stale denial",
     "source-owned effect receipt/readback only under separate effect authorization"
   ],
   "non_claims": [
