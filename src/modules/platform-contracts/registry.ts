@@ -103,15 +103,17 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
     consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
     contractId: "lifecycle-command",
     currentRuntime: false,
-    maturity: "LIBRARY_ONLY",
+    maturity: "IMPLEMENTED",
     name: "Atomic lifecycle command and idempotency contract",
     ownerRepository: "CIBOTFLOW/Luzione-API",
-    pendingChangeRefs: ["pull/31:authority-v2-command-admission"],
+    pendingChangeRefs: [],
     sourcePaths: [
       "src/modules/platform-guarantees/types.ts",
-      "src/modules/platform-guarantees/commandKernel.ts"
+      "src/modules/platform-guarantees/commandKernel.ts",
+      "src/lib/platform-guarantees/postgresCommandStore.ts",
+      "supabase/migrations/20260831022000_p110_command_ledger_baseline.sql"
     ],
-    version: "1.0",
+    version: "luzione-command-ledger/v0.1",
   },
   {
     compatibility: "NEW_MAJOR_FOR_BREAKING",
@@ -133,15 +135,16 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
     consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
     contractId: "lifecycle-command-receipt",
     currentRuntime: false,
-    maturity: "LIBRARY_ONLY",
+    maturity: "IMPLEMENTED",
     name: "Lifecycle command receipt",
     ownerRepository: "CIBOTFLOW/Luzione-API",
-    pendingChangeRefs: ["pull/31:durable-command-and-effect-receipts"],
+    pendingChangeRefs: [],
     sourcePaths: [
       "src/modules/platform-guarantees/types.ts",
-      "src/modules/platform-guarantees/commandKernel.ts"
+      "src/modules/platform-guarantees/commandKernel.ts",
+      "src/lib/platform-guarantees/postgresCommandStore.ts"
     ],
-    version: "1.0",
+    version: "luzione-command-ledger/v0.1",
   },
   {
     compatibility: "EXACT_VERSION",

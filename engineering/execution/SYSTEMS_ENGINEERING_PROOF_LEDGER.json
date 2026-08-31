@@ -922,6 +922,73 @@
         "reconciled fresh and upgrade migration proof",
         "preview credential-bound protected-route observations"
       ]
+    },
+    {
+      "proof_id": "API_PC_005_LOCAL_COMMAND_LEDGER_20260831",
+      "project_id": "API-PC-005",
+      "recorded_at": "2026-08-31T02:51:51Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "0d38b83f2739d21c8530411e9f15b1cf7da0215f",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The exact API candidate provides an additive P110 command/receipt/event/conflict/outbox baseline and a tenant-bound Postgres implementation of the atomic command kernel with serialized idempotency admission, exact replay, different-hash conflict evidence and rollback-safe owner/ledger writes; no HTTP mutation or provider dispatch is activated.",
+      "exercised_boundaries": [
+        "The additive migration applied successfully to a fresh disposable PostgreSQL database.",
+        "The same migration upgraded the four-table legacy shape observed from the local canonical-schema fixture without destructive DDL.",
+        "All four relations enabled and forced RLS; a restricted tenant-b role observed zero tenant-a receipts and a cross-tenant insert was denied.",
+        "A deliberate exception after receipt, event and outbox inserts left no partial ledger rows.",
+        "The kernel suite proved atomic owner mutation plus receipt/event/outbox, exact same-hash replay, different-hash conflict recording and owner-failure rollback.",
+        "The Postgres store binds tenant context, serializes concurrent tenant/idempotency admission with a transaction advisory lock, writes receipt then event then NO_EFFECT outbox, and rolls back failed transactions.",
+        "Compliance verification, typecheck, clean lint, 162/162 tests and the production build passed for the implementation candidate."
+      ],
+      "untested_boundaries": [
+        "managed or production Postgres migration application and migration-ledger provenance",
+        "business-domain HTTP command parsing/admission",
+        "real domain-owner mutation through PostgresAtomicCommandStore",
+        "concurrent multi-process replay against managed Postgres",
+        "UI and Sultan consumer integration",
+        "provider dispatch, acknowledgement, reconciliation and source readback"
+      ],
+      "evidence_refs": [
+        "supabase/migrations/20260831022000_p110_command_ledger_baseline.sql",
+        "src/lib/platform-guarantees/postgresCommandStore.ts",
+        "src/modules/platform-guarantees/commandKernel.ts",
+        "src/modules/platform-guarantees/tests/platform-guarantees.test.ts",
+        "src/modules/production-convergence/tests/command-ledger.test.ts",
+        "scripts/validation/api-pc-005-command-ledger.sql",
+        "architecture/production-convergence/API_PC_005_WORKING_CONTRACT.md",
+        "commit:0d38b83f2739d21c8530411e9f15b1cf7da0215f"
+      ],
+      "failure_refs": [
+        "API_PC_005_STORE_SOURCE_ASSERTION_20260831",
+        "API_PC_005_COMPLIANCE_ALIAS_20260831",
+        "API_PC_005_BUILD_FONT_NETWORK_20260831",
+        "API_SE_014_DOCKER_SOCKET_SANDBOX_20260829"
+      ],
+      "cross_repo_handoffs": [
+        "API_PC_005_TO_LUZIONE_UI_V1",
+        "API_PC_005_TO_SULTAN_OS_V1"
+      ],
+      "deferred_external_infra": [
+        "managed canonical Postgres",
+        "preview and production environments",
+        "independent consumer repositories",
+        "domain and provider runtimes"
+      ],
+      "remaining_uncertainty": [
+        "The repository now owns the additive P110 artifact, but production application history remains unobserved.",
+        "No business HTTP mutation is enabled; currentRuntime remains false in the contract registry.",
+        "The pending draft control plane contains broader authority/workflow/provider changes that were deliberately not imported.",
+        "Local disposable proof cannot establish production scale, failover or finality."
+      ],
+      "next_proof_needed": [
+        "API-PC-006 fresh/upgrade and restart-safe workflow/delivery proof",
+        "API-PC-007 causal projection/readback and freshness proof",
+        "independent exact-version UI and Sultan command consumer tests",
+        "managed preview migration and authenticated domain command evidence before release activation"
+      ]
     }
   ]
 }

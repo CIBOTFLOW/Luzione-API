@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_PC_005_TO_LUZIONE_UI_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "0d38b83f2739d21c8530411e9f15b1cf7da0215f",
+  "producer_ref": "codex/api-pc-005-command-ledger",
+  "contract_name": "command-ledger",
+  "contract_version": "luzione-command-ledger/v0.1",
+  "consumer_repository": "CIBOTFLOW/Luzione-UI",
+  "stable_paths": {
+    "command_and_receipt_types": "src/modules/platform-guarantees/types.ts",
+    "atomic_executor": "src/modules/platform-guarantees/commandKernel.ts",
+    "postgres_store": "src/lib/platform-guarantees/postgresCommandStore.ts",
+    "migration": "supabase/migrations/20260831022000_p110_command_ledger_baseline.sql",
+    "working_contract": "architecture/production-convergence/API_PC_005_WORKING_CONTRACT.md",
+    "manifest": "contracts/contract-manifest.v0.1.json",
+    "catalog": "GET /api/v1/catalog"
+  },
+  "required_consumer_behavior": [
+    "Do not call a command mutation until an authenticated domain HTTP route explicitly publishes this contract; API-PC-005 does not activate one.",
+    "When a route is published, generate one stable idempotency key per intended domain effect and preserve the API correlation identity across retry/readback.",
+    "Treat an exact replay as the original receipt, a different payload under the same key as a conflict requiring reconciliation, and provider acknowledgement as weaker than authoritative completion.",
+    "Render receipt/event/readback state as API evidence and never redefine command, finality or source-confirmation semantics in the UI."
+  ],
+  "acceptance_proof_needed": [
+    "exact UI and API candidate SHAs and luzione-command-ledger/v0.1",
+    "authenticated domain command route once API-PC-008 or API-PC-009 publishes one",
+    "exact replay returns the original receipt without a second business mutation",
+    "different-hash conflict, cross-tenant denial and authoritative readback"
+  ],
+  "producer_evidence_refs": [
+    "src/modules/platform-guarantees/tests/platform-guarantees.test.ts",
+    "src/modules/production-convergence/tests/command-ledger.test.ts",
+    "scripts/validation/api-pc-005-command-ledger.sql",
+    "architecture/production-convergence/API_PC_005_WORKING_CONTRACT.md"
+  ],
+  "known_limitations": [
+    "No business-domain HTTP command is activated and mutations remain disabled by default.",
+    "No UI repository test or cross-system command journey was executed.",
+    "The migration passed disposable local fresh/upgrade proof but was not applied to managed or production Postgres.",
+    "No external provider effect is authorized or claimed."
+  ]
+}

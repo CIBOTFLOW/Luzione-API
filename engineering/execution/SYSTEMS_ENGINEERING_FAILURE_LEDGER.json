@@ -510,6 +510,77 @@
         "Source-sensitive tests do not replace hosted credential-path observations."
       ],
       "next_action": "Retain exact capability assertions when adding protected routes."
+    },
+    {
+      "failure_id": "API_PC_005_STORE_SOURCE_ASSERTION_20260831",
+      "project_id": "API-PC-005",
+      "observed_at": "2026-08-31T02:38:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": null,
+      "environment": "local",
+      "layer": "command-ledger-contract-test",
+      "symptom": "The first API-PC-005 full suite failed one source assertion after 161 tests passed.",
+      "expected": "The source-sensitive store test should verify the intended NO_EFFECT internal outbox boundary.",
+      "actual": "An irrelevant fixture required the words external or provider in a store that deliberately performs no provider dispatch; removing that assertion left the explicit NO_EFFECT assertion and the full suite passed 162/162.",
+      "classification": { "domain": "TOOL", "class": "INVALID", "retry": "NEVER", "severity": "INFO" },
+      "evidence_refs": [
+        "initial API-PC-005 161/162 test output",
+        "src/modules/production-convergence/tests/command-ledger.test.ts"
+      ],
+      "repair_attempts": [
+        "Removed the unrelated vocabulary assertion while retaining exact NO_EFFECT and transaction-order assertions."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "commit:0d38b83f2739d21c8530411e9f15b1cf7da0215f and subsequent 162/162 pass",
+      "remaining_uncertainty": [],
+      "next_action": "Keep source-sensitive assertions tied to an actual invariant rather than incidental vocabulary."
+    },
+    {
+      "failure_id": "API_PC_005_COMPLIANCE_ALIAS_20260831",
+      "project_id": "API-PC-005",
+      "observed_at": "2026-08-31T02:45:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "0d38b83f2739d21c8530411e9f15b1cf7da0215f",
+      "environment": "local",
+      "layer": "release-gate-command-discovery",
+      "symptom": "The first compliance invocation used an npm script alias that does not exist.",
+      "expected": "Run the exact compliance command defined by the repository CI workflow.",
+      "actual": "npm run compliance failed before verification; package.json and .github/workflows/ci.yml identify npm run compliance:verify, which then verified all seven compliance control documents.",
+      "classification": { "domain": "TOOL", "class": "INVALID", "retry": "NEVER", "severity": "INFO" },
+      "evidence_refs": ["package.json", ".github/workflows/ci.yml", "npm run compliance:verify pass"],
+      "repair_attempts": ["Inspected the canonical CI workflow and ran npm run compliance:verify unchanged."],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "API_PC_005_LOCAL_COMMAND_LEDGER_20260831",
+      "remaining_uncertainty": [],
+      "next_action": "Use the CI workflow as the command authority for future release-gate runs."
+    },
+    {
+      "failure_id": "API_PC_005_BUILD_FONT_NETWORK_20260831",
+      "project_id": "API-PC-005",
+      "observed_at": "2026-08-31T02:48:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "0d38b83f2739d21c8530411e9f15b1cf7da0215f",
+      "environment": "local",
+      "layer": "nextjs-production-build",
+      "symptom": "The sandboxed production build could not fetch the existing Geist and Geist Mono Google Font assets.",
+      "expected": "The unchanged candidate completes the production Next.js build when its declared font dependency is reachable.",
+      "actual": "The sandboxed build stopped only at the Google Fonts requests; the unchanged approved network-enabled build compiled, typechecked and generated every route successfully.",
+      "classification": { "domain": "DEPENDENCY", "class": "UNAVAILABLE", "retry": "IMMEDIATE", "severity": "INFO" },
+      "evidence_refs": ["first npm run build Google Fonts failure", "approved unchanged npm run build pass"],
+      "repair_attempts": ["Reran the unchanged build with explicit network access for the existing font dependency."],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": ["Google Fonts reachability in the default sandbox"],
+      "resolved": true,
+      "resolution_ref": "API_PC_005_LOCAL_COMMAND_LEDGER_20260831",
+      "remaining_uncertainty": ["This local dependency reachability does not prove preview or production font delivery."],
+      "next_action": "Retain the exact build gate and do not treat sandbox font reachability as application capability evidence."
     }
   ]
 }

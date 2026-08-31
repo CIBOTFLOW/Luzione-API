@@ -47,9 +47,9 @@
       "capabilityId": "canonical-command-execution",
       "owner": "CIBOTFLOW/Luzione-API",
       "effectClass": "INTERNAL_DOMAIN_MUTATION",
-      "runtimeState": "LIBRARY_ONLY_MUTATIONS_DISABLED",
-      "contractVersion": "1.0",
-      "entrypoint": null
+      "runtimeState": "IMPLEMENTED_DATABASE_ADAPTER_MUTATIONS_DISABLED",
+      "contractVersion": "luzione-command-ledger/v0.1",
+      "entrypoint": "LifecycleCommandKernel.execute (system/service library entrypoint; no HTTP command route)"
     },
     {
       "capabilityId": "durable-workflow-execution",
