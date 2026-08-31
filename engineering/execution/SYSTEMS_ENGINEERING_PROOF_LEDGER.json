@@ -1177,6 +1177,78 @@
         "API-PC-013 role/RLS fresh-upgrade and negative permission proof for the domain rows",
         "managed preview migration and authenticated route evidence before any tenant activation"
       ]
+    },
+    {
+      "proof_id": "API_PC_009_LOCAL_PROPOSAL_QUOTE_APPROVAL_20260831",
+      "project_id": "API-PC-009",
+      "recorded_at": "2026-08-31T04:55:01Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "d66d215e630881e19a5695e654616c92f7172507",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "SANDBOX_ONLY",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The exact API candidate publishes luzione-proposal-quote-approval/v0.1 as authenticated, tenant-default-off Quote create, exact immutable economics margin decision and exact-version Proposal review command/readback paths against the existing canonical rows, with safe integer cents, uppercase currency, credential-bound human approval, typed confirmation and P110 atomic evidence; Luzione UI remains the active writer and no provider/customer/binding effect is authorized.",
+      "exercised_boundaries": [
+        "The API-PC-005/006/008 plus API-PC-009 migration chain applied to a fresh disposable PostgreSQL database.",
+        "The same chain upgraded an observed UI-shaped Quote/economics/approval and P15/P16 Proposal schema additively.",
+        "Quote creation derived 10000 subtotal cents, 7500 fully landed cost cents, 2500 margin cents and 25 percent gross margin from integer line inputs and the exact policy snapshot.",
+        "Lower-case currency and fractional cents were rejected by the contract; deterministic line ordering and safe-integer aggregation were exercised.",
+        "A service actor and a human credential lacking the exact quote.margin_approval.role.admin capability were denied before a Quote decision; the authorized exact economics decision updated canonical Quote status and produced immutable approval readback.",
+        "Proposal approval denied incorrect typed confirmation, then bound the credential-derived Admin role, policy version, exact current P15 document, verified renderer readback and typed-confirmation digest into one P16 review without granting send or acceptance authority.",
+        "Exact Quote create replay returned the original P110 receipt, changed-payload key reuse recorded one conflict, a forced receipt constraint failure rolled back the Quote and economics rows, and tenant B read neither tenant A Quote nor Proposal review.",
+        "Each successful mutation atomically produced one P110 receipt, event and NO_EFFECT outbox message; both schema shapes observed 1 Quote, 1 economics version, 1 margin approval, 1 Proposal review, 3 receipts/events/outbox rows and 1 conflict.",
+        "Contract registry, OpenAPI, topology, capability, ownership, migration and test-taxonomy artifacts were updated consistently.",
+        "Compliance verification, typecheck, clean lint, 184/184 tests and the production build passed for the implementation candidate."
+      ],
+      "untested_boundaries": [
+        "managed or production Postgres migration application and exact migration-ledger provenance",
+        "domain-table least-privilege roles and forced RLS, which remain API-PC-013 scope",
+        "independent UI shadow-read, user-bound delegated authentication, canary, rollback and writer retirement",
+        "independent Sultan exact-version intent/receipt/readback behavior",
+        "concurrent multi-process Quote and approval races against managed Postgres",
+        "P15 Proposal composition, Google rendering execution, customer send/acceptance, order conversion and provider effects",
+        "preview and production deployment, capacity, recovery and observation"
+      ],
+      "evidence_refs": [
+        "src/modules/proposal-quote-approval/contracts.ts",
+        "src/modules/proposal-quote-approval/store.ts",
+        "src/app/api/v1/commands/quotes/route.ts",
+        "src/app/api/v1/commands/quote-approvals/route.ts",
+        "src/app/api/v1/commands/proposal-reviews/route.ts",
+        "supabase/migrations/20260831060000_proposal_quote_approval_dark_path.sql",
+        "src/modules/production-convergence/tests/proposal-quote-approval.test.ts",
+        "scripts/validation/run-api-pc-009-disposable-proof.sh",
+        "scripts/validation/api-pc-009-proposal-quote-approval.ts",
+        "architecture/production-convergence/API_PC_009_WORKING_CONTRACT.md",
+        "commit:d66d215e630881e19a5695e654616c92f7172507"
+      ],
+      "failure_refs": [
+        "API_PC_009_LOCAL_HARNESS_AND_INVENTORY_20260831",
+        "API_PC_009_BUILD_FONT_NETWORK_20260831"
+      ],
+      "cross_repo_handoffs": ["API_PC_009_TO_LUZIONE_UI_V1", "API_PC_009_TO_SULTAN_OS_V1"],
+      "deferred_external_infra": [
+        "managed canonical Postgres",
+        "independent consumer repositories",
+        "user-bound delegated workload identity",
+        "tenant/cohort canary and writer cutover",
+        "provider sandboxes and preview/production environments"
+      ],
+      "remaining_uncertainty": [
+        "The API paths remain globally and tenant-default-off and Luzione UI remains the active writer and rollback path.",
+        "The current service-token adapter can represent a credential-bound user for local proof but does not establish per-request UI end-user delegation; activation must wait for independent user-bound identity evidence.",
+        "P15 deterministic Proposal document composition remains UI-owned and was intentionally not duplicated.",
+        "Domain rows use explicit tenant predicates locally while database-enforced least privilege and RLS remain unproven until API-PC-013.",
+        "Local disposable proof cannot establish production compatibility, capacity, failover, recovery or finality."
+      ],
+      "next_proof_needed": [
+        "API-PC-010 accepted exact Quote to Order and bounded Fulfillment Intent journey",
+        "independent UI exact-version shadow read with user-bound approval identity, canary and rollback evidence",
+        "independent Sultan intent/receipt/readback abstention tests",
+        "API-PC-013 role/RLS fresh-upgrade and negative permission proof",
+        "managed preview migration and authenticated route evidence before tenant activation"
+      ]
     }
   ]
 }
