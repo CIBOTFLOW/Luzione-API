@@ -1,0 +1,21 @@
+# API-PC-010 Working Contract
+
+Capability outcome: implement a default-off API command/query path that creates one canonical Order only from the exact current `customer_accepted` Quote/economics version, then records a bounded, explicitly no-effect Fulfillment Intent with causal P110 receipt/readback.
+
+- Actor entrypoints: authenticated `POST|GET /api/v1/commands/orders` and `POST|GET /api/v1/commands/fulfillment-intents`; mutations additionally require the global mutation switch, exact tenant allowlist membership, and the exact route capability.
+- Expected end state: an accepted Quote is converted once into `orders` plus copied `order_lines`, the Quote is marked `converted_to_order`, and a separate bounded Fulfillment Intent may be recorded for that exact Order version. Each mutation atomically commits its canonical rows plus P110 receipt/event/outbox evidence and is tenant-readable.
+- Authoritative truth and current writer: Postgres `quotes`, `quote_lines`, `orders`, `order_lines`, and order evidence are operational truth. Luzione UI `OrderOperationsService`/fulfillment services are the current writer; `/api/quotes/[quoteId]/convert` and `/api/orders/create` are competing UI paths that must be converged during UI-PC-009. The API path remains transfer-pending and dark.
+- New truth decision: repository evidence contains no authoritative Fulfillment Intent relation. API-PC-010 introduces `order_fulfillment_intents` as the single API-owned business-intent record rather than misusing P110 outbox transport, browser planning state, provider acknowledgement, supplier packets, or action-intent stores with incompatible payment/order-kernel semantics.
+- Consumed contracts: `luzione-proposal-quote-approval/v0.1`, `luzione-command-ledger/v0.1`, `luzione-causal-readback/v0.1`, observed UI order schemas/state machines, and UI P138 provider acknowledgement/readback separation.
+- Published contract: `luzione-order-fulfillment-intent/v0.1`.
+- Invariants: actor/tenant/authority never come from the body; Order create requires `expectedObjectVersion=ABSENT`, the exact current Quote object/economics versions, Quote status `customer_accepted`, a verified approval decision when its economics required approval, no prior `converted_order_id`, and integer/currency equality between immutable economics, Quote and copied Order lines; one Quote creates at most one Order. Fulfillment Intent requires the exact current Order version, immutable bounded line intent, `NO_EFFECT` state, no recipient/provider/payment/booking fields, and cannot claim dispatch, acknowledgement, source confirmation or completion.
+- Reuse/convergence: reuse `orders` and `order_lines`, update the same Quote row transactionally, and reuse P110 evidence. Do not invoke the current UI conversion route, supplier-packet generator, OpenClaw action intent, provider adapter, Airtable mirror or Shopify mutation.
+- Non-scope: recording customer acceptance, supplier packets/messages, RFQ, shipping quotes, bookings, payment/refund, Shopify/Airtable/Temporal/Gmail/Easyship/RXO/Flexport effects, order lifecycle transitions after creation, worker dispatch, UI edits, writer retirement, tenant cutover, production migration and production-final claims.
+- Acceptance proof: exact accepted-Quote version; approval-required proof; duplicate/stale/non-accepted rejection; line/money/currency preservation; atomic rollback; intent exact-order-version and forbidden-effect rejection; replay/conflict; tenant denial; receipt/readback journey; fresh/observed migration; full repository gates.
+- Irreversible effects: production migration application and writer cutover are excluded and require named release/canary/rollback authority.
+
+Evidence selecting this posture:
+
+- Luzione UI `engineering/production-convergence/AUTHORITY_INVENTORY.md`: UI-PC-009 waits API-PC-010, names competing create routes, and states no distinct canonical Fulfillment Intent page/store exists.
+- UI `firstProofLoopCommandService.ts`, `019_quote_order_state_machine.sql`, `116_order_fulfillment_customer_experience_operations.sql`, and `LUZIONE_P138_ORDER_TO_FULFILLMENT_QUOTE_BOUNDARY_PROOF.json`.
+- UI P138 evidence explicitly separates provider acknowledgement from authoritative quote readback and authorizes no order/provider mutation.

@@ -18,6 +18,7 @@
     "luzione-causal-readback/v0.1",
     "luzione-lead-commercial-case/v0.1",
     "luzione-proposal-quote-approval/v0.1",
+    "luzione-order-fulfillment-intent/v0.1",
     "luzione-request-identity/v1",
     "luzione-platform-failure/v1",
     "luzione-readiness-evidence/v1",

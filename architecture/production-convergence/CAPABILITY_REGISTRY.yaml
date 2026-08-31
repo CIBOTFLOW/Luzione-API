@@ -84,6 +84,14 @@
       "entrypoint": "GET|POST /api/v1/commands/quotes, GET|POST /api/v1/commands/quote-approvals and GET|POST /api/v1/commands/proposal-reviews"
     },
     {
+      "capabilityId": "order-fulfillment-intent-command-path",
+      "owner": "CIBOTFLOW/Luzione-API",
+      "effectClass": "INTERNAL_DOMAIN_MUTATION_AND_NO_EFFECT_INTENT",
+      "runtimeState": "IMPLEMENTED_DARK_PATH_GLOBAL_AND_TENANT_DEFAULT_OFF",
+      "contractVersion": "luzione-order-fulfillment-intent/v0.1",
+      "entrypoint": "GET|POST /api/v1/commands/orders and GET|POST /api/v1/commands/fulfillment-intents"
+    },
+    {
       "capabilityId": "sultan-reasoning-and-memory",
       "owner": "CIBOTFLOW/Sultan-OS",
       "effectClass": "NO_CANONICAL_BUSINESS_WRITE",

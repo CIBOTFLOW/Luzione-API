@@ -238,6 +238,44 @@
       "external_effect_authorized": false
     },
     {
+      "route_id": "fulfillment-intent-read",
+      "method": "GET",
+      "path": "/api/v1/commands/fulfillment-intents",
+      "source_path": "src/app/api/v1/commands/fulfillment-intents/route.ts",
+      "authentication": "credential-bound actor with fulfillment_intent.read capability",
+      "canonical_readback": "tenant-scoped public.order_fulfillment_intents row",
+      "effect": "NO_EFFECT"
+    },
+    {
+      "route_id": "fulfillment-intent-write",
+      "method": "POST",
+      "path": "/api/v1/commands/fulfillment-intents",
+      "source_path": "src/app/api/v1/commands/fulfillment-intents/route.ts",
+      "authentication": "credential-bound actor with fulfillment_intent.command plus exact tenant allowlist",
+      "canonical_readback": "atomic P110 receipt plus no-effect Fulfillment Intent row",
+      "effect": "DEFAULT_OFF_NO_EFFECT_INTENT",
+      "external_effect_authorized": false
+    },
+    {
+      "route_id": "order-command-read",
+      "method": "GET",
+      "path": "/api/v1/commands/orders",
+      "source_path": "src/app/api/v1/commands/orders/route.ts",
+      "authentication": "credential-bound actor with order.read capability",
+      "canonical_readback": "tenant-scoped public.orders and public.order_lines rows",
+      "effect": "NO_EFFECT"
+    },
+    {
+      "route_id": "order-command-write",
+      "method": "POST",
+      "path": "/api/v1/commands/orders",
+      "source_path": "src/app/api/v1/commands/orders/route.ts",
+      "authentication": "credential-bound actor with order.command plus exact tenant allowlist",
+      "canonical_readback": "atomic P110 receipt plus accepted Quote, Order and copied line rows",
+      "effect": "DEFAULT_OFF_INTERNAL_DOMAIN_MUTATION",
+      "external_effect_authorized": false
+    },
+    {
       "route_id": "governance-evaluate",
       "method": "POST",
       "path": "/api/v1/governance/evaluate",

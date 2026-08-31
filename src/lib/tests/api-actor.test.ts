@@ -95,6 +95,8 @@ test("all protected API routes await the asynchronous workload identity boundary
     "src/app/api/v1/commands/proposal-reviews/route.ts",
     "src/app/api/v1/commands/quote-approvals/route.ts",
     "src/app/api/v1/commands/quotes/route.ts",
+    "src/app/api/v1/commands/orders/route.ts",
+    "src/app/api/v1/commands/fulfillment-intents/route.ts",
     "src/app/api/v1/platform-guarantees/route.ts",
     "src/app/api/v1/security/rls-readiness/route.ts",
   ]) {
