@@ -717,7 +717,7 @@
       "project_id": "API-PC-001",
       "recorded_at": "2026-08-31T01:51:31Z",
       "repository": "CIBOTFLOW/Luzione-API",
-      "exact_sha": "a3b288da526cce801842c296455fbc7c9a37637e",
+      "exact_sha": "49d3c803a18ced4c273bbb96e30cea1f93292154",
       "engineering_state": "BOUNDED_PASS",
       "release_evidence": "LOCAL_PROVEN",
       "effect_authority": "NO_EFFECT",
@@ -742,9 +742,11 @@
         "architecture/production-convergence/CAPABILITY_REGISTRY.yaml",
         "architecture/production-convergence/DEPENDENCY_GRAPH.yaml",
         "src/modules/production-convergence/tests/program-artifacts.test.ts",
-        "commit:a3b288da526cce801842c296455fbc7c9a37637e"
+        "commit:49d3c803a18ced4c273bbb96e30cea1f93292154"
       ],
-      "failure_refs": [],
+      "failure_refs": [
+        "API_PC_001_HANDOFF_REBASE_CONFLICT_20260831"
+      ],
       "cross_repo_handoffs": [
         "API_PC_001_003_TO_LUZIONE_UI_V1",
         "API_PC_001_003_TO_SULTAN_OS_V1"
@@ -769,7 +771,7 @@
       "project_id": "API-PC-002",
       "recorded_at": "2026-08-31T01:51:31Z",
       "repository": "CIBOTFLOW/Luzione-API",
-      "exact_sha": "a3b288da526cce801842c296455fbc7c9a37637e",
+      "exact_sha": "49d3c803a18ced4c273bbb96e30cea1f93292154",
       "engineering_state": "BOUNDED_PASS",
       "release_evidence": "LOCAL_PROVEN",
       "effect_authority": "NO_EFFECT",
@@ -792,7 +794,7 @@
         "src/modules/production-convergence/releaseIdentity.ts",
         "src/app/api/v1/release/route.ts",
         "src/modules/production-convergence/tests/release-identity.test.ts",
-        "commit:a3b288da526cce801842c296455fbc7c9a37637e"
+        "commit:49d3c803a18ced4c273bbb96e30cea1f93292154"
       ],
       "failure_refs": [],
       "cross_repo_handoffs": [
@@ -819,7 +821,7 @@
       "project_id": "API-PC-003",
       "recorded_at": "2026-08-31T01:51:31Z",
       "repository": "CIBOTFLOW/Luzione-API",
-      "exact_sha": "a3b288da526cce801842c296455fbc7c9a37637e",
+      "exact_sha": "49d3c803a18ced4c273bbb96e30cea1f93292154",
       "engineering_state": "CONTRACT_STABLE",
       "release_evidence": "LOCAL_PROVEN",
       "effect_authority": "NO_EFFECT",
@@ -845,7 +847,7 @@
         "contracts/errors/platform-failure-v0.1.schema.json",
         "contracts/receipts/receipt-reference-v0.1.schema.json",
         "src/modules/production-convergence/tests/program-artifacts.test.ts",
-        "commit:a3b288da526cce801842c296455fbc7c9a37637e"
+        "commit:49d3c803a18ced4c273bbb96e30cea1f93292154"
       ],
       "failure_refs": [],
       "cross_repo_handoffs": [
