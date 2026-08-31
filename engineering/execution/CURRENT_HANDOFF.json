@@ -3,9 +3,9 @@
   "queue_id": "LUZIONE_API_SYSTEMS_ENGINEERING_V1",
   "repository": "CIBOTFLOW/Luzione-API",
   "program_state": "IMPLEMENTATION_IN_PROGRESS",
-  "current_project": "API-PC-005",
-  "next_projects": ["API-PC-005", "API-PC-013"],
-  "next_action": "Merge the locally proven API-PC-004 authority kernel, then reconcile the pending authority-v2 migration history before implementing API-PC-005 command, idempotency, event and receipt persistence; keep API-PC-013 ready as the non-overlapping lower-priority security lane.",
+  "current_project": "API-PC-006",
+  "next_projects": ["API-PC-006", "API-PC-007", "API-PC-013"],
+  "next_action": "Merge the locally proven API-PC-005 command ledger, then reconcile the existing P111/outbox/DLQ history and implement API-PC-006 restart-safe workflow and delivery persistence; keep API-PC-007 and API-PC-013 dependency-ready without overlapping mutation cones.",
   "canonical_program": "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md",
   "failure_ledger": "engineering/execution/SYSTEMS_ENGINEERING_FAILURE_LEDGER.json",
   "proof_ledger": "engineering/execution/SYSTEMS_ENGINEERING_PROOF_LEDGER.json",
@@ -54,7 +54,8 @@
     "API_SE_019 certification semantics are implemented but cross-system certification remains quarantined.",
     "API_SE_020 remains NOT_READY and NOT_FINAL until the exact release-evidence invariants are actually observed.",
     "The Section 20 production-convergence extension has admitted API-PC-001 through API-PC-015 into NEXT_WORK.json; Wave 0 producer artifacts do not prove UI/Sultan consumption or deployed release identity.",
-    "API-PC-004 is locally proven only: production credential mappings, canonical membership persistence and independent UI/Sultan authenticated requests remain unobserved."
+    "API-PC-004 is locally proven only: production credential mappings, canonical membership persistence and independent UI/Sultan authenticated requests remain unobserved.",
+    "API-PC-005 is locally proven only: the P110 baseline was rehearsed against fresh and observed legacy shapes in disposable Postgres, while managed/production migration application, domain HTTP commands and independent UI/Sultan command journeys remain unobserved."
   ],
   "stop_code": null
 }

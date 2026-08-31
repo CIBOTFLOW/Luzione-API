@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_PC_005_TO_SULTAN_OS_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "0d38b83f2739d21c8530411e9f15b1cf7da0215f",
+  "producer_ref": "codex/api-pc-005-command-ledger",
+  "contract_name": "command-ledger",
+  "contract_version": "luzione-command-ledger/v0.1",
+  "consumer_repository": "CIBOTFLOW/Sultan-OS",
+  "stable_paths": {
+    "command_and_receipt_types": "src/modules/platform-guarantees/types.ts",
+    "atomic_executor": "src/modules/platform-guarantees/commandKernel.ts",
+    "postgres_store": "src/lib/platform-guarantees/postgresCommandStore.ts",
+    "migration": "supabase/migrations/20260831022000_p110_command_ledger_baseline.sql",
+    "working_contract": "architecture/production-convergence/API_PC_005_WORKING_CONTRACT.md",
+    "manifest": "contracts/contract-manifest.v0.1.json",
+    "catalog": "GET /api/v1/catalog"
+  },
+  "required_consumer_behavior": [
+    "Produce typed command intent only; do not execute or persist a competing API-owned command/receipt contract inside Sultan.",
+    "Never let model output select tenant, actor, authority, effect class or a broader retry policy.",
+    "Use one deterministic idempotency key per intended effect and preserve correlation/causation identity across proposals, retries and readback.",
+    "Treat different-hash reuse as a reconciliation conflict and provider acknowledgement as weaker than source-confirmed completion."
+  ],
+  "acceptance_proof_needed": [
+    "exact Sultan and API candidate SHAs and luzione-command-ledger/v0.1",
+    "typed intent accepted through a future authenticated API domain route",
+    "model authority-smuggling and different-hash conflict denial",
+    "exact replay and authoritative readback without a second effect"
+  ],
+  "producer_evidence_refs": [
+    "src/modules/platform-guarantees/tests/platform-guarantees.test.ts",
+    "src/modules/production-convergence/tests/command-ledger.test.ts",
+    "scripts/validation/api-pc-005-command-ledger.sql",
+    "architecture/production-convergence/API_PC_005_WORKING_CONTRACT.md"
+  ],
+  "known_limitations": [
+    "No Sultan repository test or cross-system command journey was executed.",
+    "No business-domain HTTP command is activated and mutations remain disabled by default.",
+    "The migration passed disposable local fresh/upgrade proof but was not applied to managed or production Postgres.",
+    "No provider dispatch, acknowledgement or source readback was exercised."
+  ]
+}
