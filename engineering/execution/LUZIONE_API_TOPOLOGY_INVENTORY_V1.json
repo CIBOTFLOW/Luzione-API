@@ -47,6 +47,17 @@
       "release_identity_source": "repository filename and checksum; no main-branch migration runner",
       "state": "ARTIFACT_ONLY_ON_MAIN",
       "dependencies": ["canonical-postgres"]
+    },
+    {
+      "deployable_id": "luzione-provider-worker",
+      "name": "Luzione P110 provider delivery and reconciliation worker",
+      "owner_repository": "CIBOTFLOW/Luzione-API",
+      "runtime": "Node.js 20 one-shot or continuous worker",
+      "entrypoint_paths": ["scripts/run-provider-worker.ts", "src/modules/provider-runtime", "src/lib/platform-guarantees/postgresWorkflowDeliveryStore.ts"],
+      "deployment_configuration": null,
+      "release_identity_source": "repository SHA; no deployed worker release is configured",
+      "state": "IMPLEMENTED_NOT_DEPLOYED_SANDBOX_AND_LIVE_DEFAULT_OFF",
+      "dependencies": ["canonical-postgres", "approved-provider-adapters"]
     }
   ],
   "consumers": [
@@ -276,6 +287,15 @@
       "external_effect_authorized": false
     },
     {
+      "route_id": "provider-operations-read",
+      "method": "GET",
+      "path": "/api/v1/provider-operations",
+      "source_path": "src/app/api/v1/provider-operations/route.ts",
+      "authentication": "credential-bound actor with provider_operations.read capability",
+      "canonical_readback": "tenant-scoped P110 outbox, reconciliation, dead-letter and kill-switch aggregates",
+      "effect": "NO_EFFECT"
+    },
+    {
       "route_id": "governance-evaluate",
       "method": "POST",
       "path": "/api/v1/governance/evaluate",
@@ -418,6 +438,14 @@
       "health_source": ["/api/v1/livez", "GitHub checks and Vercel deployment evidence outside main runtime"]
     },
     {
+      "provider_id": "luzione-deterministic-simulator",
+      "kind": "LOCAL_SANDBOX_ADAPTER_ONLY",
+      "capabilities_on_main": ["typed prepare/execute/observe/reconcile/compensate boundary", "deterministic acknowledgement, ambiguity, rate-limit, permanent-failure and source-readback scenarios"],
+      "authoritative_for": [],
+      "health_source": ["tenant-scoped /api/v1/provider-operations P110 aggregate"],
+      "limitations": ["not a real external provider", "sandbox and live modes remain default-off", "no deployed worker or production observation"]
+    },
+    {
       "provider_id": "shopify",
       "kind": "INDIRECT_SOURCE_BOUNDARY",
       "capabilities_on_main": ["catalog observations accepted from an authenticated caller and projected into Postgres"],
@@ -513,10 +541,18 @@
     "LUZIONE_API_SERVICE_CAPABILITIES",
     "LUZIONE_BUILD_TIME",
     "LUZIONE_API_MUTATIONS_ENABLED",
+    "LUZIONE_API_PROVIDER_LIVE_DESTINATIONS",
+    "LUZIONE_API_PROVIDER_LIVE_ENABLED",
+    "LUZIONE_API_PROVIDER_LIVE_TENANTS",
+    "LUZIONE_API_PROVIDER_SANDBOX_DESTINATIONS",
+    "LUZIONE_API_PROVIDER_SANDBOX_ENABLED",
+    "LUZIONE_API_PROVIDER_SANDBOX_TENANTS",
     "LUZIONE_API_SERVICE_TOKEN",
     "LUZIONE_API_SERVICE_TENANT_ID",
     "LUZIONE_API_VERCEL_OIDC_ENABLED",
     "LUZIONE_CANONICAL_TENANT_CODE",
+    "LUZIONE_PROVIDER_WORKER_ID",
+    "LUZIONE_PROVIDER_WORKER_TENANT_ID",
     "NEXT_RUNTIME",
     "NODE_ENV",
     "PLATFORM_CONTINUATION_SECRET",

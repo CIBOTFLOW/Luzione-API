@@ -1,0 +1,25 @@
+# API-PC-011 Working Contract — Provider Adapter and Worker Runtime
+
+Project: `API-PC-011` — publish a typed, restart-safe provider boundary over the existing P110/P111 durable delivery substrate, with provider acknowledgement and authoritative source readback kept distinct.
+
+- Entrypoints: an API-owned worker runtime claims bounded tenant-scoped outbox and reconciliation batches; authenticated operators read aggregate provider-operation state through `GET /api/v1/provider-operations`. No public dispatch endpoint is introduced.
+- Expected end state: every dispatch is durably marked started before an adapter call; one typed adapter performs `prepare`, `execute`, `observe`, `reconcile` and optional `compensate`; success first records provider acknowledgement and becomes `SOURCE_CONFIRMED` only after exact authoritative readback; ambiguous calls and crashed in-flight attempts reconcile before retry.
+- Authoritative truth: `public.p110_outbox_messages`, `public.p110_delivery_attempts`, `public.p110_reconciliation_checkpoints`, `public.p110_dead_letters`, `public.p110_kill_switches` and linked P110 command receipts in canonical Postgres. Provider/source truth remains authoritative only for the provider object itself.
+- Write owner: CIBOTFLOW/Luzione-API through `PostgresWorkflowDeliveryStore` and the provider worker runtime. Adapters cannot update P110 rows directly.
+- Readback: tenant-bound P110 operator summary plus adapter `observe`/`reconcile` evidence containing the exact external object/version and bounded source readback reference.
+- Consumed contracts: `luzione-workflow-delivery/v0.1`, `luzione-command-ledger/v0.1`, `luzione-causal-readback/v0.1`, stable failure/retry semantics and exact P110 outbox envelope fields.
+- Published contract: `luzione-provider-adapter/v0.1` with typed prepare, execute, observe, reconcile and compensate results plus explicit `SANDBOX` or `LIVE` adapter mode.
+- Dependencies: API-PC-006 is complete. API-PC-005 and API-PC-007 provide atomic intent and causal readback. No Wave 2 business writer is required for the bounded sandbox proof.
+- Mutation cone: provider adapter/runtime modules, P110 delivery-attempt and reconciliation lease evolution, a deterministic sandbox adapter, a worker entrypoint, operator readback route, registries and proof artifacts.
+- Reuse/convergence: extend the existing P110 worker store and retry policy. Do not introduce another queue, receipt, retry scheduler, provider-status truth store or workflow engine.
+- Invariants: destination is registered exactly once; payload hash is revalidated before prepare; adapter mode and destination are server-owned; the original idempotency key is preserved; dispatch-start is durable before the provider call; an abandoned started attempt becomes `RECONCILIATION_REQUIRED`; unknown adapters, altered payloads and disabled effects fail closed; provider acknowledgement is never final; `MATCHED` requires exact expected/observed version equality and a bounded source readback reference; reconciliation claims use leases and `SKIP LOCKED`; provider error detail is bounded and mapped to the shared failure classes.
+- Activation: sandbox and live modes have separate global, tenant and destination allowlists. This cell activates neither in deployed environments. The disposable proof enables only `sandbox.echo` for a disposable tenant. A live adapter additionally requires exact external-effect authorization already bound into the outbox row.
+- Non-scope: real Shopify/Gmail/Drive/Airtable/logistics/finance credentials, provider-specific business payloads, continuous production worker deployment, UI operations console, tenant cutover, production migrations, live effects and production-final claims.
+- Acceptance proof: fresh/upgrade migration; sandbox success through acknowledgement and exact source confirmation; ambiguous outcome reconciliation without blind retry; crash after durable dispatch-start reclaimed into reconciliation; rate-limit retry; permanent/unknown/altered-payload blocking or dead letter; kill-switch exclusion; competing reconciliation claim exclusion; cross-tenant denial; aggregate operator visibility; clean repository gates.
+- Irreversible effects: none in this cell. Any live adapter registration, credential use, external canary, worker activation or production migration requires separate effect and release authority plus a tested compensation/readback path.
+
+Repository reality used to select this contract:
+
+- `PostgresWorkflowDeliveryStore` already owns P110 outbox leases, bounded attempts, inbox/timer claims, dead letters and reconciliation results; it is extended rather than replaced.
+- The API repository has provider observation metadata but no executable effect adapter. The deterministic `sandbox.echo` adapter is therefore the first bounded contract implementation and not evidence for a real provider.
+- The production-convergence charter orders real-provider migration after the generic adapter/runtime exists. Those provider implementations remain follow-on evidence, not inferred completion.

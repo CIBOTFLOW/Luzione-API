@@ -69,6 +69,9 @@
     "/api/v1/commands/fulfillment-intents": {
       "get": { "operationId": "getFulfillmentIntent", "summary": "Read a bounded no-effect Fulfillment Intent", "responses": { "200": { "description": "Fulfillment Intent readback" }, "404": { "description": "Intent not found" } } },
       "post": { "operationId": "requestFulfillmentIntent", "summary": "Record a no-effect intent for the exact current Order", "responses": { "201": { "description": "Intent committed with P110 receipt" }, "409": { "description": "Order version or line conflict" }, "503": { "description": "Mutation path disabled or unavailable" } } }
+    },
+    "/api/v1/provider-operations": {
+      "get": { "operationId": "getProviderOperations", "summary": "Read tenant-bound provider worker, reconciliation, dead-letter and kill-switch aggregates", "responses": { "200": { "description": "Bounded provider operations readback" }, "401": { "description": "Service authentication required" }, "503": { "description": "Readback unavailable" } } }
     }
   }
 }

@@ -89,6 +89,7 @@ test("contract v0.1 manifest and JSON-compatible OpenAPI publish the same bounde
     "/api/v1/commands/quotes",
     "/api/v1/healthz",
     "/api/v1/livez",
+    "/api/v1/provider-operations",
     "/api/v1/readyz",
     "/api/v1/release",
   ]);
