@@ -472,6 +472,44 @@
         "Independent consumer adoption and deployed proof remain unresolved for evidence reasons, not because of the Git integration conflict."
       ],
       "next_action": "Keep CURRENT_HANDOFF schema-v2 consumer evidence and the API-PC queue state together in subsequent cells."
+    },
+    {
+      "failure_id": "API_PC_004_EXPLICIT_CAPABILITY_TEST_FIXTURES_20260831",
+      "project_id": "API-PC-004",
+      "observed_at": "2026-08-31T02:08:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "babde601a874a50d18ffdbb0fac7df11108c2b55",
+      "environment": "local",
+      "layer": "contract-test-sensitivity",
+      "symptom": "Five source-sensitive tests failed after protected routes changed from a one-argument authentication call to an explicit route-capability call.",
+      "expected": "Existing tests should continue proving authentication and should additionally verify the exact capability required by each protected route.",
+      "actual": "Runtime typecheck and lint passed; only stale regular-expression fixtures failed. The fixtures were tightened to assert the exact capability and the full suite then passed 159/159.",
+      "classification": {
+        "domain": "TOOL",
+        "class": "INVALID",
+        "retry": "NEVER",
+        "severity": "INFO"
+      },
+      "evidence_refs": [
+        "initial 154/159 test output",
+        "src/modules/autonomy/tests/autonomy-policy.test.ts",
+        "src/modules/autonomy/tests/constitutional-rights.test.ts",
+        "src/modules/catalog-projection/tests/p113-catalog-projection.test.ts",
+        "src/modules/platform-guarantees/tests/api-boundary.test.ts",
+        "src/modules/security-posture/tests/rls-posture.test.ts"
+      ],
+      "repair_attempts": [
+        "Updated each affected source-sensitive assertion to require the route's explicit capability argument."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "API_PC_004_LOCAL_AUTHORITY_KERNEL_20260831",
+      "remaining_uncertainty": [
+        "Source-sensitive tests do not replace hosted credential-path observations."
+      ],
+      "next_action": "Retain exact capability assertions when adding protected routes."
     }
   ]
 }

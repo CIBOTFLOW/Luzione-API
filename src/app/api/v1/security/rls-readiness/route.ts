@@ -10,7 +10,7 @@ export async function GET(request: Request) {
   let identity = createRequestIdentity(request.headers);
   let actor: Awaited<ReturnType<typeof requireServiceActor>>;
   try {
-    actor = await requireServiceActor(request.headers);
+    actor = await requireServiceActor(request.headers, "security.rls.read");
     identity = bindAuthenticatedRequestIdentity(identity, actor, {
       authorityClass: "A0",
       capability: "security.rls.read",

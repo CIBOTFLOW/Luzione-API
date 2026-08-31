@@ -1,10 +1,8 @@
-import crypto from "node:crypto";
 import { requireServiceActor } from "@/lib/api/actor";
 import { apiResponse, createRequestIdentity, logRequestCompletion } from "@/lib/api/http";
 import { readActiveTenantPolicy } from "@/lib/tenant-policy/readService";
 import { evaluateAutonomyPlan } from "@/modules/autonomy/evaluator";
 import { AutonomyRequestError, parseAutonomyEvaluationRequest } from "@/modules/autonomy/parser";
-import type { VerifiedAuthorityGrant } from "@/modules/autonomy/types";
 import { bindAuthenticatedRequestIdentity } from "@/modules/platform-contracts/requestIdentity";
 import { evaluateTenantPolicy } from "@/modules/tenant-policy/evaluator";
 
@@ -16,7 +14,7 @@ export async function POST(request: Request) {
   let identity = createRequestIdentity(request.headers);
   let status = 200;
   try {
-    const actor = await requireServiceActor(request.headers);
+    const actor = await requireServiceActor(request.headers, "governance.evaluate");
     identity = bindAuthenticatedRequestIdentity(identity, actor, {
       authorityClass: "A0",
       capability: "governance.evaluate",
@@ -29,29 +27,9 @@ export async function POST(request: Request) {
     const plan = parseAutonomyEvaluationRequest(JSON.parse(rawBody));
     const policy = await readActiveTenantPolicy(actor.tenantId);
     const tenantDecision = evaluateTenantPolicy({ actorType: actor.actorType, plan, policy });
-    let authorityGrant: VerifiedAuthorityGrant | undefined;
-    if (tenantDecision.allowedByPolicy && plan.declaredEffectClass !== "A0" && plan.declaredEffectClass !== "A3" && plan.declaredEffectClass !== "A4") {
-      authorityGrant = {
-        actionId: plan.declaredEffectClass === "A2" ? plan.actionId : null,
-        actionVersion: plan.declaredEffectClass === "A2" ? plan.actionVersion : null,
-        approvedBy: `policy:${policy.policyDefinitionId}:v${policy.version}`,
-        capability: plan.capability,
-        consumed: false,
-        effectClassMaximum: plan.declaredEffectClass,
-        expiresAt: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
-        grantId: crypto.randomUUID(),
-        granteeActorId: actor.actorId,
-        oneTime: plan.declaredEffectClass === "A2",
-        purpose: plan.purpose,
-        source: "POLICY_GRANT",
-        tenantId: actor.tenantId,
-        verification: "CANONICAL_STORE",
-      };
-    }
     const constitutionalDecision = tenantDecision.allowedByPolicy
       ? evaluateAutonomyPlan(plan, {
           actor: { actorId: actor.actorId, actorType: actor.actorType, tenantId: actor.tenantId },
-          authorityGrant,
           now: new Date().toISOString(),
         })
       : null;

@@ -4,6 +4,14 @@
   "ownerRepository": "CIBOTFLOW/Luzione-API",
   "capabilities": [
     {
+      "capabilityId": "credential-bound-authority",
+      "owner": "CIBOTFLOW/Luzione-API",
+      "effectClass": "NO_EFFECT",
+      "runtimeState": "IMPLEMENTED_PROTECTED_BOUNDARY",
+      "contractVersion": "luzione-authority-subject/v0.1",
+      "entrypoint": "protected /api/v1 routes"
+    },
+    {
       "capabilityId": "release-identity-read",
       "owner": "CIBOTFLOW/Luzione-API",
       "effectClass": "NO_EFFECT",

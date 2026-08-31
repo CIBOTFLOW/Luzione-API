@@ -867,6 +867,61 @@
         "Sultan-authored exact-version consumer tests",
         "API-PC-004 authority-kernel contract and negative proof"
       ]
+    },
+    {
+      "proof_id": "API_PC_004_LOCAL_AUTHORITY_KERNEL_20260831",
+      "project_id": "API-PC-004",
+      "recorded_at": "2026-08-31T02:12:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "babde601a874a50d18ffdbb0fac7df11108c2b55",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The exact API candidate binds protected-route actor, tenant and capability context to the verified credential mapping, treats legacy identity headers as non-authoritative assertions, denies tenant/capability mismatch, and prevents the governance evaluator from manufacturing a canonical grant.",
+      "exercised_boundaries": [
+        "Valid credential mapping binds a deterministic actor, tenant and capability set.",
+        "Cross-tenant identity assertion fails closed.",
+        "Missing protected-route capability fails closed.",
+        "Every existing protected route requests an explicit capability.",
+        "Governance evaluation no longer constructs a CANONICAL_STORE grant locally.",
+        "Compliance, typecheck, lint, 159/159 tests and production build pass."
+      ],
+      "untested_boundaries": [
+        "hosted UI workload authentication after deployment",
+        "hosted Sultan workload authentication after deployment",
+        "canonical database identity, membership and capability readback",
+        "production credential configuration and rotation"
+      ],
+      "evidence_refs": [
+        "src/lib/api/actor.ts",
+        "src/lib/tests/api-actor.test.ts",
+        "architecture/production-convergence/API_PC_004_WORKING_CONTRACT.md",
+        "architecture/production-convergence/MIGRATION_OWNERSHIP.md",
+        "commit:babde601a874a50d18ffdbb0fac7df11108c2b55"
+      ],
+      "failure_refs": [
+        "API_PC_004_EXPLICIT_CAPABILITY_TEST_FIXTURES_20260831"
+      ],
+      "cross_repo_handoffs": [
+        "API_PC_004_TO_LUZIONE_UI_V1",
+        "API_PC_004_TO_SULTAN_OS_V1"
+      ],
+      "deferred_external_infra": [
+        "consumer repository execution",
+        "preview and production workload credentials",
+        "canonical membership database migration"
+      ],
+      "remaining_uncertainty": [
+        "The service-token identity mapping is deployment configuration, not canonical Postgres readback.",
+        "The pending authority-v2 migration history must be reconciled before new identity tables are authored.",
+        "No consumer integration or production authentication claim is supported."
+      ],
+      "next_proof_needed": [
+        "independent UI and Sultan exact-version authentication tests",
+        "reconciled fresh and upgrade migration proof",
+        "preview credential-bound protected-route observations"
+      ]
     }
   ]
 }

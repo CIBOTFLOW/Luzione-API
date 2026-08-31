@@ -22,10 +22,10 @@ const MAX_REQUEST_BYTES = 24 * 1024 * 1024;
 function serviceActorFailure(error: unknown) {
   const message = error instanceof Error ? error.message : "";
   if (/not configured/i.test(message)) return { code: "SERVICE_AUTH_NOT_CONFIGURED", status: 503 };
-  if (/authentication failed|tenant is not authorized/i.test(message)) {
+  if (/authentication failed|identity assertions|required capability/i.test(message)) {
     return { code: "SERVICE_AUTH_FAILED", status: 401 };
   }
-  if (/headers are required|actor type/i.test(message)) return { code: "ACTOR_CONTEXT_REQUIRED", status: 400 };
+  if (/canonical identity|actor identity/i.test(message)) return { code: "ACTOR_CONTEXT_REQUIRED", status: 400 };
   return null;
 }
 
@@ -43,7 +43,7 @@ function idempotencyKey(headers: Headers) {
 export async function GET(request: Request) {
   let identity = createRequestIdentity(request.headers);
   try {
-    const actor = await requireServiceActor(request.headers);
+    const actor = await requireServiceActor(request.headers, "catalog.projection.read");
     identity = bindAuthenticatedRequestIdentity(identity, actor, {
       authorityClass: "A0",
       capability: "catalog.projection.read",
@@ -97,7 +97,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   let identity = createRequestIdentity(request.headers);
   try {
-    const actor = await requireServiceActor(request.headers);
+    const actor = await requireServiceActor(request.headers, "catalog.projection.ingest");
     const config = runtimeConfig();
     if (!config.internalProjectionsEnabled) {
       return apiResponse(

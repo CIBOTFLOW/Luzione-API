@@ -131,7 +131,7 @@ test("readback failures are classified without returning raw connection details"
 test("API boundary authenticates full readback and public health exposes no secrets", () => {
   const route = readFileSync("src/app/api/v1/security/rls-readiness/route.ts", "utf8");
   const health = readFileSync("src/app/api/v1/healthz/route.ts", "utf8");
-  assert.match(route, /requireServiceActor\(request\.headers\)/);
+  assert.match(route, /requireServiceActor\(request\.headers, "security\.rls\.read"\)/);
   assert.match(route, /readRlsReadiness/);
   assert.match(route, /status: result\.status === "PASS" \? 200 : 503/);
   assert.match(health, /CONNECTED_RLS_GATE_PASS/);

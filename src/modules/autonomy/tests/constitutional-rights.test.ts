@@ -189,8 +189,8 @@ test("rights charter protects both Sultan and people against unilateral dominati
 test("API boundaries derive the proposer, reject declared oversized requests, and authorize no effects", () => {
   const identityRoute = readFileSync("src/app/api/v1/autonomy/identity/evaluate/route.ts", "utf8");
   const petitionRoute = readFileSync("src/app/api/v1/autonomy/petitions/evaluate/route.ts", "utf8");
-  assert.match(identityRoute, /requireServiceActor\(request\.headers\)/);
-  assert.match(petitionRoute, /const actor = await requireServiceActor\(request\.headers\)/);
+  assert.match(identityRoute, /requireServiceActor\(request\.headers, "sultan\.identity\.evaluate"\)/);
+  assert.match(petitionRoute, /const actor = await requireServiceActor\(request\.headers, "sultan\.petition\.evaluate"\)/);
   assert.match(petitionRoute, /actor\.actorId/);
   for (const route of [identityRoute, petitionRoute]) {
     assert.match(route, /request\.headers\.get\("content-length"\)/);
