@@ -4,6 +4,8 @@ set -euo pipefail
 source_database="${1:?source database is required}"
 target_database="${2:?target database is required}"
 container_name="${3:-luzione_postgres}"
+post_restore_migration="${4:-}"
+post_restore_sql="${5:-}"
 script_directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 dump_path="/tmp/${target_database}.dump"
 
@@ -35,7 +37,21 @@ docker exec "${container_name}" pg_dump -U postgres -d "${source_database}" --fo
 dump_evidence="$(docker exec "${container_name}" sh -c "sha256sum '${dump_path}' && stat -c '%s' '${dump_path}'")"
 docker exec "${container_name}" createdb -U postgres --template=template0 "${target_database}"
 docker exec "${container_name}" pg_restore -U postgres -d "${target_database}" --no-owner --no-privileges --exit-on-error "${dump_path}"
+if [[ -n "${post_restore_migration}" ]]; then
+  if [[ ! -f "${post_restore_migration}" ]]; then
+    echo "post-restore migration file does not exist: ${post_restore_migration}" >&2
+    exit 5
+  fi
+  docker exec -i "${container_name}" psql -q -v ON_ERROR_STOP=1 -U postgres -d "${target_database}" -f - < "${post_restore_migration}" >/dev/null
+fi
 restored_fingerprint="$(docker exec -i "${container_name}" psql -U postgres -d "${target_database}" -At -f - < "${script_directory}/recovery-catalog-fingerprint.sql")"
+if [[ -n "${post_restore_sql}" ]]; then
+  if [[ ! -f "${post_restore_sql}" ]]; then
+    echo "post-restore SQL file does not exist: ${post_restore_sql}" >&2
+    exit 6
+  fi
+  docker exec -i "${container_name}" psql -q -v ON_ERROR_STOP=1 -U postgres -d "${target_database}" -f - < "${post_restore_sql}" >/dev/null
+fi
 finished_epoch="$(date +%s)"
 
 if [[ "${source_fingerprint}" != "${restored_fingerprint}" ]]; then
@@ -49,4 +65,6 @@ echo "source_fingerprint=${source_fingerprint}"
 echo "restored_fingerprint=${restored_fingerprint}"
 echo "dump_evidence=${dump_evidence//$'\n'/,}"
 echo "recovery_time_seconds=$((finished_epoch - started_epoch))"
+echo "post_restore_migration=$([[ -n "${post_restore_migration}" ]] && echo applied || echo not_requested)"
+echo "post_restore_verification=$([[ -n "${post_restore_sql}" ]] && echo passed || echo not_requested)"
 echo "cleanup=scheduled"

@@ -334,6 +334,24 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
     version: "luzione-telemetry/v1",
   },
   {
+    compatibility: "ADDITIVE_MINOR",
+    consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
+    contractId: "production-convergence-operations-evidence",
+    currentRuntime: true,
+    maturity: "LIBRARY_ONLY",
+    name: "Dashboard, alert, SLO, release, rollback and recovery evidence binding",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: [],
+    sourcePaths: [
+      "src/modules/platform-operations/registry.ts",
+      "src/modules/platform-operations/evidence.ts",
+      "contracts/operations/luzione-production-convergence-evidence-v0.1.schema.json",
+      "docs/platform-engineering/PRODUCTION_CONVERGENCE_OPERATIONS_EVIDENCE_V0.1.md",
+      "src/app/api/v1/catalog/route.ts"
+    ],
+    version: "luzione-production-convergence-evidence/v0.1",
+  },
+  {
     compatibility: "NEW_MAJOR_FOR_BREAKING",
     consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
     contractId: "recovery-registry",

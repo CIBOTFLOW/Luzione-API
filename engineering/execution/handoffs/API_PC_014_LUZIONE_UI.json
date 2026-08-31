@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_PC_014_TO_LUZIONE_UI_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "b7abe65913e2dfe8a6e51bb5758dcdf92f7a4651",
+  "producer_ref": "codex/api-pc-014-production-evidence",
+  "contract_name": "production-convergence-operations-evidence",
+  "contract_version": "luzione-production-convergence-evidence/v0.1",
+  "consumer_repository": "CIBOTFLOW/Luzione-UI",
+  "consumer_project_paths": ["UI-SE-004", "UI-SE-007", "UI-SE-008", "UI-SE-009"],
+  "stable_paths": {
+    "working_contract": "architecture/production-convergence/API_PC_014_WORKING_CONTRACT.md",
+    "schema": "contracts/operations/luzione-production-convergence-evidence-v0.1.schema.json",
+    "catalog_route": "GET /api/v1/catalog",
+    "release_route": "GET /api/v1/release",
+    "security_route": "GET /api/v1/security/rls-readiness"
+  },
+  "required_consumer_behavior": [
+    "Render dashboard, alert, release, security and recovery evidence as bounded observations; never promote DEFINED_NOT_DEPLOYED into live status.",
+    "Bind displayed evidence to the exact API candidate SHA and environment and expose blocking deferred evidence without suppression.",
+    "Treat LOCAL_EVIDENCE_BOUNDED, missing production SLO windows, missing managed restore, missing rollback or failed security evidence as not production ready.",
+    "Use API readbacks rather than direct canonical Postgres reads and do not create a UI-owned release or recovery truth store."
+  ],
+  "acceptance_proof_needed": [
+    "exact UI and API SHAs plus luzione-production-convergence-evidence/v0.1",
+    "consumer tests for SHA drift, stale evidence, blocking deferred evidence and productionReady=false",
+    "preview canary and rollback presentation bound to authoritative API evidence",
+    "production presentation only after the API bundle evaluates productionReady=true"
+  ],
+  "producer_evidence_refs": [
+    "engineering/execution/recovery/API_PC_014_LOCAL_OPERATIONS_EVIDENCE_20260831.json",
+    "src/modules/platform-operations/evidence.ts",
+    "commit:b7abe65913e2dfe8a6e51bb5758dcdf92f7a4651"
+  ],
+  "known_limitations": [
+    "No Luzione UI repository was edited or independently tested.",
+    "No dashboard, alert, preview, managed recovery or production observation is deployed.",
+    "The producer evidence is intentionally LOCAL_EVIDENCE_BOUNDED."
+  ]
+}

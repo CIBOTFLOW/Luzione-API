@@ -1533,6 +1533,72 @@
         "independent UI and Sultan API-only consumer evidence",
         "production catalog observation only after separate release authority"
       ]
+    },
+    {
+      "proof_id": "API_PC_014_LOCAL_OPERATIONS_EVIDENCE_20260831",
+      "project_id": "API-PC-014",
+      "recorded_at": "2026-08-31T06:15:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "b7abe65913e2dfe8a6e51bb5758dcdf92f7a4651",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "SANDBOX_ONLY",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The exact API candidate publishes a versioned production-convergence evidence contract, three dashboard definitions and seven alert definitions over existing telemetry, SLO, release, security and recovery registries; it validates an exact-SHA local evidence bundle and proves a disposable logical restore with post-restore least-privilege and authoritative business readback, while every deployed, managed, preview and production claim remains explicitly blocked.",
+      "exercised_boundaries": [
+        "Three operational dashboards and seven alerts resolve registered signals and runbooks and remain DEFINED_NOT_DEPLOYED.",
+        "The machine-readable evidence bundle binds release, SLO, restore, rollback, security and production observations to one exact candidate SHA and rejects SHA drift.",
+        "The exact local evidence bundle validates and evaluates to LOCAL_EVIDENCE_BOUNDED with every external production blocker named.",
+        "The disposable restore applied the API-PC-005 through API-PC-013 migration chain, preserved a 30-table catalog fingerprint with 36 functions, 79 indexes, 36 policies and two seeded rows, and completed in 2 seconds.",
+        "The restored database reapplied the exact least-privilege migration and passed forced-RLS, legacy-client denial, runtime/worker privilege, safe-role and restored Order/kill-switch readback checks.",
+        "Compliance verification, typecheck, clean lint, 208/208 tests and the production build passed for the exact implementation candidate."
+      ],
+      "untested_boundaries": [
+        "deployed metric exporter, dashboard backend, alert evaluator and paging route",
+        "exact-candidate production SLO windows",
+        "managed backup restore or point-in-time recovery",
+        "preview deployment, canary, health observation and rollback rehearsal",
+        "production RLS/security readback and exact-release production observation",
+        "independent Luzione UI and Sultan OS consumption and certification"
+      ],
+      "evidence_refs": [
+        "engineering/execution/recovery/API_PC_014_LOCAL_OPERATIONS_EVIDENCE_20260831.json",
+        "src/modules/platform-operations/registry.ts",
+        "src/modules/platform-operations/evidence.ts",
+        "contracts/operations/luzione-production-convergence-evidence-v0.1.schema.json",
+        "scripts/validation/run-api-pc-014-disposable-restore.sh",
+        "scripts/validation/api-pc-014-restored-readback.sql",
+        "docs/platform-engineering/PRODUCTION_CONVERGENCE_OPERATIONS_EVIDENCE_V0.1.md",
+        "commit:b7abe65913e2dfe8a6e51bb5758dcdf92f7a4651"
+      ],
+      "failure_refs": [
+        "API_PC_014_SANDBOX_FONT_FETCH_20260831",
+        "API_PC_014_EXTERNAL_PRODUCTION_EVIDENCE_DEFERRED_20260831"
+      ],
+      "cross_repo_handoffs": [
+        "API_PC_014_TO_LUZIONE_UI_V1",
+        "API_PC_014_TO_SULTAN_OS_V1"
+      ],
+      "deferred_external_infra": [
+        "deployed telemetry/dashboard/alert platform",
+        "managed canonical PostgreSQL backup/PITR environment",
+        "preview and production deployments",
+        "authorized canary, rollback, recovery and production observation windows",
+        "independent UI and Sultan repositories"
+      ],
+      "remaining_uncertainty": [
+        "The logical restore used a disposable local Docker database and does not establish managed backup retention, PITR, production scale, production permissions or traffic cutover.",
+        "Dashboard and alert definitions have no deployed observation and therefore prove contract completeness only.",
+        "No SLO has an exact-candidate production sample window.",
+        "No preview rollback or production observation occurred; the production readiness evaluator correctly remains false."
+      ],
+      "next_proof_needed": [
+        "deploy the exact candidate to preview and bind canary, health and rollback readback",
+        "deploy and observe the metric exporter, dashboards and alerts with tested paging",
+        "execute an approved managed restore/PITR drill with authoritative readback",
+        "collect exact-SHA production SLO and security observations",
+        "obtain independent Luzione UI and Sultan OS exact-version consumer evidence"
+      ]
     }
   ]
 }

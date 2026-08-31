@@ -974,6 +974,76 @@
       "resolution_ref": "API_PC_013_LOCAL_LEAST_PRIVILEGE_RLS_20260831",
       "remaining_uncertainty": ["The local harness cannot establish managed platform role-creation or pooler behavior."],
       "next_action": "Retain CommonJS-compatible entrypoints and exact per-privilege comparisons in future database security proofs."
+    },
+    {
+      "failure_id": "API_PC_014_SANDBOX_FONT_FETCH_20260831",
+      "project_id": "API-PC-014",
+      "observed_at": "2026-08-31T06:02:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "b7abe65913e2dfe8a6e51bb5758dcdf92f7a4651",
+      "environment": "local-sandbox",
+      "layer": "production-build-external-font",
+      "symptom": "The first production build could not fetch the configured Geist font because the restricted sandbox denied the external network request.",
+      "expected": "The exact candidate production build completes with the repository's configured Next.js font dependency available.",
+      "actual": "The same exact candidate built successfully when the already-declared font fetch was allowed network access; compilation, TypeScript, static generation and route collection all passed.",
+      "classification": { "domain": "TOOL", "class": "UNAVAILABLE", "retry": "IMMEDIATE", "severity": "INFO" },
+      "evidence_refs": [
+        "npm run build initial sandbox failure",
+        "npm run build exact SHA b7abe65913e2dfe8a6e51bb5758dcdf92f7a4651 PASS with font-network access"
+      ],
+      "repair_attempts": [
+        "Repeated the same production build with scoped network access for the configured font dependency."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "API_PC_014_LOCAL_OPERATIONS_EVIDENCE_20260831",
+      "remaining_uncertainty": [
+        "A cold offline build remains dependent on the configured external font unless the asset is vendored separately."
+      ],
+      "next_action": "Retain the successful exact-SHA build evidence and do not misclassify sandbox network denial as an application defect."
+    },
+    {
+      "failure_id": "API_PC_014_EXTERNAL_PRODUCTION_EVIDENCE_DEFERRED_20260831",
+      "project_id": "API-PC-014",
+      "observed_at": "2026-08-31T06:15:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "b7abe65913e2dfe8a6e51bb5758dcdf92f7a4651",
+      "environment": "external-not-exercised",
+      "layer": "production-operations-evidence",
+      "symptom": "The project requires staging/production observation, managed recovery and rollback rehearsal, but no exact deployed candidate, managed recovery environment, independent consumer repository or named external-effect authorization is available in this session.",
+      "expected": "Production convergence is supported only by exact-SHA preview and production observations, a managed restore/PITR drill, tested rollback and independent consumer evidence.",
+      "actual": "All local contracts, definitions, validation, gates and disposable logical restore proof pass, while the evaluator correctly reports productionReady=false and enumerates every missing external boundary.",
+      "classification": { "domain": "INFRA", "class": "UNAVAILABLE", "retry": "HUMAN", "severity": "WARNING" },
+      "evidence_refs": [
+        "engineering/execution/recovery/API_PC_014_LOCAL_OPERATIONS_EVIDENCE_20260831.json",
+        "npm run evidence:production -- engineering/execution/recovery/API_PC_014_LOCAL_OPERATIONS_EVIDENCE_20260831.json"
+      ],
+      "repair_attempts": [
+        "Implemented exact-SHA evidence validation and fail-closed production readiness evaluation.",
+        "Completed the strongest safe local substitute: a disposable logical restore with post-restore security and business readback."
+      ],
+      "strategy_reset": "Quarantine only the external production-evidence cone and continue dependency-ready local producer work.",
+      "quarantine_scope": [
+        "deployed dashboards and alerts",
+        "preview canary and rollback",
+        "managed restore/PITR",
+        "production SLO/security/readback observation",
+        "independent consumer certification"
+      ],
+      "deferred_external_infra": [
+        "telemetry/dashboard/alert deployment",
+        "managed canonical PostgreSQL",
+        "preview and production releases",
+        "Luzione UI and Sultan OS repositories"
+      ],
+      "resolved": false,
+      "resolution_ref": null,
+      "remaining_uncertainty": [
+        "No local or configuration-only result can establish managed recovery, rollback effectiveness or production finality."
+      ],
+      "next_action": "Resume API-PC-014 only when an exact deployed candidate and named preview/managed-recovery/production proof window are available; until then preserve LOCAL_EVIDENCE_BOUNDED."
     }
   ]
 }

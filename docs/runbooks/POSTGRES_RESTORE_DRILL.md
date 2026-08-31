@@ -8,7 +8,7 @@ Use a local Docker Postgres container and a new target named `luzione_api_se014_
 
 ## Procedure
 
-Run `scripts/run-disposable-postgres-restore-drill.sh <local-source-db> <unique-drill-db> [container]`. It captures a source fingerprint, creates a custom-format logical dump without ownership/grants, restores into `template0`, captures the restored fingerprint, compares exact table/row/function/index/policy aggregates, and reports elapsed recovery time and dump checksum/size without printing row contents.
+Run `scripts/run-disposable-postgres-restore-drill.sh <local-source-db> <unique-drill-db> [container] [post-restore-migration] [post-restore-sql]`. It captures a source fingerprint, creates a custom-format logical dump without ownership/grants, restores into `template0`, optionally reapplies an exact reviewed migration and executes a fail-fast bounded readback SQL file, captures the restored fingerprint, compares exact table/row/function/index/policy aggregates, and reports elapsed recovery time, migration/readback state and dump checksum/size without printing row contents. API-PC-014 uses `scripts/validation/run-api-pc-014-disposable-restore.sh` to build the admitted migration chain, reapply the exact role/grant/RLS migration omitted by the portable dump, and verify restored forced-RLS, role, grant and canonical-row evidence before cleanup.
 
 ## Verification
 

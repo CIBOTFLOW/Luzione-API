@@ -25,8 +25,21 @@ test("disposable drill script is overwrite-safe and verifies fingerprints", () =
   assert.match(script, /luzione_api_se014_restore_/);
   assert.match(script, /refusing to overwrite existing database/);
   assert.match(script, /source_fingerprint[\s\S]*restored_fingerprint/);
+  assert.match(script, /post_restore_migration/);
+  assert.match(script, /post_restore_verification/);
   assert.match(script, /trap cleanup EXIT/);
   assert.doesNotMatch(script, /DATABASE_URL|production/i);
+});
+
+test("API-PC-014 restore proof reapplies least privilege and exercises authoritative readback", () => {
+  const wrapper = readFileSync("scripts/validation/run-api-pc-014-disposable-restore.sh", "utf8");
+  const readback = readFileSync("scripts/validation/api-pc-014-restored-readback.sql", "utf8");
+  assert.match(wrapper, /20260831090000_api_pc_013_least_privilege_roles_rls\.sql/);
+  assert.match(wrapper, /api-pc-014-restored-readback\.sql/);
+  assert.match(readback, /relforcerowsecurity/);
+  assert.match(readback, /luzione_api_runtime/);
+  assert.match(readback, /api-pc-014-restore-order/);
+  assert.match(readback, /api-pc-014-restore-switch/);
 });
 
 test("public catalog publishes bounded recovery objectives and evidence states", () => {
