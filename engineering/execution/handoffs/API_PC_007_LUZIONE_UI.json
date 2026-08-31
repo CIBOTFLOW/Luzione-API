@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_PC_007_TO_LUZIONE_UI_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "60a044288743fab7909703e6d756ad9113a1e92e",
+  "producer_ref": "codex/api-pc-007-readback-freshness",
+  "contract_name": "causal-readback",
+  "contract_version": "luzione-causal-readback/v0.1",
+  "consumer_repository": "CIBOTFLOW/Luzione-UI",
+  "consumer_project_paths": ["LUZIONE_SE_004", "LUZIONE_SE_007", "LUZIONE_SE_008", "LUZIONE_SE_009"],
+  "stable_paths": {
+    "contract": "src/modules/platform-contracts/readbackContract.ts",
+    "command_read_service": "src/lib/platform-guarantees/readService.ts",
+    "command_readback": "GET /api/v1/platform-guarantees?receiptId=<receipt>",
+    "catalog_projection_readback": "GET /api/v1/catalog/shopify/projections",
+    "working_contract": "architecture/production-convergence/API_PC_007_WORKING_CONTRACT.md",
+    "manifest": "contracts/contract-manifest.v0.1.json"
+  },
+  "required_consumer_behavior": [
+    "Bind every read to the authenticated API tenant and treat MISSING as non-disclosing; never probe or infer another tenant's receipt existence.",
+    "Render DOMAIN_COMMITTED, PROVIDER_ACKNOWLEDGED, RECONCILING and SOURCE_CONFIRMED as distinct evidence states.",
+    "Show source, sourceVersion, observedAt, freshUntil and freshness state; stale source confirmation cannot be presented as current completion.",
+    "Use API receipt/object/source references for navigation and never promote HTTP success or UI state into business finality."
+  ],
+  "acceptance_proof_needed": [
+    "exact UI and API SHAs and luzione-causal-readback/v0.1",
+    "receipt-to-object readback through the authenticated endpoint",
+    "provider-acknowledged, stale, missing and unsupported-version rendering",
+    "cross-tenant non-disclosure and authoritative-source-only completion"
+  ],
+  "producer_evidence_refs": [
+    "src/modules/production-convergence/tests/causal-readback.test.ts",
+    "scripts/validation/api-pc-007-causal-readback.sql",
+    "architecture/production-convergence/API_PC_007_WORKING_CONTRACT.md",
+    "commit:60a044288743fab7909703e6d756ad9113a1e92e"
+  ],
+  "known_limitations": [
+    "No UI repository implementation or independent journey was executed.",
+    "The command readback endpoint has no business-domain mutation route yet; API-PC-008 and later cells publish those commands.",
+    "Source freshness policy is locally proven contract behavior, not production-observed provider freshness."
+  ]
+}

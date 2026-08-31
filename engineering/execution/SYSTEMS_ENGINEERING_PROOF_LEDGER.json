@@ -1049,6 +1049,64 @@
         "independent UI and Sultan exact-version workflow consumer tests",
         "managed preview migration plus restart/failover rehearsal before activation"
       ]
+    },
+    {
+      "proof_id": "API_PC_007_LOCAL_CAUSAL_READBACK_20260831",
+      "project_id": "API-PC-007",
+      "recorded_at": "2026-08-31T03:53:50Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "60a044288743fab7909703e6d756ad9113a1e92e",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The exact API candidate publishes luzione-causal-readback/v0.1 through the existing authenticated platform-guarantees and P113 projection endpoints, preserving tenant non-disclosure and distinguishing domain commit, provider acknowledgement, reconciliation, fresh source confirmation, stale evidence and missing evidence; no mutation, provider effect or production finality is activated.",
+      "exercised_boundaries": [
+        "The pure contract deterministically classified domain-committed, provider-acknowledged, reconciling, fresh source-confirmed, stale and missing evidence.",
+        "Provider acknowledgement remained explicitly non-final and stale source confirmation returned to reconciliation.",
+        "The existing protected platform-guarantees GET endpoint accepted a bounded receiptId and derived tenant scope only from the credential-bound actor.",
+        "The existing P113 projection GET response published source, source version, observation time, freshness deadline and freshness state additively.",
+        "The API-PC-005/006 schema chain plus causal readback validation passed in a disposable PostgreSQL database.",
+        "A restricted tenant-b role observed zero rows for tenant-a's known receipt under forced RLS, preserving unknown/cross-tenant non-disclosure.",
+        "Compliance verification, typecheck, clean lint, 174/174 tests and the production build passed for the implementation candidate."
+      ],
+      "untested_boundaries": [
+        "managed or production Postgres readback execution",
+        "independent UI and Sultan exact-version consumer behavior",
+        "production provider/source observation and freshness",
+        "business-domain HTTP command-to-readback journey",
+        "preview and production deployment identity",
+        "representative read latency and concurrency"
+      ],
+      "evidence_refs": [
+        "src/modules/platform-contracts/readbackContract.ts",
+        "src/lib/platform-guarantees/readService.ts",
+        "src/app/api/v1/platform-guarantees/route.ts",
+        "src/modules/catalog-projection/store.ts",
+        "src/modules/production-convergence/tests/causal-readback.test.ts",
+        "scripts/validation/api-pc-007-causal-readback.sql",
+        "architecture/production-convergence/API_PC_007_WORKING_CONTRACT.md",
+        "commit:60a044288743fab7909703e6d756ad9113a1e92e"
+      ],
+      "failure_refs": [],
+      "cross_repo_handoffs": ["API_PC_007_TO_LUZIONE_UI_V1", "API_PC_007_TO_SULTAN_OS_V1"],
+      "deferred_external_infra": [
+        "managed canonical Postgres",
+        "independent consumer repositories",
+        "provider source sandboxes",
+        "preview and production environments"
+      ],
+      "remaining_uncertainty": [
+        "The five-minute command source-confirmation and fifteen-minute P113 policies are explicit contract policies but have no production SLO observation yet.",
+        "Cross-tenant non-disclosure was proven in disposable Postgres and source-sensitive tests, not via an independently deployed consumer request.",
+        "No business-domain command route currently produces a receipt through HTTP; API-PC-008 is the next vertical slice."
+      ],
+      "next_proof_needed": [
+        "API-PC-008 lead/commercial-case command, replay/conflict and compatibility readback journey",
+        "independent UI and Sultan exact-version causal-readback consumer tests",
+        "managed preview authenticated readback bound to exact release identity",
+        "production source freshness observation before any production-final claim"
+      ]
     }
   ]
 }
