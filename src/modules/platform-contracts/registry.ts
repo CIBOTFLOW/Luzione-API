@@ -480,6 +480,18 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
     version: "luzione-proposal-quote-approval/v0.1",
   },
   {
+    compatibility: "ADDITIVE_MINOR",
+    consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
+    contractId: "order-fulfillment-intent-command",
+    currentRuntime: true,
+    maturity: "IMPLEMENTED_TRANSITIONAL",
+    name: "Default-off accepted Quote to Order and no-effect Fulfillment Intent boundary",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: [],
+    sourcePaths: ["src/modules/order-fulfillment/contracts.ts", "src/modules/order-fulfillment/store.ts", "src/app/api/v1/commands/orders/route.ts", "src/app/api/v1/commands/fulfillment-intents/route.ts", "supabase/migrations/20260831070000_order_fulfillment_intent_dark_path.sql"],
+    version: "luzione-order-fulfillment-intent/v0.1",
+  },
+  {
     compatibility: "NEW_MAJOR_FOR_BREAKING",
     consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
     contractId: "cross-system-journey-certification",

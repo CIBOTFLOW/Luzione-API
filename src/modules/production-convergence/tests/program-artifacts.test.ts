@@ -82,6 +82,8 @@ test("contract v0.1 manifest and JSON-compatible OpenAPI publish the same bounde
   assert.equal(openApi.info.version, "0.1.0");
   assert.deepEqual(Object.keys(openApi.paths).sort(), [
     "/api/v1/catalog",
+    "/api/v1/commands/fulfillment-intents",
+    "/api/v1/commands/orders",
     "/api/v1/commands/proposal-reviews",
     "/api/v1/commands/quote-approvals",
     "/api/v1/commands/quotes",

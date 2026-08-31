@@ -43,19 +43,19 @@
     {
       "object": "Order",
       "tier": "TIER_1",
-      "currentOwner": "UNRESOLVED_EXTERNAL_EVIDENCE_REQUIRED",
+      "currentOwner": "CIBOTFLOW/Luzione-UI",
       "targetMutationOwner": "CIBOTFLOW/Luzione-API",
       "truthStore": "canonical-postgres",
-      "migrationState": "INVENTORIED_UNCONFIRMED",
+      "migrationState": "API_DARK_PATH_TRANSFER_PENDING_UI_CREATE_PATH_CONVERGENCE_REQUIRED",
       "sourceVersion": "luzione-source-of-truth-registry/v1:commerce:Order"
     },
     {
       "object": "FulfillmentIntent",
       "tier": "TIER_1",
-      "currentOwner": "UNRESOLVED_NOT_IN_CURRENT_API_TRUTH_REGISTRY",
+      "currentOwner": "CIBOTFLOW/Luzione-API",
       "targetMutationOwner": "CIBOTFLOW/Luzione-API",
-      "truthStore": null,
-      "migrationState": "DISCOVERY_REQUIRED",
+      "truthStore": "canonical-postgres:order_fulfillment_intents",
+      "migrationState": "API_DARK_PATH_NEW_CANONICAL_NO_EFFECT_INTENT",
       "sourceVersion": "production-convergence-charter/2026-08-30"
     },
     {

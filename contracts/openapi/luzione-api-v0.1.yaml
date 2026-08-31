@@ -61,6 +61,14 @@
     "/api/v1/commands/proposal-reviews": {
       "get": { "operationId": "getProposalReview", "summary": "Read the latest exact-version Proposal review", "responses": { "200": { "description": "Proposal review readback" }, "404": { "description": "Proposal review not found" } } },
       "post": { "operationId": "decideProposalReview", "summary": "Record a credential-bound human review for the exact current Proposal artifact", "responses": { "201": { "description": "Review committed with P110 receipt" }, "403": { "description": "Human, role, or typed-confirmation authority denied" }, "409": { "description": "Version or blocker conflict" }, "503": { "description": "Mutation path disabled or unavailable" } } }
+    },
+    "/api/v1/commands/orders": {
+      "get": { "operationId": "getOrder", "summary": "Read a tenant-bound canonical Order", "responses": { "200": { "description": "Order readback" }, "404": { "description": "Order not found" } } },
+      "post": { "operationId": "createOrderFromAcceptedQuote", "summary": "Create a default-off Order from an exact customer-accepted Quote", "responses": { "201": { "description": "Order committed with P110 receipt" }, "409": { "description": "Acceptance, version, approval or duplicate conflict" }, "503": { "description": "Mutation path disabled or unavailable" } } }
+    },
+    "/api/v1/commands/fulfillment-intents": {
+      "get": { "operationId": "getFulfillmentIntent", "summary": "Read a bounded no-effect Fulfillment Intent", "responses": { "200": { "description": "Fulfillment Intent readback" }, "404": { "description": "Intent not found" } } },
+      "post": { "operationId": "requestFulfillmentIntent", "summary": "Record a no-effect intent for the exact current Order", "responses": { "201": { "description": "Intent committed with P110 receipt" }, "409": { "description": "Order version or line conflict" }, "503": { "description": "Mutation path disabled or unavailable" } } }
     }
   }
 }
