@@ -450,6 +450,22 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
   {
     compatibility: "NEW_MAJOR_FOR_BREAKING",
     consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
+    contractId: "release-identity",
+    currentRuntime: true,
+    maturity: "IMPLEMENTED",
+    name: "Exact API release, deployment, schema and contract identity",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: [],
+    sourcePaths: [
+      "src/modules/production-convergence/releaseIdentity.ts",
+      "src/app/api/v1/release/route.ts",
+      "contracts/contract-manifest.v0.1.json"
+    ],
+    version: "luzione-release-identity/v0.1",
+  },
+  {
+    compatibility: "NEW_MAJOR_FOR_BREAKING",
+    consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
     contractId: "release-evidence",
     currentRuntime: true,
     maturity: "IMPLEMENTED",
@@ -478,13 +494,19 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
     compatibility: "ADDITIVE_MINOR",
     consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
     contractId: "openapi-http-catalog",
-    currentRuntime: false,
-    maturity: "PENDING_CHANGESET",
-    name: "Generated OpenAPI HTTP catalog",
+    currentRuntime: true,
+    maturity: "IMPLEMENTED",
+    name: "Production-convergence read-only OpenAPI and schema bundle",
     ownerRepository: "CIBOTFLOW/Luzione-API",
-    pendingChangeRefs: ["pull/29", "pull/31"],
-    sourcePaths: ["docs/platform-engineering/CROSS_SYSTEM_TOPOLOGY_AND_OWNERSHIP_V1.md"],
-    version: "1-candidate",
+    pendingChangeRefs: [],
+    sourcePaths: [
+      "contracts/contract-manifest.v0.1.json",
+      "contracts/openapi/luzione-api-v0.1.yaml",
+      "contracts/context/request-context-v0.1.schema.json",
+      "contracts/errors/platform-failure-v0.1.schema.json",
+      "contracts/receipts/receipt-reference-v0.1.schema.json"
+    ],
+    version: "luzione-api-contract/v0.1",
   },
 ]);
 

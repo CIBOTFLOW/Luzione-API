@@ -711,6 +711,162 @@
         "Reevaluate against fresh evidence for the exact promoted candidate.",
         "Require independent consumer and authoritative readback evidence before any production finality claim."
       ]
+    },
+    {
+      "proof_id": "API_PC_001_LOCAL_PROGRAM_ARTIFACTS_20260831",
+      "project_id": "API-PC-001",
+      "recorded_at": "2026-08-31T01:51:31Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "8dccb0315819a6142acaefdd6dafa59b8be13354",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The exact API candidate publishes a parseable production-convergence program, ownership registry, capability registry, dependency graph, migration ownership map, release gates and cross-system journey registry while preserving NEXT_WORK.json as the sole live scheduling authority.",
+      "exercised_boundaries": [
+        "Every required Wave 0 program artifact exists and parses where machine-readable.",
+        "The human queue identifies itself as non-authoritative and points to engineering/execution/NEXT_WORK.json.",
+        "Every first-journey business object is represented without inventing unresolved current mutation owners.",
+        "Dependency edges resolve and preserve unverified consumer/provider evidence boundaries.",
+        "Compliance, typecheck, clean lint, 156/156 tests and a production build passed for the exact implementation candidate."
+      ],
+      "untested_boundaries": [
+        "independent UI validation of current and target object ownership",
+        "independent Sultan validation of workflow and AI-system ownership",
+        "preview and production deployment topology",
+        "migration rehearsal against managed canonical Postgres"
+      ],
+      "evidence_refs": [
+        "architecture/production-convergence/PROGRAM.md",
+        "architecture/production-convergence/OBJECT_OWNERSHIP.yaml",
+        "architecture/production-convergence/CAPABILITY_REGISTRY.yaml",
+        "architecture/production-convergence/DEPENDENCY_GRAPH.yaml",
+        "src/modules/production-convergence/tests/program-artifacts.test.ts",
+        "commit:8dccb0315819a6142acaefdd6dafa59b8be13354"
+      ],
+      "failure_refs": [
+        "API_PC_001_HANDOFF_REBASE_CONFLICT_20260831"
+      ],
+      "cross_repo_handoffs": [
+        "API_PC_001_003_TO_LUZIONE_UI_V1",
+        "API_PC_001_003_TO_SULTAN_OS_V1"
+      ],
+      "deferred_external_infra": [
+        "consumer repository execution",
+        "preview and production environments",
+        "managed canonical Postgres"
+      ],
+      "remaining_uncertainty": [
+        "Several current business-object mutation owners remain intentionally unresolved pending repository evidence.",
+        "The target ownership registry is a convergence contract, not proof that Tier-1 business mutations have moved."
+      ],
+      "next_proof_needed": [
+        "independent UI and Sultan ownership evidence",
+        "API-PC-004 authority-kernel proof",
+        "managed migration and deployment evidence before production claims"
+      ]
+    },
+    {
+      "proof_id": "API_PC_002_LOCAL_RELEASE_IDENTITY_20260831",
+      "project_id": "API-PC-002",
+      "recorded_at": "2026-08-31T01:51:31Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "8dccb0315819a6142acaefdd6dafa59b8be13354",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "NOT_FINAL",
+      "claim": "The exact API candidate implements a read-only release-identity endpoint that binds build, SHA, deployment, environment, contract and schema identity and fails boundedly when deployed provenance is incomplete.",
+      "exercised_boundaries": [
+        "An exact preview fixture reports EXACT_RELEASE_BOUND only with complete SHA, build and deployment provenance.",
+        "Local and incomplete deployed fixtures remain visibly unbound.",
+        "Known-bad provenance and promoted unbound deployments fail validation.",
+        "GET /api/v1/release is read only and exposes no effect authority.",
+        "The production build includes the release endpoint and build timestamp binding."
+      ],
+      "untested_boundaries": [
+        "actual preview deployment identity",
+        "actual production deployment identity",
+        "post-deploy external readback",
+        "deployment rollback identity continuity"
+      ],
+      "evidence_refs": [
+        "src/modules/production-convergence/releaseIdentity.ts",
+        "src/app/api/v1/release/route.ts",
+        "src/modules/production-convergence/tests/release-identity.test.ts",
+        "commit:8dccb0315819a6142acaefdd6dafa59b8be13354"
+      ],
+      "failure_refs": [],
+      "cross_repo_handoffs": [
+        "API_PC_001_003_TO_LUZIONE_UI_V1",
+        "API_PC_001_003_TO_SULTAN_OS_V1"
+      ],
+      "deferred_external_infra": [
+        "preview deployment",
+        "production deployment",
+        "external HTTP readback"
+      ],
+      "remaining_uncertainty": [
+        "No deployed environment has returned the release identity.",
+        "Local proof cannot establish preview or production provenance."
+      ],
+      "next_proof_needed": [
+        "observe GET /api/v1/release on the exact preview candidate",
+        "rehearse rollback and observe the restored release identity",
+        "observe production only after release gates authorize promotion"
+      ]
+    },
+    {
+      "proof_id": "API_PC_003_LOCAL_CONTRACT_V01_20260831",
+      "project_id": "API-PC-003",
+      "recorded_at": "2026-08-31T01:51:31Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "8dccb0315819a6142acaefdd6dafa59b8be13354",
+      "engineering_state": "CONTRACT_STABLE",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The exact API candidate publishes the additive luzione-api-contract/v0.1 manifest, JSON Schemas and OpenAPI surface for request context, platform failure, receipt reference, readiness, catalog and release identity.",
+      "exercised_boundaries": [
+        "The manifest and JSON-compatible OpenAPI document publish the same exact contract release.",
+        "Machine-readable schemas parse and reference stable API-owned component versions.",
+        "The public catalog advertises the bounded v0.1 contract and runtime surface additively.",
+        "Existing request identity, failure and contract-registry negative tests remain passing.",
+        "Structured handoffs identify exact stable paths and required independent consumer proof."
+      ],
+      "untested_boundaries": [
+        "UI consumer compilation and runtime behavior",
+        "Sultan consumer compilation and runtime behavior",
+        "cross-version compatibility against future contract releases",
+        "cross-system production journeys"
+      ],
+      "evidence_refs": [
+        "contracts/contract-manifest.v0.1.json",
+        "contracts/openapi/luzione-api-v0.1.yaml",
+        "contracts/context/request-context-v0.1.schema.json",
+        "contracts/errors/platform-failure-v0.1.schema.json",
+        "contracts/receipts/receipt-reference-v0.1.schema.json",
+        "src/modules/production-convergence/tests/program-artifacts.test.ts",
+        "commit:8dccb0315819a6142acaefdd6dafa59b8be13354"
+      ],
+      "failure_refs": [],
+      "cross_repo_handoffs": [
+        "API_PC_001_003_TO_LUZIONE_UI_V1",
+        "API_PC_001_003_TO_SULTAN_OS_V1"
+      ],
+      "deferred_external_infra": [
+        "independent consumer repositories",
+        "shared preview and production environments"
+      ],
+      "remaining_uncertainty": [
+        "Producer tests do not prove either consumer has adopted v0.1.",
+        "No end-to-end business mutation or authoritative readback is part of this contract cell."
+      ],
+      "next_proof_needed": [
+        "UI-authored exact-version consumer tests",
+        "Sultan-authored exact-version consumer tests",
+        "API-PC-004 authority-kernel contract and negative proof"
+      ]
     }
   ]
 }

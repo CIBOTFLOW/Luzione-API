@@ -1,0 +1,54 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Luzione API Read-Only Foundation",
+    "version": "0.1.0",
+    "description": "Additive Wave 0 contract. Mutation authority remains disabled by default."
+  },
+  "servers": [
+    { "url": "https://api.luzione.com", "description": "Production hostname; deployment evidence is evaluated separately." }
+  ],
+  "paths": {
+    "/api/v1/release": {
+      "get": {
+        "operationId": "getReleaseIdentity",
+        "summary": "Read exact release, schema and contract identity",
+        "responses": { "200": { "description": "Release identity observation" } }
+      }
+    },
+    "/api/v1/livez": {
+      "get": {
+        "operationId": "getLiveness",
+        "summary": "Read process liveness",
+        "responses": { "200": { "description": "Process is live" } }
+      }
+    },
+    "/api/v1/readyz": {
+      "get": {
+        "operationId": "getDependencyReadiness",
+        "summary": "Read dependency readiness",
+        "responses": {
+          "200": { "description": "Dependencies are ready" },
+          "503": { "description": "Dependency readiness is not proven" }
+        }
+      }
+    },
+    "/api/v1/healthz": {
+      "get": {
+        "operationId": "getSecurityReadiness",
+        "summary": "Read security and RLS readiness evidence",
+        "responses": {
+          "200": { "description": "Security readiness is proven for the current observation" },
+          "503": { "description": "Security readiness is not proven" }
+        }
+      }
+    },
+    "/api/v1/catalog": {
+      "get": {
+        "operationId": "getContractCatalog",
+        "summary": "Read API-owned contract and source-of-truth registries",
+        "responses": { "200": { "description": "Bounded catalog metadata" } }
+      }
+    }
+  }
+}

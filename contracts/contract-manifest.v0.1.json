@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "1.0",
+  "releaseVersion": "luzione-api-contract/v0.1",
+  "ownerRepository": "CIBOTFLOW/Luzione-API",
+  "compatibility": "ADDITIVE_ONLY_UNTIL_V1",
+  "mutationAuthority": "DISABLED_BY_DEFAULT",
+  "artifacts": {
+    "openapi": "contracts/openapi/luzione-api-v0.1.yaml",
+    "requestContext": "contracts/context/request-context-v0.1.schema.json",
+    "failure": "contracts/errors/platform-failure-v0.1.schema.json",
+    "receiptReference": "contracts/receipts/receipt-reference-v0.1.schema.json"
+  },
+  "components": [
+    "api-http-response/1.0",
+    "luzione-request-identity/v1",
+    "luzione-platform-failure/v1",
+    "luzione-readiness-evidence/v1",
+    "luzione-release-identity/v0.1",
+    "luzione-receipt-reference/v0.1"
+  ],
+  "consumerRules": [
+    "Consumers ignore unknown optional fields without changing known meanings.",
+    "Unknown authority, failure, retry or evidence values fail closed.",
+    "A successful response without a required receipt/readback reference is not mutation completion.",
+    "Draft branches are not released contract versions."
+  ]
+}

@@ -437,6 +437,41 @@
         "The sandbox denial is local tool behavior and does not represent application runtime behavior."
       ],
       "next_action": "Use the approved npx tsx execution boundary for future local scorecard validation on this host."
+    },
+    {
+      "failure_id": "API_PC_001_HANDOFF_REBASE_CONFLICT_20260831",
+      "project_id": "API-PC-001",
+      "observed_at": "2026-08-31T01:58:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "49d3c803a18ced4c273bbb96e30cea1f93292154",
+      "environment": "local",
+      "layer": "git-integration",
+      "symptom": "GitHub reported PR #38 non-mergeable after main advanced with consumer-evidence reconciliation, and rebasing produced one content conflict in CURRENT_HANDOFF.json.",
+      "expected": "The production-convergence extension should preserve the newer consumer reconciliation while reopening the canonical queue only for the explicitly admitted Section 20 work.",
+      "actual": "The conflict was limited to program state, next action and uncertainty text. Resolution retained main's schema-v2 consumer evidence and added the API-PC queue state and bounded Wave 0 uncertainty.",
+      "classification": {
+        "domain": "TOOL",
+        "class": "CONFLICT",
+        "retry": "NEVER",
+        "severity": "INFO"
+      },
+      "evidence_refs": [
+        "engineering/execution/CURRENT_HANDOFF.json",
+        "engineering/execution/CONSUMER_EVIDENCE_RECONCILIATION_V1.json",
+        "commit:49d3c803a18ced4c273bbb96e30cea1f93292154"
+      ],
+      "repair_attempts": [
+        "Rebased onto origin/main and manually reconciled the single handoff conflict by preserving both current consumer evidence and the newly admitted production-convergence queue."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "API_PC_001_LOCAL_PROGRAM_ARTIFACTS_20260831",
+      "remaining_uncertainty": [
+        "Independent consumer adoption and deployed proof remain unresolved for evidence reasons, not because of the Git integration conflict."
+      ],
+      "next_action": "Keep CURRENT_HANDOFF schema-v2 consumer evidence and the API-PC queue state together in subsequent cells."
     }
   ]
 }

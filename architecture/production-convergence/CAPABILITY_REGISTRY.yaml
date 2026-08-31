@@ -1,0 +1,71 @@
+{
+  "schemaVersion": "1.0",
+  "registryVersion": "luzione-capability-registry/v0.1",
+  "ownerRepository": "CIBOTFLOW/Luzione-API",
+  "capabilities": [
+    {
+      "capabilityId": "release-identity-read",
+      "owner": "CIBOTFLOW/Luzione-API",
+      "effectClass": "NO_EFFECT",
+      "runtimeState": "IMPLEMENTED_READ_ONLY",
+      "contractVersion": "luzione-release-identity/v0.1",
+      "entrypoint": "GET /api/v1/release"
+    },
+    {
+      "capabilityId": "contract-catalog-read",
+      "owner": "CIBOTFLOW/Luzione-API",
+      "effectClass": "NO_EFFECT",
+      "runtimeState": "IMPLEMENTED_READ_ONLY",
+      "contractVersion": "luzione-platform-contract-registry/v1",
+      "entrypoint": "GET /api/v1/catalog"
+    },
+    {
+      "capabilityId": "health-readiness-read",
+      "owner": "CIBOTFLOW/Luzione-API",
+      "effectClass": "NO_EFFECT",
+      "runtimeState": "IMPLEMENTED_READ_ONLY",
+      "contractVersion": "luzione-readiness-evidence/v1",
+      "entrypoint": "GET /api/v1/healthz"
+    },
+    {
+      "capabilityId": "p113-catalog-projection",
+      "owner": "CIBOTFLOW/Luzione-API",
+      "effectClass": "BOUNDED_INTERNAL_PROJECTION",
+      "runtimeState": "IMPLEMENTED_TRANSITIONAL",
+      "contractVersion": "2026-08-26.p113.api-ingest.v1",
+      "entrypoint": "POST /api/v1/catalog/shopify/projections"
+    },
+    {
+      "capabilityId": "canonical-command-execution",
+      "owner": "CIBOTFLOW/Luzione-API",
+      "effectClass": "INTERNAL_DOMAIN_MUTATION",
+      "runtimeState": "LIBRARY_ONLY_MUTATIONS_DISABLED",
+      "contractVersion": "1.0",
+      "entrypoint": null
+    },
+    {
+      "capabilityId": "durable-workflow-execution",
+      "owner": "CIBOTFLOW/Luzione-API",
+      "effectClass": "ASYNC_INTERNAL_AND_PROVIDER_EFFECT",
+      "runtimeState": "TRANSFER_PENDING",
+      "contractVersion": "1.0",
+      "entrypoint": null
+    },
+    {
+      "capabilityId": "sultan-reasoning-and-memory",
+      "owner": "CIBOTFLOW/Sultan-OS",
+      "effectClass": "NO_CANONICAL_BUSINESS_WRITE",
+      "runtimeState": "EXTERNAL_EVIDENCE_REQUIRED",
+      "contractVersion": null,
+      "entrypoint": null
+    },
+    {
+      "capabilityId": "human-business-workflows",
+      "owner": "CIBOTFLOW/Luzione-UI",
+      "effectClass": "CONSUMER_OF_API_COMMANDS_AND_PROJECTIONS",
+      "runtimeState": "EXTERNAL_EVIDENCE_REQUIRED",
+      "contractVersion": null,
+      "entrypoint": null
+    }
+  ]
+}
