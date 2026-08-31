@@ -1,0 +1,152 @@
+{
+  "contractVersion": "luzione-production-convergence-evidence/v0.1",
+  "candidateSha": "b7abe65913e2dfe8a6e51bb5758dcdf92f7a4651",
+  "environment": "LOCAL",
+  "evaluatedAt": "2026-08-31T06:15:00Z",
+  "dashboardIds": [
+    "luzione-api-runtime",
+    "luzione-durable-delivery",
+    "luzione-release-security-recovery"
+  ],
+  "alertIds": [
+    "api-availability-budget-burn",
+    "api-p95-latency-breach",
+    "delivery-backlog-stalled",
+    "reconciliation-failure",
+    "database-pool-pressure",
+    "security-rls-readiness-failed",
+    "release-identity-drift"
+  ],
+  "releaseRecord": {
+    "candidateSha": "b7abe65913e2dfe8a6e51bb5758dcdf92f7a4651",
+    "canaryEvidence": [],
+    "contractVersion": "luzione-release-evidence/v1",
+    "contractVersions": [
+      "luzione-command-ledger/v0.1",
+      "luzione-production-convergence-evidence/v0.1",
+      "luzione-provider-adapter/v0.1",
+      "luzione-readiness-evidence/v1",
+      "luzione-recovery-registry/v1",
+      "luzione-release-evidence/v1",
+      "luzione-release-identity/v0.1",
+      "luzione-security-controls/v1",
+      "luzione-slo-registry/v1",
+      "luzione-telemetry/v1",
+      "luzione-workflow-delivery/v0.1"
+    ],
+    "deploymentId": null,
+    "endedAt": "2026-08-31T06:15:00Z",
+    "environment": "LOCAL",
+    "healthEvidence": [],
+    "knownDeferredEvidence": [
+      {
+        "blocking": true,
+        "description": "No preview canary, preview health observation, preview rollback rehearsal, or production observation was authorized or available."
+      }
+    ],
+    "migrationVersions": [
+      "20260831022000",
+      "20260831030000",
+      "20260831050000",
+      "20260831060000",
+      "20260831070000",
+      "20260831080000",
+      "20260831090000"
+    ],
+    "productionObservation": null,
+    "promotionDecision": "HOLD",
+    "repository": "CIBOTFLOW/Luzione-API",
+    "rollback": {
+      "capabilityState": "DOCUMENTED",
+      "lastKnownGoodDeploymentId": null,
+      "rehearsalRef": null,
+      "strategy": "Keep production unchanged; discard the local candidate and restore the prior checkout and disposable database fixture."
+    },
+    "startedAt": "2026-08-31T06:00:00Z",
+    "verificationEvidence": [
+      {
+        "environment": "LOCAL",
+        "evidenceId": "api-pc-014-build-b7abe659",
+        "evidenceTier": "LOCAL_PROVEN",
+        "exactSha": "b7abe65913e2dfe8a6e51bb5758dcdf92f7a4651",
+        "kind": "BUILD",
+        "observedAt": "2026-08-31T06:12:00Z",
+        "sourceRef": "npm run build: compiled, typed and generated all routes successfully",
+        "status": "PASS"
+      },
+      {
+        "environment": "LOCAL",
+        "evidenceId": "api-pc-014-tests-b7abe659",
+        "evidenceTier": "LOCAL_PROVEN",
+        "exactSha": "b7abe65913e2dfe8a6e51bb5758dcdf92f7a4651",
+        "kind": "TEST",
+        "observedAt": "2026-08-31T06:08:00Z",
+        "sourceRef": "npm test: 208/208; npm run typecheck; npm run lint; npm run compliance:verify",
+        "status": "PASS"
+      },
+      {
+        "environment": "LOCAL",
+        "evidenceId": "api-pc-014-security-b7abe659",
+        "evidenceTier": "LOCAL_PROVEN",
+        "exactSha": "b7abe65913e2dfe8a6e51bb5758dcdf92f7a4651",
+        "kind": "SECURITY",
+        "observedAt": "2026-08-31T06:14:00Z",
+        "sourceRef": "scripts/validation/run-api-pc-014-disposable-restore.sh post-restore least-privilege readback",
+        "status": "PASS"
+      }
+    ]
+  },
+  "sloWindows": [],
+  "recoveryObservations": [
+    {
+      "environment": "LOCAL",
+      "evidenceId": "api-pc-014-local-logical-restore-b7abe659",
+      "evidenceTier": "LOCAL_PROVEN",
+      "exactSha": "b7abe65913e2dfe8a6e51bb5758dcdf92f7a4651",
+      "kind": "LOCAL_LOGICAL_RESTORE",
+      "observedAt": "2026-08-31T06:14:00Z",
+      "readbackMatched": true,
+      "sourceRef": "scripts/validation/run-api-pc-014-disposable-restore.sh: fingerprint 4a987166f605db2b60d1a494d5b39d49, 30 tables, 36 functions, 79 indexes, 36 policies, 2 rows, 2s restore, post-restore migration/readback PASS",
+      "status": "PASS"
+    }
+  ],
+  "rollbackObservations": [],
+  "securityObservations": [
+    {
+      "environment": "LOCAL",
+      "evidenceId": "api-pc-014-local-security-readback-b7abe659",
+      "evidenceTier": "LOCAL_PROVEN",
+      "exactSha": "b7abe65913e2dfe8a6e51bb5758dcdf92f7a4651",
+      "observedAt": "2026-08-31T06:14:00Z",
+      "sourceRef": "scripts/validation/api-pc-014-restored-readback.sql: forced RLS, legacy client denial, bounded runtime/worker grants, safe roles and restored fixtures",
+      "status": "PASS"
+    }
+  ],
+  "productionObservation": null,
+  "deferredEvidence": [
+    {
+      "blocking": true,
+      "description": "Dashboards, metric exporters, alert rules and paging routes are defined but not deployed or observed."
+    },
+    {
+      "blocking": true,
+      "description": "No exact-candidate production SLO measurement window exists for the registered SLOs."
+    },
+    {
+      "blocking": true,
+      "description": "Managed backup restore and point-in-time recovery require an approved managed database plan and environment."
+    },
+    {
+      "blocking": true,
+      "description": "Preview canary, health and rollback rehearsal require an exact deployed preview release and named authorization."
+    },
+    {
+      "blocking": true,
+      "description": "Production security readback and production observation require an authorized exact-SHA release."
+    },
+    {
+      "blocking": true,
+      "description": "Independent Luzione UI and Sultan OS consumer certification remains external to this repository."
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_PC_014_TO_SULTAN_OS_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "b7abe65913e2dfe8a6e51bb5758dcdf92f7a4651",
+  "producer_ref": "codex/api-pc-014-production-evidence",
+  "contract_name": "production-convergence-operations-evidence",
+  "contract_version": "luzione-production-convergence-evidence/v0.1",
+  "consumer_repository": "CIBOTFLOW/Sultan-OS",
+  "consumer_project_paths": ["SULTAN-SE-002", "SULTAN-SE-003", "SULTAN-SE-005", "SULTAN-SE-012"],
+  "stable_paths": {
+    "working_contract": "architecture/production-convergence/API_PC_014_WORKING_CONTRACT.md",
+    "schema": "contracts/operations/luzione-production-convergence-evidence-v0.1.schema.json",
+    "catalog_route": "GET /api/v1/catalog",
+    "release_route": "GET /api/v1/release",
+    "security_route": "GET /api/v1/security/rls-readiness"
+  },
+  "required_consumer_behavior": [
+    "Consume exact-version API evidence as context only; do not infer deployment, effect authority or business completion from definitions or local proof.",
+    "Abstain from release, recovery or production-final recommendations when the evidence bundle is stale, SHA-mismatched, invalid, blocking or not production ready.",
+    "Do not author API release, SLO, security, restore or production observation claims inside Sultan OS.",
+    "Preserve the distinction between local logical restore, managed recovery and production-observed finality."
+  ],
+  "acceptance_proof_needed": [
+    "exact Sultan and API SHAs plus luzione-production-convergence-evidence/v0.1",
+    "known-good bounded consumption and stale/unknown/SHA-drift abstention tests",
+    "no direct production effect or database write path from evidence context",
+    "independent certification only after exact API production evidence exists"
+  ],
+  "producer_evidence_refs": [
+    "engineering/execution/recovery/API_PC_014_LOCAL_OPERATIONS_EVIDENCE_20260831.json",
+    "src/modules/platform-operations/evidence.ts",
+    "commit:b7abe65913e2dfe8a6e51bb5758dcdf92f7a4651"
+  ],
+  "known_limitations": [
+    "No Sultan OS repository was edited or independently tested.",
+    "No deployed, managed recovery or production observation exists.",
+    "Local producer proof cannot satisfy independent cross-system certification."
+  ]
+}
