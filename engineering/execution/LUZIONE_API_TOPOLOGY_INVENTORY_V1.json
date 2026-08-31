@@ -181,6 +181,63 @@
       "external_effect_authorized": false
     },
     {
+      "route_id": "proposal-review-read",
+      "method": "GET",
+      "path": "/api/v1/commands/proposal-reviews",
+      "source_path": "src/app/api/v1/commands/proposal-reviews/route.ts",
+      "authentication": "credential-bound actor with proposal.review.read capability",
+      "canonical_readback": "tenant-scoped public.commercial_case_proposal_review_versions row",
+      "effect": "NO_EFFECT"
+    },
+    {
+      "route_id": "proposal-review-write",
+      "method": "POST",
+      "path": "/api/v1/commands/proposal-reviews",
+      "source_path": "src/app/api/v1/commands/proposal-reviews/route.ts",
+      "authentication": "credential-bound human user with proposal.review.command and policy-role capability plus exact tenant allowlist",
+      "canonical_readback": "atomic P110 receipt plus exact proposal document/review rows",
+      "effect": "DEFAULT_OFF_HUMAN_DECISION_EVIDENCE",
+      "external_effect_authorized": false
+    },
+    {
+      "route_id": "quote-approval-read",
+      "method": "GET",
+      "path": "/api/v1/commands/quote-approvals",
+      "source_path": "src/app/api/v1/commands/quote-approvals/route.ts",
+      "authentication": "credential-bound actor with quote.approval.read capability",
+      "canonical_readback": "tenant-scoped Quote, economics and approval rows",
+      "effect": "NO_EFFECT"
+    },
+    {
+      "route_id": "quote-approval-write",
+      "method": "POST",
+      "path": "/api/v1/commands/quote-approvals",
+      "source_path": "src/app/api/v1/commands/quote-approvals/route.ts",
+      "authentication": "credential-bound human user with quote.approval.command and policy-role capability plus exact tenant allowlist",
+      "canonical_readback": "atomic P110 receipt plus exact Quote economics approval row",
+      "effect": "DEFAULT_OFF_HUMAN_DECISION_EVIDENCE",
+      "external_effect_authorized": false
+    },
+    {
+      "route_id": "quote-command-read",
+      "method": "GET",
+      "path": "/api/v1/commands/quotes",
+      "source_path": "src/app/api/v1/commands/quotes/route.ts",
+      "authentication": "credential-bound actor with quote.read capability",
+      "canonical_readback": "tenant-scoped Quote, lines and immutable economics rows",
+      "effect": "NO_EFFECT"
+    },
+    {
+      "route_id": "quote-command-write",
+      "method": "POST",
+      "path": "/api/v1/commands/quotes",
+      "source_path": "src/app/api/v1/commands/quotes/route.ts",
+      "authentication": "credential-bound actor with quote.command capability plus exact tenant allowlist",
+      "canonical_readback": "atomic P110 receipt plus Quote, line and immutable economics rows",
+      "effect": "DEFAULT_OFF_INTERNAL_DOMAIN_MUTATION",
+      "external_effect_authorized": false
+    },
+    {
       "route_id": "governance-evaluate",
       "method": "POST",
       "path": "/api/v1/governance/evaluate",
