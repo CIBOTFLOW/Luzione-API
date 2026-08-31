@@ -93,5 +93,6 @@ test("contract v0.1 manifest and JSON-compatible OpenAPI publish the same bounde
     "/api/v1/provider-operations",
     "/api/v1/readyz",
     "/api/v1/release",
+    "/api/v1/sultan/agent-intents/evaluate",
   ]);
 });

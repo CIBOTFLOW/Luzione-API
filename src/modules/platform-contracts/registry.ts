@@ -192,7 +192,7 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
       "src/modules/autonomy/constitution.ts",
       "src/modules/autonomy/evaluator.ts"
     ],
-    version: "2026-08-28.3",
+    version: "2026-08-31.1",
   },
   {
     compatibility: "EXACT_VERSION",
@@ -526,6 +526,69 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
     pendingChangeRefs: [],
     sourcePaths: ["src/modules/order-fulfillment/contracts.ts", "src/modules/order-fulfillment/store.ts", "src/app/api/v1/commands/orders/route.ts", "src/app/api/v1/commands/fulfillment-intents/route.ts", "supabase/migrations/20260831070000_order_fulfillment_intent_dark_path.sql"],
     version: "luzione-order-fulfillment-intent/v0.1",
+  },
+  {
+    compatibility: "EXACT_VERSION",
+    consumers: ["CIBOTFLOW/Sultan-OS"],
+    contractId: "sultan-agent-context",
+    currentRuntime: true,
+    maturity: "IMPLEMENTED",
+    name: "Canonical context reference presented by a Sultan agent",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: [],
+    sourcePaths: [
+      "contracts/sultan/agent-context-v0.1.schema.json",
+      "src/modules/sultan-agent/contracts.ts",
+      "src/modules/sultan-agent/parser.ts"
+    ],
+    version: "luzione-sultan-agent-context/v0.1",
+  },
+  {
+    compatibility: "EXACT_VERSION",
+    consumers: ["CIBOTFLOW/Sultan-OS"],
+    contractId: "sultan-agent-intent",
+    currentRuntime: true,
+    maturity: "IMPLEMENTED",
+    name: "Typed no-effect Sultan agent work intent",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: [],
+    sourcePaths: [
+      "contracts/sultan/agent-intent-v0.1.schema.json",
+      "src/modules/sultan-agent/contracts.ts",
+      "src/app/api/v1/sultan/agent-intents/evaluate/route.ts"
+    ],
+    version: "luzione-sultan-agent-intent/v0.1",
+  },
+  {
+    compatibility: "EXACT_VERSION",
+    consumers: ["CIBOTFLOW/Sultan-OS"],
+    contractId: "sultan-agent-policy",
+    currentRuntime: true,
+    maturity: "IMPLEMENTED",
+    name: "Deterministic Sultan agent admission decision",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: [],
+    sourcePaths: [
+      "contracts/sultan/agent-policy-decision-v0.1.schema.json",
+      "src/modules/sultan-agent/evaluator.ts",
+      "src/app/api/v1/sultan/agent-intents/evaluate/route.ts"
+    ],
+    version: "luzione-sultan-agent-policy/v0.1",
+  },
+  {
+    compatibility: "EXACT_VERSION",
+    consumers: ["CIBOTFLOW/Sultan-OS"],
+    contractId: "sultan-agent-outcome",
+    currentRuntime: false,
+    maturity: "LIBRARY_ONLY",
+    name: "Exact-version Sultan agent outcome and readback reference",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: [],
+    sourcePaths: [
+      "contracts/sultan/agent-outcome-v0.1.schema.json",
+      "src/modules/sultan-agent/contracts.ts"
+    ],
+    version: "luzione-sultan-agent-outcome/v0.1",
   },
   {
     compatibility: "EXACT_VERSION",

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/sultan/agent-outcome-v0.1.schema.json",
+  "title": "Luzione Sultan Agent Outcome v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "businessCompletionClaimed",
+    "businessStateMutated",
+    "commandReceiptRef",
+    "intentRef",
+    "outcomeContractVersion",
+    "policyDecisionRef",
+    "readbackRef",
+    "reconciliationState"
+  ],
+  "properties": {
+    "businessCompletionClaimed": { "const": false },
+    "businessStateMutated": { "const": false },
+    "commandReceiptRef": { "type": "null" },
+    "intentRef": { "type": "string", "minLength": 1, "maxLength": 512 },
+    "outcomeContractVersion": { "const": "luzione-sultan-agent-outcome/v0.1" },
+    "policyDecisionRef": { "type": "string", "minLength": 1, "maxLength": 512 },
+    "readbackRef": { "type": "null" },
+    "reconciliationState": { "const": "NOT_STARTED" }
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/sultan/agent-policy-decision-v0.1.schema.json",
+  "title": "Luzione Sultan Agent Policy Decision v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "actor",
+    "agentDefinitionVerified",
+    "autonomy",
+    "businessStateMutated",
+    "evaluatedOnly",
+    "externalEffectsAuthorized",
+    "nextSafeAction",
+    "policyContractVersion",
+    "reasonCodes",
+    "sourceContext",
+    "status"
+  ],
+  "properties": {
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actorId", "actorType", "tenantId"],
+      "properties": {
+        "actorId": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "actorType": { "enum": ["agent", "service", "user"] },
+        "tenantId": { "type": "string", "minLength": 1, "maxLength": 256 }
+      }
+    },
+    "agentDefinitionVerified": { "type": "boolean" },
+    "autonomy": {
+      "type": "object",
+      "required": [
+        "actionAuthorized",
+        "capabilityKnown",
+        "constitutionVersion",
+        "decision",
+        "effectiveEffectClass",
+        "externalEffectsAuthorized",
+        "nextSafeAction",
+        "reasonCodes",
+        "requiredControls"
+      ],
+      "properties": {
+        "actionAuthorized": { "type": "boolean" },
+        "capabilityKnown": { "type": "boolean" },
+        "constitutionVersion": { "type": "string" },
+        "decision": { "enum": ["ALLOW", "BLOCK", "REQUIRE_APPROVAL", "SIMULATE_ONLY"] },
+        "effectiveEffectClass": {
+          "anyOf": [{ "enum": ["A0", "A1", "A2", "A3", "A4"] }, { "type": "null" }]
+        },
+        "externalEffectsAuthorized": { "type": "boolean" },
+        "nextSafeAction": { "type": "string" },
+        "reasonCodes": { "type": "array", "items": { "type": "string" } },
+        "requiredControls": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "businessStateMutated": { "const": false },
+    "evaluatedOnly": { "const": true },
+    "externalEffectsAuthorized": { "const": false },
+    "nextSafeAction": { "type": "string", "minLength": 1 },
+    "policyContractVersion": { "const": "luzione-sultan-agent-policy/v0.1" },
+    "reasonCodes": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "sourceContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["acceptedCount", "freshness", "synthetic"],
+      "properties": {
+        "acceptedCount": { "type": "integer", "minimum": 1, "maximum": 64 },
+        "freshness": { "enum": ["FRESH", "STALE", "UNKNOWN"] },
+        "synthetic": { "type": "boolean" }
+      }
+    },
+    "status": {
+      "enum": ["ABSTAIN_STALE_CONTEXT", "ADMIT_READ_ONLY", "BLOCKED", "REQUIRE_APPROVAL", "SIMULATE_ONLY"]
+    }
+  }
+}

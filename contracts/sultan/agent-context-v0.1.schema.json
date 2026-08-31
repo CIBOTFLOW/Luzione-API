@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/sultan/agent-context-v0.1.schema.json",
+  "title": "Luzione Sultan Agent Context v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contextContractVersion",
+    "freshness",
+    "integrityHash",
+    "observedAt",
+    "sourceOwner",
+    "sourceRef",
+    "sourceVersion"
+  ],
+  "properties": {
+    "contextContractVersion": { "const": "luzione-sultan-agent-context/v0.1" },
+    "freshness": { "enum": ["FRESH", "STALE", "UNKNOWN"] },
+    "integrityHash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "observedAt": { "type": "string", "format": "date-time" },
+    "sourceOwner": {
+      "enum": ["CIBOTFLOW/Luzione-API", "CIBOTFLOW/FEP-Platform", "SYNTHETIC_LUZIONE"]
+    },
+    "sourceRef": { "type": "string", "minLength": 1, "maxLength": 512 },
+    "sourceVersion": { "type": "string", "minLength": 1, "maxLength": 256 }
+  }
+}
