@@ -1,6 +1,6 @@
 import type { CapabilityPolicy } from "./types";
 
-export const AUTONOMY_CONSTITUTION_VERSION = "2026-08-28.3";
+export const AUTONOMY_CONSTITUTION_VERSION = "2026-08-31.1";
 
 export const autonomyPrinciples = Object.freeze([
   "Models may propose actions but cannot create, widen, verify, or consume their own authority.",
@@ -22,6 +22,54 @@ export const capabilityPolicies: readonly CapabilityPolicy[] = Object.freeze([
     effectClass: "A0",
     providerEffect: false,
     summary: "Read authorized evidence and produce an analysis without changing state.",
+  },
+  {
+    capability: "portfolio.priority.evaluate",
+    effectClass: "A0",
+    providerEffect: false,
+    summary: "Evaluate cross-case priority from authorized evidence without changing business state.",
+  },
+  {
+    capability: "fulfillment.readiness.evaluate",
+    effectClass: "A0",
+    providerEffect: false,
+    summary: "Evaluate order, supplier, document and delivery readiness without changing business state.",
+  },
+  {
+    capability: "partner.network.evaluate",
+    effectClass: "A0",
+    providerEffect: false,
+    summary: "Evaluate partner fit, health and network opportunities without assigning or contacting a partner.",
+  },
+  {
+    capability: "catalog.quality.evaluate",
+    effectClass: "A0",
+    providerEffect: false,
+    summary: "Evaluate catalog completeness, provenance and specification quality without editing canonical product data.",
+  },
+  {
+    capability: "account.health.evaluate",
+    effectClass: "A0",
+    providerEffect: false,
+    summary: "Evaluate account health, commitments and relationship risk without changing account state.",
+  },
+  {
+    capability: "economic.integrity.evaluate",
+    effectClass: "A0",
+    providerEffect: false,
+    summary: "Independently evaluate margin, commission, attribution and reconciliation evidence.",
+  },
+  {
+    capability: "readback.verify",
+    effectClass: "A0",
+    providerEffect: false,
+    summary: "Verify an exact-version command receipt against canonical readback without creating an effect.",
+  },
+  {
+    capability: "process.performance.evaluate",
+    effectClass: "A0",
+    providerEffect: false,
+    summary: "Evaluate workflow traces and outcomes for bottlenecks, drift and control failures.",
   },
   {
     capability: "simulation.run",
@@ -130,6 +178,42 @@ export const capabilityPolicies: readonly CapabilityPolicy[] = Object.freeze([
     effectClass: "A1",
     providerEffect: false,
     summary: "Create a reversible internal draft without transmitting it.",
+  },
+  {
+    capability: "fulfillment.plan.create",
+    effectClass: "A1",
+    providerEffect: false,
+    summary: "Create a reversible internal fulfillment plan without changing provider or order state.",
+  },
+  {
+    capability: "partner.next_action.create",
+    effectClass: "A1",
+    providerEffect: false,
+    summary: "Create a reversible partner-network next-action candidate without assignment or outreach.",
+  },
+  {
+    capability: "catalog.correction.propose",
+    effectClass: "A1",
+    providerEffect: false,
+    summary: "Create a reviewable catalog correction candidate without changing canonical product data.",
+  },
+  {
+    capability: "account.next_action.create",
+    effectClass: "A1",
+    providerEffect: false,
+    summary: "Create a reversible account relationship next-action candidate without external contact.",
+  },
+  {
+    capability: "economic.reconciliation.propose",
+    effectClass: "A1",
+    providerEffect: false,
+    summary: "Create a reviewable economic reconciliation candidate without changing financial records.",
+  },
+  {
+    capability: "process.improvement.candidate.create",
+    effectClass: "A1",
+    providerEffect: false,
+    summary: "Create a reviewable process-improvement candidate without altering runtime policy or workflows.",
   },
   {
     capability: "record.internal.update",

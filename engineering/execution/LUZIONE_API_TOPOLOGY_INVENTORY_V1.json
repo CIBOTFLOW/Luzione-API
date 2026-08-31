@@ -368,6 +368,15 @@
       "effect": "NO_EFFECT"
     },
     {
+      "route_id": "sultan-agent-intent-evaluate",
+      "method": "POST",
+      "path": "/api/v1/sultan/agent-intents/evaluate",
+      "source_path": "src/app/api/v1/sultan/agent-intents/evaluate/route.ts",
+      "authentication": "credential-bound agent or service with sultan.agent.intent.evaluate capability",
+      "canonical_readback": "deterministic in-process API autonomy policy decision over exact context references; no persistence",
+      "effect": "NO_EFFECT"
+    },
+    {
       "route_id": "sultan-runtime-status-read",
       "method": "GET",
       "path": "/api/v1/sultan/runtime-status",

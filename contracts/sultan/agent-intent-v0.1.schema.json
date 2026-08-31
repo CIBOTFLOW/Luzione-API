@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/sultan/agent-intent-v0.1.schema.json",
+  "title": "Luzione Sultan Agent Intent v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "actionId",
+    "actionVersion",
+    "agent",
+    "capability",
+    "caseRef",
+    "controls",
+    "dataClassification",
+    "declaredEffectClass",
+    "intentContractVersion",
+    "purpose",
+    "runMode",
+    "sourceContext",
+    "workOrderId"
+  ],
+  "properties": {
+    "actionId": { "$ref": "#/$defs/identifier" },
+    "actionVersion": { "$ref": "#/$defs/identifier" },
+    "agent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["agentId", "agentVersion", "authorityDomain"],
+      "properties": {
+        "agentId": { "type": "string", "pattern": "^agent\\.[a-z0-9.-]+$", "maxLength": 256 },
+        "agentVersion": { "type": "string", "pattern": "^v[1-9][0-9]*$" },
+        "authorityDomain": { "enum": ["LUZIONE", "FEP", "SULTAN_INTERNAL"] }
+      }
+    },
+    "capability": { "type": "string", "pattern": "^[a-z][a-z0-9._-]+$", "maxLength": 256 },
+    "caseRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["caseId", "caseType", "expectedVersion"],
+      "properties": {
+        "caseId": { "$ref": "#/$defs/identifier" },
+        "caseType": {
+          "enum": [
+            "PORTFOLIO",
+            "COMMERCIAL",
+            "FULFILLMENT",
+            "PARTNER_RELATIONSHIP",
+            "CATALOG_QUALITY",
+            "ACCOUNT_RELATIONSHIP",
+            "ECONOMIC_REVIEW",
+            "FEP_CASE",
+            "CONTROL_REVIEW"
+          ]
+        },
+        "expectedVersion": {
+          "anyOf": [{ "$ref": "#/$defs/identifier" }, { "type": "null" }]
+        }
+      }
+    },
+    "controls": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "budgetWithinLimit",
+        "dependenciesReady",
+        "evidenceComplete",
+        "idempotencyKey",
+        "killSwitchReady",
+        "providerReconciliationPlanned",
+        "readbackPlanned",
+        "rollbackPlanned",
+        "simulationPassed"
+      ],
+      "properties": {
+        "budgetWithinLimit": { "type": "boolean" },
+        "dependenciesReady": { "type": "boolean" },
+        "evidenceComplete": { "type": "boolean" },
+        "idempotencyKey": {
+          "anyOf": [{ "$ref": "#/$defs/identifier" }, { "type": "null" }]
+        },
+        "killSwitchReady": { "type": "boolean" },
+        "providerReconciliationPlanned": { "type": "boolean" },
+        "readbackPlanned": { "type": "boolean" },
+        "rollbackPlanned": { "type": "boolean" },
+        "simulationPassed": { "type": "boolean" }
+      }
+    },
+    "dataClassification": { "enum": ["PUBLIC", "INTERNAL", "CONFIDENTIAL", "RESTRICTED"] },
+    "declaredEffectClass": { "enum": ["A0", "A1", "A2", "A3", "A4"] },
+    "intentContractVersion": { "const": "luzione-sultan-agent-intent/v0.1" },
+    "purpose": { "type": "string", "pattern": "^[a-z][a-z0-9._-]+$", "maxLength": 256 },
+    "runMode": { "enum": ["SIMULATION", "SHADOW", "ASSISTED"] },
+    "sourceContext": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": { "$ref": "./agent-context-v0.1.schema.json" }
+    },
+    "workOrderId": { "$ref": "#/$defs/identifier" }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+      "minLength": 1,
+      "maxLength": 256
+    }
+  }
+}

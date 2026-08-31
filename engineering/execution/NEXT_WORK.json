@@ -489,14 +489,17 @@
       "platform_project": "PRODUCTION_CONVERGENCE_WAVE_4",
       "title": "Sultan Context, Intent, Policy and Outcome Contracts",
       "priority": 489,
-      "status": "PLANNED",
+      "status": "COMPLETE",
       "depends_on": ["API-PC-007", "API-PC-010"],
       "mutation_cone": ["sultan", "context", "intents", "policy", "outcomes", "contracts"],
       "core_outcome": "Publish exact-version evidence/context, dry-run intent, policy decision, receipt and outcome contracts for Sultan without granting direct business writes.",
       "published_artifacts": ["context contract", "intent contract", "policy/outcome contract"],
       "required_evidence": ["Sultan consumer certification", "stale/unauthorized abstention", "receipt closure"],
       "irreversible_effects": [],
-      "completion_evidence_ref": null
+      "completion_evidence_ref": "API_PC_012_LOCAL_SULTAN_AGENT_CONTRACTS_20260831",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM"
     },
     {
       "project_id": "API-PC-013",

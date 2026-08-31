@@ -72,6 +72,20 @@
     },
     "/api/v1/provider-operations": {
       "get": { "operationId": "getProviderOperations", "summary": "Read tenant-bound provider worker, reconciliation, dead-letter and kill-switch aggregates", "responses": { "200": { "description": "Bounded provider operations readback" }, "401": { "description": "Service authentication required" }, "503": { "description": "Readback unavailable" } } }
+    },
+    "/api/v1/sultan/agent-intents/evaluate": {
+      "post": {
+        "operationId": "evaluateSultanAgentIntent",
+        "summary": "Evaluate a credential-bound Sultan agent intent without mutating business state",
+        "responses": {
+          "200": { "description": "Read-only or simulation-only policy decision" },
+          "400": { "description": "Invalid exact-version agent intent" },
+          "401": { "description": "Credential or capability authentication failed" },
+          "403": { "description": "Caller attempted to supply authority" },
+          "422": { "description": "Agent intent failed the deterministic authority boundary" },
+          "503": { "description": "Evaluation boundary unavailable" }
+        }
+      }
     }
   }
 }
