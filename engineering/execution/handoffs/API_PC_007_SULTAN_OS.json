@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_PC_007_TO_SULTAN_OS_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "60a044288743fab7909703e6d756ad9113a1e92e",
+  "producer_ref": "codex/api-pc-007-readback-freshness",
+  "contract_name": "causal-readback",
+  "contract_version": "luzione-causal-readback/v0.1",
+  "consumer_repository": "CIBOTFLOW/Sultan-OS",
+  "consumer_project_paths": ["SULTAN_SE_002", "SULTAN_SE_003", "SULTAN_SE_005"],
+  "stable_paths": {
+    "contract": "src/modules/platform-contracts/readbackContract.ts",
+    "causal_navigation": "src/modules/platform-causality/navigation.ts",
+    "command_readback": "GET /api/v1/platform-guarantees?receiptId=<receipt>",
+    "working_contract": "architecture/production-convergence/API_PC_007_WORKING_CONTRACT.md",
+    "manifest": "contracts/contract-manifest.v0.1.json"
+  },
+  "required_consumer_behavior": [
+    "Consume API evidence as read-only context and do not persist a competing command, finality, freshness or source-of-truth definition.",
+    "Abstain from completion claims when readback is missing, stale, reconciling or only provider-acknowledged.",
+    "Preserve receipt, correlation, object-version and source-version lineage when proposing follow-up intent.",
+    "Never let model output select tenant scope or promote provider acknowledgement to authoritative business completion."
+  ],
+  "acceptance_proof_needed": [
+    "exact Sultan and API SHAs and luzione-causal-readback/v0.1",
+    "authenticated receipt context consumption without direct business writes",
+    "stale, missing, cross-tenant and provider-acknowledged abstention",
+    "source-confirmed continuation bound to exact object and source versions"
+  ],
+  "producer_evidence_refs": [
+    "src/modules/production-convergence/tests/causal-readback.test.ts",
+    "scripts/validation/api-pc-007-causal-readback.sql",
+    "architecture/production-convergence/API_PC_007_WORKING_CONTRACT.md",
+    "commit:60a044288743fab7909703e6d756ad9113a1e92e"
+  ],
+  "known_limitations": [
+    "No Sultan repository consumer test or cross-system journey was executed.",
+    "No provider call or production source observation was exercised.",
+    "API-PC-012 remains the dedicated Sultan context/intent/policy/outcome contract cell."
+  ]
+}

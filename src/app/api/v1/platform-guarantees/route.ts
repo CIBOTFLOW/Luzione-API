@@ -1,13 +1,17 @@
 import { apiResponse, createRequestIdentity } from "@/lib/api/http";
 import { requireServiceActor } from "@/lib/api/actor";
 import { runtimeConfig } from "@/lib/api/config";
-import { readPlatformGuaranteeSummary } from "@/lib/platform-guarantees/readService";
+import {
+  readCommandCausalReadback,
+  readPlatformGuaranteeSummary,
+} from "@/lib/platform-guarantees/readService";
 import { bindAuthenticatedRequestIdentity } from "@/modules/platform-contracts/requestIdentity";
 
 export const dynamic = "force-dynamic";
 
 function statusFor(error: unknown) {
   const message = error instanceof Error ? error.message : "Unknown failure";
+  if (/receiptId/i.test(message)) return 400;
   if (/authentication|tenant|actor/i.test(message)) return 401;
   if (/not configured/i.test(message)) return 503;
   return 503;
@@ -22,7 +26,13 @@ export async function GET(request: Request) {
       capability: "platform.guarantees.read",
       purpose: "read-platform-guarantees",
     });
-    const result = await readPlatformGuaranteeSummary(actor);
+    const receiptId = new URL(request.url).searchParams.get("receiptId")?.trim() || null;
+    if (receiptId && !/^[A-Za-z0-9._:-]{3,200}$/.test(receiptId)) {
+      throw new Error("receiptId must be a stable 3–200 character identifier.");
+    }
+    const result = receiptId
+      ? await readCommandCausalReadback(actor, receiptId)
+      : await readPlatformGuaranteeSummary(actor);
     return apiResponse({ ok: true, result }, { requestIdentity: identity });
   } catch (error) {
     return apiResponse(

@@ -60,6 +60,14 @@
       "entrypoint": "PostgresWorkflowDeliveryStore (system worker library entrypoint; no worker or provider adapter activated)"
     },
     {
+      "capabilityId": "causal-command-readback",
+      "owner": "CIBOTFLOW/Luzione-API",
+      "effectClass": "NO_EFFECT",
+      "runtimeState": "IMPLEMENTED_PROTECTED_READ_ONLY",
+      "contractVersion": "luzione-causal-readback/v0.1",
+      "entrypoint": "GET /api/v1/platform-guarantees?receiptId=<receipt> and GET /api/v1/catalog/shopify/projections"
+    },
+    {
       "capabilityId": "sultan-reasoning-and-memory",
       "owner": "CIBOTFLOW/Sultan-OS",
       "effectClass": "NO_CANONICAL_BUSINESS_WRITE",
