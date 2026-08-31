@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_PC_011_TO_SULTAN_OS_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "e523fc6fc642f808d9a764f5828232dc1ecab827",
+  "producer_ref": "codex/api-pc-011-provider-worker",
+  "contract_name": "provider-adapter-runtime",
+  "contract_version": "luzione-provider-adapter/v0.1",
+  "consumer_repository": "CIBOTFLOW/Sultan-OS",
+  "consumer_project_paths": ["SULTAN_SE_002", "SULTAN_SE_003", "SULTAN_SE_005", "SULTAN_SE_008"],
+  "stable_paths": {
+    "contract": "src/modules/provider-runtime/contracts.ts",
+    "operator_route": "GET /api/v1/provider-operations",
+    "causal_receipt_route": "GET /api/v1/platform-guarantees?receiptId=<receipt>"
+  },
+  "required_consumer_behavior": [
+    "Produce typed provider intent only; never call a provider, worker store or P110 table directly from model or tool output.",
+    "Never select adapter mode, tenant, destination, authorization reference, effect class or source-confirmed state from model output.",
+    "Preserve the API-issued idempotency key, exact object version, destination and payload hash without reinterpretation.",
+    "Treat acknowledgement as non-final and abstain until exact authoritative source readback closes the receipt.",
+    "On timeout, missing acknowledgement, stale version, unknown adapter, disabled effect, kill switch or source unavailability, abstain and follow the returned reconciliation/recovery state.",
+    "Do not infer real-provider capability, health or production readiness from the deterministic sandbox adapter."
+  ],
+  "acceptance_proof_needed": [
+    "exact Sultan and API SHAs plus luzione-provider-adapter/v0.1",
+    "typed intent to API-owned outbox without direct provider or database write",
+    "idempotency and exact-version preservation",
+    "ambiguous-after-ack reconciliation and source-unavailable abstention",
+    "kill-switch, unknown-adapter, disabled-effect and cross-tenant denial",
+    "evidence that acknowledgement, simulator success and model confidence never become business finality"
+  ],
+  "producer_evidence_refs": [
+    "src/modules/production-convergence/tests/provider-runtime.test.ts",
+    "scripts/validation/run-api-pc-011-disposable-proof.sh",
+    "architecture/production-convergence/API_PC_011_WORKING_CONTRACT.md",
+    "commit:e523fc6fc642f808d9a764f5828232dc1ecab827"
+  ],
+  "known_limitations": [
+    "No Sultan repository consumer test, model/tool adapter or cross-system journey was executed.",
+    "Only a deterministic local sandbox adapter exists and no provider credential was used.",
+    "API-PC-012 remains the dedicated Sultan context/intent/policy/outcome producer and consumer-convergence cell."
+  ]
+}

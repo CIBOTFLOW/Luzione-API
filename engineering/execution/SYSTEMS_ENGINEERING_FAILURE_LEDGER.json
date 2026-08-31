@@ -816,6 +816,68 @@
         "Managed migration history and independently deployed UI compatibility remain unobserved."
       ],
       "next_action": "Keep both fresh and observed-schema proof shapes mandatory for subsequent domain migrations."
+    },
+    {
+      "failure_id": "API_PC_011_PROOF_AND_CLAIM_PROJECTION_20260831",
+      "project_id": "API-PC-011",
+      "observed_at": "2026-08-31T06:04:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "e523fc6fc642f808d9a764f5828232dc1ecab827",
+      "environment": "local-disposable",
+      "layer": "provider-worker-proof-and-claim-contract",
+      "symptom": "The first proof seed skipped positional PostgreSQL parameters, and after that harness repair the first claimed delivery lacked the linked receipt target/resulting-version fields required by the provider contract and therefore failed closed as DEAD_LETTERED; the first route source fixture also expected a literal version rather than its imported constant.",
+      "expected": "The cleanup-safe proof seeds deterministically, claimed outbox envelopes include their authoritative receipt target/version context, and source fixtures validate meaning without depending on literal duplication.",
+      "actual": "Seed bindings are contiguous, claimDueOutbox now returns the linked receipt object identity and committed object version in the same transaction, and the route fixture asserts use of the canonical version constant; fresh and observed worker shapes pass the complete journey.",
+      "classification": { "domain": "DATA", "class": "INVALID", "retry": "IMMEDIATE", "severity": "INFO" },
+      "evidence_refs": [
+        "scripts/validation/api-pc-011-provider-runtime.ts",
+        "src/lib/platform-guarantees/postgresWorkflowDeliveryStore.ts",
+        "src/modules/production-convergence/tests/provider-runtime.test.ts",
+        "fresh and observed_worker PASS output"
+      ],
+      "repair_attempts": [
+        "Corrected the proof-only parameter arrays without changing runtime semantics.",
+        "Joined each claimed P110 outbox row to its canonical receipt and returned target type, target ID, expected version and committed resulting version.",
+        "Changed the source-sensitive route fixture to require canonical constant use instead of duplicate text."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "API_PC_011_LOCAL_PROVIDER_WORKER_20260831",
+      "remaining_uncertainty": ["The deterministic simulator does not establish any real provider payload or version semantics."],
+      "next_action": "Keep the payload-hash and linked-receipt projection fail-closed for every real adapter."
+    },
+    {
+      "failure_id": "API_PC_011_EXECUTABLE_AND_CLIENT_COMPAT_20260831",
+      "project_id": "API-PC-011",
+      "observed_at": "2026-08-31T06:13:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "e523fc6fc642f808d9a764f5828232dc1ecab827",
+      "environment": "local",
+      "layer": "worker-entrypoint-and-postgres-client",
+      "symptom": "The initial worker entrypoint used top-level await under the repository's CommonJS tsx mode, then inherited Next.js-only server-only resolution from the shared store; the first operator readback also emitted node-postgres's deprecation warning by issuing concurrent queries on one checked-out client.",
+      "expected": "The declared worker command starts as a standalone Node process, uses the canonical database TLS policy, closes its pool, and performs supported sequential operations per checked-out client.",
+      "actual": "The worker now runs through an async main, constructs its own bounded Pool from databaseConnectionOptions, receives the Pool through the shared store constructor, closes it on exit, and operator aggregates execute sequentially; the command reaches its explicit missing-configuration guard and final disposable proofs emit no client warning.",
+      "classification": { "domain": "TOOL", "class": "INVALID", "retry": "IMMEDIATE", "severity": "INFO" },
+      "evidence_refs": [
+        "scripts/run-provider-worker.ts",
+        "src/lib/platform-guarantees/postgresWorkflowDeliveryStore.ts",
+        "package.json worker:providers",
+        "final warning-free fresh and observed_worker PASS output"
+      ],
+      "repair_attempts": [
+        "Wrapped the process loop in async main with bounded error output and Pool cleanup.",
+        "Separated the reusable Pool-injected store from the Next route's server-only database construction.",
+        "Replaced Promise.all on one PoolClient with sequential aggregate queries."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "API_PC_011_LOCAL_PROVIDER_WORKER_20260831",
+      "remaining_uncertainty": ["No deployed process manager, autoscaling behavior or production shutdown observation exists."],
+      "next_action": "Bind any deployed worker to an exact release identity and exercise restart/shutdown under managed load before activation."
     }
   ]
 }

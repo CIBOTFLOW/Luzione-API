@@ -1321,6 +1321,82 @@
         "API-PC-013 role/RLS fresh-upgrade and negative permission proof",
         "managed preview migration and authenticated route evidence before tenant activation"
       ]
+    },
+    {
+      "proof_id": "API_PC_011_LOCAL_PROVIDER_WORKER_20260831",
+      "project_id": "API-PC-011",
+      "recorded_at": "2026-08-31T06:24:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "e523fc6fc642f808d9a764f5828232dc1ecab827",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "SANDBOX_ONLY",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The exact API candidate publishes luzione-provider-adapter/v0.1 as a typed prepare/execute/observe/reconcile/compensate boundary over the existing P110 durable worker substrate, with a separately allowlisted deterministic sandbox adapter, durable dispatch-start, restart-safe reconciliation claims, exact-version source confirmation and tenant-bound operator aggregates; no real provider adapter, credential, deployed worker or live external effect is activated.",
+      "exercised_boundaries": [
+        "The API-PC-005/006 plus API-PC-011 migration chain applied to a fresh disposable PostgreSQL database.",
+        "The same migration upgraded an observed worker shape containing a pre-existing P110 reconciliation checkpoint and preserved it with safe default lease and attempt fields.",
+        "The deterministic sandbox adapter exercised typed prepare, execute, observe, reconcile and explicit unsupported compensation behavior.",
+        "A successful sandbox request durably recorded dispatch-start before execution, then provider acknowledgement, then exact resulting-version source readback before SOURCE_CONFIRMED.",
+        "An ambiguous-after-accept response entered RECONCILIATION_REQUIRED and reconciled by the original idempotency key without blind delivery retry.",
+        "A worker abandoned after durable dispatch-start was reclaimed as WORKER_LOST_AFTER_DISPATCH, created a reconciliation checkpoint and reached source confirmation without a second execute call.",
+        "Two concurrent reconciliation claimers used SKIP LOCKED and exactly one acquired the due checkpoint.",
+        "Rate limiting scheduled a bounded retry; permanent failure, unknown destination and altered payload hash dead-lettered without provider execution.",
+        "An active destination kill switch prevented claim, and deactivation allowed the same durable message to continue through acknowledgement and readback.",
+        "Tenant-bound provider-operations readback reported destination states, reconciliation results, dead letters and active kill switches without payloads; a second tenant observed zero rows.",
+        "Both schema shapes observed 4 source-confirmed messages, 4 matched reconciliations, 2 explicit acknowledgements, 1 recovered crash, 1 scheduled retry and 3 dead-lettered messages.",
+        "Compliance verification, typecheck, clean lint, 193/193 tests and the production build passed for the implementation candidate."
+      ],
+      "untested_boundaries": [
+        "any real Shopify, Gmail, Drive, Airtable, logistics, finance or analytics provider adapter",
+        "provider sandbox accounts or provider-issued credentials outside the deterministic local simulator",
+        "live provider effect, one-time human approval consumption, real compensation and authoritative provider readback",
+        "deployed continuous worker lifecycle, autoscaling, shutdown, multi-process load and managed failover",
+        "managed or production Postgres migration application and exact migration-ledger provenance",
+        "independent UI operations-console and Sultan adapter/intent consumer behavior",
+        "preview and production deployment, capacity, recovery and observation"
+      ],
+      "evidence_refs": [
+        "src/modules/provider-runtime/contracts.ts",
+        "src/modules/provider-runtime/runtime.ts",
+        "src/modules/provider-runtime/sandboxEchoAdapter.ts",
+        "src/lib/platform-guarantees/postgresWorkflowDeliveryStore.ts",
+        "src/app/api/v1/provider-operations/route.ts",
+        "scripts/run-provider-worker.ts",
+        "supabase/migrations/20260831080000_provider_worker_runtime.sql",
+        "src/modules/production-convergence/tests/provider-runtime.test.ts",
+        "scripts/validation/run-api-pc-011-disposable-proof.sh",
+        "scripts/validation/api-pc-011-provider-runtime.ts",
+        "architecture/production-convergence/API_PC_011_WORKING_CONTRACT.md",
+        "commit:e523fc6fc642f808d9a764f5828232dc1ecab827"
+      ],
+      "failure_refs": [
+        "API_PC_011_PROOF_AND_CLAIM_PROJECTION_20260831",
+        "API_PC_011_EXECUTABLE_AND_CLIENT_COMPAT_20260831"
+      ],
+      "cross_repo_handoffs": ["API_PC_011_TO_LUZIONE_UI_V1", "API_PC_011_TO_SULTAN_OS_V1"],
+      "deferred_external_infra": [
+        "approved real-provider sandbox account and credentials",
+        "independent consumer repositories",
+        "managed canonical Postgres",
+        "deployed worker runtime",
+        "preview and production environments",
+        "explicit live effect and release authority"
+      ],
+      "remaining_uncertainty": [
+        "The only executable adapter is a deterministic local simulator and proves the contract/runtime, not any real provider semantics or reachability.",
+        "The worker entrypoint is implemented but has no deployment configuration, release identity, supervision or production observation.",
+        "Sandbox and live modes are globally, tenant and destination default-off; no deployed environment was changed.",
+        "The legacy recordReconciliation method remains for API-PC-006 compatibility; the provider runtime exclusively uses leased completeClaimedReconciliation for exact-version closure.",
+        "Local disposable proof cannot establish provider capacity, provider idempotency, compensation effectiveness, managed failover or production finality."
+      ],
+      "next_proof_needed": [
+        "one approved real-provider sandbox adapter with provider-issued acknowledgement, exact source readback and tested compensation or explicit non-compensability",
+        "deployed worker release identity, shutdown/restart and representative queue/backlog recovery evidence",
+        "independent UI provider-operations consumption and Sultan exact adapter/intent abstention tests",
+        "API-PC-013 least-privilege worker role, P110/domain RLS and negative permission proof",
+        "explicitly authorized live canary only after sandbox, rollback and release gates pass"
+      ]
     }
   ]
 }
