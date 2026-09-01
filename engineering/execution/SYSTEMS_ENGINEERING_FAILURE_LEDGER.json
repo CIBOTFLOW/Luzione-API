@@ -19,14 +19,24 @@
       "retry": "NEVER|IMMEDIATE|BACKOFF|RECONCILE_FIRST|HUMAN",
       "severity": "INFO|DEGRADED|ERROR|CRITICAL"
     },
-    "evidence_refs": ["string"],
-    "repair_attempts": ["string"],
+    "evidence_refs": [
+      "string"
+    ],
+    "repair_attempts": [
+      "string"
+    ],
     "strategy_reset": "string|null",
-    "quarantine_scope": ["string"],
-    "deferred_external_infra": ["string"],
+    "quarantine_scope": [
+      "string"
+    ],
+    "deferred_external_infra": [
+      "string"
+    ],
     "resolved": "boolean",
     "resolution_ref": "string|null",
-    "remaining_uncertainty": ["string"],
+    "remaining_uncertainty": [
+      "string"
+    ],
     "next_action": "string"
   },
   "entries": [
@@ -40,7 +50,7 @@
       "layer": "dependency-security",
       "symptom": "The locked main-branch dependency graph reports one low and three high vulnerability entries.",
       "expected": "The release dependency graph has no unresolved high-severity advisory entry.",
-      "actual": "npm audit reports high-severity entries for Next.js 16.2.4 and its PostCSS/sharp dependency paths, plus a low-severity esbuild development-server entry. npm identifies Next.js 16.3.3 as the non-major fix path.",
+      "actual": "The production/main observation remains affected. Review candidate 4ebc4b9280b480ba789712b29b4e84400663456b upgrades Next.js and eslint-config-next to 16.3.4 and tsx to 4.23.13; its exact lockfile reports zero vulnerabilities and passes the full local release gate, but it is not merged or deployed.",
       "classification": {
         "domain": "DEPENDENCY",
         "class": "CORRUPT",
@@ -58,7 +68,10 @@
         "https://github.com/advisories/GHSA-f88m-g3jw-g9cj",
         "https://github.com/advisories/GHSA-fxqj-rqcc-2cmp"
       ],
-      "repair_attempts": [],
+      "repair_attempts": [
+        "Updated Next.js and eslint-config-next from 16.2.4 to 16.3.4 and tsx from 4.21.0 to 4.23.13 in the review candidate.",
+        "Ran compliance, typecheck, lint, 225 tests, production build and npm audit against candidate 4ebc4b9280b480ba789712b29b4e84400663456b; all passed and audit reported zero vulnerabilities."
+      ],
       "strategy_reset": null,
       "quarantine_scope": [
         "release-readiness claims for the main-branch dependency graph"
@@ -67,10 +80,10 @@
       "resolved": false,
       "resolution_ref": null,
       "remaining_uncertainty": [
-        "Runtime exploitability was not individually assessed in the API_SE_001 documentation/discovery mutation cone.",
-        "The available Next.js 16.3.3 update still needs exact-head type, lint, test, build and audit proof after convergence with current work."
+        "Runtime exploitability of the deployed 16.2.4 graph was not individually assessed.",
+        "The fix is proven on a review candidate only; CI, merge and exact production deployment remain outstanding."
       ],
-      "next_action": "Converge the existing dependency-update pull requests or an equivalent Next.js 16.3.3 lockfile update, then rerun the full release gate and npm audit on the exact candidate SHA."
+      "next_action": "Require CI on candidate 4ebc4b9280b480ba789712b29b4e84400663456b, merge only with the managed-preview plan, and re-run npm audit against the exact deployed SHA before resolving the main/production quarantine."
     },
     {
       "failure_id": "API_SE_014_DOCKER_SOCKET_SANDBOX_20260829",
@@ -83,15 +96,27 @@
       "symptom": "Initial read-only Docker container discovery could not access the desktop Docker socket from the default sandbox.",
       "expected": "Read-only discovery identifies whether a disposable Postgres restore target is available.",
       "actual": "The sandbox returned permission denied for the Docker socket; the approved escalated read-only command identified local Postgres 16 containers.",
-      "classification": { "domain": "PLATFORM", "class": "DENIED", "retry": "HUMAN", "severity": "INFO" },
-      "evidence_refs": ["docker ps default-sandbox failure", "approved read-only docker ps output"],
-      "repair_attempts": ["Reran the same read-only discovery with explicit sandbox approval."],
+      "classification": {
+        "domain": "PLATFORM",
+        "class": "DENIED",
+        "retry": "HUMAN",
+        "severity": "INFO"
+      },
+      "evidence_refs": [
+        "docker ps default-sandbox failure",
+        "approved read-only docker ps output"
+      ],
+      "repair_attempts": [
+        "Reran the same read-only discovery with explicit sandbox approval."
+      ],
       "strategy_reset": null,
       "quarantine_scope": [],
       "deferred_external_infra": [],
       "resolved": true,
       "resolution_ref": "engineering/execution/recovery/API_SE_014_DISPOSABLE_RESTORE_20260829.json",
-      "remaining_uncertainty": ["Desktop Docker availability does not prove production recovery infrastructure."],
+      "remaining_uncertainty": [
+        "Desktop Docker availability does not prove production recovery infrastructure."
+      ],
       "next_action": "Retain explicit authorization for future disposable drills and never infer provider backup access from local Docker."
     },
     {
@@ -105,15 +130,27 @@
       "symptom": "The first fingerprint attempt failed before backup/target creation because psql autocommit dropped the temporary count table.",
       "expected": "The session-scoped temporary table remains available to the PL/pgSQL scan and final aggregate query.",
       "actual": "ON COMMIT DROP removed the table immediately after CREATE TEMP TABLE in autocommit mode; cleanup verified the named target did not exist.",
-      "classification": { "domain": "DATA", "class": "INVALID", "retry": "NEVER", "severity": "DEGRADED" },
-      "evidence_refs": ["scripts/recovery-catalog-fingerprint.sql", "first drill stderr: relation recovery_table_counts does not exist"],
-      "repair_attempts": ["Removed ON COMMIT DROP so the temporary table remains for the psql session."],
+      "classification": {
+        "domain": "DATA",
+        "class": "INVALID",
+        "retry": "NEVER",
+        "severity": "DEGRADED"
+      },
+      "evidence_refs": [
+        "scripts/recovery-catalog-fingerprint.sql",
+        "first drill stderr: relation recovery_table_counts does not exist"
+      ],
+      "repair_attempts": [
+        "Removed ON COMMIT DROP so the temporary table remains for the psql session."
+      ],
       "strategy_reset": null,
       "quarantine_scope": [],
       "deferred_external_infra": [],
       "resolved": true,
       "resolution_ref": "engineering/execution/recovery/API_SE_014_DISPOSABLE_RESTORE_20260829.json",
-      "remaining_uncertainty": ["The passing repair proves the local logical drill only."],
+      "remaining_uncertainty": [
+        "The passing repair proves the local logical drill only."
+      ],
       "next_action": "Keep the failed attempt referenced by every API_SE_014 proof and retain the fingerprint mismatch gate."
     },
     {
@@ -127,9 +164,19 @@
       "symptom": "The first recovery test used the regular-expression dot-all flag, which is newer than the repository TypeScript target.",
       "expected": "New tests compile under the repository's current TypeScript target.",
       "actual": "TypeScript TS1501 rejected the dot-all flag before test execution.",
-      "classification": { "domain": "PLATFORM", "class": "INVALID", "retry": "NEVER", "severity": "INFO" },
-      "evidence_refs": ["src/modules/platform-recovery/tests/registry.test.ts", "npm run typecheck TS1501 output"],
-      "repair_attempts": ["Replaced dot-all with the target-compatible [\\s\\S] expression."],
+      "classification": {
+        "domain": "PLATFORM",
+        "class": "INVALID",
+        "retry": "NEVER",
+        "severity": "INFO"
+      },
+      "evidence_refs": [
+        "src/modules/platform-recovery/tests/registry.test.ts",
+        "npm run typecheck TS1501 output"
+      ],
+      "repair_attempts": [
+        "Replaced dot-all with the target-compatible [\\s\\S] expression."
+      ],
       "strategy_reset": null,
       "quarantine_scope": [],
       "deferred_external_infra": [],
@@ -149,15 +196,29 @@
       "symptom": "The first production build warned that the shared telemetry module imported node:crypto in an Edge-runtime bundle.",
       "expected": "Shared telemetry semantics compile for every Next.js runtime that imports instrumentation/catalog code.",
       "actual": "Tenant hashing pulled node:crypto into the Edge graph; the same sandboxed build also hit the already-known external Google Font fetch boundary.",
-      "classification": { "domain": "PLATFORM", "class": "CONFLICT", "retry": "NEVER", "severity": "DEGRADED" },
-      "evidence_refs": ["src/modules/platform-telemetry/telemetry.ts", "first API_SE_008 npm run build output"],
-      "repair_attempts": ["Removed tenant hashing and omitted tenant/actor identity entirely from shared telemetry."],
+      "classification": {
+        "domain": "PLATFORM",
+        "class": "CONFLICT",
+        "retry": "NEVER",
+        "severity": "DEGRADED"
+      },
+      "evidence_refs": [
+        "src/modules/platform-telemetry/telemetry.ts",
+        "first API_SE_008 npm run build output"
+      ],
+      "repair_attempts": [
+        "Removed tenant hashing and omitted tenant/actor identity entirely from shared telemetry."
+      ],
       "strategy_reset": null,
       "quarantine_scope": [],
-      "deferred_external_infra": ["Sandboxed Google Font fetch; rerun requires network access and is not telemetry capability evidence."],
+      "deferred_external_infra": [
+        "Sandboxed Google Font fetch; rerun requires network access and is not telemetry capability evidence."
+      ],
       "resolved": true,
       "resolution_ref": "commit:9ca81e4cbd06ce559aa19b9e9ef208e151295b63 and subsequent production build",
-      "remaining_uncertainty": ["No Edge deployment or telemetry exporter was exercised."],
+      "remaining_uncertainty": [
+        "No Edge deployment or telemetry exporter was exercised."
+      ],
       "next_action": "Keep the shared telemetry module runtime-neutral and perform exporter-specific crypto only in explicitly Node-owned adapters."
     },
     {
@@ -171,9 +232,19 @@
       "symptom": "The initial invalid-target test received the event-count error first and could not independently prove the target-ratio guard.",
       "expected": "A known-bad target ratio fails through its explicit target-ratio boundary.",
       "actual": "The fixture also had badEvents greater than totalEvents, and count validation ran before target validation.",
-      "classification": { "domain": "PLATFORM", "class": "INVALID", "retry": "NEVER", "severity": "INFO" },
-      "evidence_refs": ["src/modules/platform-slo/tests/registry.test.ts", "initial 117/118 test output"],
-      "repair_attempts": ["Validated targetRatio before event counts and retained explicit fail-closed guards for both input classes."],
+      "classification": {
+        "domain": "PLATFORM",
+        "class": "INVALID",
+        "retry": "NEVER",
+        "severity": "INFO"
+      },
+      "evidence_refs": [
+        "src/modules/platform-slo/tests/registry.test.ts",
+        "initial 117/118 test output"
+      ],
+      "repair_attempts": [
+        "Validated targetRatio before event counts and retained explicit fail-closed guards for both input classes."
+      ],
       "strategy_reset": null,
       "quarantine_scope": [],
       "deferred_external_infra": [],
@@ -193,15 +264,28 @@
       "symptom": "The default sandbox could not fetch the configured Geist and Geist Mono Google Font stylesheets during the production build.",
       "expected": "The exact implementation commit completes the production build gate.",
       "actual": "Turbopack failed only at restricted external font fetch; the approved network-enabled rerun compiled, typechecked and generated all routes successfully.",
-      "classification": { "domain": "DEPENDENCY", "class": "UNAVAILABLE", "retry": "IMMEDIATE", "severity": "INFO" },
-      "evidence_refs": ["npm run build sandbox failure", "approved npm run build success", "src/app/layout.tsx"],
-      "repair_attempts": ["Reran the unchanged build with approved network access to the configured font provider."],
+      "classification": {
+        "domain": "DEPENDENCY",
+        "class": "UNAVAILABLE",
+        "retry": "IMMEDIATE",
+        "severity": "INFO"
+      },
+      "evidence_refs": [
+        "npm run build sandbox failure",
+        "approved npm run build success",
+        "src/app/layout.tsx"
+      ],
+      "repair_attempts": [
+        "Reran the unchanged build with approved network access to the configured font provider."
+      ],
       "strategy_reset": null,
       "quarantine_scope": [],
       "deferred_external_infra": [],
       "resolved": true,
       "resolution_ref": "successful production build for commit:fdb6f452bc4e117aeaa697265af70d3518ff8daf",
-      "remaining_uncertainty": ["The build continues to depend on font-provider availability when the artifacts are not already cached."],
+      "remaining_uncertainty": [
+        "The build continues to depend on font-provider availability when the artifacts are not already cached."
+      ],
       "next_action": "Preserve the network boundary in build evidence; evaluate self-hosted fonts only as a separately scoped product/build decision."
     },
     {
@@ -215,9 +299,19 @@
       "symptom": "TypeScript did not preserve the selected profile narrowing inside the asynchronous worker closure.",
       "expected": "The bounded harness compiles under repository strictness.",
       "actual": "TS18048 reported that profile was possibly undefined inside worker().",
-      "classification": { "domain": "PLATFORM", "class": "INVALID", "retry": "NEVER", "severity": "INFO" },
-      "evidence_refs": ["scripts/run-http-performance-profile.ts", "initial API_SE_013 typecheck output"],
-      "repair_attempts": ["Bound the validated profile to an immutable runnableProfile before constructing workers."],
+      "classification": {
+        "domain": "PLATFORM",
+        "class": "INVALID",
+        "retry": "NEVER",
+        "severity": "INFO"
+      },
+      "evidence_refs": [
+        "scripts/run-http-performance-profile.ts",
+        "initial API_SE_013 typecheck output"
+      ],
+      "repair_attempts": [
+        "Bound the validated profile to an immutable runnableProfile before constructing workers."
+      ],
       "strategy_reset": null,
       "quarantine_scope": [],
       "deferred_external_infra": [],
@@ -237,9 +331,20 @@
       "symptom": "The existing health-route test rejected direct process.env access added for deployment evidence context.",
       "expected": "Healthz consumes centralized runtime/evidence context and does not inspect environment variables directly.",
       "actual": "The initial route accessed VERCEL_ENV and VERCEL_GIT_COMMIT_SHA directly.",
-      "classification": { "domain": "PLATFORM", "class": "CONFLICT", "retry": "NEVER", "severity": "DEGRADED" },
-      "evidence_refs": ["src/modules/platform-guarantees/tests/api-boundary.test.ts", "src/app/api/v1/healthz/route.ts", "initial 125/126 test output"],
-      "repair_attempts": ["Moved deployment evidence derivation into the API-owned readiness module and restored the route invariant."],
+      "classification": {
+        "domain": "PLATFORM",
+        "class": "CONFLICT",
+        "retry": "NEVER",
+        "severity": "DEGRADED"
+      },
+      "evidence_refs": [
+        "src/modules/platform-guarantees/tests/api-boundary.test.ts",
+        "src/app/api/v1/healthz/route.ts",
+        "initial 125/126 test output"
+      ],
+      "repair_attempts": [
+        "Moved deployment evidence derivation into the API-owned readiness module and restored the route invariant."
+      ],
       "strategy_reset": null,
       "quarantine_scope": [],
       "deferred_external_infra": [],
@@ -259,9 +364,19 @@
       "symptom": "The first campaign failed before making a request because tsx emitted CommonJS and rejected top-level await.",
       "expected": "The package script starts the harness under the repository module mode.",
       "actual": "esbuild reported top-level await is unsupported with CJS output.",
-      "classification": { "domain": "PLATFORM", "class": "INVALID", "retry": "NEVER", "severity": "DEGRADED" },
-      "evidence_refs": ["scripts/run-http-performance-profile.ts", "first npm run performance:local output"],
-      "repair_attempts": ["Wrapped execution in an explicit async main with bounded error handling."],
+      "classification": {
+        "domain": "PLATFORM",
+        "class": "INVALID",
+        "retry": "NEVER",
+        "severity": "DEGRADED"
+      },
+      "evidence_refs": [
+        "scripts/run-http-performance-profile.ts",
+        "first npm run performance:local output"
+      ],
+      "repair_attempts": [
+        "Wrapped execution in an explicit async main with bounded error handling."
+      ],
       "strategy_reset": null,
       "quarantine_scope": [],
       "deferred_external_infra": [],
@@ -281,15 +396,27 @@
       "symptom": "The default sandbox denied binding the isolated Next.js server to 127.0.0.1:3107.",
       "expected": "A local production server is available for bounded read-only measurement.",
       "actual": "listen returned EPERM; the approved localhost server subsequently started and was terminated after measurement.",
-      "classification": { "domain": "PLATFORM", "class": "DENIED", "retry": "HUMAN", "severity": "INFO" },
-      "evidence_refs": ["npm start EPERM output", "approved local server startup/termination"],
-      "repair_attempts": ["Started the same isolated server through the approved localhost boundary."],
+      "classification": {
+        "domain": "PLATFORM",
+        "class": "DENIED",
+        "retry": "HUMAN",
+        "severity": "INFO"
+      },
+      "evidence_refs": [
+        "npm start EPERM output",
+        "approved local server startup/termination"
+      ],
+      "repair_attempts": [
+        "Started the same isolated server through the approved localhost boundary."
+      ],
       "strategy_reset": null,
       "quarantine_scope": [],
       "deferred_external_infra": [],
       "resolved": true,
       "resolution_ref": "engineering/execution/performance/API_SE_013_LOCAL_HTTP_20260829.json",
-      "remaining_uncertainty": ["Local sandbox policy is not production runtime behavior."],
+      "remaining_uncertainty": [
+        "Local sandbox policy is not production runtime behavior."
+      ],
       "next_action": "Use explicit local-runtime authorization and always terminate the measured server."
     },
     {
@@ -303,15 +430,29 @@
       "symptom": "The default sandbox could not connect to the approved localhost server and the harness recorded 100 status-599 samples.",
       "expected": "Baseline samples reflect real HTTP responses from the isolated server.",
       "actual": "All sandboxed requests failed before HTTP response; the approved rerun produced zero-error real responses. The failed samples were excluded from performance claims.",
-      "classification": { "domain": "PLATFORM", "class": "DENIED", "retry": "HUMAN", "severity": "DEGRADED" },
-      "evidence_refs": ["default baseline 100/100 status-599 result", "approved baseline success", "engineering/execution/performance/API_SE_013_LOCAL_HTTP_20260829.json"],
-      "repair_attempts": ["Reran the unchanged harness with permission to connect only to the isolated localhost origin.", "Changed threshold failure evaluation to return a failing process status before final measurements."],
+      "classification": {
+        "domain": "PLATFORM",
+        "class": "DENIED",
+        "retry": "HUMAN",
+        "severity": "DEGRADED"
+      },
+      "evidence_refs": [
+        "default baseline 100/100 status-599 result",
+        "approved baseline success",
+        "engineering/execution/performance/API_SE_013_LOCAL_HTTP_20260829.json"
+      ],
+      "repair_attempts": [
+        "Reran the unchanged harness with permission to connect only to the isolated localhost origin.",
+        "Changed threshold failure evaluation to return a failing process status before final measurements."
+      ],
       "strategy_reset": null,
       "quarantine_scope": [],
       "deferred_external_infra": [],
       "resolved": true,
       "resolution_ref": "commit:c5c0dd52b533807df5545c64ae9602ff8676d507 and API_SE_013_LOCAL_HTTP_20260829",
-      "remaining_uncertainty": ["The local host does not represent preview or production network/runtime conditions."],
+      "remaining_uncertainty": [
+        "The local host does not represent preview or production network/runtime conditions."
+      ],
       "next_action": "Treat status-599 as a failed campaign and retain only permission-valid response measurements for bounded claims."
     },
     {
@@ -325,15 +466,28 @@
       "symptom": "The preferred agent-browser CLI was not installed, and the in-app wrapper did not support the requested networkidle wait mode.",
       "expected": "The exact local build receives browser rendering, overlay, console and navigation verification.",
       "actual": "The CLI returned command not found; the in-app browser fallback connected successfully, used its supported DOM-content-ready wait, and completed all verification checks.",
-      "classification": { "domain": "TOOL", "class": "UNAVAILABLE", "retry": "NEVER", "severity": "INFO" },
-      "evidence_refs": ["agent-browser command-not-found output", "in-app browser DOM snapshot/screenshot/navigation result"],
-      "repair_attempts": ["Selected the available in-app browser control.", "Replaced unsupported networkidle with the documented DOM-content-ready wait and explicit rendered-state checks."],
+      "classification": {
+        "domain": "TOOL",
+        "class": "UNAVAILABLE",
+        "retry": "NEVER",
+        "severity": "INFO"
+      },
+      "evidence_refs": [
+        "agent-browser command-not-found output",
+        "in-app browser DOM snapshot/screenshot/navigation result"
+      ],
+      "repair_attempts": [
+        "Selected the available in-app browser control.",
+        "Replaced unsupported networkidle with the documented DOM-content-ready wait and explicit rendered-state checks."
+      ],
       "strategy_reset": null,
       "quarantine_scope": [],
       "deferred_external_infra": [],
       "resolved": true,
       "resolution_ref": "API_SE_016_LOCAL_PROOF_20260829 browser verification",
-      "remaining_uncertainty": ["The verification is local and not a preview/production browser observation."],
+      "remaining_uncertainty": [
+        "The verification is local and not a preview/production browser observation."
+      ],
       "next_action": "Use the in-app browser fallback on this host and repeat against the exact deployed candidate when available."
     },
     {
@@ -347,9 +501,19 @@
       "symptom": "The first full test run failed because the new causal-navigation suite was not yet present in the canonical taxonomy.",
       "expected": "Every new test suite is classified in the same changeset.",
       "actual": "The filesystem contained platform-causality/tests/navigation.test.ts while the taxonomy did not; 139/140 tests passed.",
-      "classification": { "domain": "PLATFORM", "class": "INVALID", "retry": "NEVER", "severity": "INFO" },
-      "evidence_refs": ["src/modules/platform-testing/tests/taxonomy.test.ts", "initial API_SE_017 139/140 output"],
-      "repair_attempts": ["Added the suite as primary CONTRACT with secondary SECURITY evidence."],
+      "classification": {
+        "domain": "PLATFORM",
+        "class": "INVALID",
+        "retry": "NEVER",
+        "severity": "INFO"
+      },
+      "evidence_refs": [
+        "src/modules/platform-testing/tests/taxonomy.test.ts",
+        "initial API_SE_017 139/140 output"
+      ],
+      "repair_attempts": [
+        "Added the suite as primary CONTRACT with secondary SECURITY evidence."
+      ],
       "strategy_reset": null,
       "quarantine_scope": [],
       "deferred_external_infra": [],
@@ -522,7 +686,12 @@
       "symptom": "The first API-PC-005 full suite failed one source assertion after 161 tests passed.",
       "expected": "The source-sensitive store test should verify the intended NO_EFFECT internal outbox boundary.",
       "actual": "An irrelevant fixture required the words external or provider in a store that deliberately performs no provider dispatch; removing that assertion left the explicit NO_EFFECT assertion and the full suite passed 162/162.",
-      "classification": { "domain": "TOOL", "class": "INVALID", "retry": "NEVER", "severity": "INFO" },
+      "classification": {
+        "domain": "TOOL",
+        "class": "INVALID",
+        "retry": "NEVER",
+        "severity": "INFO"
+      },
       "evidence_refs": [
         "initial API-PC-005 161/162 test output",
         "src/modules/production-convergence/tests/command-ledger.test.ts"
@@ -549,9 +718,20 @@
       "symptom": "The first compliance invocation used an npm script alias that does not exist.",
       "expected": "Run the exact compliance command defined by the repository CI workflow.",
       "actual": "npm run compliance failed before verification; package.json and .github/workflows/ci.yml identify npm run compliance:verify, which then verified all seven compliance control documents.",
-      "classification": { "domain": "TOOL", "class": "INVALID", "retry": "NEVER", "severity": "INFO" },
-      "evidence_refs": ["package.json", ".github/workflows/ci.yml", "npm run compliance:verify pass"],
-      "repair_attempts": ["Inspected the canonical CI workflow and ran npm run compliance:verify unchanged."],
+      "classification": {
+        "domain": "TOOL",
+        "class": "INVALID",
+        "retry": "NEVER",
+        "severity": "INFO"
+      },
+      "evidence_refs": [
+        "package.json",
+        ".github/workflows/ci.yml",
+        "npm run compliance:verify pass"
+      ],
+      "repair_attempts": [
+        "Inspected the canonical CI workflow and ran npm run compliance:verify unchanged."
+      ],
       "strategy_reset": null,
       "quarantine_scope": [],
       "deferred_external_infra": [],
@@ -571,15 +751,29 @@
       "symptom": "The sandboxed production build could not fetch the existing Geist and Geist Mono Google Font assets.",
       "expected": "The unchanged candidate completes the production Next.js build when its declared font dependency is reachable.",
       "actual": "The sandboxed build stopped only at the Google Fonts requests; the unchanged approved network-enabled build compiled, typechecked and generated every route successfully.",
-      "classification": { "domain": "DEPENDENCY", "class": "UNAVAILABLE", "retry": "IMMEDIATE", "severity": "INFO" },
-      "evidence_refs": ["first npm run build Google Fonts failure", "approved unchanged npm run build pass"],
-      "repair_attempts": ["Reran the unchanged build with explicit network access for the existing font dependency."],
+      "classification": {
+        "domain": "DEPENDENCY",
+        "class": "UNAVAILABLE",
+        "retry": "IMMEDIATE",
+        "severity": "INFO"
+      },
+      "evidence_refs": [
+        "first npm run build Google Fonts failure",
+        "approved unchanged npm run build pass"
+      ],
+      "repair_attempts": [
+        "Reran the unchanged build with explicit network access for the existing font dependency."
+      ],
       "strategy_reset": null,
       "quarantine_scope": [],
-      "deferred_external_infra": ["Google Fonts reachability in the default sandbox"],
+      "deferred_external_infra": [
+        "Google Fonts reachability in the default sandbox"
+      ],
       "resolved": true,
       "resolution_ref": "API_PC_005_LOCAL_COMMAND_LEDGER_20260831",
-      "remaining_uncertainty": ["This local dependency reachability does not prove preview or production font delivery."],
+      "remaining_uncertainty": [
+        "This local dependency reachability does not prove preview or production font delivery."
+      ],
       "next_action": "Retain the exact build gate and do not treat sandbox font reachability as application capability evidence."
     },
     {
@@ -593,13 +787,20 @@
       "symptom": "The first API-PC-006 full suite failed one migration source assertion after 165 tests passed.",
       "expected": "The fixture recognizes the initplan-safe tenant context inside the migration's dynamically formatted policy statement.",
       "actual": "The test expected single SQL quotes while the PL/pgSQL format string correctly used doubled quotes; the assertion was corrected and the unchanged migration subsequently passed fresh and upgrade execution plus 166/166 tests.",
-      "classification": { "domain": "TOOL", "class": "INVALID", "retry": "NEVER", "severity": "INFO" },
+      "classification": {
+        "domain": "TOOL",
+        "class": "INVALID",
+        "retry": "NEVER",
+        "severity": "INFO"
+      },
       "evidence_refs": [
         "initial API-PC-006 165/166 test output",
         "src/modules/production-convergence/tests/workflow-delivery.test.ts",
         "supabase/migrations/20260831030000_p110_p111_workflow_delivery_baseline.sql"
       ],
-      "repair_attempts": ["Updated the source assertion to match valid PL/pgSQL doubled-quote syntax."],
+      "repair_attempts": [
+        "Updated the source assertion to match valid PL/pgSQL doubled-quote syntax."
+      ],
       "strategy_reset": null,
       "quarantine_scope": [],
       "deferred_external_infra": [],
@@ -619,7 +820,12 @@
       "symptom": "The inherited API-PC-008 work in progress proposed text relationship identifiers and uppercase VERIFIED/UNVERIFIED states that did not match the active Luzione UI canonical Commercial Case schema.",
       "expected": "The dark path must extend the same canonical rows without redefining account/opportunity types or relationship-integrity meaning.",
       "actual": "Read-only UI migration and store evidence selected uuid account/opportunity identifiers plus legacy_unverified/verified semantics; Lead-only API case creation now preserves legacy_unverified until account, contact and opportunity are all present.",
-      "classification": { "domain": "DATA", "class": "CONFLICT", "retry": "NEVER", "severity": "DEGRADED" },
+      "classification": {
+        "domain": "DATA",
+        "class": "CONFLICT",
+        "retry": "NEVER",
+        "severity": "DEGRADED"
+      },
       "evidence_refs": [
         "architecture/production-convergence/API_PC_008_WORKING_CONTRACT.md",
         "supabase/migrations/20260831050000_lead_commercial_case_dark_path.sql",
@@ -651,7 +857,12 @@
       "symptom": "Initial gates reported the new suite missing from the taxonomy, both route files missing from topology, an authority-test capability regex that excluded underscores, and two explicit-any lint violations in the proof harness.",
       "expected": "Every new suite, route, environment key and protected capability remains machine-inventoried and the candidate passes clean lint.",
       "actual": "The canonical taxonomy/topology/authority fixtures were extended for the new surfaces and proof response types were made explicit; the final candidate passed compliance, typecheck, lint, 180/180 tests and build.",
-      "classification": { "domain": "TOOL", "class": "INVALID", "retry": "NEVER", "severity": "INFO" },
+      "classification": {
+        "domain": "TOOL",
+        "class": "INVALID",
+        "retry": "NEVER",
+        "severity": "INFO"
+      },
       "evidence_refs": [
         "initial API-PC-008 177/179 full test output",
         "initial API-PC-008 lint output",
@@ -683,7 +894,12 @@
       "symptom": "The first runtime attempts hit sandbox IPC denial, Docker SCRAM credential absence, insufficient ALTER ownership for the deliberate rollback constraint and an incorrect expected aggregate caused by exact-ID count predicates.",
       "expected": "A repeatable harness should exercise fresh and observed schema shapes without reading existing secrets, should prove rollback, and should remove all proof resources.",
       "actual": "A scoped disposable login, two isolated databases, exact grants and cleanup trap were encoded in a reusable harness; both shapes passed identical vertical-slice evidence and a final catalog query confirmed that no proof database or login remained.",
-      "classification": { "domain": "TOOL", "class": "INVALID", "retry": "IMMEDIATE", "severity": "INFO" },
+      "classification": {
+        "domain": "TOOL",
+        "class": "INVALID",
+        "retry": "IMMEDIATE",
+        "severity": "INFO"
+      },
       "evidence_refs": [
         "scripts/validation/run-api-pc-008-disposable-proof.sh",
         "scripts/validation/api-pc-008-lead-commercial-case.ts",
@@ -715,7 +931,12 @@
       "symptom": "The first focused test imported a server-only store without the standalone stub, the first disposable rollback proof role did not own the receipt table used for its deliberate constraint, and the first full suite reported the three new routes absent from the topology inventory.",
       "expected": "Standalone tests remain server-only aware, the cleanup-safe proof can deliberately force atomic rollback, and every route is represented in the canonical inventory.",
       "actual": "The focused test now inspects the store source without runtime import, the disposable role owns only the disposable receipt table needed for the rollback probe, and the canonical topology plus route-completeness fixtures include all six new GET/POST operations; both database shapes and 184/184 tests passed.",
-      "classification": { "domain": "TOOL", "class": "INVALID", "retry": "IMMEDIATE", "severity": "INFO" },
+      "classification": {
+        "domain": "TOOL",
+        "class": "INVALID",
+        "retry": "IMMEDIATE",
+        "severity": "INFO"
+      },
       "evidence_refs": [
         "src/modules/production-convergence/tests/proposal-quote-approval.test.ts",
         "scripts/validation/run-api-pc-009-disposable-proof.sh",
@@ -733,7 +954,9 @@
       "deferred_external_infra": [],
       "resolved": true,
       "resolution_ref": "API_PC_009_LOCAL_PROPOSAL_QUOTE_APPROVAL_20260831",
-      "remaining_uncertainty": ["Disposable role ownership does not model managed production migration authority."],
+      "remaining_uncertainty": [
+        "Disposable role ownership does not model managed production migration authority."
+      ],
       "next_action": "Retain cleanup-safe disposable proof and filesystem-equality topology gates."
     },
     {
@@ -747,15 +970,29 @@
       "symptom": "The sandboxed production build could not fetch the repository's existing Geist and Geist Mono Google Font assets.",
       "expected": "The unchanged candidate completes its production build when the declared font dependency is reachable.",
       "actual": "The unchanged network-enabled build compiled, typechecked, generated every route and completed successfully.",
-      "classification": { "domain": "DEPENDENCY", "class": "UNAVAILABLE", "retry": "IMMEDIATE", "severity": "INFO" },
-      "evidence_refs": ["first npm run build Google Fonts failure", "approved unchanged npm run build pass"],
-      "repair_attempts": ["Reran the unchanged build with explicit network access for the existing font dependency."],
+      "classification": {
+        "domain": "DEPENDENCY",
+        "class": "UNAVAILABLE",
+        "retry": "IMMEDIATE",
+        "severity": "INFO"
+      },
+      "evidence_refs": [
+        "first npm run build Google Fonts failure",
+        "approved unchanged npm run build pass"
+      ],
+      "repair_attempts": [
+        "Reran the unchanged build with explicit network access for the existing font dependency."
+      ],
       "strategy_reset": null,
       "quarantine_scope": [],
-      "deferred_external_infra": ["Google Fonts reachability in the default sandbox"],
+      "deferred_external_infra": [
+        "Google Fonts reachability in the default sandbox"
+      ],
       "resolved": true,
       "resolution_ref": "API_PC_009_LOCAL_PROPOSAL_QUOTE_APPROVAL_20260831",
-      "remaining_uncertainty": ["This local dependency reachability does not prove preview or production font delivery."],
+      "remaining_uncertainty": [
+        "This local dependency reachability does not prove preview or production font delivery."
+      ],
       "next_action": "Retain the exact build gate and do not treat font reachability as application capability evidence."
     },
     {
@@ -769,7 +1006,12 @@
       "symptom": "The first full suite reported only that the expected OpenAPI path-order fixture had not been advanced with the two new API-PC-010 paths.",
       "expected": "The manifest, OpenAPI document and source-sensitive release fixture publish the same bounded route set in deterministic order.",
       "actual": "The expected route order was extended without weakening equality; the final candidate passed all 188 tests.",
-      "classification": { "domain": "TOOL", "class": "INVALID", "retry": "IMMEDIATE", "severity": "INFO" },
+      "classification": {
+        "domain": "TOOL",
+        "class": "INVALID",
+        "retry": "IMMEDIATE",
+        "severity": "INFO"
+      },
       "evidence_refs": [
         "contracts/openapi/luzione-api-v0.1.yaml",
         "src/modules/platform-contracts/tests/execution-contracts.test.ts",
@@ -797,7 +1039,12 @@
       "symptom": "The first fresh disposable proof found that the API-PC-009 fresh Quote schema did not contain the UI-observed converted_order_id linkage consumed by Order conversion.",
       "expected": "API-PC-010 must upgrade both fresh API migration chains and observed UI-shaped schemas to the same Order linkage without relying on an implicit predecessor column.",
       "actual": "The API-PC-010 migration now adds quotes.converted_order_id additively before creating Order truth; fresh and observed UI-shaped proofs both pass and clean up their disposable resources.",
-      "classification": { "domain": "DATA", "class": "INVALID", "retry": "IMMEDIATE", "severity": "INFO" },
+      "classification": {
+        "domain": "DATA",
+        "class": "INVALID",
+        "retry": "IMMEDIATE",
+        "severity": "INFO"
+      },
       "evidence_refs": [
         "supabase/migrations/20260831070000_order_fulfillment_intent_dark_path.sql",
         "scripts/validation/run-api-pc-010-disposable-proof.sh",
@@ -828,7 +1075,12 @@
       "symptom": "The first proof seed skipped positional PostgreSQL parameters, and after that harness repair the first claimed delivery lacked the linked receipt target/resulting-version fields required by the provider contract and therefore failed closed as DEAD_LETTERED; the first route source fixture also expected a literal version rather than its imported constant.",
       "expected": "The cleanup-safe proof seeds deterministically, claimed outbox envelopes include their authoritative receipt target/version context, and source fixtures validate meaning without depending on literal duplication.",
       "actual": "Seed bindings are contiguous, claimDueOutbox now returns the linked receipt object identity and committed object version in the same transaction, and the route fixture asserts use of the canonical version constant; fresh and observed worker shapes pass the complete journey.",
-      "classification": { "domain": "DATA", "class": "INVALID", "retry": "IMMEDIATE", "severity": "INFO" },
+      "classification": {
+        "domain": "DATA",
+        "class": "INVALID",
+        "retry": "IMMEDIATE",
+        "severity": "INFO"
+      },
       "evidence_refs": [
         "scripts/validation/api-pc-011-provider-runtime.ts",
         "src/lib/platform-guarantees/postgresWorkflowDeliveryStore.ts",
@@ -845,7 +1097,9 @@
       "deferred_external_infra": [],
       "resolved": true,
       "resolution_ref": "API_PC_011_LOCAL_PROVIDER_WORKER_20260831",
-      "remaining_uncertainty": ["The deterministic simulator does not establish any real provider payload or version semantics."],
+      "remaining_uncertainty": [
+        "The deterministic simulator does not establish any real provider payload or version semantics."
+      ],
       "next_action": "Keep the payload-hash and linked-receipt projection fail-closed for every real adapter."
     },
     {
@@ -859,7 +1113,12 @@
       "symptom": "The initial worker entrypoint used top-level await under the repository's CommonJS tsx mode, then inherited Next.js-only server-only resolution from the shared store; the first operator readback also emitted node-postgres's deprecation warning by issuing concurrent queries on one checked-out client.",
       "expected": "The declared worker command starts as a standalone Node process, uses the canonical database TLS policy, closes its pool, and performs supported sequential operations per checked-out client.",
       "actual": "The worker now runs through an async main, constructs its own bounded Pool from databaseConnectionOptions, receives the Pool through the shared store constructor, closes it on exit, and operator aggregates execute sequentially; the command reaches its explicit missing-configuration guard and final disposable proofs emit no client warning.",
-      "classification": { "domain": "TOOL", "class": "INVALID", "retry": "IMMEDIATE", "severity": "INFO" },
+      "classification": {
+        "domain": "TOOL",
+        "class": "INVALID",
+        "retry": "IMMEDIATE",
+        "severity": "INFO"
+      },
       "evidence_refs": [
         "scripts/run-provider-worker.ts",
         "src/lib/platform-guarantees/postgresWorkflowDeliveryStore.ts",
@@ -876,7 +1135,9 @@
       "deferred_external_infra": [],
       "resolved": true,
       "resolution_ref": "API_PC_011_LOCAL_PROVIDER_WORKER_20260831",
-      "remaining_uncertainty": ["No deployed process manager, autoscaling behavior or production shutdown observation exists."],
+      "remaining_uncertainty": [
+        "No deployed process manager, autoscaling behavior or production shutdown observation exists."
+      ],
       "next_action": "Bind any deployed worker to an exact release identity and exercise restart/shutdown under managed load before activation."
     },
     {
@@ -956,7 +1217,12 @@
       "symptom": "The first proof runner used top-level await under the repository's CommonJS tsx output, and the repaired runner then left a PostgreSQL format parameter without an inferable type in a catalog privilege query.",
       "expected": "The disposable security harness must execute through the repository's supported Node mode and perform unambiguous parameterized catalog queries before any proof claim is recorded.",
       "actual": "The harness now uses an async main entrypoint and passes fully qualified relation names as typed values; the strengthened final version validates individual privileges and passes both fresh and observed-upgrade shapes.",
-      "classification": { "domain": "TOOL", "class": "INVALID", "retry": "IMMEDIATE", "severity": "INFO" },
+      "classification": {
+        "domain": "TOOL",
+        "class": "INVALID",
+        "retry": "IMMEDIATE",
+        "severity": "INFO"
+      },
       "evidence_refs": [
         "scripts/validation/api-pc-013-security-rls.ts",
         "scripts/validation/run-api-pc-013-disposable-proof.sh",
@@ -972,7 +1238,9 @@
       "deferred_external_infra": [],
       "resolved": true,
       "resolution_ref": "API_PC_013_LOCAL_LEAST_PRIVILEGE_RLS_20260831",
-      "remaining_uncertainty": ["The local harness cannot establish managed platform role-creation or pooler behavior."],
+      "remaining_uncertainty": [
+        "The local harness cannot establish managed platform role-creation or pooler behavior."
+      ],
       "next_action": "Retain CommonJS-compatible entrypoints and exact per-privilege comparisons in future database security proofs."
     },
     {
@@ -986,7 +1254,12 @@
       "symptom": "The first production build could not fetch the configured Geist font because the restricted sandbox denied the external network request.",
       "expected": "The exact candidate production build completes with the repository's configured Next.js font dependency available.",
       "actual": "The same exact candidate built successfully when the already-declared font fetch was allowed network access; compilation, TypeScript, static generation and route collection all passed.",
-      "classification": { "domain": "TOOL", "class": "UNAVAILABLE", "retry": "IMMEDIATE", "severity": "INFO" },
+      "classification": {
+        "domain": "TOOL",
+        "class": "UNAVAILABLE",
+        "retry": "IMMEDIATE",
+        "severity": "INFO"
+      },
       "evidence_refs": [
         "npm run build initial sandbox failure",
         "npm run build exact SHA b7abe65913e2dfe8a6e51bb5758dcdf92f7a4651 PASS with font-network access"
@@ -1015,7 +1288,12 @@
       "symptom": "The project requires staging/production observation, managed recovery and rollback rehearsal, but no exact deployed candidate, managed recovery environment, independent consumer repository or named external-effect authorization is available in this session.",
       "expected": "Production convergence is supported only by exact-SHA preview and production observations, a managed restore/PITR drill, tested rollback and independent consumer evidence.",
       "actual": "All local contracts, definitions, validation, gates and disposable logical restore proof pass, while the evaluator correctly reports productionReady=false and enumerates every missing external boundary.",
-      "classification": { "domain": "INFRA", "class": "UNAVAILABLE", "retry": "HUMAN", "severity": "WARNING" },
+      "classification": {
+        "domain": "INFRA",
+        "class": "UNAVAILABLE",
+        "retry": "HUMAN",
+        "severity": "WARNING"
+      },
       "evidence_refs": [
         "engineering/execution/recovery/API_PC_014_LOCAL_OPERATIONS_EVIDENCE_20260831.json",
         "npm run evidence:production -- engineering/execution/recovery/API_PC_014_LOCAL_OPERATIONS_EVIDENCE_20260831.json"
@@ -1056,7 +1334,12 @@
       "symptom": "A locally completed API-PC-012 implementation used a second /api/v1/sultan/intents/evaluate path while origin/main independently gained the canonical /api/v1/sultan/agent-intents/evaluate contract family.",
       "expected": "One Sultan outcome has one API-owned canonical contract and mutation/admission path.",
       "actual": "The duplicate branch was preserved but not published; work restarted from the merged canonical implementation and extended that route additively.",
-      "classification": { "domain": "PLATFORM", "class": "CONFLICT", "retry": "NEVER", "severity": "INFO" },
+      "classification": {
+        "domain": "PLATFORM",
+        "class": "CONFLICT",
+        "retry": "NEVER",
+        "severity": "INFO"
+      },
       "evidence_refs": [
         "local branch codex/api-pc-012-sultan-contracts",
         "origin/main merge 772dc91",
@@ -1067,7 +1350,9 @@
         "Carried only the missing server-owned context and tenant-policy guarantees into the canonical implementation."
       ],
       "strategy_reset": "Abandon publication of the duplicate route and converge on origin/main.",
-      "quarantine_scope": ["local unpublished duplicate API-PC-012 branch"],
+      "quarantine_scope": [
+        "local unpublished duplicate API-PC-012 branch"
+      ],
       "deferred_external_infra": [],
       "resolved": true,
       "resolution_ref": "commit:2249637d5359332e53b66b00fefba311146d0892",
@@ -1085,7 +1370,12 @@
       "symptom": "The merged evaluator trusted client-declared FRESH context and bound agent definitions with an @ separator that the canonical credential parser rejects; the first hardening pass also recorded UNVERIFIED without forcing abstention, and identity assertion mismatch initially mapped to 503.",
       "expected": "A syntactically valid credential-bound agent reaches admission only after canonical context and active tenant-policy verification, while identity mismatch is a redacted 401.",
       "actual": "The final candidate uses <agentId>:<agentVersion>, derives Order context freshness/hash from tenant-scoped readback, forces unverified non-synthetic context to abstain, evaluates active tenant policy, and returns a generic 401 for credential mismatch.",
-      "classification": { "domain": "PLATFORM", "class": "INVALID", "retry": "IMMEDIATE", "severity": "ERROR" },
+      "classification": {
+        "domain": "PLATFORM",
+        "class": "INVALID",
+        "retry": "IMMEDIATE",
+        "severity": "ERROR"
+      },
       "evidence_refs": [
         "src/modules/sultan-agent/contextVerifier.ts",
         "src/modules/sultan-agent/evaluator.ts",
@@ -1119,19 +1409,210 @@
       "symptom": "The first full verification build could not fetch the configured Geist fonts because restricted sandbox networking denied Google Fonts.",
       "expected": "The exact candidate production build completes with its declared font dependency available.",
       "actual": "The exact candidate built successfully with scoped network access; TypeScript, static generation and route collection passed.",
-      "classification": { "domain": "TOOL", "class": "UNAVAILABLE", "retry": "IMMEDIATE", "severity": "INFO" },
+      "classification": {
+        "domain": "TOOL",
+        "class": "UNAVAILABLE",
+        "retry": "IMMEDIATE",
+        "severity": "INFO"
+      },
       "evidence_refs": [
         "npm run build sandbox font-fetch failure",
         "npm run build exact SHA 2249637d5359332e53b66b00fefba311146d0892 PASS with scoped network access"
       ],
-      "repair_attempts": ["Repeated the same build with network access for the configured font dependency."],
+      "repair_attempts": [
+        "Repeated the same build with network access for the configured font dependency."
+      ],
       "strategy_reset": null,
       "quarantine_scope": [],
       "deferred_external_infra": [],
       "resolved": true,
       "resolution_ref": "API_PC_012_LOCAL_CANONICAL_CONTEXT_HARDENING_20260831",
-      "remaining_uncertainty": ["Cold offline builds remain dependent on the configured external font."],
+      "remaining_uncertainty": [
+        "Cold offline builds remain dependent on the configured external font."
+      ],
       "next_action": "Preserve the exact-SHA successful build evidence without treating the sandbox denial as an application failure."
+    },
+    {
+      "failure_id": "API_PC_017_PRODUCTION_API_CONVERGENCE_BLOCKED_20260901",
+      "project_id": "API-PC-017",
+      "observed_at": "2026-09-01T06:40:03Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "1d4e61b6a402cde0e7319f17895dac2881cb434e",
+      "environment": "production",
+      "layer": "managed-schema-security-and-readiness",
+      "symptom": "The live API security gate returns 503 while dependency readiness alternates between 200 and 503 under bounded low-volume observation.",
+      "expected": "An exact production release has a converged checksummed schema, safe runtime roles, forced tenant RLS, stable dependency readiness and a proven rollback path.",
+      "actual": "healthz observed 39 of 40 expected tables and 61 violations; order_fulfillment_intents and safe runtime/worker role convergence are absent; release identity reports only two applied API schema versions and DEPLOYED_INCOMPLETE; database TLS is ENCRYPTED_UNVERIFIED.",
+      "classification": {
+        "domain": "PLATFORM",
+        "class": "UNAVAILABLE",
+        "retry": "HUMAN",
+        "severity": "CRITICAL"
+      },
+      "evidence_refs": [
+        "GET https://api.luzione.com/api/v1/healthz at 2026-09-01T06:39:35Z",
+        "GET https://api.luzione.com/api/v1/readyz bounded observations",
+        "GET https://api.luzione.com/api/v1/release",
+        "engineering/execution/readiness/API_PC_017_PRODUCTION_READINESS_AUDIT_20260901.json"
+      ],
+      "repair_attempts": [
+        "Kept mutations and external effects disabled fail closed.",
+        "Added locally proven productization/license contracts without attempting a managed migration.",
+        "Updated the expected RLS table set so a future release cannot omit license tables silently."
+      ],
+      "strategy_reset": "Quarantine production convergence and require an exact managed preview migration, role cutover, denial proof, consumer canary and rollback before promotion.",
+      "quarantine_scope": [
+        "production mutation enablement",
+        "tenant license activation",
+        "cross-system production certification"
+      ],
+      "deferred_external_infra": [
+        "managed preview PostgreSQL",
+        "safe runtime credential membership",
+        "preview and production deployment windows"
+      ],
+      "resolved": false,
+      "resolution_ref": null,
+      "remaining_uncertainty": [
+        "The bounded observations do not establish the frequency or root cause of readiness failures."
+      ],
+      "next_action": "Converge the full migration/role chain in managed preview, run positive and negative canaries plus rollback, then collect a sustained readiness/security window."
+    },
+    {
+      "failure_id": "API_PC_017_ROOM_PLANNER_SECURITY_BLOCKED_20260901",
+      "project_id": "API-PC-019",
+      "observed_at": "2026-09-01T05:55:00Z",
+      "repository": "CIBOTFLOW/Luzione-Room-Planner-MVP",
+      "exact_sha": "5fa529145a7af79dcfd172cd5e769322deca11d8",
+      "environment": "production",
+      "layer": "managed-postgres-rls-and-grants",
+      "symptom": "The Room Planner managed tenant-isolation and least-privilege gate failed critically; exploit-specific managed-database evidence is withheld from the public ledger until containment.",
+      "expected": "Every tenant/session/integration table is least-privilege, forced-RLS and proven to deny anonymous, missing-tenant and cross-tenant access in the managed environment.",
+      "actual": "Read-only managed metadata and advisor evidence show a release-blocking access-control mismatch between the repository lockdown design and the managed database.",
+      "classification": {
+        "domain": "AUTH",
+        "class": "CORRUPT",
+        "retry": "HUMAN",
+        "severity": "CRITICAL"
+      },
+      "evidence_refs": [
+        "restricted managed schema/privilege inspection at 2026-09-01",
+        "restricted managed security-advisor findings at 2026-09-01",
+        "engineering/execution/handoffs/API_PC_017_ROOM_PLANNER.json",
+        "docs/platform-engineering/LUZIONE_PRODUCTION_READINESS_AUDIT_20260901.md"
+      ],
+      "repair_attempts": [
+        "Inspected the repository lockdown CI and confirmed that its disposable proof has not converged to the managed database.",
+        "Draft Room Planner PR #12 added fail-closed managed posture readback without mutating the managed database."
+      ],
+      "strategy_reset": "Stop planner integration and production use until containment, access-log review, managed lockdown, negative probes and rollback are complete.",
+      "quarantine_scope": [
+        "Room Planner production use",
+        "planner Data API",
+        "room-plan proposal integration",
+        "customer data import"
+      ],
+      "deferred_external_infra": [
+        "managed planner database change window",
+        "access-log review",
+        "credential/session rotation if indicated"
+      ],
+      "resolved": false,
+      "resolution_ref": null,
+      "remaining_uncertainty": [
+        "This posture is a potential exposure condition; the audit does not prove that unauthorized access occurred."
+      ],
+      "next_action": "Contain the managed data surface, restore least privilege and forced tenant isolation, inspect logs, rotate affected secrets if reachability warrants it, and prove managed denials before reopening the integration."
+    },
+    {
+      "failure_id": "API_PC_017_ROOM_PLANNER_RUNTIME_AND_PROVENANCE_BLOCKED_20260901",
+      "project_id": "API-PC-019",
+      "observed_at": "2026-09-01T05:45:00Z",
+      "repository": "CIBOTFLOW/Luzione-Room-Planner-MVP",
+      "exact_sha": null,
+      "environment": "production",
+      "layer": "application-runtime-and-release-provenance",
+      "symptom": "The Room Planner production /app route renders an unhandled response and the deployment has no discoverable Git SHA provenance.",
+      "expected": "A reviewed exact Git commit renders the authenticated planner journey, binds its migration set, passes preview security/browser gates and has a rehearsed rollback.",
+      "actual": "The page title is Unhandled Thrown Response with visible text 200; sampled logs contain repeated 500s including invalid UUID, missing session table and Shopify failures; the production deployment is CLI-sourced without repository SHA.",
+      "classification": {
+        "domain": "CLIENT",
+        "class": "CORRUPT",
+        "retry": "HUMAN",
+        "severity": "CRITICAL"
+      },
+      "evidence_refs": [
+        "https://planner.luzione.com/app browser observation",
+        "Vercel seven-day production logs",
+        "restricted Vercel production deployment metadata",
+        "docs/platform-engineering/LUZIONE_PRODUCTION_READINESS_AUDIT_20260901.md",
+        "CIBOTFLOW/Luzione-Room-Planner-MVP draft PR #12",
+        "preview candidate:8d340414c71af3715c5d7212ef00b3ff76ab4e3b"
+      ],
+      "repair_attempts": [
+        "Selected an outbox-based proposal contract that does not depend on enabling the broken production deployment.",
+        "Draft Room Planner PR #12 produced a Git-bound preview at exact SHA 8d340414c71af3715c5d7212ef00b3ff76ab4e3b with clean CI/browser gates and a direct /app Shopify Admin redirect; production remains unchanged."
+      ],
+      "strategy_reset": "Repair runtime and bind the next preview to exact source only after the managed security boundary is contained.",
+      "quarantine_scope": [
+        "Room Planner production release",
+        "API/UI proposal consumption"
+      ],
+      "deferred_external_infra": [
+        "Git-bound preview deployment",
+        "managed session migration",
+        "browser verification and rollback window"
+      ],
+      "resolved": false,
+      "resolution_ref": null,
+      "remaining_uncertainty": [
+        "The unbound production tree cannot be proven equivalent to the observed repository main SHA."
+      ],
+      "next_action": "Repair /app, session schema and UUID validation; deploy an exact reviewed SHA to preview; pass managed security and browser journeys; rehearse rollback."
+    },
+    {
+      "failure_id": "API_PC_017_UI_SULTAN_OPERATIONS_DEGRADED_20260901",
+      "project_id": "API-PC-017",
+      "observed_at": "2026-09-01T06:40:08Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": null,
+      "environment": "production",
+      "layer": "cross-system-operations",
+      "symptom": "The UI core renders, but request-time schema creation and a timed-out growth workload remain; Sultan reports degraded model routing and incomplete provider/auth evidence.",
+      "expected": "Schema is migration-owned, durable background work completes or reconciles, model/provider SLOs pass and exact consumer journeys are certified.",
+      "actual": "Canonical logs show 34 create-table-if-not-exists statements in 24 hours; two UI property-signal runs reached the 300-second limit; Sultan reports 20/27 successful model calls, stale Shopify, unverified Google Docs generation and unavailable operator auth.",
+      "classification": {
+        "domain": "WORKFLOW",
+        "class": "INDETERMINATE",
+        "retry": "HUMAN",
+        "severity": "ERROR"
+      },
+      "evidence_refs": [
+        "Luzione UI Vercel 24-hour logs",
+        "canonical Supabase Postgres 24-hour logs",
+        "GET https://api.luzione.com/api/v1/sultan/runtime-status at 2026-09-01T06:40:08Z",
+        "engineering/execution/readiness/API_PC_017_PRODUCTION_READINESS_AUDIT_20260901.json"
+      ],
+      "repair_attempts": [
+        "Published explicit consumer handoffs and kept all new capabilities locally bounded and no-effect."
+      ],
+      "strategy_reset": "Treat UI and Sultan as independently releasable consumers with their own exact-head gates and evidence; producer tests cannot close these findings.",
+      "quarantine_scope": [
+        "growth-engine production SLO",
+        "Sultan production certification",
+        "independent productization consumption"
+      ],
+      "deferred_external_infra": [
+        "consumer repository implementation",
+        "queued background-worker deployment",
+        "provider sandboxes and readback"
+      ],
+      "resolved": false,
+      "resolution_ref": null,
+      "remaining_uncertainty": [
+        "The sampled traffic window is too small to estimate customer-facing reliability."
+      ],
+      "next_action": "Move DDL to migrations, queue/checkpoint the growth workload, restore Sultan routing/auth/provider readback, then certify exact consumer journeys."
     }
   ]
 }

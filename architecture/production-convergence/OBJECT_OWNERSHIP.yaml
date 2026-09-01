@@ -69,6 +69,24 @@
       "sourceVersion": "production-convergence-charter/2026-08-30"
     },
     {
+      "object": "TenantLicense",
+      "tier": "PLATFORM",
+      "currentOwner": "CIBOTFLOW/Luzione-API",
+      "targetMutationOwner": "CIBOTFLOW/Luzione-API",
+      "truthStore": "canonical-postgres:tenant_product_license_versions",
+      "migrationState": "API_VERSIONED_STORE_DEFAULT_OFF_PROVISIONING_NOT_IMPLEMENTED",
+      "sourceVersion": "luzione-tenant-license-entitlement/v0.1"
+    },
+    {
+      "object": "ModuleEntitlement",
+      "tier": "PLATFORM",
+      "currentOwner": "CIBOTFLOW/Luzione-API",
+      "targetMutationOwner": "CIBOTFLOW/Luzione-API",
+      "truthStore": "canonical-postgres:tenant_product_module_entitlements",
+      "migrationState": "API_VERSION_BOUND_STORE_DEFAULT_OFF_PROVISIONING_NOT_IMPLEMENTED",
+      "sourceVersion": "luzione-tenant-license-entitlement/v0.1"
+    },
+    {
       "object": "Product",
       "tier": "TIER_1",
       "currentOwner": "external:shopify",

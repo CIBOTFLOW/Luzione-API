@@ -135,6 +135,24 @@
       "effect": "NO_EFFECT"
     },
     {
+      "route_id": "productization-catalog-read",
+      "method": "GET",
+      "path": "/api/v1/productization",
+      "source_path": "src/app/api/v1/productization/route.ts",
+      "authentication": "public no-store definitions; no tenant entitlements",
+      "canonical_readback": "in-process productization catalog, licensing law and room-plan proposal bridge contract",
+      "effect": "NO_EFFECT"
+    },
+    {
+      "route_id": "license-entitlement-read",
+      "method": "GET",
+      "path": "/api/v1/licensing/entitlements",
+      "source_path": "src/app/api/v1/licensing/entitlements/route.ts",
+      "authentication": "credential-bound service actor with license.entitlement.read capability",
+      "canonical_readback": "tenant-scoped current license version and module entitlements from canonical Postgres",
+      "effect": "NO_EFFECT"
+    },
+    {
       "route_id": "shopify-catalog-projection-read",
       "method": "GET",
       "path": "/api/v1/catalog/shopify/projections",
@@ -397,6 +415,8 @@
   ],
   "database_relations": {
     "repo_migration_owned": [
+      "tenant_product_license_versions",
+      "tenant_product_module_entitlements",
       "tenant_field_definitions",
       "tenant_workflow_pack_settings",
       "workflow_pack_registry"

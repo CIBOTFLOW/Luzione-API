@@ -9,6 +9,9 @@ export const API_CONTRACT_RELEASE_COMPONENTS = Object.freeze([
   "luzione-readiness-evidence/v1",
   "luzione-release-identity/v0.1",
   "luzione-receipt-reference/v0.1",
+  "luzione-product-catalog/v0.1",
+  "luzione-tenant-license-entitlement/v0.1",
+  "luzione-room-plan-proposal-attachment/v0.1",
 ]);
 
 export const API_SCHEMA_VERSIONS = Object.freeze([

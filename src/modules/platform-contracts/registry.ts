@@ -678,6 +678,55 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
   {
     compatibility: "ADDITIVE_MINOR",
     consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
+    contractId: "product-catalog",
+    currentRuntime: true,
+    maturity: "IMPLEMENTED",
+    name: "Premium-home-goods customer, module, edition and market catalog",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: [],
+    sourcePaths: [
+      "src/modules/productization/catalog.ts",
+      "src/app/api/v1/productization/route.ts",
+      "contracts/productization/product-catalog-v0.1.schema.json"
+    ],
+    version: "luzione-product-catalog/v0.1",
+  },
+  {
+    compatibility: "NEW_MAJOR_FOR_BREAKING",
+    consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
+    contractId: "tenant-license-entitlement",
+    currentRuntime: true,
+    maturity: "IMPLEMENTED_TRANSITIONAL",
+    name: "Fresh canonical tenant license and module entitlement evaluation",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: ["API-PC-018:canonical-license-store-and-enforcement"],
+    sourcePaths: [
+      "src/modules/productization/licensing.ts",
+      "src/lib/productization/licenseReadService.ts",
+      "src/app/api/v1/licensing/entitlements/route.ts",
+      "contracts/productization/tenant-license-entitlement-v0.1.schema.json",
+      "supabase/migrations/20260901090000_tenant_product_license_versions.sql"
+    ],
+    version: "luzione-tenant-license-entitlement/v0.1",
+  },
+  {
+    compatibility: "EXACT_VERSION",
+    consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
+    contractId: "room-plan-proposal-attachment",
+    currentRuntime: false,
+    maturity: "LIBRARY_ONLY",
+    name: "Reviewed exact-version room-plan proposal attachment",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: ["API-PC-019:planner-outbox-and-proposal-consumer"],
+    sourcePaths: [
+      "src/modules/productization/roomPlannerProposal.ts",
+      "contracts/productization/room-plan-proposal-attachment-v0.1.schema.json"
+    ],
+    version: "luzione-room-plan-proposal-attachment/v0.1",
+  },
+  {
+    compatibility: "ADDITIVE_MINOR",
+    consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
     contractId: "openapi-http-catalog",
     currentRuntime: true,
     maturity: "IMPLEMENTED",

@@ -1,0 +1,222 @@
+{
+  "schema_version": 1,
+  "audit_id": "API_PC_017_PRODUCTION_READINESS_AUDIT_20260901",
+  "candidate_sha": "4ebc4b9280b480ba789712b29b4e84400663456b",
+  "observed_at": "2026-09-01T06:40:08.780Z",
+  "scope": [
+    "CIBOTFLOW/Luzione-UI",
+    "CIBOTFLOW/Luzione-API",
+    "CIBOTFLOW/Sultan-OS",
+    "CIBOTFLOW/Luzione-Room-Planner-MVP",
+    "canonical managed Postgres estate",
+    "room-planner managed Postgres estate"
+  ],
+  "overall_decision": "NOT_PRODUCTION_READY",
+  "decision_law": "Any open P0 security, managed-schema, availability, or release-provenance finding blocks production certification.",
+  "systems": [
+    {
+      "system": "Luzione UI",
+      "production_sha": "ea8da2e4d80557f03bf6e72ec93b294eaf603f48",
+      "deployment_id": "dpl_J5RgW7EjALzmiNr5pGghibFka1JH",
+      "state": "FUNCTIONAL_CORE_NOT_PRODUCTION_CERTIFIED",
+      "positive_evidence": [
+        "Authenticated Today, Growth, Accounts, Commercial Cases, Orders and Money surfaces rendered.",
+        "Commercial proposals use an eight-stage, human-reviewed workflow and exact-version language.",
+        "Security headers and authenticated route boundaries were present in sampled journeys."
+      ],
+      "blocking_evidence": [
+        "No independent exact-version cross-system release certificate exists.",
+        "A five-minute property-signals cron timed out twice in the sampled 24-hour log window.",
+        "Shopify catalog reconciliation failed once in the sampled window.",
+        "Canonical Postgres logs show repeated runtime create-table-if-not-exists statements from request paths.",
+        "The Vercel prebuild is narrower than the repository's available suite inventory."
+      ]
+    },
+    {
+      "system": "Luzione API",
+      "production_sha": "1d4e61b6a402cde0e7319f17895dac2881cb434e",
+      "deployment_id": "dpl_6nF6Dev39NCXtereDBb2XNrcLChJ",
+      "state": "BLOCKED_FAIL_CLOSED",
+      "positive_evidence": [
+        "GET /api/v1/livez returned 200 LIVE.",
+        "Mutations remain DISABLED_FAIL_CLOSED and external effects remain unauthorized.",
+        "Release identity publishes an exact repository SHA and deployment ID."
+      ],
+      "blocking_evidence": [
+        "GET /api/v1/healthz returned 503 SECURITY_POSTURE_REQUIRED with 40 expected tables, 39 observed tables and 61 violations.",
+        "order_fulfillment_intents is absent from the managed schema.",
+        "The production release reports only two applied API schema versions and DEPLOYED_INCOMPLETE.",
+        "Safe runtime and worker roles are absent and the managed grants/RLS posture has not converged to the repository migration chain.",
+        "GET /api/v1/readyz returned both 200 and 503 during bounded low-volume observation, so dependency readiness is intermittent.",
+        "Database TLS is ENCRYPTED_UNVERIFIED.",
+        "The API Vercel project is not discoverable in the connected team project inventory even though the domain is serving a deployment."
+      ]
+    },
+    {
+      "system": "Sultan OS",
+      "production_sha": "77c81afd7995581be7d6bb564eb10eceab057290",
+      "deployment_id": "dpl_G3MTEHPda9hnFYZ7ZVC4MtBR4LCa",
+      "state": "DEGRADED_NOT_CERTIFIED",
+      "positive_evidence": [
+        "The read-only operator plane rendered and bounded its claims.",
+        "Cognition, learning and chat evidence are exposed without granting business-write authority."
+      ],
+      "blocking_evidence": [
+        "Model routing reported 20 successes from 27 calls, a 0.7407 success rate.",
+        "Shopify synchronization is stale.",
+        "Google Docs is configured but artifact generation/readback is not verified.",
+        "Ask Sultan operator authentication is not configured.",
+        "Only four 200 responses were present in the sampled 24-hour Vercel log window, which is insufficient reliability evidence.",
+        "Live provider, doctrine and quality campaigns are opt-in and were not release-gate evidence."
+      ]
+    },
+    {
+      "system": "Luzione Room Planner",
+      "production_sha": null,
+      "deployment_id": "WITHHELD_UNTIL_SECURITY_CONTAINMENT",
+      "state": "CRITICAL_SECURITY_AND_RUNTIME_BLOCK",
+      "positive_evidence": [
+        "The source schema contains versionable project, room, concept, generated-document and integration-outbox primitives suitable for a proposal bridge.",
+        "Repository CI includes disposable Postgres, Prisma, RLS-lockdown, test, typecheck and build jobs."
+      ],
+      "blocking_evidence": [
+        "The production /app route rendered an Unhandled Thrown Response with visible text 200.",
+        "Seven 500 responses appeared in the sampled seven-day logs, including bad UUID, session-table and Shopify failures.",
+        "The managed tenant-isolation and least-privilege gate failed critically; exploit-specific counts and role/table details are withheld from this public artifact until containment.",
+        "The managed database has not applied the repository's current lockdown migration.",
+        "The production deployment is CLI-sourced and has no discoverable Git commit provenance.",
+        "CI uses Node 20.19 while Vercel currently runs Node 24."
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "LPR-001",
+      "priority": "P0",
+      "severity": "CRITICAL",
+      "owner": "CIBOTFLOW/Luzione-Room-Planner-MVP",
+      "title": "Room Planner managed tenant-isolation and least-privilege gate failed",
+      "release_block": true,
+      "required_action": "Contain the managed data surface, restore least privilege and forced tenant isolation, run anonymous/authenticated/cross-tenant negative probes, review access logs, and rotate affected credentials if exposure analysis shows they were reachable."
+    },
+    {
+      "id": "LPR-002",
+      "priority": "P0",
+      "severity": "CRITICAL",
+      "owner": "CIBOTFLOW/Luzione-Room-Planner-MVP",
+      "title": "Room Planner production application is broken and unprovenanced",
+      "release_block": true,
+      "required_action": "Repair /app, session bootstrap and UUID validation; deploy from an exact Git SHA only after preview tests and rollback rehearsal."
+    },
+    {
+      "id": "LPR-003",
+      "priority": "P0",
+      "severity": "CRITICAL",
+      "owner": "CIBOTFLOW/Luzione-API",
+      "title": "API managed schema and least-privilege posture have not converged",
+      "release_block": true,
+      "required_action": "Apply the exact migration chain in a managed preview, provision safe roles, prove denials and rollback, canary the consumers, then promote with exact migration checksums."
+    },
+    {
+      "id": "LPR-004",
+      "priority": "P0",
+      "severity": "ERROR",
+      "owner": "CIBOTFLOW/Luzione-API",
+      "title": "API dependency readiness is intermittent",
+      "release_block": true,
+      "required_action": "Diagnose pooler, cold-start and database connectivity latency using correlated traces; establish a sustained healthy observation window before certification."
+    },
+    {
+      "id": "LPR-005",
+      "priority": "P1",
+      "severity": "ERROR",
+      "owner": "CIBOTFLOW/Luzione-UI",
+      "title": "Request paths perform runtime schema creation",
+      "release_block": true,
+      "required_action": "Move manual connector and Sultan chat table creation into owned, checksummed migrations and remove request-time DDL."
+    },
+    {
+      "id": "LPR-006",
+      "priority": "P1",
+      "severity": "DEGRADED",
+      "owner": "CIBOTFLOW/Luzione-UI",
+      "title": "Long-running property-signal work exceeds function limits",
+      "release_block": true,
+      "required_action": "Checkpoint and queue the workload, make it idempotent, and prove bounded retry, dead-letter and reconciliation behavior."
+    },
+    {
+      "id": "LPR-007",
+      "priority": "P1",
+      "severity": "DEGRADED",
+      "owner": "CIBOTFLOW/Sultan-OS",
+      "title": "Sultan routing and provider evidence is degraded",
+      "release_block": true,
+      "required_action": "Restore routing success, authenticate operators, prove document generation/readback and Shopify freshness, then collect representative quality and reliability windows."
+    },
+    {
+      "id": "LPR-008",
+      "priority": "P1",
+      "severity": "ERROR",
+      "owner": "cross-system",
+      "title": "No exact-version end-to-end release certification exists",
+      "release_block": true,
+      "required_action": "Certify tenant isolation, lead-to-case-to-proposal-to-quote-to-order-to-fulfillment, room-plan attachment, failure/retry/readback, canary, rollback and restore across exact SHAs."
+    },
+    {
+      "id": "LPR-009",
+      "priority": "P1",
+      "severity": "ERROR",
+      "owner": "CIBOTFLOW/Luzione-UI",
+      "title": "Room-plan proposal consumption is not implemented",
+      "release_block": true,
+      "required_action": "Consume luzione-room-plan-proposal-attachment/v0.1 as proposal evidence before final review, while keeping pricing, send and acceptance authority separate."
+    },
+    {
+      "id": "LPR-010",
+      "priority": "P1",
+      "severity": "ERROR",
+      "owner": "cross-system",
+      "title": "Licensing has no deployed tenant authority or billing lifecycle",
+      "release_block": true,
+      "required_action": "Review and migrate the API-owned append-versioned license store, add audited provisioning/billing commands, usage metering, grace/cancellation policy and independent entitlement enforcement."
+    },
+    {
+      "id": "LPR-011",
+      "priority": "P2",
+      "severity": "DEGRADED",
+      "owner": "database owners",
+      "title": "Managed Postgres estates have significant advisor debt",
+      "release_block": false,
+      "required_action": "Prioritize unindexed foreign keys, RLS init-plan patterns, mutable search paths, public extensions and duplicate indexes using measured query evidence."
+    },
+    {
+      "id": "LPR-012",
+      "priority": "P2",
+      "severity": "DEGRADED",
+      "owner": "cross-system",
+      "title": "Runtime and CI Node versions are not pinned consistently",
+      "release_block": false,
+      "required_action": "Select one supported Node line for CI and runtime, pin it, and add version-drift detection."
+    }
+  ],
+  "test_scope": {
+    "performed": [
+      "read-only production HTTP probes",
+      "authenticated UI and Sultan browser journeys",
+      "Vercel deployment, build and runtime-log inspection",
+      "Supabase schema, privilege, RLS, migration, log and advisor inspection",
+      "repository architecture and release-gate review",
+      "local typecheck, lint, 225-test suite, production build and dependency audit"
+    ],
+    "not_performed": [
+      "destructive penetration testing",
+      "production writes or external provider effects",
+      "production load or soak testing",
+      "managed restore or point-in-time recovery",
+      "production migration application",
+      "independent consumer implementation of new contracts"
+    ]
+  },
+  "effect_authority": "NO_EFFECT",
+  "finality": "BOUNDED_ASSESSMENT_NOT_CERTIFICATION"
+}

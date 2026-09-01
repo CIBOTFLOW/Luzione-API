@@ -82,6 +82,46 @@ export const workflowPacks: readonly WorkflowPack[] = Object.freeze([
     capabilities: ["lead.score", "opportunity.next_action.create", "proposal.artifact.create"],
     maximumEffectClass: "A1",
   },
+  {
+    code: "luxury.supplier_onboarding",
+    name: "Premium supplier onboarding",
+    outcome: "Review supplier evidence, catalog quality and next actions without self-approving a supplier.",
+    vertical: "LUXURY_HOME",
+    capabilities: ["analysis.read", "partner.next_action.create", "catalog.correction.propose"],
+    maximumEffectClass: "A1",
+  },
+  {
+    code: "luxury.import_fulfillment",
+    name: "International import fulfillment",
+    outcome: "Evaluate and plan product, freight, document and delivery readiness without provider effects.",
+    vertical: "LUXURY_HOME",
+    capabilities: ["fulfillment.readiness.evaluate", "fulfillment.plan.create", "task.internal.create"],
+    maximumEffectClass: "A1",
+  },
+  {
+    code: "luxury.trade_compliance_review",
+    name: "Trade compliance review",
+    outcome: "Assemble effective-dated source evidence and route unresolved import/export requirements to human review.",
+    vertical: "LUXURY_HOME",
+    capabilities: ["analysis.read", "fulfillment.readiness.evaluate", "task.internal.create"],
+    maximumEffectClass: "A1",
+  },
+  {
+    code: "luxury.white_glove_delivery",
+    name: "White-glove delivery coordination",
+    outcome: "Plan and, only when separately approved, book a customer, carrier, warehouse and installer delivery window.",
+    vertical: "LUXURY_HOME",
+    capabilities: ["fulfillment.readiness.evaluate", "task.internal.create", "calendar.meeting.book"],
+    maximumEffectClass: "A3",
+  },
+  {
+    code: "luxury.room_plan_to_proposal",
+    name: "Room plan to proposal",
+    outcome: "Validate a reviewed exact-version room plan and attach it to an internal proposal revision.",
+    vertical: "LUXURY_HOME",
+    capabilities: ["analysis.read", "proposal.room_plan.attach", "proposal.revision.create"],
+    maximumEffectClass: "A1",
+  },
 ]);
 
 export function workflowPack(code: string) {

@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/productization/product-catalog-v0.1.schema.json",
+  "title": "Luzione Product Catalog v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contractVersion", "customerProfiles", "editions", "marketRollout", "modules"],
+  "properties": {
+    "contractVersion": { "const": "luzione-product-catalog/v0.1" },
+    "customerProfiles": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["recommendedModuleIds", "segment", "summary"],
+        "properties": {
+          "recommendedModuleIds": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "$ref": "#/$defs/moduleId" }
+          },
+          "segment": {
+            "enum": ["DESIGN_FIRM", "INTERNATIONAL_DISTRIBUTOR", "PROCUREMENT_SHOP"]
+          },
+          "summary": { "type": "string", "minLength": 1, "maxLength": 1000 }
+        }
+      }
+    },
+    "editions": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["editionId", "moduleIds", "name"],
+        "properties": {
+          "editionId": { "enum": ["AI_OCRMS", "IMPORT_OPERATIONS", "DESIGN_COMMERCE", "ENTERPRISE"] },
+          "moduleIds": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "$ref": "#/$defs/moduleId" }
+          },
+          "name": { "type": "string", "minLength": 1, "maxLength": 500 }
+        }
+      }
+    },
+    "marketRollout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["destinationMarket", "originPhases", "regulatoryDataLaw"],
+      "properties": {
+        "destinationMarket": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["countryCode", "countryName"],
+          "properties": {
+            "countryCode": { "const": "US" },
+            "countryName": { "const": "United States" }
+          }
+        },
+        "originPhases": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["countries", "phase"],
+            "properties": {
+              "countries": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["countryCode", "countryName"],
+                  "properties": {
+                    "countryCode": {
+                      "enum": ["IT", "DK", "PT", "ES", "TR", "FR", "NL", "MA", "IN", "SE", "JP", "VN", "DE"]
+                    },
+                    "countryName": { "type": "string", "minLength": 1, "maxLength": 100 }
+                  }
+                }
+              },
+              "phase": { "enum": [1, 2] }
+            }
+          }
+        },
+        "regulatoryDataLaw": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["aiMayCreateLegalFinality", "effectiveDatedSourceRequired", "humanReviewRequired", "sourceAuthorityRequired"],
+          "properties": {
+            "aiMayCreateLegalFinality": { "const": false },
+            "effectiveDatedSourceRequired": { "const": true },
+            "humanReviewRequired": { "const": true },
+            "sourceAuthorityRequired": { "const": true }
+          }
+        }
+      }
+    },
+    "modules": {
+      "type": "array",
+      "minItems": 17,
+      "maxItems": 17,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["dependencies", "deliveryStage", "id", "name", "outcome", "workflowPackCodes"],
+        "properties": {
+          "dependencies": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "$ref": "#/$defs/moduleId" }
+          },
+          "deliveryStage": { "enum": ["CONTRACT_FOUNDATION", "INTEGRATION_PENDING", "PLANNED"] },
+          "id": { "$ref": "#/$defs/moduleId" },
+          "name": { "type": "string", "minLength": 1, "maxLength": 500 },
+          "outcome": { "type": "string", "minLength": 1, "maxLength": 2000 },
+          "workflowPackCodes": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1, "maxLength": 200 }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "moduleId": {
+      "enum": [
+        "supplier.onboarding",
+        "crm.lead-management",
+        "crm.accounts-opportunities",
+        "growth.engine",
+        "finance.money-dashboards",
+        "operations.orders-delivery",
+        "work.task-management",
+        "service.customer-experience",
+        "logistics.international-shipping",
+        "fulfillment.end-to-end-quoting",
+        "trade.import-export-compliance",
+        "partners.service-provider-network",
+        "ai.operating-system",
+        "delivery.white-glove-scheduling",
+        "commercial.proposals",
+        "commercial.quotes",
+        "design.room-planner"
+      ]
+    }
+  }
+}

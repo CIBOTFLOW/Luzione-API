@@ -11,6 +11,9 @@
     "receiptReference": "contracts/receipts/receipt-reference-v0.1.schema.json",
     "tableObject": "contracts/objects/luzione-table-object-registry-v1.schema.json",
     "productionConvergenceEvidence": "contracts/operations/luzione-production-convergence-evidence-v0.1.schema.json",
+    "productCatalog": "contracts/productization/product-catalog-v0.1.schema.json",
+    "tenantLicenseEntitlement": "contracts/productization/tenant-license-entitlement-v0.1.schema.json",
+    "roomPlanProposalAttachment": "contracts/productization/room-plan-proposal-attachment-v0.1.schema.json",
     "sultanAgentContext": "contracts/sultan/agent-context-v0.1.schema.json",
     "sultanAgentIntent": "contracts/sultan/agent-intent-v0.1.schema.json",
     "sultanAgentPolicyDecision": "contracts/sultan/agent-policy-decision-v0.1.schema.json",
@@ -36,7 +39,10 @@
     "luzione-platform-failure/v1",
     "luzione-readiness-evidence/v1",
     "luzione-release-identity/v0.1",
-    "luzione-receipt-reference/v0.1"
+    "luzione-receipt-reference/v0.1",
+    "luzione-product-catalog/v0.1",
+    "luzione-tenant-license-entitlement/v0.1",
+    "luzione-room-plan-proposal-attachment/v0.1"
   ],
   "consumerRules": [
     "Consumers ignore unknown optional fields without changing known meanings.",

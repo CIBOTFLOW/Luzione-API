@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/productization/room-plan-proposal-attachment-v0.1.schema.json",
+  "title": "Luzione Room Plan Proposal Attachment v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "artifactDigest",
+    "attachmentId",
+    "authority",
+    "commercialCaseId",
+    "contractVersion",
+    "generatedDocument",
+    "integrationState",
+    "plannerProject",
+    "proposalContextVersionId",
+    "review",
+    "rooms",
+    "tenantId"
+  ],
+  "properties": {
+    "artifactDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "attachmentId": { "type": "string", "minLength": 1, "maxLength": 500 },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bindingAcceptanceAuthorized",
+        "customerSendAuthorized",
+        "pricingAuthoritative"
+      ],
+      "properties": {
+        "bindingAcceptanceAuthorized": { "const": false },
+        "customerSendAuthorized": { "const": false },
+        "pricingAuthoritative": { "const": false }
+      }
+    },
+    "commercialCaseId": { "type": "string", "minLength": 1, "maxLength": 500 },
+    "contractVersion": { "const": "luzione-room-plan-proposal-attachment/v0.1" },
+    "generatedDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assetId", "documentId", "documentType", "version"],
+      "properties": {
+        "assetId": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "documentId": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "documentType": { "enum": ["PROJECT_SUMMARY", "CLIENT_PRESENTATION"] },
+        "version": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "integrationState": { "enum": ["DRAFT", "REVIEWED", "SUPERSEDED"] },
+    "plannerProject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["projectId", "projectVersion", "sourceSystem"],
+      "properties": {
+        "projectId": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "projectVersion": { "type": "integer", "minimum": 1 },
+        "sourceSystem": { "const": "LUZIONE_ROOM_PLANNER" }
+      }
+    },
+    "proposalContextVersionId": { "type": "string", "minLength": 1, "maxLength": 500 },
+    "review": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["decisionId", "reviewedAt", "reviewerActorRef"],
+          "properties": {
+            "decisionId": { "type": "string", "minLength": 1, "maxLength": 500 },
+            "reviewedAt": { "type": "string", "format": "date-time" },
+            "reviewerActorRef": { "type": "string", "minLength": 1, "maxLength": 500 }
+          }
+        },
+        { "type": "null" }
+      ]
+    },
+    "rooms": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["conceptId", "roomId", "roomVersion", "selectedProducts"],
+        "properties": {
+          "conceptId": {
+            "oneOf": [
+              { "type": "string", "minLength": 1, "maxLength": 500 },
+              { "type": "null" }
+            ]
+          },
+          "roomId": { "type": "string", "minLength": 1, "maxLength": 500 },
+          "roomVersion": { "type": "integer", "minimum": 1 },
+          "selectedProducts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["configurationSnapshotId", "quantity", "roomProductId"],
+              "properties": {
+                "configurationSnapshotId": {
+                  "oneOf": [
+                    { "type": "string", "minLength": 1, "maxLength": 500 },
+                    { "type": "null" }
+                  ]
+                },
+                "quantity": { "type": "integer", "minimum": 1 },
+                "roomProductId": { "type": "string", "minLength": 1, "maxLength": 500 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "tenantId": { "type": "string", "minLength": 1, "maxLength": 500 }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "integrationState": { "const": "REVIEWED" } },
+        "required": ["integrationState"]
+      },
+      "then": { "properties": { "review": { "type": "object" } } }
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/productization/tenant-license-entitlement-v0.1.schema.json",
+  "title": "Luzione Tenant License Entitlement v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contractVersion",
+    "editionId",
+    "effectiveAt",
+    "expiresAt",
+    "integrity",
+    "licenseId",
+    "licenseVersion",
+    "moduleEntitlements",
+    "observedAt",
+    "snapshotExpiresAt",
+    "status",
+    "tenantId"
+  ],
+  "properties": {
+    "contractVersion": { "const": "luzione-tenant-license-entitlement/v0.1" },
+    "editionId": {
+      "enum": ["AI_OCRMS", "IMPORT_OPERATIONS", "DESIGN_COMMERCE", "ENTERPRISE"]
+    },
+    "effectiveAt": { "type": "string", "format": "date-time" },
+    "expiresAt": {
+      "oneOf": [
+        { "type": "string", "format": "date-time" },
+        { "type": "null" }
+      ]
+    },
+    "integrity": { "enum": ["VERIFIED_CANONICAL_STORE", "UNVERIFIED"] },
+    "licenseId": { "type": "string", "minLength": 1, "maxLength": 500 },
+    "licenseVersion": { "type": "integer", "minimum": 1 },
+    "moduleEntitlements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["accessMode", "enabled", "limits", "moduleId"],
+        "properties": {
+          "accessMode": { "enum": ["READ", "INTERNAL_WRITE", "EXTERNAL_EFFECT"] },
+          "enabled": { "type": "boolean" },
+          "limits": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "moduleId": {
+            "enum": [
+              "supplier.onboarding",
+              "crm.lead-management",
+              "crm.accounts-opportunities",
+              "growth.engine",
+              "finance.money-dashboards",
+              "operations.orders-delivery",
+              "work.task-management",
+              "service.customer-experience",
+              "logistics.international-shipping",
+              "fulfillment.end-to-end-quoting",
+              "trade.import-export-compliance",
+              "partners.service-provider-network",
+              "ai.operating-system",
+              "delivery.white-glove-scheduling",
+              "commercial.proposals",
+              "commercial.quotes",
+              "design.room-planner"
+            ]
+          }
+        }
+      }
+    },
+    "observedAt": { "type": "string", "format": "date-time" },
+    "snapshotExpiresAt": { "type": "string", "format": "date-time" },
+    "status": {
+      "enum": ["TRIAL", "ACTIVE", "PAST_DUE", "SUSPENDED", "EXPIRED", "CANCELLED"]
+    },
+    "tenantId": { "type": "string", "minLength": 1, "maxLength": 500 }
+  }
+}

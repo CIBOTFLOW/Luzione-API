@@ -28,6 +28,22 @@
       "entrypoint": "GET /api/v1/catalog"
     },
     {
+      "capabilityId": "productization-catalog-read",
+      "owner": "CIBOTFLOW/Luzione-API",
+      "effectClass": "NO_EFFECT",
+      "runtimeState": "IMPLEMENTED_READ_ONLY",
+      "contractVersion": "luzione-product-catalog/v0.1",
+      "entrypoint": "GET /api/v1/productization"
+    },
+    {
+      "capabilityId": "tenant-license-entitlement-read",
+      "owner": "CIBOTFLOW/Luzione-API",
+      "effectClass": "NO_EFFECT",
+      "runtimeState": "IMPLEMENTED_LOCAL_MIGRATION_NOT_APPLIED_PROVISIONING_DISABLED",
+      "contractVersion": "luzione-tenant-license-entitlement/v0.1",
+      "entrypoint": "GET /api/v1/licensing/entitlements"
+    },
+    {
       "capabilityId": "health-readiness-read",
       "owner": "CIBOTFLOW/Luzione-API",
       "effectClass": "NO_EFFECT",

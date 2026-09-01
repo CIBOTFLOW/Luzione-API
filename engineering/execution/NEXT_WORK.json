@@ -23,10 +23,31 @@
     "strategy_reset_attempts": 1
   },
   "evidence_dimensions": {
-    "engineering_state": ["SPECIFIED", "CONTRACT_STABLE", "IMPLEMENTED", "BOUNDED_PASS", "INTEGRATED_PASS"],
-    "release_evidence": ["NOT_ASSESSED", "DEFERRED_EXTERNAL_INFRA", "LOCAL_PROVEN", "PREVIEW_PROVEN", "PRODUCTION_OBSERVED"],
-    "effect_authority": ["NO_EFFECT", "SANDBOX_ONLY", "LIVE_EFFECT_AUTHORIZED"],
-    "finality": ["NOT_FINAL", "BOUNDED_CLAIM", "RELEASE_CANDIDATE", "PRODUCTION_OBSERVED_FINAL_FOR_SCOPE"]
+    "engineering_state": [
+      "SPECIFIED",
+      "CONTRACT_STABLE",
+      "IMPLEMENTED",
+      "BOUNDED_PASS",
+      "INTEGRATED_PASS"
+    ],
+    "release_evidence": [
+      "NOT_ASSESSED",
+      "DEFERRED_EXTERNAL_INFRA",
+      "LOCAL_PROVEN",
+      "PREVIEW_PROVEN",
+      "PRODUCTION_OBSERVED"
+    ],
+    "effect_authority": [
+      "NO_EFFECT",
+      "SANDBOX_ONLY",
+      "LIVE_EFFECT_AUTHORIZED"
+    ],
+    "finality": [
+      "NOT_FINAL",
+      "BOUNDED_CLAIM",
+      "RELEASE_CANDIDATE",
+      "PRODUCTION_OBSERVED_FINAL_FOR_SCOPE"
+    ]
   },
   "stop_codes": {
     "S1_IRREVERSIBLE_EXTERNAL_EFFECT": "Stop immediately before an actual external/destructive effect if no already-tested recovery path can restore materially equivalent internal and affected external state.",
@@ -42,9 +63,19 @@
       "priority": 400,
       "status": "COMPLETE",
       "depends_on": [],
-      "mutation_cone": ["docs", "architecture", "discovery", "metadata"],
+      "mutation_cone": [
+        "docs",
+        "architecture",
+        "discovery",
+        "metadata"
+      ],
       "core_outcome": "Inventory actual services, deployables, stores, providers, health sources, dependencies and semantic owners across the API repository and existing published cross-system contracts. Reconcile duplicates before adding new platform machinery.",
-      "published_artifacts": ["service inventory", "dependency inventory", "ownership conflicts", "cross-repo handoffs"],
+      "published_artifacts": [
+        "service inventory",
+        "dependency inventory",
+        "ownership conflicts",
+        "cross-repo handoffs"
+      ],
       "irreversible_effects": [],
       "completion_evidence_ref": "API_SE_001_LOCAL_PROOF_20260829"
     },
@@ -54,10 +85,21 @@
       "title": "Shared Contract Registry and Compatibility Law",
       "priority": 399,
       "status": "COMPLETE",
-      "depends_on": ["API_SE_001"],
-      "mutation_cone": ["contracts", "api", "docs", "tests"],
+      "depends_on": [
+        "API_SE_001"
+      ],
+      "mutation_cone": [
+        "contracts",
+        "api",
+        "docs",
+        "tests"
+      ],
       "core_outcome": "Establish the canonical versioned registry for shared envelopes, commands, events, receipts, failures, state, service metadata and compatibility rules; expose/generate OpenAPI for HTTP contracts where practical without rewriting stable endpoints merely for style.",
-      "published_artifacts": ["contract registry", "compatibility matrix", "consumer handoff"],
+      "published_artifacts": [
+        "contract registry",
+        "compatibility matrix",
+        "consumer handoff"
+      ],
       "irreversible_effects": [],
       "completion_evidence_ref": "API_SE_002_LOCAL_PROOF_20260829"
     },
@@ -67,10 +109,21 @@
       "title": "Source-of-Truth and Consistency Registry",
       "priority": 398,
       "status": "COMPLETE",
-      "depends_on": ["API_SE_001"],
-      "mutation_cone": ["data-contracts", "architecture", "docs", "tests"],
+      "depends_on": [
+        "API_SE_001"
+      ],
+      "mutation_cone": [
+        "data-contracts",
+        "architecture",
+        "docs",
+        "tests"
+      ],
       "core_outcome": "Create the canonical mapping for major entities and projections to truth owner, store/provider, mutation owner, read models, consistency, reconciliation, conflict strategy and version identity. Detect duplicate write ownership explicitly.",
-      "published_artifacts": ["truth registry", "duplicate-owner findings", "consumer handoff"],
+      "published_artifacts": [
+        "truth registry",
+        "duplicate-owner findings",
+        "consumer handoff"
+      ],
       "irreversible_effects": [],
       "completion_evidence_ref": "API_SE_003_LOCAL_PROOF_20260829"
     },
@@ -80,10 +133,22 @@
       "title": "Universal Request Identity and Correlation Envelope",
       "priority": 397,
       "status": "COMPLETE",
-      "depends_on": ["API_SE_002"],
-      "mutation_cone": ["http", "auth", "contracts", "telemetry", "tests"],
+      "depends_on": [
+        "API_SE_002"
+      ],
+      "mutation_cone": [
+        "http",
+        "auth",
+        "contracts",
+        "telemetry",
+        "tests"
+      ],
       "core_outcome": "Converge request, correlation, trace, actor, tenant, purpose, capability, authority, contract version and idempotency context at the API boundary while preserving fail-closed server-derived authority.",
-      "published_artifacts": ["identity envelope contract", "propagation tests", "UI/Sultan consumer handoff"],
+      "published_artifacts": [
+        "identity envelope contract",
+        "propagation tests",
+        "UI/Sultan consumer handoff"
+      ],
       "irreversible_effects": [],
       "completion_evidence_ref": "API_SE_004_LOCAL_PROOF_20260829"
     },
@@ -93,10 +158,22 @@
       "title": "Universal Failure Taxonomy and Retry Contract",
       "priority": 396,
       "status": "COMPLETE",
-      "depends_on": ["API_SE_002"],
-      "mutation_cone": ["errors", "http", "integrations", "workflows", "tests"],
+      "depends_on": [
+        "API_SE_002"
+      ],
+      "mutation_cone": [
+        "errors",
+        "http",
+        "integrations",
+        "workflows",
+        "tests"
+      ],
       "core_outcome": "Map stable domain/class/retry/severity semantics across API endpoints and provider adapters, preserving bounded provider details while giving UI and Sultan one machine-readable failure contract.",
-      "published_artifacts": ["failure registry", "retry contract", "consumer handoff"],
+      "published_artifacts": [
+        "failure registry",
+        "retry contract",
+        "consumer handoff"
+      ],
       "irreversible_effects": [],
       "completion_evidence_ref": "API_SE_005_LOCAL_PROOF_20260829"
     },
@@ -106,10 +183,23 @@
       "title": "Universal Decision, Action, Execution and Readback Receipts",
       "priority": 395,
       "status": "COMPLETE",
-      "depends_on": ["API_SE_002", "API_SE_004"],
-      "mutation_cone": ["receipts", "events", "commands", "audit", "tests"],
+      "depends_on": [
+        "API_SE_002",
+        "API_SE_004"
+      ],
+      "mutation_cone": [
+        "receipts",
+        "events",
+        "commands",
+        "audit",
+        "tests"
+      ],
       "core_outcome": "Converge receipt semantics so intent, approval, execution, provider acknowledgement, authoritative readback, recovery and release evidence are addressable and never conflated.",
-      "published_artifacts": ["receipt contract", "receipt lineage rules", "consumer handoff"],
+      "published_artifacts": [
+        "receipt contract",
+        "receipt lineage rules",
+        "consumer handoff"
+      ],
       "irreversible_effects": [],
       "completion_evidence_ref": "API_SE_006_LOCAL_PROOF_20260829"
     },
@@ -119,10 +209,23 @@
       "title": "Desired, Observed and Reconciliation State Contract",
       "priority": 394,
       "status": "COMPLETE",
-      "depends_on": ["API_SE_002", "API_SE_003"],
-      "mutation_cone": ["health", "integrations", "workflows", "contracts", "tests"],
+      "depends_on": [
+        "API_SE_002",
+        "API_SE_003"
+      ],
+      "mutation_cone": [
+        "health",
+        "integrations",
+        "workflows",
+        "contracts",
+        "tests"
+      ],
       "core_outcome": "Define and implement shared desired/observed/freshness/reconciliation semantics for provider, service and workflow state so configuration cannot masquerade as observed health.",
-      "published_artifacts": ["state contract", "freshness rules", "consumer handoff"],
+      "published_artifacts": [
+        "state contract",
+        "freshness rules",
+        "consumer handoff"
+      ],
       "irreversible_effects": [],
       "completion_evidence_ref": "API_SE_007_LOCAL_PROOF_20260829"
     },
@@ -132,10 +235,25 @@
       "title": "OpenTelemetry-Compatible Observability Spine",
       "priority": 393,
       "status": "COMPLETE",
-      "depends_on": ["API_SE_004", "API_SE_005", "API_SE_006"],
-      "mutation_cone": ["instrumentation", "telemetry", "logging", "metrics", "tracing", "tests"],
+      "depends_on": [
+        "API_SE_004",
+        "API_SE_005",
+        "API_SE_006"
+      ],
+      "mutation_cone": [
+        "instrumentation",
+        "telemetry",
+        "logging",
+        "metrics",
+        "tracing",
+        "tests"
+      ],
       "core_outcome": "Create stable trace propagation, structured redacted logs and metrics from API entrypoint through canonical owners/readback without making telemetry a second business truth store.",
-      "published_artifacts": ["telemetry semantic convention", "trace propagation proof", "consumer handoff"],
+      "published_artifacts": [
+        "telemetry semantic convention",
+        "trace propagation proof",
+        "consumer handoff"
+      ],
       "irreversible_effects": [],
       "completion_evidence_ref": "API_SE_008_LOCAL_PROOF_20260829"
     },
@@ -145,10 +263,24 @@
       "title": "Service Catalog, Dependency Graph and Runbook Registry",
       "priority": 392,
       "status": "COMPLETE",
-      "depends_on": ["API_SE_001", "API_SE_002", "API_SE_003"],
-      "mutation_cone": ["service-catalog", "architecture", "operations", "docs", "tests"],
+      "depends_on": [
+        "API_SE_001",
+        "API_SE_002",
+        "API_SE_003"
+      ],
+      "mutation_cone": [
+        "service-catalog",
+        "architecture",
+        "operations",
+        "docs",
+        "tests"
+      ],
       "core_outcome": "Publish discoverable service identity, owner, tier, repository/runtime, dependencies, contracts, truth scope, SLO refs, runbooks, dashboards and deployment identity; accept consumer records through versioned handoff rather than guessed metadata.",
-      "published_artifacts": ["service catalog", "dependency graph", "runbook registry"],
+      "published_artifacts": [
+        "service catalog",
+        "dependency graph",
+        "runbook registry"
+      ],
       "irreversible_effects": [],
       "completion_evidence_ref": "API_SE_009_LOCAL_PROOF_20260829"
     },
@@ -158,10 +290,23 @@
       "title": "SLI, SLO and Error-Budget Framework",
       "priority": 391,
       "status": "COMPLETE",
-      "depends_on": ["API_SE_008", "API_SE_009"],
-      "mutation_cone": ["metrics", "slo", "operations", "docs", "tests"],
+      "depends_on": [
+        "API_SE_008",
+        "API_SE_009"
+      ],
+      "mutation_cone": [
+        "metrics",
+        "slo",
+        "operations",
+        "docs",
+        "tests"
+      ],
       "core_outcome": "Define measurable platform, capability and business SLIs with windows, targets, measurement sources, ownership, alert/runbook links and error-budget semantics. Keep zero-tolerance security controls separate from ordinary availability targets.",
-      "published_artifacts": ["SLI registry", "SLO registry", "consumer handoff"],
+      "published_artifacts": [
+        "SLI registry",
+        "SLO registry",
+        "consumer handoff"
+      ],
       "irreversible_effects": [],
       "completion_evidence_ref": "API_SE_010_LOCAL_PROOF_20260829"
     },
@@ -171,10 +316,24 @@
       "title": "Production Truth and Readiness Evidence Model",
       "priority": 390,
       "status": "COMPLETE",
-      "depends_on": ["API_SE_007", "API_SE_008", "API_SE_010"],
-      "mutation_cone": ["health", "evidence", "operations", "api", "tests"],
+      "depends_on": [
+        "API_SE_007",
+        "API_SE_008",
+        "API_SE_010"
+      ],
+      "mutation_cone": [
+        "health",
+        "evidence",
+        "operations",
+        "api",
+        "tests"
+      ],
       "core_outcome": "Make status derivable from observed evidence with explicit source, freshness, threshold, impact, owner and evidence tier. Preserve distinctions among configured, bounded, preview-proven and production-observed states.",
-      "published_artifacts": ["readiness contract", "evidence aggregation", "consumer handoff"],
+      "published_artifacts": [
+        "readiness contract",
+        "evidence aggregation",
+        "consumer handoff"
+      ],
       "irreversible_effects": [],
       "completion_evidence_ref": "API_SE_011_LOCAL_PROOF_20260829"
     },
@@ -184,10 +343,24 @@
       "title": "Deployment Provenance, Canary and Rollback Contract",
       "priority": 389,
       "status": "COMPLETE",
-      "depends_on": ["API_SE_006", "API_SE_008", "API_SE_011"],
-      "mutation_cone": ["release", "deploy", "health", "receipts", "tests"],
+      "depends_on": [
+        "API_SE_006",
+        "API_SE_008",
+        "API_SE_011"
+      ],
+      "mutation_cone": [
+        "release",
+        "deploy",
+        "health",
+        "receipts",
+        "tests"
+      ],
       "core_outcome": "Bind candidate SHA, deployment, contract/migration versions, verification, canary observations, rollback capability, promotion decision and production observation into an auditable release record.",
-      "published_artifacts": ["release receipt", "canary contract", "rollback evidence contract"],
+      "published_artifacts": [
+        "release receipt",
+        "canary contract",
+        "rollback evidence contract"
+      ],
       "irreversible_effects": [],
       "completion_evidence_ref": "API_SE_012_LOCAL_PROOF_20260829"
     },
@@ -197,10 +370,23 @@
       "title": "Performance, Capacity, Load and Soak Program",
       "priority": 388,
       "status": "COMPLETE",
-      "depends_on": ["API_SE_008", "API_SE_010"],
-      "mutation_cone": ["performance", "database", "http", "workflows", "tests"],
+      "depends_on": [
+        "API_SE_008",
+        "API_SE_010"
+      ],
+      "mutation_cone": [
+        "performance",
+        "database",
+        "http",
+        "workflows",
+        "tests"
+      ],
       "core_outcome": "Create reproducible baseline, burst, sustained-load, provider-slowdown, database-pool-pressure and recovery workloads with p50/p95/p99, errors, saturation and capacity claims bound to exact evidence.",
-      "published_artifacts": ["workload profiles", "capacity envelope", "historical performance evidence"],
+      "published_artifacts": [
+        "workload profiles",
+        "capacity envelope",
+        "historical performance evidence"
+      ],
       "irreversible_effects": [],
       "completion_evidence_ref": "API_SE_013_LOCAL_PROOF_20260829"
     },
@@ -210,10 +396,23 @@
       "title": "Backup, Restore, DR, RPO and RTO Program",
       "priority": 387,
       "status": "COMPLETE",
-      "depends_on": ["API_SE_003", "API_SE_009"],
-      "mutation_cone": ["database", "recovery", "operations", "docs", "tests"],
+      "depends_on": [
+        "API_SE_003",
+        "API_SE_009"
+      ],
+      "mutation_cone": [
+        "database",
+        "recovery",
+        "operations",
+        "docs",
+        "tests"
+      ],
       "core_outcome": "Inventory current backup/restore ownership, define RPO/RTO by critical scope, perform disposable restore drills when safe, verify integrity/readback and record measured recovery evidence without touching production destructively.",
-      "published_artifacts": ["recovery policy", "restore drill receipts", "RPO/RTO evidence"],
+      "published_artifacts": [
+        "recovery policy",
+        "restore drill receipts",
+        "RPO/RTO evidence"
+      ],
       "irreversible_effects": [],
       "completion_evidence_ref": "API_SE_014_LOCAL_PROOF_20260829"
     },
@@ -223,10 +422,26 @@
       "title": "Security Control Evidence and Zero-Tolerance Invariants",
       "priority": 386,
       "status": "COMPLETE",
-      "depends_on": ["API_SE_004", "API_SE_005", "API_SE_008", "API_SE_009"],
-      "mutation_cone": ["security", "auth", "tenancy", "authority", "secrets", "tests"],
+      "depends_on": [
+        "API_SE_004",
+        "API_SE_005",
+        "API_SE_008",
+        "API_SE_009"
+      ],
+      "mutation_cone": [
+        "security",
+        "auth",
+        "tenancy",
+        "authority",
+        "secrets",
+        "tests"
+      ],
       "core_outcome": "Unify machine-readable evidence for tenant isolation, authority/effect boundaries, secret posture and denial probes while preserving least privilege and preventing sensitive evidence leakage.",
-      "published_artifacts": ["security control registry", "probe evidence", "consumer handoff"],
+      "published_artifacts": [
+        "security control registry",
+        "probe evidence",
+        "consumer handoff"
+      ],
       "irreversible_effects": [],
       "completion_evidence_ref": "API_SE_015_LOCAL_PROOF_20260829"
     },
@@ -236,10 +451,26 @@
       "title": "API Engineering Portal and Contract Explorer",
       "priority": 385,
       "status": "COMPLETE",
-      "depends_on": ["API_SE_009", "API_SE_010", "API_SE_011", "API_SE_012", "API_SE_015"],
-      "mutation_cone": ["console", "ui", "api", "docs", "tests"],
+      "depends_on": [
+        "API_SE_009",
+        "API_SE_010",
+        "API_SE_011",
+        "API_SE_012",
+        "API_SE_015"
+      ],
+      "mutation_cone": [
+        "console",
+        "ui",
+        "api",
+        "docs",
+        "tests"
+      ],
       "core_outcome": "Turn api.luzione.com into an engineering control surface for services, contracts, errors, events, dependencies, SLOs, release/readiness evidence and safe bounded request exploration without exposing secrets or granting authority.",
-      "published_artifacts": ["engineering portal", "contract explorer", "status/evidence navigation"],
+      "published_artifacts": [
+        "engineering portal",
+        "contract explorer",
+        "status/evidence navigation"
+      ],
       "irreversible_effects": [],
       "completion_evidence_ref": "API_SE_016_LOCAL_PROOF_20260829"
     },
@@ -249,10 +480,24 @@
       "title": "Causal Trace and Receipt Navigation Contract",
       "priority": 384,
       "status": "COMPLETE",
-      "depends_on": ["API_SE_006", "API_SE_008", "API_SE_016"],
-      "mutation_cone": ["trace", "receipts", "api", "console", "tests"],
+      "depends_on": [
+        "API_SE_006",
+        "API_SE_008",
+        "API_SE_016"
+      ],
+      "mutation_cone": [
+        "trace",
+        "receipts",
+        "api",
+        "console",
+        "tests"
+      ],
       "core_outcome": "Provide stable authorized navigation from request/business state to causal events, receipts, traces and source readback so consumers can answer why a state exists without code inspection.",
-      "published_artifacts": ["causal navigation contract", "trace/receipt links", "consumer handoff"],
+      "published_artifacts": [
+        "causal navigation contract",
+        "trace/receipt links",
+        "consumer handoff"
+      ],
       "irreversible_effects": [],
       "completion_evidence_ref": "API_SE_017_LOCAL_PROOF_20260829"
     },
@@ -262,10 +507,21 @@
       "title": "Test Taxonomy and Harness Consolidation",
       "priority": 383,
       "status": "COMPLETE",
-      "depends_on": ["API_SE_002", "API_SE_009"],
-      "mutation_cone": ["tests", "ci", "docs"],
+      "depends_on": [
+        "API_SE_002",
+        "API_SE_009"
+      ],
+      "mutation_cone": [
+        "tests",
+        "ci",
+        "docs"
+      ],
       "core_outcome": "Map API suites into UNIT/CONTRACT/INTEGRATION/JOURNEY/RELIABILITY/SECURITY/PERFORMANCE/PRODUCTION_VERIFICATION classes, converge redundant orchestration and preserve sensitivity/coverage rather than deleting tests for cosmetic simplicity.",
-      "published_artifacts": ["test inventory", "taxonomy mapping", "consolidation plan/evidence"],
+      "published_artifacts": [
+        "test inventory",
+        "taxonomy mapping",
+        "consolidation plan/evidence"
+      ],
       "irreversible_effects": [],
       "completion_evidence_ref": "API_SE_018_LOCAL_PROOF_20260829"
     },
@@ -275,10 +531,27 @@
       "title": "Cross-System Certified Journeys",
       "priority": 382,
       "status": "QUARANTINED",
-      "depends_on": ["API_SE_011", "API_SE_012", "API_SE_013", "API_SE_014", "API_SE_015", "API_SE_017", "API_SE_018"],
-      "mutation_cone": ["integration", "journeys", "evidence", "tests"],
+      "depends_on": [
+        "API_SE_011",
+        "API_SE_012",
+        "API_SE_013",
+        "API_SE_014",
+        "API_SE_015",
+        "API_SE_017",
+        "API_SE_018"
+      ],
+      "mutation_cone": [
+        "integration",
+        "journeys",
+        "evidence",
+        "tests"
+      ],
       "core_outcome": "Consume independent UI and Sultan handoffs and certify representative exact-contract journeys including negative, failure, retry/recovery and authoritative readback. Never mark consumer integration complete from producer evidence alone.",
-      "published_artifacts": ["journey certificates", "cross-repo compatibility findings", "unproven boundary inventory"],
+      "published_artifacts": [
+        "journey certificates",
+        "cross-repo compatibility findings",
+        "unproven boundary inventory"
+      ],
       "irreversible_effects": [],
       "completion_evidence_ref": "API_SE_019_QUARANTINED_PROOF_20260829"
     },
@@ -288,10 +561,21 @@
       "title": "Production Readiness Certification",
       "priority": 381,
       "status": "COMPLETE",
-      "depends_on": ["API_SE_019"],
-      "mutation_cone": ["readiness", "operations", "docs", "evidence"],
+      "depends_on": [
+        "API_SE_019"
+      ],
+      "mutation_cone": [
+        "readiness",
+        "operations",
+        "docs",
+        "evidence"
+      ],
       "core_outcome": "Produce machine-readable and human-readable readiness certification by critical invariant with latest exact evidence, owner, failures, recovery posture, release tier and remaining uncertainty. Unsupported finality must remain impossible to express as a pass.",
-      "published_artifacts": ["production readiness scorecard", "remaining risk register", "cross-repo release handoffs"],
+      "published_artifacts": [
+        "production readiness scorecard",
+        "remaining risk register",
+        "cross-repo release handoffs"
+      ],
       "irreversible_effects": [],
       "completion_evidence_ref": "API_SE_020_LOCAL_NOT_READY_CERTIFICATION_20260829"
     },
@@ -302,10 +586,28 @@
       "priority": 500,
       "status": "COMPLETE",
       "depends_on": [],
-      "mutation_cone": ["architecture", "contracts", "ownership", "dependencies", "evidence"],
+      "mutation_cone": [
+        "architecture",
+        "contracts",
+        "ownership",
+        "dependencies",
+        "evidence"
+      ],
       "core_outcome": "Publish the canonical production-convergence program, object ownership, capability and dependency registries while keeping NEXT_WORK.json as the only live scheduler.",
-      "published_artifacts": ["production convergence program", "object ownership registry", "capability registry", "dependency graph", "migration ownership", "release gates", "journey registry"],
-      "required_evidence": ["parseable artifacts", "consistency tests", "unresolved ownership remains explicit"],
+      "published_artifacts": [
+        "production convergence program",
+        "object ownership registry",
+        "capability registry",
+        "dependency graph",
+        "migration ownership",
+        "release gates",
+        "journey registry"
+      ],
+      "required_evidence": [
+        "parseable artifacts",
+        "consistency tests",
+        "unresolved ownership remains explicit"
+      ],
       "irreversible_effects": [],
       "completion_evidence_ref": "API_PC_001_LOCAL_PROGRAM_ARTIFACTS_20260831"
     },
@@ -315,11 +617,27 @@
       "title": "Read-Only Deployment and Release Identity",
       "priority": 499,
       "status": "COMPLETE",
-      "depends_on": ["API-PC-001"],
-      "mutation_cone": ["release", "api", "deployment", "evidence", "tests"],
+      "depends_on": [
+        "API-PC-001"
+      ],
+      "mutation_cone": [
+        "release",
+        "api",
+        "deployment",
+        "evidence",
+        "tests"
+      ],
       "core_outcome": "Expose exact API SHA, deployment, schema, contract, environment and build identity while mutations remain disabled by default; bind staging and production only from observed deployment evidence.",
-      "published_artifacts": ["GET /api/v1/release", "release identity contract", "deployment evidence handoff"],
-      "required_evidence": ["local provenance tests", "staging deployment identity", "production deployment identity"],
+      "published_artifacts": [
+        "GET /api/v1/release",
+        "release identity contract",
+        "deployment evidence handoff"
+      ],
+      "required_evidence": [
+        "local provenance tests",
+        "staging deployment identity",
+        "production deployment identity"
+      ],
       "irreversible_effects": [],
       "completion_evidence_ref": "API_PC_002_LOCAL_RELEASE_IDENTITY_20260831"
     },
@@ -329,11 +647,28 @@
       "title": "Contract v0.1 Context, Envelopes, Errors and Readiness",
       "priority": 498,
       "status": "COMPLETE",
-      "depends_on": ["API-PC-001"],
-      "mutation_cone": ["contracts", "openapi", "schemas", "catalog", "tests"],
+      "depends_on": [
+        "API-PC-001"
+      ],
+      "mutation_cone": [
+        "contracts",
+        "openapi",
+        "schemas",
+        "catalog",
+        "tests"
+      ],
       "core_outcome": "Publish a backward-compatible v0.1 bundle for request context, response envelope, failure, health/readiness, release identity and receipt references.",
-      "published_artifacts": ["contract manifest", "OpenAPI v0.1", "JSON schemas", "consumer handoffs"],
-      "required_evidence": ["schema and route consistency tests", "UI consumer tests", "Sultan consumer tests"],
+      "published_artifacts": [
+        "contract manifest",
+        "OpenAPI v0.1",
+        "JSON schemas",
+        "consumer handoffs"
+      ],
+      "required_evidence": [
+        "schema and route consistency tests",
+        "UI consumer tests",
+        "Sultan consumer tests"
+      ],
       "irreversible_effects": [],
       "completion_evidence_ref": "API_PC_003_LOCAL_CONTRACT_V01_20260831"
     },
@@ -343,11 +678,27 @@
       "title": "Actor, Tenant and Capability Authority Kernel",
       "priority": 497,
       "status": "COMPLETE",
-      "depends_on": ["API-PC-003"],
-      "mutation_cone": ["identity", "authority", "tenancy", "security", "tests"],
+      "depends_on": [
+        "API-PC-003"
+      ],
+      "mutation_cone": [
+        "identity",
+        "authority",
+        "tenancy",
+        "security",
+        "tests"
+      ],
       "core_outcome": "Converge server-derived actor, tenant and capability authority without allowing caller-supplied authority to become canonical identity.",
-      "published_artifacts": ["authority kernel", "positive and negative authorization evidence"],
-      "required_evidence": ["positive auth tests", "cross-tenant denial", "capability denial", "migration design"],
+      "published_artifacts": [
+        "authority kernel",
+        "positive and negative authorization evidence"
+      ],
+      "required_evidence": [
+        "positive auth tests",
+        "cross-tenant denial",
+        "capability denial",
+        "migration design"
+      ],
       "irreversible_effects": [],
       "completion_evidence_ref": "API_PC_004_LOCAL_AUTHORITY_KERNEL_20260831"
     },
@@ -357,12 +708,33 @@
       "title": "Command, Idempotency, Event and Receipt Ledger",
       "priority": 496,
       "status": "COMPLETE",
-      "depends_on": ["API-PC-004"],
-      "mutation_cone": ["database", "commands", "idempotency", "events", "receipts", "audit"],
+      "depends_on": [
+        "API-PC-004"
+      ],
+      "mutation_cone": [
+        "database",
+        "commands",
+        "idempotency",
+        "events",
+        "receipts",
+        "audit"
+      ],
       "core_outcome": "Implement the additive Postgres command/idempotency/event/receipt ledger and one atomic command executor with replay and conflict semantics.",
-      "published_artifacts": ["additive migrations", "command executor", "causal receipt/readback"],
-      "required_evidence": ["fresh and upgrade migration tests", "atomic rollback", "same-key replay", "different-hash conflict", "tenant/RLS denial"],
-      "irreversible_effects": ["production migration application requires separate release authority"],
+      "published_artifacts": [
+        "additive migrations",
+        "command executor",
+        "causal receipt/readback"
+      ],
+      "required_evidence": [
+        "fresh and upgrade migration tests",
+        "atomic rollback",
+        "same-key replay",
+        "different-hash conflict",
+        "tenant/RLS denial"
+      ],
+      "irreversible_effects": [
+        "production migration application requires separate release authority"
+      ],
       "completion_evidence_ref": "API_PC_005_LOCAL_COMMAND_LEDGER_20260831"
     },
     {
@@ -371,12 +743,34 @@
       "title": "Workflow, Outbox, Inbox, DLQ and Reconciliation Substrate",
       "priority": 495,
       "status": "COMPLETE",
-      "depends_on": ["API-PC-005"],
-      "mutation_cone": ["database", "workflows", "outbox", "inbox", "dead-letters", "reconciliation", "workers"],
+      "depends_on": [
+        "API-PC-005"
+      ],
+      "mutation_cone": [
+        "database",
+        "workflows",
+        "outbox",
+        "inbox",
+        "dead-letters",
+        "reconciliation",
+        "workers"
+      ],
       "core_outcome": "Implement Postgres-backed restart-safe workflow and delivery state with bounded retries, leases, dead letters and reconciliation.",
-      "published_artifacts": ["additive migrations", "stateless worker", "operator readback"],
-      "required_evidence": ["crash/restart", "retry/reorder", "ambiguous acknowledgement", "DLQ/replay", "reconciliation"],
-      "irreversible_effects": ["production migration/worker activation requires separate release authority"],
+      "published_artifacts": [
+        "additive migrations",
+        "stateless worker",
+        "operator readback"
+      ],
+      "required_evidence": [
+        "crash/restart",
+        "retry/reorder",
+        "ambiguous acknowledgement",
+        "DLQ/replay",
+        "reconciliation"
+      ],
+      "irreversible_effects": [
+        "production migration/worker activation requires separate release authority"
+      ],
       "completion_evidence_ref": "API_PC_006_LOCAL_WORKFLOW_DELIVERY_20260831"
     },
     {
@@ -385,11 +779,27 @@
       "title": "Projection, Readback and Freshness Contracts",
       "priority": 494,
       "status": "COMPLETE",
-      "depends_on": ["API-PC-005"],
-      "mutation_cone": ["projections", "readback", "freshness", "receipts", "tests"],
+      "depends_on": [
+        "API-PC-005"
+      ],
+      "mutation_cone": [
+        "projections",
+        "readback",
+        "freshness",
+        "receipts",
+        "tests"
+      ],
       "core_outcome": "Expose causal projection and authoritative readback contracts with explicit source, version and freshness.",
-      "published_artifacts": ["projection contract", "readback endpoints", "freshness evidence"],
-      "required_evidence": ["causal readback", "stale and missing evidence", "cross-tenant denial"],
+      "published_artifacts": [
+        "projection contract",
+        "readback endpoints",
+        "freshness evidence"
+      ],
+      "required_evidence": [
+        "causal readback",
+        "stale and missing evidence",
+        "cross-tenant denial"
+      ],
       "irreversible_effects": [],
       "completion_evidence_ref": "API_PC_007_LOCAL_CAUSAL_READBACK_20260831"
     },
@@ -399,12 +809,33 @@
       "title": "Lead and Commercial Case Commands",
       "priority": 493,
       "status": "COMPLETE",
-      "depends_on": ["API-PC-005", "API-PC-007"],
-      "mutation_cone": ["lead", "commercial-case", "commands", "events", "projections"],
+      "depends_on": [
+        "API-PC-005",
+        "API-PC-007"
+      ],
+      "mutation_cone": [
+        "lead",
+        "commercial-case",
+        "commands",
+        "events",
+        "projections"
+      ],
       "core_outcome": "Implement canonical lead and commercial-case commands without duplicating current records or breaking legacy reads.",
-      "published_artifacts": ["commands", "events", "queries", "compatibility reads"],
-      "required_evidence": ["vertical-slice evidence", "tenant denial", "replay/conflict", "shadow readback"],
-      "irreversible_effects": ["tenant/cohort cutover requires release plan and rollback evidence"],
+      "published_artifacts": [
+        "commands",
+        "events",
+        "queries",
+        "compatibility reads"
+      ],
+      "required_evidence": [
+        "vertical-slice evidence",
+        "tenant denial",
+        "replay/conflict",
+        "shadow readback"
+      ],
+      "irreversible_effects": [
+        "tenant/cohort cutover requires release plan and rollback evidence"
+      ],
       "completion_evidence_ref": "API_PC_008_LOCAL_LEAD_COMMERCIAL_CASE_20260831"
     },
     {
@@ -413,12 +844,33 @@
       "title": "Proposal, Quote and Approval Commands",
       "priority": 492,
       "status": "COMPLETE",
-      "depends_on": ["API-PC-008"],
-      "mutation_cone": ["proposal", "quote", "approval", "money", "commands", "events"],
+      "depends_on": [
+        "API-PC-008"
+      ],
+      "mutation_cone": [
+        "proposal",
+        "quote",
+        "approval",
+        "money",
+        "commands",
+        "events"
+      ],
       "core_outcome": "Implement versioned proposal, quote and approval commands with explicit money, currency and approval invariants.",
-      "published_artifacts": ["commands", "events", "queries", "approval receipts"],
-      "required_evidence": ["version tests", "money/currency invariants", "approval denial", "readback"],
-      "irreversible_effects": ["tenant/cohort cutover requires release plan and rollback evidence"],
+      "published_artifacts": [
+        "commands",
+        "events",
+        "queries",
+        "approval receipts"
+      ],
+      "required_evidence": [
+        "version tests",
+        "money/currency invariants",
+        "approval denial",
+        "readback"
+      ],
+      "irreversible_effects": [
+        "tenant/cohort cutover requires release plan and rollback evidence"
+      ],
       "completion_evidence_ref": "API_PC_009_LOCAL_PROPOSAL_QUOTE_APPROVAL_20260831"
     },
     {
@@ -427,12 +879,31 @@
       "title": "Order and Fulfillment Intent Commands",
       "priority": 491,
       "status": "COMPLETE",
-      "depends_on": ["API-PC-009"],
-      "mutation_cone": ["orders", "fulfillment", "commands", "events", "receipts"],
+      "depends_on": [
+        "API-PC-009"
+      ],
+      "mutation_cone": [
+        "orders",
+        "fulfillment",
+        "commands",
+        "events",
+        "receipts"
+      ],
       "core_outcome": "Create orders only from accepted exact quote versions and request bounded fulfillment intent with causal receipt/readback.",
-      "published_artifacts": ["commands", "events", "order receipt", "fulfillment intent readback"],
-      "required_evidence": ["order invariants", "duplicate/stale rejection", "receipt/readback journey"],
-      "irreversible_effects": ["tenant/cohort cutover requires release plan and rollback evidence"],
+      "published_artifacts": [
+        "commands",
+        "events",
+        "order receipt",
+        "fulfillment intent readback"
+      ],
+      "required_evidence": [
+        "order invariants",
+        "duplicate/stale rejection",
+        "receipt/readback journey"
+      ],
+      "irreversible_effects": [
+        "tenant/cohort cutover requires release plan and rollback evidence"
+      ],
       "completion_evidence_ref": "API_PC_010_LOCAL_ORDER_FULFILLMENT_20260831"
     },
     {
@@ -476,12 +947,31 @@
       "title": "Provider Adapter and Worker Runtime",
       "priority": 490,
       "status": "COMPLETE",
-      "depends_on": ["API-PC-006"],
-      "mutation_cone": ["providers", "workers", "outbox", "reconciliation", "operations"],
+      "depends_on": [
+        "API-PC-006"
+      ],
+      "mutation_cone": [
+        "providers",
+        "workers",
+        "outbox",
+        "reconciliation",
+        "operations"
+      ],
       "core_outcome": "Wrap existing integrations behind durable provider adapters and restart-safe workers with acknowledgement/readback separation.",
-      "published_artifacts": ["provider adapter contract", "worker runtime", "reconciliation controls"],
-      "required_evidence": ["sandbox/live canary", "ambiguous outcome reconciliation", "rollback", "operator visibility"],
-      "irreversible_effects": ["live provider effects require explicit effect and release authority"],
+      "published_artifacts": [
+        "provider adapter contract",
+        "worker runtime",
+        "reconciliation controls"
+      ],
+      "required_evidence": [
+        "sandbox/live canary",
+        "ambiguous outcome reconciliation",
+        "rollback",
+        "operator visibility"
+      ],
+      "irreversible_effects": [
+        "live provider effects require explicit effect and release authority"
+      ],
       "completion_evidence_ref": "API_PC_011_LOCAL_PROVIDER_WORKER_20260831"
     },
     {
@@ -490,11 +980,29 @@
       "title": "Sultan Context, Intent, Policy and Outcome Contracts",
       "priority": 489,
       "status": "COMPLETE",
-      "depends_on": ["API-PC-007", "API-PC-010"],
-      "mutation_cone": ["sultan", "context", "intents", "policy", "outcomes", "contracts"],
+      "depends_on": [
+        "API-PC-007",
+        "API-PC-010"
+      ],
+      "mutation_cone": [
+        "sultan",
+        "context",
+        "intents",
+        "policy",
+        "outcomes",
+        "contracts"
+      ],
       "core_outcome": "Publish exact-version evidence/context, dry-run intent, policy decision, receipt and outcome contracts for Sultan without granting direct business writes.",
-      "published_artifacts": ["context contract", "intent contract", "policy/outcome contract"],
-      "required_evidence": ["Sultan consumer certification", "stale/unauthorized abstention", "receipt closure"],
+      "published_artifacts": [
+        "context contract",
+        "intent contract",
+        "policy/outcome contract"
+      ],
+      "required_evidence": [
+        "Sultan consumer certification",
+        "stale/unauthorized abstention",
+        "receipt closure"
+      ],
       "irreversible_effects": [],
       "completion_evidence_ref": "API_PC_012_LOCAL_SULTAN_AGENT_CONTRACTS_20260831",
       "hardening_evidence_ref": "API_PC_012_LOCAL_CANONICAL_CONTEXT_HARDENING_20260831",
@@ -508,12 +1016,30 @@
       "title": "Security Roles, RLS and Migration Ownership",
       "priority": 488,
       "status": "COMPLETE",
-      "depends_on": ["API-PC-004"],
-      "mutation_cone": ["database", "roles", "rls", "security", "migrations"],
+      "depends_on": [
+        "API-PC-004"
+      ],
+      "mutation_cone": [
+        "database",
+        "roles",
+        "rls",
+        "security",
+        "migrations"
+      ],
       "core_outcome": "Establish additive schema/role/RLS ownership with least privilege and complete negative evidence.",
-      "published_artifacts": ["role/RLS migrations", "ownership manifest", "denial probes"],
-      "required_evidence": ["fresh/upgrade migration", "advisor checks", "anon/authenticated/cross-tenant denial"],
-      "irreversible_effects": ["production migration application requires separate release authority"],
+      "published_artifacts": [
+        "role/RLS migrations",
+        "ownership manifest",
+        "denial probes"
+      ],
+      "required_evidence": [
+        "fresh/upgrade migration",
+        "advisor checks",
+        "anon/authenticated/cross-tenant denial"
+      ],
+      "irreversible_effects": [
+        "production migration application requires separate release authority"
+      ],
       "completion_evidence_ref": "API_PC_013_LOCAL_LEAST_PRIVILEGE_RLS_20260831"
     },
     {
@@ -522,12 +1048,34 @@
       "title": "Observability, SLO, Release and Recovery Production Evidence",
       "priority": 487,
       "status": "QUARANTINED",
-      "depends_on": ["API-PC-002", "API-PC-005", "API-PC-006"],
-      "mutation_cone": ["observability", "slo", "release", "backup", "restore", "operations"],
+      "depends_on": [
+        "API-PC-002",
+        "API-PC-005",
+        "API-PC-006"
+      ],
+      "mutation_cone": [
+        "observability",
+        "slo",
+        "release",
+        "backup",
+        "restore",
+        "operations"
+      ],
       "core_outcome": "Bind dashboards, alerts, SLOs, exact releases and managed recovery evidence to the production-convergence runtime.",
-      "published_artifacts": ["dashboards", "SLO evidence", "release manifests", "recovery drills"],
-      "required_evidence": ["staging/production observations", "managed restore drill", "rollback rehearsal"],
-      "irreversible_effects": ["production drills and release actions require named plans and approval"],
+      "published_artifacts": [
+        "dashboards",
+        "SLO evidence",
+        "release manifests",
+        "recovery drills"
+      ],
+      "required_evidence": [
+        "staging/production observations",
+        "managed restore drill",
+        "rollback rehearsal"
+      ],
+      "irreversible_effects": [
+        "production drills and release actions require named plans and approval"
+      ],
       "completion_evidence_ref": "API_PC_014_LOCAL_OPERATIONS_EVIDENCE_20260831"
     },
     {
@@ -536,11 +1084,46 @@
       "title": "Independent Cross-System Production Certification",
       "priority": 486,
       "status": "PLANNED",
-      "depends_on": ["API-PC-001", "API-PC-002", "API-PC-003", "API-PC-004", "API-PC-005", "API-PC-006", "API-PC-007", "API-PC-008", "API-PC-009", "API-PC-010", "API-PC-011", "API-PC-012", "API-PC-013", "API-PC-014"],
-      "mutation_cone": ["certification", "journeys", "evidence", "release"],
+      "depends_on": [
+        "API-PC-001",
+        "API-PC-002",
+        "API-PC-003",
+        "API-PC-004",
+        "API-PC-005",
+        "API-PC-006",
+        "API-PC-007",
+        "API-PC-008",
+        "API-PC-009",
+        "API-PC-010",
+        "API-PC-011",
+        "API-PC-012",
+        "API-PC-013",
+        "API-PC-014",
+        "API-PC-016",
+        "API-PC-017",
+        "API-PC-018",
+        "API-PC-019",
+        "API-PC-020",
+        "API-PC-021"
+      ],
+      "mutation_cone": [
+        "certification",
+        "journeys",
+        "evidence",
+        "release"
+      ],
       "core_outcome": "Certify the complete cross-system journey only from exact independent API, UI, Sultan, provider/readback and recovery evidence.",
-      "published_artifacts": ["twelve-case journey package", "readiness certificate", "remaining risk register"],
-      "required_evidence": ["independent consumer tests", "canary and rollback", "authoritative readback", "production observations"],
+      "published_artifacts": [
+        "twelve-case journey package",
+        "readiness certificate",
+        "remaining risk register"
+      ],
+      "required_evidence": [
+        "independent consumer tests",
+        "canary and rollback",
+        "authoritative readback",
+        "production observations"
+      ],
       "irreversible_effects": [],
       "completion_evidence_ref": null
     },
@@ -550,16 +1133,234 @@
       "title": "Signed Sultan Workload Delegation",
       "priority": 485,
       "status": "COMPLETE",
-      "depends_on": ["API-PC-004", "API-PC-012"],
-      "mutation_cone": ["identity", "sultan", "policy", "contracts", "tests", "handoffs"],
+      "depends_on": [
+        "API-PC-004",
+        "API-PC-012"
+      ],
+      "mutation_cone": [
+        "identity",
+        "sultan",
+        "policy",
+        "contracts",
+        "tests",
+        "handoffs"
+      ],
       "core_outcome": "Authenticate the exact production Sultan OS workload with Vercel OIDC, then admit only API-owned, exact-version delegation to the six registered Luzione A0 stewards while retaining both credential and logical actor identity in the policy decision.",
-      "published_artifacts": ["workload identity resolver", "agent delegation policy", "dual-actor policy decision", "Sultan handoff"],
-      "required_evidence": ["exact workload claim validation", "delegation allowlist negatives", "independent Sultan consumption", "deployed signed canary"],
+      "published_artifacts": [
+        "workload identity resolver",
+        "agent delegation policy",
+        "dual-actor policy decision",
+        "Sultan handoff"
+      ],
+      "required_evidence": [
+        "exact workload claim validation",
+        "delegation allowlist negatives",
+        "independent Sultan consumption",
+        "deployed signed canary"
+      ],
       "irreversible_effects": [],
       "completion_evidence_ref": "API_PC_016_LOCAL_SIGNED_SULTAN_DELEGATION_20260901",
       "release_evidence": "LOCAL_PROVEN",
       "effect_authority": "NO_EFFECT",
       "finality": "BOUNDED_CLAIM"
+    },
+    {
+      "project_id": "API-PC-017",
+      "platform_project": "PRODUCTIZATION_FOUNDATION",
+      "title": "Premium Home Goods Product Catalog and Room-Plan Contract",
+      "priority": 484,
+      "status": "COMPLETE",
+      "depends_on": [
+        "API-PC-001",
+        "API-PC-003",
+        "API-PC-009"
+      ],
+      "mutation_cone": [
+        "product-catalog",
+        "contracts",
+        "workflow-packs",
+        "room-planner",
+        "tests",
+        "audit"
+      ],
+      "core_outcome": "Publish exact customer profiles, editions, module dependencies, country phases, workflow packs and a reviewed room-plan-to-proposal attachment contract without granting pricing, send or acceptance authority.",
+      "published_artifacts": [
+        "product catalog",
+        "public productization route",
+        "room-plan proposal schema",
+        "production readiness audit",
+        "consumer handoffs"
+      ],
+      "required_evidence": [
+        "catalog dependency closure",
+        "attachment denial tests",
+        "independent consumer adoption",
+        "managed preview and rollback"
+      ],
+      "irreversible_effects": [],
+      "completion_evidence_ref": "API_PC_017_LOCAL_PRODUCTIZATION_FOUNDATION_20260901"
+    },
+    {
+      "project_id": "API-PC-018",
+      "platform_project": "PRODUCTIZATION_FOUNDATION",
+      "title": "Canonical Tenant License Versions and Entitlement Readback",
+      "priority": 483,
+      "status": "COMPLETE",
+      "depends_on": [
+        "API-PC-004",
+        "API-PC-013",
+        "API-PC-017"
+      ],
+      "mutation_cone": [
+        "licensing",
+        "database",
+        "rls",
+        "authorization",
+        "api",
+        "tests"
+      ],
+      "core_outcome": "Publish a fail-closed license evaluator, append-versioned tenant license/module schema and credential-bound readback while keeping licensing separate from actor and effect authority.",
+      "published_artifacts": [
+        "license contract",
+        "forced-RLS migration",
+        "entitlement readback route",
+        "security tests"
+      ],
+      "required_evidence": [
+        "managed preview migration",
+        "negative tenant probes",
+        "independent enforcement",
+        "rollback"
+      ],
+      "irreversible_effects": [
+        "managed migration and tenant provisioning require separate release authority"
+      ],
+      "completion_evidence_ref": "API_PC_018_LOCAL_LICENSE_STORE_20260901"
+    },
+    {
+      "project_id": "API-PC-019",
+      "platform_project": "DESIGN_COMMERCE_VERTICAL_SLICE",
+      "title": "Room Planner to Governed Proposal Integration",
+      "priority": 482,
+      "status": "PLANNED",
+      "depends_on": [
+        "API-PC-009",
+        "API-PC-017",
+        "API-PC-018"
+      ],
+      "mutation_cone": [
+        "room-planner",
+        "outbox",
+        "commercial-case",
+        "proposal",
+        "ui",
+        "security"
+      ],
+      "core_outcome": "Contain and repair the planner, emit an exact reviewed attachment through its outbox, ingest it through the API and render it in the exact proposal context before human review.",
+      "published_artifacts": [
+        "planner lockdown evidence",
+        "outbox adapter",
+        "attachment persistence",
+        "UI proposal consumer",
+        "end-to-end journey"
+      ],
+      "required_evidence": [
+        "managed planner RLS denial probes",
+        "Git-bound preview",
+        "exact artifact digest",
+        "cross-tenant denial",
+        "independent UI journey",
+        "rollback"
+      ],
+      "irreversible_effects": [
+        "planner managed migration and deployment require a named containment/release plan"
+      ],
+      "completion_evidence_ref": null
+    },
+    {
+      "project_id": "API-PC-020",
+      "platform_project": "IMPORT_OPERATIONS_VERTICAL_SLICE",
+      "title": "Import, Trade, Logistics and White-Glove Vertical Slice",
+      "priority": 481,
+      "status": "PLANNED",
+      "depends_on": [
+        "API-PC-010",
+        "API-PC-011",
+        "API-PC-017",
+        "API-PC-018"
+      ],
+      "mutation_cone": [
+        "supplier",
+        "trade",
+        "logistics",
+        "fulfillment",
+        "provider-network",
+        "white-glove",
+        "country-packs"
+      ],
+      "core_outcome": "Certify one Italy-to-USA journey from supplier evidence through quote, order, trade review, logistics and white-glove delivery before admitting more country lanes.",
+      "published_artifacts": [
+        "effective-dated country pack",
+        "provider adapters",
+        "fulfillment quote",
+        "trade-review receipt",
+        "delivery schedule",
+        "source readback"
+      ],
+      "required_evidence": [
+        "authoritative legal and carrier sources",
+        "human compliance review",
+        "provider sandbox",
+        "ambiguous-outcome reconciliation",
+        "money invariants",
+        "cross-system journey"
+      ],
+      "irreversible_effects": [
+        "live carrier, broker, customs, payment or customer effects require separate approval and rollback"
+      ],
+      "completion_evidence_ref": null
+    },
+    {
+      "project_id": "API-PC-021",
+      "platform_project": "COMMERCIAL_LICENSING_LIFECYCLE",
+      "title": "Licensing Provisioning, Metering and Billing Reconciliation",
+      "priority": 480,
+      "status": "PLANNED",
+      "depends_on": [
+        "API-PC-005",
+        "API-PC-006",
+        "API-PC-018"
+      ],
+      "mutation_cone": [
+        "plans",
+        "provisioning",
+        "usage",
+        "billing",
+        "webhooks",
+        "reconciliation",
+        "customer-terms"
+      ],
+      "core_outcome": "Turn exact-version license readback into an audited commercial lifecycle with idempotent provisioning, usage limits, billing reconciliation, grace/cancellation policy and authoritative receipts.",
+      "published_artifacts": [
+        "plan and price policy",
+        "provisioning commands",
+        "usage ledger",
+        "billing adapter",
+        "webhook inbox",
+        "reconciliation dashboard"
+      ],
+      "required_evidence": [
+        "billing sandbox",
+        "replay/conflict",
+        "out-of-order webhook handling",
+        "entitlement enforcement",
+        "cancellation/grace tests",
+        "financial readback"
+      ],
+      "irreversible_effects": [
+        "customer activation, invoicing and payment collection require separate commercial and release authority"
+      ],
+      "completion_evidence_ref": null
     }
   ]
 }

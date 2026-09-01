@@ -50,6 +50,25 @@
         "responses": { "200": { "description": "Bounded catalog metadata" } }
       }
     },
+    "/api/v1/productization": {
+      "get": {
+        "operationId": "getProductizationCatalog",
+        "summary": "Read customer profiles, licensable modules, editions, market phases and proposal integration contracts",
+        "responses": { "200": { "description": "Public product definitions without tenant entitlement state" } }
+      }
+    },
+    "/api/v1/licensing/entitlements": {
+      "get": {
+        "operationId": "getTenantLicenseEntitlements",
+        "summary": "Read a fresh credential-bound tenant license snapshot and optional module decision",
+        "responses": {
+          "200": { "description": "Tenant-scoped canonical license readback" },
+          "401": { "description": "Credential or capability authentication failed" },
+          "404": { "description": "No current tenant license exists" },
+          "503": { "description": "Canonical license readback unavailable" }
+        }
+      }
+    },
     "/api/v1/commands/quotes": {
       "get": { "operationId": "getQuote", "summary": "Read a tenant-bound canonical Quote and immutable economics", "responses": { "200": { "description": "Quote readback" }, "404": { "description": "Quote not found" } } },
       "post": { "operationId": "createQuote", "summary": "Create a default-off canonical Quote and immutable economics version", "responses": { "201": { "description": "Quote committed with P110 receipt" }, "409": { "description": "Version or idempotency conflict" }, "503": { "description": "Mutation path disabled or unavailable" } } }

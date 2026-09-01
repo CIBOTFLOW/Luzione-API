@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_PC_017_TO_LUZIONE_UI_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "ebd2054765490b0aec05f9b27e43865fba3ded03",
+  "producer_ref": "codex/productization-readiness-20260901",
+  "contract_versions": [
+    "luzione-product-catalog/v0.1",
+    "luzione-tenant-license-entitlement/v0.1",
+    "luzione-room-plan-proposal-attachment/v0.1"
+  ],
+  "consumer_repository": "CIBOTFLOW/Luzione-UI",
+  "consumer_production_sha_observed": "ea8da2e4d80557f03bf6e72ec93b294eaf603f48",
+  "consumer_project_paths": [
+    "UI-PC-016",
+    "UI-PC-017",
+    "UI-PC-018"
+  ],
+  "stable_paths": {
+    "public_catalog": "GET /api/v1/productization",
+    "product_catalog_schema": "contracts/productization/product-catalog-v0.1.schema.json",
+    "tenant_entitlements": "GET /api/v1/licensing/entitlements",
+    "license_schema": "contracts/productization/tenant-license-entitlement-v0.1.schema.json",
+    "room_plan_schema": "contracts/productization/room-plan-proposal-attachment-v0.1.schema.json"
+  },
+  "required_consumer_behavior": [
+    "Read edition/module definitions from the API contract and never manufacture tenant entitlements in browser state.",
+    "Request credential-bound entitlements and treat missing, stale, invalid, inactive or unavailable readback as unlicensed.",
+    "Apply UI role, tenant policy, autonomy and approval checks after licensing; licensing is never authority.",
+    "Render a reviewed exact-version room plan inside the matching Commercial Case proposal context before final proposal review.",
+    "Keep room-plan pricing, customer send and binding acceptance disabled; those remain governed quote/proposal commands.",
+    "Expose deliveryStage and blockers honestly instead of presenting PLANNED modules as available."
+  ],
+  "acceptance_proof_needed": [
+    "exact UI/API SHAs and pinned contract versions",
+    "unlicensed, stale-snapshot, cross-tenant and access-escalation denial tests",
+    "room-plan digest/context mismatch and superseded-artifact denial tests",
+    "authenticated proposal journey with human review and zero direct database access",
+    "preview canary and rollback presentation bound to API release evidence"
+  ],
+  "known_limitations": [
+    "No Luzione UI source was edited by this producer handoff.",
+    "The managed API license migration is not applied.",
+    "The Room Planner is blocked by critical managed-database and production-runtime findings.",
+    "Pricing, provisioning, billing, metering and customer activation are not implemented."
+  ]
+}
