@@ -1741,6 +1741,63 @@
         "model-backed hidden-label shadow evaluation",
         "separately authorized reversible command proof with receipt and authoritative post-effect readback"
       ]
+    },
+    {
+      "proof_id": "API_PC_016_LOCAL_SIGNED_SULTAN_DELEGATION_20260901",
+      "project_id": "API-PC-016",
+      "recorded_at": "2026-09-01T00:00:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "b1c1d5fc8d6dab2cb61003d11bc047205524ef9c",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The exact API candidate verifies the production Sultan OS Vercel OIDC workload and permits it to delegate only to six exact-version Luzione A0 steward definitions. The policy decision preserves the cryptographic workload actor and logical agent binding separately; static service credentials, unknown agents, wrong cases, wrong domains and cross-boundary FEP/control agents fail closed, and the endpoint remains evaluation-only.",
+      "exercised_boundaries": [
+        "RS256 Vercel OIDC claims are verified against the production team, project, environment and audience before the Sultan service actor is derived.",
+        "The API owns the exact agent/version/case/domain/capability delegation matrix for Revenue, Fulfillment, Partner, Catalog, Account and Economics stewards.",
+        "A verified service:sultan-os workload may produce a VERCEL_WORKLOAD_DELEGATION binding only for an exact registered steward and A0 evaluation capability.",
+        "A static service token cannot impersonate a logical steward, and unknown, cross-case, cross-domain, FEP, supervisor and control-agent delegation attempts are blocked.",
+        "The response records both credentialActor and logical agent binding without granting command, business-state mutation or external-effect authority.",
+        "Typecheck, clean lint and 223/223 tests passed; an independent webpack production build also completed in the isolated worktree."
+      ],
+      "untested_boundaries": [
+        "GitHub/Vercel canonical build in a normal checkout",
+        "deployed Sultan-to-API OIDC request and audience reachability",
+        "managed canonical data readback for non-FULFILLMENT domains",
+        "A1-A3 approval adapters, commands, provider effects or recovery",
+        "model quality, calibration and business value"
+      ],
+      "evidence_refs": [
+        "src/lib/api/actor.ts",
+        "src/modules/sultan-agent/delegationPolicy.ts",
+        "src/modules/sultan-agent/evaluator.ts",
+        "contracts/sultan/agent-policy-decision-v0.1.schema.json",
+        "src/lib/tests/api-actor.test.ts",
+        "src/modules/sultan-agent/tests/sultan-agent-intent.test.ts",
+        "architecture/production-convergence/API_PC_016_WORKING_CONTRACT.md",
+        "engineering/execution/handoffs/API_PC_016_SULTAN_OS.json",
+        "commit:b1c1d5fc8d6dab2cb61003d11bc047205524ef9c"
+      ],
+      "failure_refs": [],
+      "cross_repo_handoffs": ["API_PC_016_TO_SULTAN_OS_V1"],
+      "deferred_external_infra": [
+        "deployed production Sultan OS workload",
+        "Vercel OIDC network canary",
+        "managed canonical readback",
+        "separately authorized reversible command pilot"
+      ],
+      "remaining_uncertainty": [
+        "Local token fixtures prove claim validation logic, not that the deployed Sultan project receives a token accepted by the deployed API.",
+        "Delegation is admission to simulation/read-only reasoning only and is not evidence that an agent can safely perform business effects.",
+        "Only the Fulfillment domain currently has canonical Order context readback; the other five simulation stewards remain synthetic-only at this boundary."
+      ],
+      "next_proof_needed": [
+        "merge and deploy the exact API candidate through canonical CI",
+        "consume the dual-actor response from an exact Sultan runtime candidate",
+        "run a signed deployed synthetic campaign and a tenant-bound canonical Fulfillment read-only canary",
+        "prove zero business writes and preserve the resulting receipt in Luzione UI"
+      ]
     }
   ]
 }

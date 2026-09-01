@@ -3,7 +3,11 @@ import crypto from "node:crypto";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-import { bindCredentialActor, verifyVercelWorkloadToken } from "@/lib/api/actor";
+import {
+  bindCredentialActor,
+  resolveVercelWorkloadIdentity,
+  verifyVercelWorkloadToken,
+} from "@/lib/api/actor";
 
 const ISSUER = "https://oidc.vercel.com/connor-spiegelmans-projects";
 const AUDIENCE = "https://vercel.com/connor-spiegelmans-projects";
@@ -48,7 +52,7 @@ function signedToken(
 
 const loadJwks = async () => [publicJwk];
 
-test("accepts only the signed production identity of the Luzione UI project", async () => {
+test("accepts only registered signed production workload identities", async () => {
   assert.equal(await verifyVercelWorkloadToken(signedToken(), loadJwks), true);
   assert.equal(await verifyVercelWorkloadToken(
     signedToken({ project_id: "prj_wrong" }),
@@ -62,6 +66,26 @@ test("accepts only the signed production identity of the Luzione UI project", as
     signedToken({ aud: "https://attacker.example" }),
     loadJwks,
   ), false);
+
+  const sultanToken = signedToken({
+    project: "sultan-os",
+    project_id: "prj_5nTisld8OnGiBhIxegGbUpWrZNp0",
+    sub: "owner:connor-spiegelmans-projects:project:sultan-os:environment:production",
+  });
+  assert.deepEqual(await resolveVercelWorkloadIdentity(sultanToken, loadJwks), {
+    actorId: "service:sultan-os",
+    actorType: "service",
+    capabilities: [
+      "analysis.read",
+      "account.health.evaluate",
+      "catalog.quality.evaluate",
+      "economic.integrity.evaluate",
+      "fulfillment.readiness.evaluate",
+      "partner.network.evaluate",
+      "sultan.agent.intent.evaluate",
+    ],
+    tenantId: "luzione",
+  });
 });
 
 test("rejects expired, algorithm-confused, unknown-key and tampered tokens", async () => {
@@ -104,6 +128,8 @@ test("all protected API routes await the asynchronous workload identity boundary
   }
   const actor = readFileSync("src/lib/api/actor.ts", "utf8");
   assert.match(actor, /projectId: "prj_WGbFwkzAYBij46rrVUqNPGEeWzCP"/);
+  assert.match(actor, /projectId: "prj_5nTisld8OnGiBhIxegGbUpWrZNp0"/);
+  assert.match(actor, /actorId: "service:sultan-os"/);
   assert.match(actor, /bindCredentialActor\(headers, source, identity, requiredCapability\)/);
   assert.match(actor, /crypto\.verify/);
   assert.match(actor, /AbortSignal\.timeout\(JWKS_TIMEOUT_MS\)/);

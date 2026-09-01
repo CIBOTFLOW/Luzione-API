@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_PC_016_TO_SULTAN_OS_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "b1c1d5fc8d6dab2cb61003d11bc047205524ef9c",
+  "producer_ref": "feat/api-pc-016-sultan-agent-journey",
+  "contract_name": "signed-sultan-workload-delegation",
+  "contract_version": "luzione-sultan-agent-policy/v0.1",
+  "consumer_repository": "CIBOTFLOW/Sultan-OS",
+  "endpoint": "POST /api/v1/sultan/agent-intents/evaluate",
+  "credential_identity": {
+    "kind": "vercel-oidc",
+    "actor_id": "service:sultan-os",
+    "tenant_id": "luzione",
+    "required_environment": "production",
+    "required_project_id": "prj_5nTisld8OnGiBhIxegGbUpWrZNp0",
+    "token_source": "server-only VERCEL_OIDC_TOKEN"
+  },
+  "logical_delegation": {
+    "allowed_agents": [
+      "revenue-steward@v1",
+      "fulfillment-steward@v1",
+      "partner-steward@v1",
+      "catalog-steward@v1",
+      "account-steward@v1",
+      "economic-steward@v1"
+    ],
+    "autonomy_ceiling": "A0",
+    "effect_authority": "NO_EFFECT"
+  },
+  "required_consumer_behavior": [
+    "Send the deployment-injected VERCEL_OIDC_TOKEN from Sultan server code only; never expose or copy it into a public environment variable.",
+    "Select an exact registered logical steward server-side and send no tenant, role, grant, approval, verified-deployment or effect authority in the request body.",
+    "Require policy.credentialActor.id=service:sultan-os, policy.agent.binding=VERCEL_WORKLOAD_DELEGATION and exact agent/version agreement before any model call.",
+    "Run synthetic cases only when the API returns SIMULATE_ONLY with verified synthetic context; require fresh canonical readback for any read-only live case.",
+    "Never treat model output, deployment acknowledgement or an admitted simulation as a business effect receipt."
+  ],
+  "acceptance_proof_needed": [
+    "exact Sultan candidate SHA",
+    "focused delegation parser and negative tests",
+    "signed deployed HTTP canary",
+    "zero-write readback",
+    "receipt retaining both workload and logical actor identities"
+  ],
+  "producer_evidence_refs": [
+    "src/lib/api/actor.ts",
+    "src/modules/sultan-agent/delegationPolicy.ts",
+    "src/modules/sultan-agent/tests/sultan-agent-intent.test.ts",
+    "engineering/execution/SYSTEMS_ENGINEERING_PROOF_LEDGER.json"
+  ],
+  "known_limitations": [
+    "The producer SHA is locally proven but not yet deployed.",
+    "Five of six Luzione stewards are synthetic-only until canonical context adapters exist.",
+    "No command or external-effect authority is included."
+  ]
+}
