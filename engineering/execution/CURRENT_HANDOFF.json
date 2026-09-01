@@ -73,7 +73,7 @@
   "updated_at": "2026-09-01T06:45:00.000Z",
   "api_pc_016_017": {
     "status": "BOUNDED_LOCAL_PASS_NO_EFFECT",
-    "producer_candidate_sha": null,
+    "producer_candidate_sha": "4ebc4b9280b480ba789712b29b4e84400663456b",
     "contract_versions": [
       "luzione-product-catalog/v0.1",
       "luzione-tenant-license-entitlement/v0.1",

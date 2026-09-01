@@ -2,7 +2,7 @@
   "schema_version": 1,
   "handoff_id": "API_PC_016_TO_SULTAN_OS_V1",
   "producer_repository": "CIBOTFLOW/Luzione-API",
-  "producer_sha": null,
+  "producer_sha": "4ebc4b9280b480ba789712b29b4e84400663456b",
   "producer_ref": "codex/productization-readiness-20260901",
   "contract_versions": [
     "luzione-product-catalog/v0.1",

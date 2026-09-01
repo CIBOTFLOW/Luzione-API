@@ -1747,7 +1747,7 @@
       "project_id": "API-PC-016",
       "recorded_at": "2026-09-01T06:45:00Z",
       "repository": "CIBOTFLOW/Luzione-API",
-      "exact_sha": null,
+      "exact_sha": "4ebc4b9280b480ba789712b29b4e84400663456b",
       "engineering_state": "BOUNDED_PASS",
       "release_evidence": "LOCAL_PROVEN",
       "effect_authority": "NO_EFFECT",
@@ -1779,7 +1779,8 @@
         "src/app/api/v1/productization/route.ts",
         "src/modules/productization/tests/productization.test.ts",
         "docs/platform-engineering/LUZIONE_PRODUCTION_READINESS_AUDIT_20260901.md",
-        "engineering/execution/readiness/API_PC_016_PRODUCTION_READINESS_AUDIT_20260901.json"
+        "engineering/execution/readiness/API_PC_016_PRODUCTION_READINESS_AUDIT_20260901.json",
+        "commit:4ebc4b9280b480ba789712b29b4e84400663456b"
       ],
       "failure_refs": [
         "API_PC_016_PRODUCTION_API_CONVERGENCE_BLOCKED_20260901",
@@ -1815,7 +1816,7 @@
       "project_id": "API-PC-017",
       "recorded_at": "2026-09-01T06:45:00Z",
       "repository": "CIBOTFLOW/Luzione-API",
-      "exact_sha": null,
+      "exact_sha": "4ebc4b9280b480ba789712b29b4e84400663456b",
       "engineering_state": "BOUNDED_PASS",
       "release_evidence": "LOCAL_PROVEN",
       "effect_authority": "NO_EFFECT",
@@ -1845,7 +1846,8 @@
         "contracts/productization/tenant-license-entitlement-v0.1.schema.json",
         "supabase/migrations/20260901090000_tenant_product_license_versions.sql",
         "architecture/production-convergence/API_PC_017_WORKING_CONTRACT.md",
-        "src/modules/productization/tests/productization.test.ts"
+        "src/modules/productization/tests/productization.test.ts",
+        "commit:4ebc4b9280b480ba789712b29b4e84400663456b"
       ],
       "failure_refs": ["API_PC_016_PRODUCTION_API_CONVERGENCE_BLOCKED_20260901"],
       "cross_repo_handoffs": [

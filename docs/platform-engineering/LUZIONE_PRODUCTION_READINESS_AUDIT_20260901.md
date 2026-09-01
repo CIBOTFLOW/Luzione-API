@@ -2,6 +2,7 @@
 
 Date: 2026-09-01 UTC  
 Scope: Luzione UI, Luzione API, Sultan OS, Luzione Room Planner, their Vercel deployments and their managed Supabase estates  
+Candidate: `CIBOTFLOW/Luzione-API@4ebc4b9280b480ba789712b29b4e84400663456b`  
 Decision: **NOT PRODUCTION READY**
 
 ## Executive decision

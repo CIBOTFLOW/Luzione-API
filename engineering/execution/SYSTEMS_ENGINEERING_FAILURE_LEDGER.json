@@ -40,7 +40,7 @@
       "layer": "dependency-security",
       "symptom": "The locked main-branch dependency graph reports one low and three high vulnerability entries.",
       "expected": "The release dependency graph has no unresolved high-severity advisory entry.",
-      "actual": "npm audit reports high-severity entries for Next.js 16.2.4 and its PostCSS/sharp dependency paths, plus a low-severity esbuild development-server entry. npm identifies Next.js 16.3.3 as the non-major fix path.",
+      "actual": "The production/main observation remains affected. Review candidate 4ebc4b9280b480ba789712b29b4e84400663456b upgrades Next.js and eslint-config-next to 16.3.4 and tsx to 4.23.13; its exact lockfile reports zero vulnerabilities and passes the full local release gate, but it is not merged or deployed.",
       "classification": {
         "domain": "DEPENDENCY",
         "class": "CORRUPT",
@@ -58,7 +58,10 @@
         "https://github.com/advisories/GHSA-f88m-g3jw-g9cj",
         "https://github.com/advisories/GHSA-fxqj-rqcc-2cmp"
       ],
-      "repair_attempts": [],
+      "repair_attempts": [
+        "Updated Next.js and eslint-config-next from 16.2.4 to 16.3.4 and tsx from 4.21.0 to 4.23.13 in the review candidate.",
+        "Ran compliance, typecheck, lint, 225 tests, production build and npm audit against candidate 4ebc4b9280b480ba789712b29b4e84400663456b; all passed and audit reported zero vulnerabilities."
+      ],
       "strategy_reset": null,
       "quarantine_scope": [
         "release-readiness claims for the main-branch dependency graph"
@@ -67,10 +70,10 @@
       "resolved": false,
       "resolution_ref": null,
       "remaining_uncertainty": [
-        "Runtime exploitability was not individually assessed in the API_SE_001 documentation/discovery mutation cone.",
-        "The available Next.js 16.3.3 update still needs exact-head type, lint, test, build and audit proof after convergence with current work."
+        "Runtime exploitability of the deployed 16.2.4 graph was not individually assessed.",
+        "The fix is proven on a review candidate only; CI, merge and exact production deployment remain outstanding."
       ],
-      "next_action": "Converge the existing dependency-update pull requests or an equivalent Next.js 16.3.3 lockfile update, then rerun the full release gate and npm audit on the exact candidate SHA."
+      "next_action": "Require CI on candidate 4ebc4b9280b480ba789712b29b4e84400663456b, merge only with the managed-preview plan, and re-run npm audit against the exact deployed SHA before resolving the main/production quarantine."
     },
     {
       "failure_id": "API_SE_014_DOCKER_SOCKET_SANDBOX_20260829",

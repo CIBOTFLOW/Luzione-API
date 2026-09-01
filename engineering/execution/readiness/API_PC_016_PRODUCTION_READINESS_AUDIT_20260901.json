@@ -1,6 +1,7 @@
 {
   "schema_version": 1,
   "audit_id": "API_PC_016_PRODUCTION_READINESS_AUDIT_20260901",
+  "candidate_sha": "4ebc4b9280b480ba789712b29b4e84400663456b",
   "observed_at": "2026-09-01T06:40:08.780Z",
   "scope": [
     "CIBOTFLOW/Luzione-UI",
