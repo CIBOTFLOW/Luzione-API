@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "handoff_id": "API_PC_012_TO_SULTAN_OS_V1",
-  "recorded_at": "2026-08-31T18:25:00.000Z",
+  "recorded_at": "2026-09-01T06:48:00.000Z",
   "producer": {
     "repository": "CIBOTFLOW/Luzione-API",
     "candidate_sha": "7d015fffd0b3a099f83cc7a73e1af02bc4dd1e28",
@@ -10,11 +10,11 @@
   },
   "consumer": {
     "repository": "CIBOTFLOW/Sultan-OS",
-    "implementation_sha": "6f477c0525141ced3ae87c9dc631e92a981af120",
-    "proof_head_sha": "123246edbab978c48b58a45e1936a039018da615",
-    "pull_request": 307
+    "implementation_sha": "add0d64c972f230882f4aec7b99437e1d37726fd",
+    "proof_head_sha": "5f6082271216a27500950388da9972c452637a42",
+    "pull_request": 310
   },
-  "status": "BOUNDED_EXACT_VERSION_CONSUMPTION_PROVEN_PRODUCER_HARDENING_REVALIDATION_REQUIRED",
+  "status": "BOUNDED_EXACT_VERSION_CONSUMPTION_REVALIDATED_NO_EFFECT",
   "contract_versions": [
     "luzione-sultan-agent-context/v0.1",
     "luzione-sultan-agent-intent/v0.1",
@@ -35,7 +35,7 @@
       "decision.sourceContext.verification",
       "decision.sourceContext.verifiedCount"
     ],
-    "consumer_action": "Revalidate the credential actor ID using the canonical colon separator and tolerate/consume the additive policy and source-verification fields before deployed HTTP proof."
+    "consumer_action": "Completed by Sultan OS PR #310: canonical colon identity is emitted, and tenant-policy plus source-verification evidence is consumed fail-closed before read-only work."
   },
   "ownership": {
     "Sultan_OS": "agent definitions, case reasoning, model/tool selection, work orders, simulations and cognitive evaluation",
@@ -48,19 +48,21 @@
     "Sultan prepares the exact intent request body without tenant, actor, role, grant, approval or executable-authority fields.",
     "Sultan rejects FEP work on the Luzione intent adapter.",
     "Sultan rejects synthetic context outside simulation.",
-    "Focused Sultan registry/adapter tests passed 13/13 and exact implementation built READY on Vercel.",
+    "Sultan OS PR #310 merged at add0d64c972f230882f4aec7b99437e1d37726fd after every GitHub workflow and exact-head Vercel preview passed.",
+    "Sultan emits the canonical <agentId>:<agentVersion> credential requirement and rejects the legacy @ separator.",
+    "Sultan consumes decision.tenantPolicy, decision.sourceContext.verification and decision.sourceContext.verifiedCount; missing evidence or any effect claim fails closed.",
+    "The bounded Revenue Steward live-model shadow passed at exact proof SHA 5f6082271216a27500950388da9972c452637a42 with no effects; that is cognitive-quality evidence, not deployed API workload-identity evidence.",
     "API release gate and CodeQL passed at the exact producer candidate."
   ],
   "remaining": [
-    "merge the producer hardening and revalidate the independent Sultan consumer against its additive response and credential-ID convention",
     "signed tenant-bound deployed HTTP request; the local disposable bearer-token handler proof is not deployed workload-identity evidence",
     "managed or deployed canonical context freshness and stale denial",
     "source-owned effect receipt/readback only under separate effect authorization"
   ],
   "non_claims": [
-    "production deployment",
-    "live credential correctness",
-    "model judgment quality",
+    "signed deployed Sultan-to-API workload identity",
+    "live API credential correctness",
+    "model judgment quality outside the bounded P177 Revenue Steward synthetic campaign",
     "business value",
     "Luzione mutation",
     "external effect",
