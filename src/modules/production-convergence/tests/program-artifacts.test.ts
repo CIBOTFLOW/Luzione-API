@@ -50,6 +50,8 @@ test("ownership registry names every first-journey object and binds reconciled c
   assert.equal(byObject.get("Quote")?.currentOwner, "CIBOTFLOW/Luzione-UI");
   assert.equal(byObject.get("Quote")?.migrationState, "API_DARK_PATH_TRANSFER_PENDING");
   assert.equal(byObject.get("Product")?.currentOwner, "external:shopify");
+  assert.equal(byObject.get("TenantLicense")?.currentOwner, "CIBOTFLOW/Luzione-API");
+  assert.equal(byObject.get("ModuleEntitlement")?.targetMutationOwner, "CIBOTFLOW/Luzione-API");
   assert.equal(new Set(registry.objects.map((item) => item.object)).size, registry.objects.length);
 });
 
@@ -89,7 +91,9 @@ test("contract v0.1 manifest and JSON-compatible OpenAPI publish the same bounde
     "/api/v1/commands/quote-approvals",
     "/api/v1/commands/quotes",
     "/api/v1/healthz",
+    "/api/v1/licensing/entitlements",
     "/api/v1/livez",
+    "/api/v1/productization",
     "/api/v1/provider-operations",
     "/api/v1/readyz",
     "/api/v1/release",

@@ -44,8 +44,18 @@ export const PRODUCTION_CONVERGENCE_TENANT_TABLES = Object.freeze([
   "order_fulfillment_intents",
 ]);
 
+export const PRODUCTIZATION_TENANT_TABLES = Object.freeze([
+  "tenant_product_license_versions",
+  "tenant_product_module_entitlements",
+]);
+
+export const FORCED_TENANT_RLS_TABLES = Object.freeze([
+  ...PRODUCTION_CONVERGENCE_TENANT_TABLES,
+  ...PRODUCTIZATION_TENANT_TABLES,
+]);
+
 export const EXPECTED_RLS_TABLES = Object.freeze([
-  ...new Set([...SENSITIVE_SERVER_ONLY_TABLES, ...PRODUCTION_CONVERGENCE_TENANT_TABLES]),
+  ...new Set([...SENSITIVE_SERVER_ONLY_TABLES, ...FORCED_TENANT_RLS_TABLES]),
 ]);
 
 export const PROVIDER_WORKER_TABLES = Object.freeze([
@@ -62,6 +72,7 @@ export const ACTIVE_DENIAL_PROBES = Object.freeze([
   Object.freeze({ role: "authenticated", table: "auth_users" }),
   Object.freeze({ role: "anon", table: "orders" }),
   Object.freeze({ role: "authenticated", table: "p110_outbox_messages" }),
+  Object.freeze({ role: "anon", table: "tenant_product_license_versions" }),
 ]);
 
 export type RlsPostureRow = {

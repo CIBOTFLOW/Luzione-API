@@ -1741,6 +1741,135 @@
         "model-backed hidden-label shadow evaluation",
         "separately authorized reversible command proof with receipt and authoritative post-effect readback"
       ]
+    },
+    {
+      "proof_id": "API_PC_016_LOCAL_PRODUCTIZATION_FOUNDATION_20260901",
+      "project_id": "API-PC-016",
+      "recorded_at": "2026-09-01T06:45:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": null,
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The API candidate publishes a dependency-closed premium-home-goods product catalog for three customer profiles, four editions, 17 modules and the requested two origin-market phases; adds five workflow packs and a reviewed exact-version room-plan proposal attachment; and records a non-destructive production audit. The contracts never grant pricing, customer-send, acceptance, legal or provider-effect authority.",
+      "exercised_boundaries": [
+        "Every customer profile and edition includes the declared prerequisites of every included module.",
+        "All 17 module IDs are unique and every referenced workflow pack exists.",
+        "Phase 1 contains Italy, Denmark, Portugal, Spain, Türkiye, France and the Netherlands into the United States; phase 2 contains Morocco, India, Sweden, Japan, Vietnam and Germany.",
+        "Trade-data law requires authoritative effective-dated sources and human review and denies AI legal finality.",
+        "The room-plan evaluator requires matching tenant, Commercial Case, proposal-context, planner project, room/product, document, digest and human-review evidence.",
+        "Room-plan attachment always denies pricing authority, customer send and binding acceptance.",
+        "GET /api/v1/productization exposes only public definitions and never tenant entitlements.",
+        "Authenticated UI/Sultan and read-only production infrastructure observations were recorded without a write or external provider effect.",
+        "Local typecheck, lint, 225/225 tests, production build and zero-vulnerability npm audit passed."
+      ],
+      "untested_boundaries": [
+        "independent UI, Sultan or Room Planner consumption",
+        "planner outbox delivery, duplicate/reorder recovery and API attachment persistence",
+        "managed planner security containment or runtime repair",
+        "preview and production deployment, canary, rollback or customer journey",
+        "country-specific authoritative trade data and provider coverage",
+        "production load, soak, penetration or managed recovery testing"
+      ],
+      "evidence_refs": [
+        "src/modules/productization/catalog.ts",
+        "src/modules/productization/roomPlannerProposal.ts",
+        "contracts/productization/room-plan-proposal-attachment-v0.1.schema.json",
+        "src/app/api/v1/productization/route.ts",
+        "src/modules/productization/tests/productization.test.ts",
+        "docs/platform-engineering/LUZIONE_PRODUCTION_READINESS_AUDIT_20260901.md",
+        "engineering/execution/readiness/API_PC_016_PRODUCTION_READINESS_AUDIT_20260901.json"
+      ],
+      "failure_refs": [
+        "API_PC_016_PRODUCTION_API_CONVERGENCE_BLOCKED_20260901",
+        "API_PC_016_ROOM_PLANNER_SECURITY_BLOCKED_20260901",
+        "API_PC_016_ROOM_PLANNER_RUNTIME_AND_PROVENANCE_BLOCKED_20260901",
+        "API_PC_016_UI_SULTAN_OPERATIONS_DEGRADED_20260901"
+      ],
+      "cross_repo_handoffs": [
+        "API_PC_016_TO_LUZIONE_UI_V1",
+        "API_PC_016_TO_SULTAN_OS_V1",
+        "API_PC_016_TO_ROOM_PLANNER_V1"
+      ],
+      "deferred_external_infra": [
+        "Room Planner managed containment and Git-bound preview",
+        "independent consumer repositories",
+        "authoritative trade and provider data",
+        "preview, production and recovery environments"
+      ],
+      "remaining_uncertainty": [
+        "The production findings are bounded observations and do not replace destructive security testing or prove unauthorized access.",
+        "A producer contract cannot establish that any consumer correctly enforces it.",
+        "Module delivery stages are honest planning state, not customer availability."
+      ],
+      "next_proof_needed": [
+        "contain and prove the Room Planner managed data boundary",
+        "implement exact outbox/API/UI room-plan proposal consumption",
+        "certify one Italy-to-USA vertical journey",
+        "collect exact preview canary, rollback and managed recovery evidence"
+      ]
+    },
+    {
+      "proof_id": "API_PC_017_LOCAL_LICENSE_STORE_20260901",
+      "project_id": "API-PC-017",
+      "recorded_at": "2026-09-01T06:45:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": null,
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The API candidate publishes an append-versioned tenant license and exact module-entitlement design, a credential-bound read-only endpoint and a deterministic evaluator that fails closed on stale, malformed, inactive, expired, cross-tenant, duplicate, unknown and access-escalated inputs. Licensing is explicitly unable to grant actor or external-effect authority.",
+      "exercised_boundaries": [
+        "luzione-tenant-license-entitlement/v0.1 is registered in schema, manifest, OpenAPI, catalog and release components.",
+        "The evaluator denies tenant mismatch, stale/invalid snapshot, inactive/expired license, unknown/unentitled module and access escalation.",
+        "Duplicate entitlements and malformed timestamps or limits fail closed.",
+        "The source migration creates append-versioned current license and version-bound entitlement rows with forced tenant RLS.",
+        "The source migration revokes public, anon, authenticated and service_role access and grants only SELECT to luzione_api_runtime.",
+        "GET /api/v1/licensing/entitlements requires credential capability license.entitlement.read and reads in an explicit tenant-bound read-only transaction.",
+        "No provisioning, billing, tenant activation, business mutation or provider effect path is present.",
+        "Local typecheck, lint, 225/225 tests, production build and zero-vulnerability npm audit passed."
+      ],
+      "untested_boundaries": [
+        "execution of the new migration against disposable PostgreSQL",
+        "managed preview/production migration and deployed runtime role membership",
+        "authenticated deployed readback and negative tenant probes",
+        "independent module enforcement in UI, Sultan or Room Planner",
+        "pricing, provisioning, usage metering, billing webhooks, grace/cancellation and financial reconciliation"
+      ],
+      "evidence_refs": [
+        "src/modules/productization/licensing.ts",
+        "src/lib/productization/licenseReadService.ts",
+        "src/app/api/v1/licensing/entitlements/route.ts",
+        "contracts/productization/tenant-license-entitlement-v0.1.schema.json",
+        "supabase/migrations/20260901090000_tenant_product_license_versions.sql",
+        "architecture/production-convergence/API_PC_017_WORKING_CONTRACT.md",
+        "src/modules/productization/tests/productization.test.ts"
+      ],
+      "failure_refs": ["API_PC_016_PRODUCTION_API_CONVERGENCE_BLOCKED_20260901"],
+      "cross_repo_handoffs": [
+        "API_PC_016_TO_LUZIONE_UI_V1",
+        "API_PC_016_TO_SULTAN_OS_V1"
+      ],
+      "deferred_external_infra": [
+        "disposable or managed PostgreSQL migration proof",
+        "runtime credential provisioning",
+        "independent consumer repositories",
+        "billing provider and sandbox"
+      ],
+      "remaining_uncertainty": [
+        "Static migration/source tests do not establish PostgreSQL execution or managed role behavior.",
+        "The canonical production database is already migration-drifted and must be converged before adding this schema.",
+        "No commercial plan, price or tenant has been activated."
+      ],
+      "next_proof_needed": [
+        "fresh and observed-shape disposable migration proof",
+        "managed preview migration with exact checksum and safe-role membership",
+        "authenticated current/stale/missing/cross-tenant readback probes",
+        "independent consumer enforcement and rollback",
+        "billing lifecycle design and sandbox reconciliation"
+      ]
     }
   ]
 }

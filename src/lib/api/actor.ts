@@ -42,6 +42,7 @@ const VERCEL_CALLER = Object.freeze({
     "catalog.projection.read",
     "governance.constitution.read",
     "governance.evaluate",
+    "license.entitlement.read",
     "platform.guarantees.read",
     "security.rls.read",
   ]),

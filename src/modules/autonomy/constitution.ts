@@ -126,6 +126,12 @@ export const capabilityPolicies: readonly CapabilityPolicy[] = Object.freeze([
     summary: "Create a reversible internal proposal artifact without publishing or sending it.",
   },
   {
+    capability: "proposal.room_plan.attach",
+    effectClass: "A1",
+    providerEffect: false,
+    summary: "Attach a reviewed exact-version room-plan artifact to a proposal without creating pricing, send, or acceptance authority.",
+  },
+  {
     capability: "lead.score",
     effectClass: "A1",
     providerEffect: false,

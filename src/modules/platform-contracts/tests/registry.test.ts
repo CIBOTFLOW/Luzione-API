@@ -21,6 +21,8 @@ const requiredTruthEntities = [
   "Proposal",
   "Quote",
   "Order",
+  "TenantLicense",
+  "ModuleEntitlement",
   "Product",
   "Supplier",
   "Shipment",

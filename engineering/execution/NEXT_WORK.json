@@ -4,7 +4,7 @@
   "repository": "CIBOTFLOW/Luzione-API",
   "authorization_status": "IN_PROGRESS_USER_LAUNCHED",
   "base_ref": "main",
-  "objective": "Implement and converge the canonical deterministic platform spine into a production-grade API-owned business command, invariant, event, durable workflow, integration, receipt and authoritative readback plane consumed by Luzione UI and Sultan OS.",
+  "objective": "Implement and converge the canonical deterministic platform spine into a production-grade API-owned business command, invariant, event, durable workflow, integration, receipt, authoritative readback and tenant-productization plane consumed by Luzione UI, Sultan OS and the Luzione Room Planner.",
   "canonical_program": "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md",
   "program_extensions": [
     {
@@ -12,6 +12,12 @@
       "source": "Luzione_Production_Convergence_Implementation_Charter_2026-08-30.md Section 20",
       "repository_program": "architecture/production-convergence/PROGRAM.md",
       "admitted_at": "2026-08-30T09:00:00Z"
+    },
+    {
+      "extension_id": "LUZIONE_PRODUCTIZATION_AND_LICENSING_V1",
+      "source": "User productization directive received 2026-09-01",
+      "repository_program": "docs/platform-engineering/LUZIONE_PRODUCTION_READINESS_AUDIT_20260901.md",
+      "admitted_at": "2026-09-01T06:45:00Z"
     }
   ],
   "max_parallel_cells": 2,
@@ -536,12 +542,82 @@
       "title": "Independent Cross-System Production Certification",
       "priority": 486,
       "status": "PLANNED",
-      "depends_on": ["API-PC-001", "API-PC-002", "API-PC-003", "API-PC-004", "API-PC-005", "API-PC-006", "API-PC-007", "API-PC-008", "API-PC-009", "API-PC-010", "API-PC-011", "API-PC-012", "API-PC-013", "API-PC-014"],
+      "depends_on": ["API-PC-001", "API-PC-002", "API-PC-003", "API-PC-004", "API-PC-005", "API-PC-006", "API-PC-007", "API-PC-008", "API-PC-009", "API-PC-010", "API-PC-011", "API-PC-012", "API-PC-013", "API-PC-014", "API-PC-016", "API-PC-017", "API-PC-018", "API-PC-019", "API-PC-020"],
       "mutation_cone": ["certification", "journeys", "evidence", "release"],
       "core_outcome": "Certify the complete cross-system journey only from exact independent API, UI, Sultan, provider/readback and recovery evidence.",
       "published_artifacts": ["twelve-case journey package", "readiness certificate", "remaining risk register"],
       "required_evidence": ["independent consumer tests", "canary and rollback", "authoritative readback", "production observations"],
       "irreversible_effects": [],
+      "completion_evidence_ref": null
+    },
+    {
+      "project_id": "API-PC-016",
+      "platform_project": "PRODUCTIZATION_FOUNDATION",
+      "title": "Premium Home Goods Product Catalog and Room-Plan Contract",
+      "priority": 485,
+      "status": "COMPLETE",
+      "depends_on": ["API-PC-001", "API-PC-003", "API-PC-009"],
+      "mutation_cone": ["product-catalog", "contracts", "workflow-packs", "room-planner", "tests", "audit"],
+      "core_outcome": "Publish exact customer profiles, editions, module dependencies, country phases, workflow packs and a reviewed room-plan-to-proposal attachment contract without granting pricing, send or acceptance authority.",
+      "published_artifacts": ["product catalog", "public productization route", "room-plan proposal schema", "production readiness audit", "consumer handoffs"],
+      "required_evidence": ["catalog dependency closure", "attachment denial tests", "independent consumer adoption", "managed preview and rollback"],
+      "irreversible_effects": [],
+      "completion_evidence_ref": "API_PC_016_LOCAL_PRODUCTIZATION_FOUNDATION_20260901"
+    },
+    {
+      "project_id": "API-PC-017",
+      "platform_project": "PRODUCTIZATION_FOUNDATION",
+      "title": "Canonical Tenant License Versions and Entitlement Readback",
+      "priority": 484,
+      "status": "COMPLETE",
+      "depends_on": ["API-PC-004", "API-PC-013", "API-PC-016"],
+      "mutation_cone": ["licensing", "database", "rls", "authorization", "api", "tests"],
+      "core_outcome": "Publish a fail-closed license evaluator, append-versioned tenant license/module schema and credential-bound readback while keeping licensing separate from actor and effect authority.",
+      "published_artifacts": ["license contract", "forced-RLS migration", "entitlement readback route", "security tests"],
+      "required_evidence": ["managed preview migration", "negative tenant probes", "independent enforcement", "rollback"],
+      "irreversible_effects": ["managed migration and tenant provisioning require separate release authority"],
+      "completion_evidence_ref": "API_PC_017_LOCAL_LICENSE_STORE_20260901"
+    },
+    {
+      "project_id": "API-PC-018",
+      "platform_project": "DESIGN_COMMERCE_VERTICAL_SLICE",
+      "title": "Room Planner to Governed Proposal Integration",
+      "priority": 483,
+      "status": "PLANNED",
+      "depends_on": ["API-PC-009", "API-PC-016", "API-PC-017"],
+      "mutation_cone": ["room-planner", "outbox", "commercial-case", "proposal", "ui", "security"],
+      "core_outcome": "Contain and repair the planner, emit an exact reviewed attachment through its outbox, ingest it through the API and render it in the exact proposal context before human review.",
+      "published_artifacts": ["planner lockdown evidence", "outbox adapter", "attachment persistence", "UI proposal consumer", "end-to-end journey"],
+      "required_evidence": ["managed planner RLS denial probes", "Git-bound preview", "exact artifact digest", "cross-tenant denial", "independent UI journey", "rollback"],
+      "irreversible_effects": ["planner managed migration and deployment require a named containment/release plan"],
+      "completion_evidence_ref": null
+    },
+    {
+      "project_id": "API-PC-019",
+      "platform_project": "IMPORT_OPERATIONS_VERTICAL_SLICE",
+      "title": "Import, Trade, Logistics and White-Glove Vertical Slice",
+      "priority": 482,
+      "status": "PLANNED",
+      "depends_on": ["API-PC-010", "API-PC-011", "API-PC-016", "API-PC-017"],
+      "mutation_cone": ["supplier", "trade", "logistics", "fulfillment", "provider-network", "white-glove", "country-packs"],
+      "core_outcome": "Certify one Italy-to-USA journey from supplier evidence through quote, order, trade review, logistics and white-glove delivery before admitting more country lanes.",
+      "published_artifacts": ["effective-dated country pack", "provider adapters", "fulfillment quote", "trade-review receipt", "delivery schedule", "source readback"],
+      "required_evidence": ["authoritative legal and carrier sources", "human compliance review", "provider sandbox", "ambiguous-outcome reconciliation", "money invariants", "cross-system journey"],
+      "irreversible_effects": ["live carrier, broker, customs, payment or customer effects require separate approval and rollback"],
+      "completion_evidence_ref": null
+    },
+    {
+      "project_id": "API-PC-020",
+      "platform_project": "COMMERCIAL_LICENSING_LIFECYCLE",
+      "title": "Licensing Provisioning, Metering and Billing Reconciliation",
+      "priority": 481,
+      "status": "PLANNED",
+      "depends_on": ["API-PC-005", "API-PC-006", "API-PC-017"],
+      "mutation_cone": ["plans", "provisioning", "usage", "billing", "webhooks", "reconciliation", "customer-terms"],
+      "core_outcome": "Turn exact-version license readback into an audited commercial lifecycle with idempotent provisioning, usage limits, billing reconciliation, grace/cancellation policy and authoritative receipts.",
+      "published_artifacts": ["plan and price policy", "provisioning commands", "usage ledger", "billing adapter", "webhook inbox", "reconciliation dashboard"],
+      "required_evidence": ["billing sandbox", "replay/conflict", "out-of-order webhook handling", "entitlement enforcement", "cancellation/grace tests", "financial readback"],
+      "irreversible_effects": ["customer activation, invoicing and payment collection require separate commercial and release authority"],
       "completion_evidence_ref": null
     }
   ]

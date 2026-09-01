@@ -1132,6 +1132,118 @@
       "resolution_ref": "API_PC_012_LOCAL_CANONICAL_CONTEXT_HARDENING_20260831",
       "remaining_uncertainty": ["Cold offline builds remain dependent on the configured external font."],
       "next_action": "Preserve the exact-SHA successful build evidence without treating the sandbox denial as an application failure."
+    },
+    {
+      "failure_id": "API_PC_016_PRODUCTION_API_CONVERGENCE_BLOCKED_20260901",
+      "project_id": "API-PC-016",
+      "observed_at": "2026-09-01T06:40:03Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "1d4e61b6a402cde0e7319f17895dac2881cb434e",
+      "environment": "production",
+      "layer": "managed-schema-security-and-readiness",
+      "symptom": "The live API security gate returns 503 while dependency readiness alternates between 200 and 503 under bounded low-volume observation.",
+      "expected": "An exact production release has a converged checksummed schema, safe runtime roles, forced tenant RLS, stable dependency readiness and a proven rollback path.",
+      "actual": "healthz observed 39 of 40 expected tables and 61 violations; order_fulfillment_intents and safe runtime/worker role convergence are absent; release identity reports only two applied API schema versions and DEPLOYED_INCOMPLETE; database TLS is ENCRYPTED_UNVERIFIED.",
+      "classification": { "domain": "PLATFORM", "class": "UNAVAILABLE", "retry": "HUMAN", "severity": "CRITICAL" },
+      "evidence_refs": [
+        "GET https://api.luzione.com/api/v1/healthz at 2026-09-01T06:39:35Z",
+        "GET https://api.luzione.com/api/v1/readyz bounded observations",
+        "GET https://api.luzione.com/api/v1/release",
+        "engineering/execution/readiness/API_PC_016_PRODUCTION_READINESS_AUDIT_20260901.json"
+      ],
+      "repair_attempts": [
+        "Kept mutations and external effects disabled fail closed.",
+        "Added locally proven productization/license contracts without attempting a managed migration.",
+        "Updated the expected RLS table set so a future release cannot omit license tables silently."
+      ],
+      "strategy_reset": "Quarantine production convergence and require an exact managed preview migration, role cutover, denial proof, consumer canary and rollback before promotion.",
+      "quarantine_scope": ["production mutation enablement", "tenant license activation", "cross-system production certification"],
+      "deferred_external_infra": ["managed preview PostgreSQL", "safe runtime credential membership", "preview and production deployment windows"],
+      "resolved": false,
+      "resolution_ref": null,
+      "remaining_uncertainty": ["The bounded observations do not establish the frequency or root cause of readiness failures."],
+      "next_action": "Converge the full migration/role chain in managed preview, run positive and negative canaries plus rollback, then collect a sustained readiness/security window."
+    },
+    {
+      "failure_id": "API_PC_016_ROOM_PLANNER_SECURITY_BLOCKED_20260901",
+      "project_id": "API-PC-018",
+      "observed_at": "2026-09-01T05:55:00Z",
+      "repository": "CIBOTFLOW/Luzione-Room-Planner-MVP",
+      "exact_sha": "5fa529145a7af79dcfd172cd5e769322deca11d8",
+      "environment": "production",
+      "layer": "managed-postgres-rls-and-grants",
+      "symptom": "The Room Planner managed public schema exposes broad role privileges while RLS is disabled on nearly every table.",
+      "expected": "Every tenant/session/integration table is least-privilege, forced-RLS and proven to deny anonymous, missing-tenant and cross-tenant access in the managed environment.",
+      "actual": "Only 1 of 29 public tables has RLS enabled; 28 advisor errors report rls_disabled_in_public; all 29 grant SELECT, INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES and TRIGGER to anon, authenticated and service_role.",
+      "classification": { "domain": "AUTH", "class": "CORRUPT", "retry": "HUMAN", "severity": "CRITICAL" },
+      "evidence_refs": [
+        "Supabase project gdyqfcxnquraivxukfja schema and privilege inspection",
+        "Supabase security advisor findings at 2026-09-01",
+        "engineering/execution/handoffs/API_PC_016_ROOM_PLANNER.json",
+        "docs/platform-engineering/LUZIONE_PRODUCTION_READINESS_AUDIT_20260901.md"
+      ],
+      "repair_attempts": ["Inspected the repository lockdown CI and confirmed that its disposable proof has not converged to the managed database."],
+      "strategy_reset": "Stop planner integration and production use until containment, access-log review, managed lockdown, negative probes and rollback are complete.",
+      "quarantine_scope": ["Room Planner production use", "planner Data API", "room-plan proposal integration", "customer data import"],
+      "deferred_external_infra": ["managed planner database change window", "access-log review", "credential/session rotation if indicated"],
+      "resolved": false,
+      "resolution_ref": null,
+      "remaining_uncertainty": ["This posture is a potential exposure condition; the audit does not prove that unauthorized access occurred."],
+      "next_action": "Contain the Data API, revoke grants, force tenant RLS, inspect logs, rotate affected secrets if reachability warrants it, and prove managed denials before reopening the integration."
+    },
+    {
+      "failure_id": "API_PC_016_ROOM_PLANNER_RUNTIME_AND_PROVENANCE_BLOCKED_20260901",
+      "project_id": "API-PC-018",
+      "observed_at": "2026-09-01T05:45:00Z",
+      "repository": "CIBOTFLOW/Luzione-Room-Planner-MVP",
+      "exact_sha": null,
+      "environment": "production",
+      "layer": "application-runtime-and-release-provenance",
+      "symptom": "The Room Planner production /app route renders an unhandled response and the deployment has no discoverable Git SHA provenance.",
+      "expected": "A reviewed exact Git commit renders the authenticated planner journey, binds its migration set, passes preview security/browser gates and has a rehearsed rollback.",
+      "actual": "The page title is Unhandled Thrown Response with visible text 200; sampled logs contain seven 500s including invalid UUID, missing session table and Shopify failures; deployment dpl_GH7aH7ALxEvDeyNVgEprX3tgKf9J is CLI-sourced without repository SHA.",
+      "classification": { "domain": "CLIENT", "class": "CORRUPT", "retry": "HUMAN", "severity": "CRITICAL" },
+      "evidence_refs": [
+        "https://planner.luzione.com/app browser observation",
+        "Vercel seven-day production logs",
+        "Vercel deployment dpl_GH7aH7ALxEvDeyNVgEprX3tgKf9J",
+        "docs/platform-engineering/LUZIONE_PRODUCTION_READINESS_AUDIT_20260901.md"
+      ],
+      "repair_attempts": ["Selected an outbox-based proposal contract that does not depend on enabling the broken production deployment."],
+      "strategy_reset": "Repair runtime and bind the next preview to exact source only after the managed security boundary is contained.",
+      "quarantine_scope": ["Room Planner production release", "API/UI proposal consumption"],
+      "deferred_external_infra": ["Git-bound preview deployment", "managed session migration", "browser verification and rollback window"],
+      "resolved": false,
+      "resolution_ref": null,
+      "remaining_uncertainty": ["The unbound production tree cannot be proven equivalent to the observed repository main SHA."],
+      "next_action": "Repair /app, session schema and UUID validation; deploy an exact reviewed SHA to preview; pass managed security and browser journeys; rehearse rollback."
+    },
+    {
+      "failure_id": "API_PC_016_UI_SULTAN_OPERATIONS_DEGRADED_20260901",
+      "project_id": "API-PC-016",
+      "observed_at": "2026-09-01T06:40:08Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": null,
+      "environment": "production",
+      "layer": "cross-system-operations",
+      "symptom": "The UI core renders, but request-time schema creation and a timed-out growth workload remain; Sultan reports degraded model routing and incomplete provider/auth evidence.",
+      "expected": "Schema is migration-owned, durable background work completes or reconciles, model/provider SLOs pass and exact consumer journeys are certified.",
+      "actual": "Canonical logs show 34 create-table-if-not-exists statements in 24 hours; two UI property-signal runs reached the 300-second limit; Sultan reports 20/27 successful model calls, stale Shopify, unverified Google Docs generation and unavailable operator auth.",
+      "classification": { "domain": "WORKFLOW", "class": "INDETERMINATE", "retry": "HUMAN", "severity": "ERROR" },
+      "evidence_refs": [
+        "Luzione UI Vercel 24-hour logs",
+        "canonical Supabase Postgres 24-hour logs",
+        "GET https://api.luzione.com/api/v1/sultan/runtime-status at 2026-09-01T06:40:08Z",
+        "engineering/execution/readiness/API_PC_016_PRODUCTION_READINESS_AUDIT_20260901.json"
+      ],
+      "repair_attempts": ["Published explicit consumer handoffs and kept all new capabilities locally bounded and no-effect."],
+      "strategy_reset": "Treat UI and Sultan as independently releasable consumers with their own exact-head gates and evidence; producer tests cannot close these findings.",
+      "quarantine_scope": ["growth-engine production SLO", "Sultan production certification", "independent productization consumption"],
+      "deferred_external_infra": ["consumer repository implementation", "queued background-worker deployment", "provider sandboxes and readback"],
+      "resolved": false,
+      "resolution_ref": null,
+      "remaining_uncertainty": ["The sampled traffic window is too small to estimate customer-facing reliability."],
+      "next_action": "Move DDL to migrations, queue/checkpoint the growth workload, restore Sultan routing/auth/provider readback, then certify exact consumer journeys."
     }
   ]
 }

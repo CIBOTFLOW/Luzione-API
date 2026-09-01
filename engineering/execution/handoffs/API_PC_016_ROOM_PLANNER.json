@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_PC_016_TO_ROOM_PLANNER_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": null,
+  "producer_ref": "codex/productization-readiness-20260901",
+  "contract_version": "luzione-room-plan-proposal-attachment/v0.1",
+  "consumer_repository": "CIBOTFLOW/Luzione-Room-Planner-MVP",
+  "consumer_main_sha_observed": "5fa529145a7af79dcfd172cd5e769322deca11d8",
+  "consumer_production_deployment_observed": "dpl_GH7aH7ALxEvDeyNVgEprX3tgKf9J",
+  "consumer_project_paths": ["PLANNER-PC-000", "PLANNER-PC-016", "PLANNER-PC-018"],
+  "stable_paths": {
+    "schema": "contracts/productization/room-plan-proposal-attachment-v0.1.schema.json",
+    "event_type": "room_plan.proposal_attachment.ready",
+    "event_version": 1,
+    "target_context": "Commercial Case proposal evidence before final proposal review"
+  },
+  "release_blockers": [
+    "P0: 28 of 29 managed public tables have RLS disabled.",
+    "P0: all 29 managed public tables grant broad table privileges to anon and authenticated.",
+    "P0: production /app renders an unhandled response.",
+    "P0: production deployment has no discoverable Git SHA provenance.",
+    "P1: managed migrations lag the repository lockdown design."
+  ],
+  "required_consumer_behavior": [
+    "Complete containment, access-log review, least-privilege grants, forced tenant RLS and managed negative probes before integration work is promoted.",
+    "Build one immutable attachment from exact Project, Room, selected-product, GeneratedDocument and Asset versions.",
+    "Bind tenantId, commercialCaseId and proposalContextVersionId from an authenticated API-issued integration context, never from arbitrary browser claims.",
+    "Require credential-bound human review, calculate the artifact SHA-256 digest and write one idempotent event to IntegrationOutbox.",
+    "Never declare prices authoritative or authorize customer send or binding acceptance.",
+    "Retry delivery from the outbox and reconcile acknowledgement/readback by event identity; do not post blindly."
+  ],
+  "acceptance_proof_needed": [
+    "managed anonymous/authenticated/missing-tenant/cross-tenant denial probes",
+    "Git-bound preview with repaired /app and session lifecycle",
+    "fresh and upgrade migration proof plus rollback",
+    "duplicate/reordered outbox delivery and reconciliation",
+    "exact artifact digest and superseded-version denial",
+    "independent API and UI consumer journey"
+  ],
+  "known_limitations": [
+    "This handoff does not apply the planner migration, change its deployment or assert that managed data was accessed.",
+    "The API attachment contract is producer-local until the planner and UI independently consume it."
+  ]
+}

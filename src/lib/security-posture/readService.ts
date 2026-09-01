@@ -4,7 +4,7 @@ import { databasePool } from "@/lib/db";
 import {
   ACTIVE_DENIAL_PROBES,
   EXPECTED_RLS_TABLES,
-  PRODUCTION_CONVERGENCE_TENANT_TABLES,
+  FORCED_TENANT_RLS_TABLES,
   evaluateRlsPosture,
   probeDeniedRead,
   type GlobalClientExposureRow,
@@ -60,7 +60,7 @@ export async function readRlsReadiness(options: { activeProbes?: boolean } = {})
           and relation.relkind in ('r', 'p')
           and relation.relname = any($1::text[])
         order by expected.role_name, relation.relname`,
-      [PRODUCTION_CONVERGENCE_TENANT_TABLES],
+      [FORCED_TENANT_RLS_TABLES],
     );
     const defaultResult = await client.query<{ client_default_privileges: boolean }>(
       `select exists (
@@ -104,7 +104,7 @@ export async function readRlsReadiness(options: { activeProbes?: boolean } = {})
       ...evaluateRlsPosture({
         clientDefaultPrivileges: Boolean(defaultResult.rows[0]?.client_default_privileges),
         expectedTables: EXPECTED_RLS_TABLES,
-        forceRlsTables: PRODUCTION_CONVERGENCE_TENANT_TABLES,
+        forceRlsTables: FORCED_TENANT_RLS_TABLES,
         globalExposure: globalExposureResult.rows[0] ?? {
           public_table_count: 0,
           rls_disabled_client_accessible_count: 0,

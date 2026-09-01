@@ -82,6 +82,9 @@ import {
   PLATFORM_OPERATIONS_REGISTRY_VERSION,
 } from "@/modules/platform-operations/registry";
 import { PRODUCTION_CONVERGENCE_EVIDENCE_VERSION } from "@/modules/platform-operations/evidence";
+import { PRODUCT_CATALOG_CONTRACT_VERSION } from "@/modules/productization/catalog";
+import { TENANT_LICENSE_ENTITLEMENT_CONTRACT_VERSION } from "@/modules/productization/licensing";
+import { ROOM_PLAN_PROPOSAL_ATTACHMENT_CONTRACT_VERSION } from "@/modules/productization/roomPlannerProposal";
 
 export async function GET(request: Request) {
   const identity = createRequestIdentity(request.headers);
@@ -196,6 +199,12 @@ export async function GET(request: Request) {
       crossSystemJourneyCertification: {
         contractVersion: CROSS_SYSTEM_JOURNEY_CERTIFICATION_VERSION,
         law: crossSystemJourneyCertificationLaw,
+      },
+      productization: {
+        catalogContractVersion: PRODUCT_CATALOG_CONTRACT_VERSION,
+        catalogRoute: "GET /api/v1/productization",
+        licenseContractVersion: TENANT_LICENSE_ENTITLEMENT_CONTRACT_VERSION,
+        roomPlanProposalAttachmentContractVersion: ROOM_PLAN_PROPOSAL_ATTACHMENT_CONTRACT_VERSION,
       },
       platformAreas,
       authority: {
