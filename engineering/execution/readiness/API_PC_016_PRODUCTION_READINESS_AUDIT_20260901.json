@@ -8,8 +8,8 @@
     "CIBOTFLOW/Luzione-API",
     "CIBOTFLOW/Sultan-OS",
     "CIBOTFLOW/Luzione-Room-Planner-MVP",
-    "canonical Supabase project cfwkqhenhnvnnwpxdjns",
-    "room-planner Supabase project gdyqfcxnquraivxukfja"
+    "canonical managed Postgres estate",
+    "room-planner managed Postgres estate"
   ],
   "overall_decision": "NOT_PRODUCTION_READY",
   "decision_law": "Any open P0 security, managed-schema, availability, or release-provenance finding blocks production certification.",
@@ -73,17 +73,16 @@
     {
       "system": "Luzione Room Planner",
       "production_sha": null,
-      "deployment_id": "dpl_GH7aH7ALxEvDeyNVgEprX3tgKf9J",
+      "deployment_id": "WITHHELD_UNTIL_SECURITY_CONTAINMENT",
       "state": "CRITICAL_SECURITY_AND_RUNTIME_BLOCK",
       "positive_evidence": [
-        "The source schema contains Project, Room, Concept, GeneratedDocument and IntegrationOutbox primitives suitable for a versioned proposal bridge.",
+        "The source schema contains versionable project, room, concept, generated-document and integration-outbox primitives suitable for a proposal bridge.",
         "Repository CI includes disposable Postgres, Prisma, RLS-lockdown, test, typecheck and build jobs."
       ],
       "blocking_evidence": [
         "The production /app route rendered an Unhandled Thrown Response with visible text 200.",
         "Seven 500 responses appeared in the sampled seven-day logs, including bad UUID, session-table and Shopify failures.",
-        "Only 1 of 29 public tables has RLS enabled; the remaining 28 produced rls_disabled_in_public errors.",
-        "All 29 public tables grant SELECT, INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES and TRIGGER to anon, authenticated and service_role.",
+        "The managed tenant-isolation and least-privilege gate failed critically; exploit-specific counts and role/table details are withheld from this public artifact until containment.",
         "The managed database has not applied the repository's current lockdown migration.",
         "The production deployment is CLI-sourced and has no discoverable Git commit provenance.",
         "CI uses Node 20.19 while Vercel currently runs Node 24."
@@ -96,9 +95,9 @@
       "priority": "P0",
       "severity": "CRITICAL",
       "owner": "CIBOTFLOW/Luzione-Room-Planner-MVP",
-      "title": "Room Planner public-schema grants and RLS are unsafe",
+      "title": "Room Planner managed tenant-isolation and least-privilege gate failed",
       "release_block": true,
-      "required_action": "Contain Data API exposure, revoke broad role privileges, force tenant RLS, run anonymous/authenticated/cross-tenant negative probes, review access logs, and rotate affected session or Shopify credentials if exposure analysis shows they were reachable."
+      "required_action": "Contain the managed data surface, restore least privilege and forced tenant isolation, run anonymous/authenticated/cross-tenant negative probes, review access logs, and rotate affected credentials if exposure analysis shows they were reachable."
     },
     {
       "id": "LPR-002",

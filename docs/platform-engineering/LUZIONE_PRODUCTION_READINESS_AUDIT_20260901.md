@@ -9,7 +9,7 @@ Decision: **NOT PRODUCTION READY**
 
 The customer-facing CRM shell is materially functional, the API has strong fail-closed architecture in source, and Sultan exposes useful operator evidence. The combined system is nevertheless not safe to certify for production customers. Four hard blockers dominate the decision:
 
-1. The Room Planner managed database has a critical access-control posture: 28 of 29 public tables have RLS disabled, and all 29 grant broad table privileges to `anon`, `authenticated` and `service_role`.
+1. The Room Planner managed database failed a critical tenant-isolation and least-privilege gate. Exploit-specific managed-database evidence is intentionally withheld from this public artifact until containment.
 2. The Room Planner production application currently fails at `/app` and its deployment is not bound to a discoverable Git SHA.
 3. The API production database has not converged to the repository's migration and least-privilege model. The security gate returns 503, one expected table is absent, and the release advertises only two applied schema versions.
 4. No exact-version cross-system journey, canary/rollback, managed restore or production observation package certifies UI → API → Sultan/worker → source readback.
@@ -23,7 +23,7 @@ This is a bounded, non-destructive assessment—not a penetration-test certifica
 | Luzione UI | `ea8da2e4d80557f03bf6e72ec93b294eaf603f48`, `dpl_J5RgW7EjALzmiNr5pGghibFka1JH` | Authenticated Today, Growth, Accounts, Commercial Cases, Orders and Money surfaces rendered. Proposal flow is governed and human-reviewed. | Runtime DDL in canonical DB logs; two 300-second property-signal timeouts; Shopify reconciliation error; prebuild covers only part of the repository suite inventory; no cross-system certificate. | Functional core, not certified |
 | Luzione API | `1d4e61b6a402cde0e7319f17895dac2881cb434e`, `dpl_6nF6Dev39NCXtereDBb2XNrcLChJ` | Liveness passes; mutations and effects fail closed; exact release identity is exposed. | Security health 503; 39/40 expected tables; 61 RLS/role violations; only two managed API migrations; safe roles absent; intermittent readiness; DB TLS unverified; project ownership visibility gap. | Blocked |
 | Sultan OS | `77c81afd7995581be7d6bb564eb10eceab057290`, `dpl_G3MTEHPda9hnFYZ7ZVC4MtBR4LCa` | Read-only operator plane renders and separates configured from observed state. | Routing success is 20/27 (74.07%); Shopify is stale; document generation/readback unverified; operator auth absent; sampled traffic is too sparse for reliability claims. | Degraded, not certified |
-| Room Planner | deployment `dpl_GH7aH7ALxEvDeyNVgEprX3tgKf9J`; no Git SHA provenance | Source model has versionable Project, Room, Concept, GeneratedDocument and IntegrationOutbox primitives. CI includes a disposable DB and lockdown validation. | `/app` is broken; seven sampled 500s; critical managed RLS/grant failure; migrations lag source; runtime/CI Node drift; no exact-source deployment. | Critical block |
+| Room Planner | production deployment has no Git SHA provenance | Source model has versionable project, room, concept, generated-document and outbox primitives. CI includes a disposable DB and lockdown validation. | `/app` is broken; sampled 500s; critical managed tenant-isolation/least-privilege failure; migrations lag source; runtime/CI Node drift; no exact-source deployment. | Critical block |
 
 ## P0: actions required before any customer pilot
 
@@ -31,9 +31,9 @@ This is a bounded, non-destructive assessment—not a penetration-test certifica
 
 Treat this as a potential exposure condition, not proof that data was accessed.
 
-- Immediately restrict or disable the exposed Data API surface until the privilege path is understood.
-- Revoke broad privileges from `anon` and `authenticated`; grant only the minimum statements to purpose-built roles.
-- Enable and force tenant RLS on every tenant-bearing public table, including `Project`, `Room`, `Asset`, `GeneratedDocument`, `IntegrationOutbox`, `OperatorGrant` and session data.
+- Immediately restrict the managed data surface until the privilege path is understood.
+- Revoke unintended client-role privileges and grant only the minimum statements to purpose-built roles.
+- Enable and force tenant RLS on every tenant-bearing application, asset, integration, operator and session table.
 - Run anonymous, authenticated, missing-tenant and cross-tenant negative probes against a managed preview and then production.
 - Review database/API access logs for unauthorized enumeration or writes.
 - If session or Shopify secrets could have been read through the exposed shape, rotate them after containment and invalidate affected sessions.

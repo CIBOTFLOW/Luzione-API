@@ -7,7 +7,7 @@
   "contract_version": "luzione-room-plan-proposal-attachment/v0.1",
   "consumer_repository": "CIBOTFLOW/Luzione-Room-Planner-MVP",
   "consumer_main_sha_observed": "5fa529145a7af79dcfd172cd5e769322deca11d8",
-  "consumer_production_deployment_observed": "dpl_GH7aH7ALxEvDeyNVgEprX3tgKf9J",
+  "consumer_production_deployment_observed": "WITHHELD_UNTIL_SECURITY_CONTAINMENT",
   "consumer_project_paths": ["PLANNER-PC-000", "PLANNER-PC-016", "PLANNER-PC-018"],
   "stable_paths": {
     "schema": "contracts/productization/room-plan-proposal-attachment-v0.1.schema.json",
@@ -16,14 +16,13 @@
     "target_context": "Commercial Case proposal evidence before final proposal review"
   },
   "release_blockers": [
-    "P0: 28 of 29 managed public tables have RLS disabled.",
-    "P0: all 29 managed public tables grant broad table privileges to anon and authenticated.",
+    "P0: the managed tenant-isolation and least-privilege gate failed critically; exploit-specific evidence is withheld from the public handoff until containment.",
     "P0: production /app renders an unhandled response.",
     "P0: production deployment has no discoverable Git SHA provenance.",
     "P1: managed migrations lag the repository lockdown design."
   ],
   "required_consumer_behavior": [
-    "Complete containment, access-log review, least-privilege grants, forced tenant RLS and managed negative probes before integration work is promoted.",
+    "Complete containment, access-log review, least-privilege grants, forced tenant isolation and managed negative probes before integration work is promoted.",
     "Build one immutable attachment from exact Project, Room, selected-product, GeneratedDocument and Asset versions.",
     "Bind tenantId, commercialCaseId and proposalContextVersionId from an authenticated API-issued integration context, never from arbitrary browser claims.",
     "Require credential-bound human review, calculate the artifact SHA-256 digest and write one idempotent event to IntegrationOutbox.",

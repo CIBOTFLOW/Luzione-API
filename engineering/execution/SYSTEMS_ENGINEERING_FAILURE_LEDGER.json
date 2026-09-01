@@ -1175,13 +1175,13 @@
       "exact_sha": "5fa529145a7af79dcfd172cd5e769322deca11d8",
       "environment": "production",
       "layer": "managed-postgres-rls-and-grants",
-      "symptom": "The Room Planner managed public schema exposes broad role privileges while RLS is disabled on nearly every table.",
+      "symptom": "The Room Planner managed tenant-isolation and least-privilege gate failed critically; exploit-specific managed-database evidence is withheld from the public ledger until containment.",
       "expected": "Every tenant/session/integration table is least-privilege, forced-RLS and proven to deny anonymous, missing-tenant and cross-tenant access in the managed environment.",
-      "actual": "Only 1 of 29 public tables has RLS enabled; 28 advisor errors report rls_disabled_in_public; all 29 grant SELECT, INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES and TRIGGER to anon, authenticated and service_role.",
+      "actual": "Read-only managed metadata and advisor evidence show a release-blocking access-control mismatch between the repository lockdown design and the managed database.",
       "classification": { "domain": "AUTH", "class": "CORRUPT", "retry": "HUMAN", "severity": "CRITICAL" },
       "evidence_refs": [
-        "Supabase project gdyqfcxnquraivxukfja schema and privilege inspection",
-        "Supabase security advisor findings at 2026-09-01",
+        "restricted managed schema/privilege inspection at 2026-09-01",
+        "restricted managed security-advisor findings at 2026-09-01",
         "engineering/execution/handoffs/API_PC_016_ROOM_PLANNER.json",
         "docs/platform-engineering/LUZIONE_PRODUCTION_READINESS_AUDIT_20260901.md"
       ],
@@ -1192,7 +1192,7 @@
       "resolved": false,
       "resolution_ref": null,
       "remaining_uncertainty": ["This posture is a potential exposure condition; the audit does not prove that unauthorized access occurred."],
-      "next_action": "Contain the Data API, revoke grants, force tenant RLS, inspect logs, rotate affected secrets if reachability warrants it, and prove managed denials before reopening the integration."
+      "next_action": "Contain the managed data surface, restore least privilege and forced tenant isolation, inspect logs, rotate affected secrets if reachability warrants it, and prove managed denials before reopening the integration."
     },
     {
       "failure_id": "API_PC_016_ROOM_PLANNER_RUNTIME_AND_PROVENANCE_BLOCKED_20260901",
@@ -1204,12 +1204,12 @@
       "layer": "application-runtime-and-release-provenance",
       "symptom": "The Room Planner production /app route renders an unhandled response and the deployment has no discoverable Git SHA provenance.",
       "expected": "A reviewed exact Git commit renders the authenticated planner journey, binds its migration set, passes preview security/browser gates and has a rehearsed rollback.",
-      "actual": "The page title is Unhandled Thrown Response with visible text 200; sampled logs contain seven 500s including invalid UUID, missing session table and Shopify failures; deployment dpl_GH7aH7ALxEvDeyNVgEprX3tgKf9J is CLI-sourced without repository SHA.",
+      "actual": "The page title is Unhandled Thrown Response with visible text 200; sampled logs contain repeated 500s including invalid UUID, missing session table and Shopify failures; the production deployment is CLI-sourced without repository SHA.",
       "classification": { "domain": "CLIENT", "class": "CORRUPT", "retry": "HUMAN", "severity": "CRITICAL" },
       "evidence_refs": [
         "https://planner.luzione.com/app browser observation",
         "Vercel seven-day production logs",
-        "Vercel deployment dpl_GH7aH7ALxEvDeyNVgEprX3tgKf9J",
+        "restricted Vercel production deployment metadata",
         "docs/platform-engineering/LUZIONE_PRODUCTION_READINESS_AUDIT_20260901.md"
       ],
       "repair_attempts": ["Selected an outbox-based proposal contract that does not depend on enabling the broken production deployment."],
