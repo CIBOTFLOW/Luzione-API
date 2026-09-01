@@ -699,7 +699,7 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
     maturity: "IMPLEMENTED_TRANSITIONAL",
     name: "Fresh canonical tenant license and module entitlement evaluation",
     ownerRepository: "CIBOTFLOW/Luzione-API",
-    pendingChangeRefs: ["API-PC-017:canonical-license-store-and-enforcement"],
+    pendingChangeRefs: ["API-PC-018:canonical-license-store-and-enforcement"],
     sourcePaths: [
       "src/modules/productization/licensing.ts",
       "src/lib/productization/licenseReadService.ts",
@@ -717,7 +717,7 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
     maturity: "LIBRARY_ONLY",
     name: "Reviewed exact-version room-plan proposal attachment",
     ownerRepository: "CIBOTFLOW/Luzione-API",
-    pendingChangeRefs: ["API-PC-018:planner-outbox-and-proposal-consumer"],
+    pendingChangeRefs: ["API-PC-019:planner-outbox-and-proposal-consumer"],
     sourcePaths: [
       "src/modules/productization/roomPlannerProposal.ts",
       "contracts/productization/room-plan-proposal-attachment-v0.1.schema.json"

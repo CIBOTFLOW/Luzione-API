@@ -4,36 +4,88 @@
   "repository": "CIBOTFLOW/Luzione-API",
   "program_state": "IN_PROGRESS_USER_LAUNCHED",
   "current_project": null,
-  "completed_local_projects": ["API-PC-016", "API-PC-017"],
-  "next_projects": ["API-PC-018", "API-PC-019", "API-PC-020", "API-PC-014", "API-PC-015"],
-  "next_action": "First contain and repair the Room Planner managed RLS/grant posture and broken Git-unbound production deployment. In parallel-ready work, converge the exact API migration chain and safe runtime roles in a managed preview. Only then implement the room-plan outbox-to-proposal consumer slice, followed by one Italy-to-USA import/fulfillment pilot and a separately governed licensing/billing lifecycle.",
+  "next_projects": [
+    "API-PC-019",
+    "API-PC-020",
+    "API-PC-021",
+    "API-PC-014",
+    "API-PC-015"
+  ],
+  "next_action": "Have the exact Sultan runtime consume API-PC-016 and run its deployed no-effect OIDC canary. In parallel, contain the Room Planner managed RLS/grant posture, reconcile its migration history in an isolated managed branch, and keep productization API-PC-017/API-PC-018 draft-only until managed API schema/role convergence. Then implement API-PC-019 room-plan proposal consumption, API-PC-020 Italy-to-USA import operations and API-PC-021 billing/provisioning.",
   "canonical_program": "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md",
-  "productization_audit": "docs/platform-engineering/LUZIONE_PRODUCTION_READINESS_AUDIT_20260901.md",
-  "machine_readable_audit": "engineering/execution/readiness/API_PC_016_PRODUCTION_READINESS_AUDIT_20260901.json",
   "failure_ledger": "engineering/execution/SYSTEMS_ENGINEERING_FAILURE_LEDGER.json",
   "proof_ledger": "engineering/execution/SYSTEMS_ENGINEERING_PROOF_LEDGER.json",
   "consumer_reconciliation": "engineering/execution/CONSUMER_EVIDENCE_RECONCILIATION_V1.json",
   "cross_repo_consumers": [
     {
       "repository": "CIBOTFLOW/Luzione-UI",
-      "production_sha_observed": "ea8da2e4d80557f03bf6e72ec93b294eaf603f48",
-      "state": "FUNCTIONAL_CORE_PRODUCTIZATION_CONSUMPTION_PENDING",
-      "handoff": "engineering/execution/handoffs/API_PC_016_LUZIONE_UI.json"
+      "sha": "7d03bbdae207e79083d8bb1e8dbb46a38a099fd3",
+      "state": "BOUNDED_TABLE_ESTATE_SECURITY_CONVERGED_API_REGISTRY_CONSUMPTION_PENDING",
+      "bounded_complete": [
+        "LUZIONE_SE_001",
+        "LUZIONE_SE_002",
+        "LUZIONE_SE_003",
+        "LUZIONE_SE_005",
+        "LUZIONE_SE_008_BF3"
+      ],
+      "next": [
+        "consume API_SE_003_BF1",
+        "LUZIONE_SE_004",
+        "LUZIONE_SE_007",
+        "LUZIONE_SE_008",
+        "LUZIONE_SE_009"
+      ],
+      "productization": {
+        "observed_production_sha": "ea8da2e4d80557f03bf6e72ec93b294eaf603f48",
+        "state": "FUNCTIONAL_CORE_PRODUCTIZATION_CONSUMPTION_PENDING",
+        "handoff": "engineering/execution/handoffs/API_PC_017_LUZIONE_UI.json"
+      }
     },
     {
       "repository": "CIBOTFLOW/Sultan-OS",
-      "production_sha_observed": "77c81afd7995581be7d6bb564eb10eceab057290",
-      "state": "DEGRADED_PRODUCTIZATION_CONSUMPTION_PENDING",
-      "handoff": "engineering/execution/handoffs/API_PC_016_SULTAN_OS.json"
+      "sha": "add0d64c972f230882f4aec7b99437e1d37726fd",
+      "state": "MERGED_AGENT_CONTRACT_CONSUMER_SIGNED_WORKLOAD_RUNTIME_PENDING",
+      "bounded_complete": [
+        "SULTAN_SE_001",
+        "API-PC-012 exact v0.1 consumer"
+      ],
+      "next": [
+        "consume API-PC-016 workload/logical-agent binding",
+        "signed deployed synthetic and tenant-bound read-only API journeys",
+        "SULTAN_SE_002",
+        "SULTAN_SE_003",
+        "SULTAN_SE_005"
+      ],
+      "productization": {
+        "observed_production_sha": "77c81afd7995581be7d6bb564eb10eceab057290",
+        "state": "DEGRADED_PRODUCTIZATION_CONSUMPTION_PENDING",
+        "handoff": "engineering/execution/handoffs/API_PC_017_SULTAN_OS.json"
+      }
     },
     {
       "repository": "CIBOTFLOW/Luzione-Room-Planner-MVP",
       "main_sha_observed": "5fa529145a7af79dcfd172cd5e769322deca11d8",
-      "state": "CRITICAL_SECURITY_AND_RUNTIME_BLOCK",
-      "handoff": "engineering/execution/handoffs/API_PC_016_ROOM_PLANNER.json"
+      "state": "DRAFT_CONTAINMENT_PREVIEW_PROVEN_PRODUCTION_BLOCKED",
+      "handoff": "engineering/execution/handoffs/API_PC_017_ROOM_PLANNER.json",
+      "candidate_sha": "8d340414c71af3715c5d7212ef00b3ff76ab4e3b",
+      "candidate_pr": 12,
+      "preview_evidence": {
+        "ci": "PASS",
+        "tests": "PASS_33_OF_33",
+        "typecheck": "PASS",
+        "production_build": "PASS",
+        "browser_console": "PASS_NO_APP_ERRORS",
+        "live": "PASS_200_EXACT_SHA",
+        "health": "EXPECTED_503_MANAGED_SCHEMA_AND_SECURITY_DRIFT",
+        "direct_app": "PASS_302_TO_SHOPIFY_ADMIN",
+        "effect_authority": "NO_EFFECT"
+      }
     }
   ],
   "open_quarantines": [
+    "API_SE_001_DEPENDENCY_AUDIT_20260829: release-readiness claims for the main dependency graph",
+    "API_SE_019_CROSS_SYSTEM_CERTIFICATION: UI bounded consumer evidence is present, but full exact-version UI journey/release evidence and Sultan exact-version API-consumer/journey evidence remain incomplete",
+    "API_PC_014_EXTERNAL_PRODUCTION_EVIDENCE_DEFERRED_20260831: the exact local operations-evidence producer and logical restore proof pass, while deployed dashboards/alerts, preview rollback, managed restore/PITR, production SLO/security/readback and independent consumer evidence remain unavailable",
     "LPR-001: Room Planner managed public-schema privileges and RLS are a critical release blocker.",
     "LPR-002: Room Planner /app is broken and the production deployment is not bound to a discoverable Git SHA.",
     "LPR-003: API managed schema and least-privilege roles have not converged; healthz is 503.",
@@ -44,24 +96,64 @@
     "API-PC-015: no independent exact-version cross-system production certification exists."
   ],
   "resolved_or_narrowed_uncertainty": [
+    "The blanket statement that UI consumer mappings are absent is resolved: UI now has bounded exact-version API-consumer evidence across request identity/trace, telemetry, desired/observed state and failure/recovery semantics.",
+    "The blanket statement that Sultan repository reality is unreconciled is resolved: Sultan SE001 reconciliation is complete and the remaining projects are classified by evidence.",
+    "API architecture work does not need to restart while consumer adoption/release evidence matures.",
+    "Luzione UI source and schema evidence now select CIBOTFLOW/Luzione-UI as the current Lead/Commercial Case writer and the API as the transfer-pending target; API-PC-008 reuses the same canonical rows without activating cutover.",
+    "Luzione UI source, migrations and services select CIBOTFLOW/Luzione-UI as the current Proposal/Quote/Approval writer; API-PC-009 reuses the same canonical rows, preserves P15 composition in UI and adds only default-off transfer-pending commands.",
+    "Luzione UI source selects the current Quote-to-Order path and also exposes a competing Order-create route; API-PC-010 reuses the canonical Order rows, requires exact customer-accepted Quote/economics evidence, and publishes only a new canonical no-effect Fulfillment Intent record while UI-PC-009 retains route-convergence and cutover responsibility.",
+    "API-PC-011 extends the existing P110/P111 worker substrate rather than creating a second queue: durable dispatch-start, restart-safe reconciliation leases, exact source-version closure and tenant-bound operator aggregates are implemented, while the only adapter is a deterministic local simulator and every sandbox/live activation remains default-off.",
+    "The 713-table production metadata snapshot is now bounded by an API-owned table-object contract: exactly 22 Supplier Portal browser surfaces have explicit capability ownership, while all other ownership, lifecycle and retirement decisions remain unclaimed.",
+    "API-PC-013 converges thirty admitted P110/P111 and commercial/order relations on forced tenant RLS, removes browser and legacy service-role table authority, and publishes exact non-login API-runtime/provider-worker privilege ceilings; fresh and observed-shape local proofs pass without applying any production migration or credential membership.",
+    "API-PC-014 publishes exact-SHA operations evidence, three dashboard definitions and seven alert definitions and proves a disposable logical restore with post-restore least-privilege and authoritative readback; the evaluator remains LOCAL_EVIDENCE_BOUNDED and productionReady=false.",
+    "API-PC-012 publishes exact v0.1 agent context/intent/policy/outcome contracts and a credential-bound no-effect evaluator; independent Sultan OS PR #307 consumes all four versions, prepares the exact authority-free request body and passes 13/13 focused tests at a Vercel-READY exact implementation SHA.",
+    "API-PC-012 hardening merge fe2430cccd8d3927996eea3e6f502acc9bb31547 removes client freshness authority, verifies FULFILLMENT Order context by tenant-scoped canonical readback, evaluates the active tenant policy, fixes credential-ID syntax and proves current/stale/policy/cross-tenant/identity/zero-write behavior in disposable Postgres.",
     "A machine-readable product catalog now maps all 17 requested capabilities into dependency-closed customer profiles and editions.",
     "Licensing has an API-owned append-versioned license/entitlement contract, forced-RLS migration and credential-bound readback, locally proven only.",
     "The Room Planner integration boundary is selected: reviewed exact-version attachment through IntegrationOutbox into Commercial Case proposal context.",
     "Room planning cannot authorize pricing, customer send or binding acceptance.",
-    "Next.js, eslint-config-next and tsx were updated to patched versions; the candidate npm audit has zero findings."
+    "Next.js, eslint-config-next and tsx were updated to patched versions; the candidate npm audit has zero findings.",
+    "Room Planner draft PR #12 at exact SHA 8d340414c71af3715c5d7212ef00b3ff76ab4e3b passes CI, local build/tests/typecheck and Git-bound preview liveness/readiness/direct-entry/browser gates; production remains unchanged and blocked by managed database drift."
   ],
   "deferred_external_infra": [
+    "owner-authenticated UI representative journey replay",
+    "distributed trace/telemetry export observation",
+    "preview deployment, canary and rollback rehearsal",
+    "production deployment and authoritative observation",
+    "managed backup/PITR and production recovery exercise",
+    "representative database/provider/mutation/queue/full-journey performance campaigns",
+    "signed tenant-bound Sultan read-only API journey against a deployed environment",
     "Room Planner containment, managed migration and Git-bound deployment",
     "API managed preview migration, safe-role provisioning and rollback",
     "independent UI, Sultan and Room Planner contract consumption",
     "billing-provider selection, sandbox, webhooks and financial reconciliation",
     "authoritative effective-dated country/trade data packs",
     "carrier, broker, warehouse, installer and white-glove provider sandboxes",
-    "managed backup/PITR and production recovery exercise",
     "preview canary, rollback and production observation"
   ],
   "remaining_uncertainty": [
-    "No production database or deployment was changed by API-PC-016 or API-PC-017.",
+    "Most API systems contracts are locally proven, not production-observed.",
+    "UI SE004/007/008/009 remain genuine consumer implementation/evidence projects before later UI certification dependencies can close.",
+    "Sultan SE008 measured capacity/soak and SE012 independent exact-version cross-system certification are genuinely missing evidence programs.",
+    "The API performance evidence remains a bounded localhost liveness campaign rather than representative database/provider/mutation/queue/full-journey capacity proof.",
+    "Managed backup/PITR and production recovery remain unproven despite bounded local recovery evidence.",
+    "API_SE_019 certification semantics are implemented but cross-system certification remains quarantined.",
+    "API_SE_020 remains NOT_READY and NOT_FINAL until the exact release-evidence invariants are actually observed.",
+    "The Section 20 production-convergence extension now includes API-PC-016 for signed Sultan workload delegation; local producer artifacts do not prove deployed UI/Sultan identity or release behavior.",
+    "API-PC-004 is locally proven only: production credential mappings, canonical membership persistence and independent UI/Sultan authenticated requests remain unobserved.",
+    "API-PC-005 is locally proven only: the P110 baseline was rehearsed against fresh and observed legacy shapes in disposable Postgres, while managed/production migration application, domain HTTP commands and independent UI/Sultan command journeys remain unobserved.",
+    "API-PC-006 is locally proven only: restart leases, inbox deduplication, DLQ/reconciliation and workflow CAS were exercised in disposable Postgres, while managed failover, live worker activation, provider effects and independent consumer journeys remain unobserved.",
+    "API-PC-007 is locally proven only: causal command/projection readback, stale/missing semantics and cross-tenant non-disclosure were exercised locally, while independent UI/Sultan consumption and production source freshness remain unobserved.",
+    "API-PC-008 is locally proven only: fresh and observed UI-shaped migration, authenticated Lead/Commercial Case routes, replay/conflict, stale/origin/tenant denial, atomic rollback and compatibility readback passed in disposable Postgres; API-PC-013 now supplies local domain-RLS proof, while managed application, independent consumer canary/rollback and production cutover remain unobserved.",
+    "API-PC-009 is locally proven only: fresh and observed UI-shaped Quote/Proposal migration, safe integer cents/currency, exact-version human approval denial, typed confirmation, replay/conflict, atomic rollback and tenant-bound readback passed in disposable Postgres; API-PC-013 now supplies local domain-RLS proof, while delegated user identity, managed application, consumer canary/rollback, provider/customer effects and production cutover remain unobserved.",
+    "API-PC-010 is locally proven only: fresh and observed UI-shaped Order migration, exact accepted Quote/economics binding, line copying, replay/conflict, invalid-intent rollback, tenant-bound readback and a database-constrained no-effect Fulfillment Intent passed in disposable Postgres; API-PC-013 now supplies local domain-RLS proof, while customer-acceptance provenance, competing UI-route convergence, managed application, consumer canary/rollback, provider effects and production cutover remain unobserved.",
+    "API-PC-011 is locally proven only: fresh and observed-worker migration, durable pre-call dispatch checkpoint, ambiguous/crash reconciliation, exact-version sandbox readback, bounded retry/dead-letter, kill-switch exclusion, competing reconciliation claims and tenant-bound operator aggregates passed in disposable Postgres; real-provider sandboxes, credentials, deployed worker lifecycle, compensation, managed failover, independent consumers, live canary and production observation remain unproven.",
+    "API-PC-013 is locally proven only: role creation, grant convergence, forced RLS, exact runtime/worker ceilings, idempotent fresh/observed-shape migration and negative browser/missing-tenant/cross-tenant/worker-scope probes passed in disposable Postgres; managed migration, deployed login membership, credential rotation, UI/Sultan canaries and production observation remain unproven.",
+    "API-PC-014 is locally proven and externally quarantined: the exact evidence bundle, operations registry, production build and logical restore/readback pass, while deployed telemetry/dashboards/alerts, exact production SLO windows, managed backup/PITR, preview rollback, production observation and independent consumers remain unproven.",
+    "API_SE_003_BF1 is locally proven only: the API producer declares 22 of 713 observed table objects and keeps retirement fail closed, while UI/Sultan exact-version consumption, recurring source snapshots and deployed catalog evidence remain unobserved.",
+    "API-PC-012 hardening is locally proven only: the disposable authenticated route-handler/Postgres journey is not a deployed signed workload-identity request; managed canonical context, business command receipt/readback and production autonomy remain unproven.",
+    "API-PC-016 is locally proven only: exact Vercel workload claim validation and the API-owned six-steward delegation matrix pass locally, while a deployed Sultan-to-API OIDC canary, model campaign and UI receipt readback remain unproven.",
+    "No production database or deployment was changed by API-PC-017 or API-PC-018.",
     "The new license migration was source-reviewed and tested statically but not applied to a disposable or managed PostgreSQL instance in this session.",
     "The new consumer contracts have no independent repository implementation evidence.",
     "The Room Planner posture is a potential exposure condition; the audit does not establish that unauthorized access occurred.",
@@ -70,10 +162,91 @@
     "Persistent customer credential-to-tenant membership and delegated user identity remain separate authority-kernel work; the current Vercel workload mapping is statically bound to the internal luzione tenant."
   ],
   "stop_code": null,
-  "updated_at": "2026-09-01T06:45:00.000Z",
-  "api_pc_016_017": {
+  "updated_at": "2026-09-01T18:20:00.000Z",
+  "api_pc_012": {
+    "status": "BOUNDED_INTEGRATED_PASS_NO_EFFECT",
+    "producer_candidate_sha": "2249637d5359332e53b66b00fefba311146d0892",
+    "producer_pr": 52,
+    "producer_merge_sha": "fe2430cccd8d3927996eea3e6f502acc9bb31547",
+    "baseline_contract_pr": 49,
+    "baseline_contract_sha": "7d015fffd0b3a099f83cc7a73e1af02bc4dd1e28",
+    "consumer_repository": "CIBOTFLOW/Sultan-OS",
+    "consumer_implementation_sha": "6f477c0525141ced3ae87c9dc631e92a981af120",
+    "consumer_proof_head_sha": "123246edbab978c48b58a45e1936a039018da615",
+    "consumer_pr": 307,
+    "contract_versions": [
+      "luzione-sultan-agent-context/v0.1",
+      "luzione-sultan-agent-intent/v0.1",
+      "luzione-sultan-agent-policy/v0.1",
+      "luzione-sultan-agent-outcome/v0.1"
+    ],
+    "pre_rebase_API_release_gate": {
+      "run_id": 33363131683,
+      "status": "PASS_CONTRACT_EQUIVALENT_CANDIDATE_F18F838"
+    },
+    "pre_rebase_codeql": {
+      "run_id": 33363131688,
+      "status": "PASS_CONTRACT_EQUIVALENT_CANDIDATE_F18F838"
+    },
+    "rebased_local_verification": {
+      "candidate_sha": "2249637d5359332e53b66b00fefba311146d0892",
+      "compliance_controls": "PASS_7",
+      "typecheck": "PASS",
+      "lint": "PASS",
+      "tests": "PASS_220_OF_220",
+      "production_build": "PASS"
+    },
+    "canonical_context_proof": {
+      "environment": "local-disposable",
+      "authentication": "PASS_STATIC_SERVICE_TOKEN_NOT_SIGNED_DEPLOYED_WORKLOAD_IDENTITY",
+      "postgres_readback": "PASS_ORDER_AND_LINES_TENANT_SCOPED",
+      "current_context": "PASS_ADMIT_READ_ONLY",
+      "stale_version_and_hash": "PASS_ABSTAIN",
+      "tenant_policy_denial": "PASS_BLOCKED",
+      "cross_tenant": "PASS_UNKNOWN_ABSTAIN_NO_DISCLOSURE",
+      "identity_mismatch": "PASS_REDACTED_401",
+      "business_writes": "PASS_ZERO_FULFILLMENT_INTENTS_RECEIPTS_EVENTS_OUTBOX"
+    },
+    "effect_authority": "NO_EFFECT",
+    "live_http_journey": "LOCAL_DISPOSABLE_ROUTE_HANDLER_AND_POSTGRES_PROVEN_DEPLOYED_SIGNED_HTTP_NOT_RUN",
+    "business_receipt_readback": "NOT_APPLICABLE_TO_EVALUATION_ONLY_PATH_AND_NOT_PROVEN_FOR_EFFECTS",
+    "production_observation": "NOT_RUN"
+  },
+  "api_pc_016": {
+    "status": "BOUNDED_PASS_NO_EFFECT",
+    "producer_candidate_sha": "b1c1d5fc8d6dab2cb61003d11bc047205524ef9c",
+    "consumer_repository": "CIBOTFLOW/Sultan-OS",
+    "credential_actor": "service:sultan-os",
+    "logical_agents": [
+      "revenue-steward@v1",
+      "fulfillment-steward@v1",
+      "partner-steward@v1",
+      "catalog-steward@v1",
+      "account-steward@v1",
+      "economic-steward@v1"
+    ],
+    "autonomy_ceiling": "A0",
+    "effect_authority": "NO_EFFECT",
+    "local_verification": {
+      "typecheck": "PASS",
+      "lint": "PASS",
+      "tests": "PASS_223_OF_223",
+      "webpack_production_build": "PASS",
+      "canonical_ci": "PENDING"
+    },
+    "live_http_journey": "DEPLOYED_SIGNED_OIDC_NOT_RUN",
+    "business_receipt_readback": "NOT_APPLICABLE_NO_EFFECT",
+    "production_observation": "NOT_RUN"
+  },
+  "completed_local_projects": [
+    "API-PC-017",
+    "API-PC-018"
+  ],
+  "productization_audit": "docs/platform-engineering/LUZIONE_PRODUCTION_READINESS_AUDIT_20260901.md",
+  "machine_readable_audit": "engineering/execution/readiness/API_PC_017_PRODUCTION_READINESS_AUDIT_20260901.json",
+  "api_pc_017_018": {
     "status": "BOUNDED_LOCAL_PASS_NO_EFFECT",
-    "producer_candidate_sha": "4ebc4b9280b480ba789712b29b4e84400663456b",
+    "producer_candidate_sha": "ebd2054765490b0aec05f9b27e43865fba3ded03",
     "contract_versions": [
       "luzione-product-catalog/v0.1",
       "luzione-tenant-license-entitlement/v0.1",

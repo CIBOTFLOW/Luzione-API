@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_PC_017_TO_SULTAN_OS_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "ebd2054765490b0aec05f9b27e43865fba3ded03",
+  "producer_ref": "codex/productization-readiness-20260901",
+  "contract_versions": [
+    "luzione-product-catalog/v0.1",
+    "luzione-tenant-license-entitlement/v0.1",
+    "luzione-room-plan-proposal-attachment/v0.1"
+  ],
+  "consumer_repository": "CIBOTFLOW/Sultan-OS",
+  "consumer_production_sha_observed": "77c81afd7995581be7d6bb564eb10eceab057290",
+  "consumer_project_paths": [
+    "SULTAN-PC-016",
+    "SULTAN-PC-017",
+    "SULTAN-PC-018"
+  ],
+  "stable_paths": {
+    "public_catalog": "GET /api/v1/productization",
+    "product_catalog_schema": "contracts/productization/product-catalog-v0.1.schema.json",
+    "tenant_entitlements": "GET /api/v1/licensing/entitlements",
+    "room_plan_schema": "contracts/productization/room-plan-proposal-attachment-v0.1.schema.json",
+    "agent_policy_boundary": "POST /api/v1/sultan/agent-intents/evaluate"
+  },
+  "required_consumer_behavior": [
+    "Use product modules as bounded planning context, not evidence that a tenant is entitled or a capability is available.",
+    "Obtain a fresh credential-bound entitlement decision before proposing module-specific work and abstain when readback is unavailable.",
+    "Never convert a license or room-plan attachment into an autonomy grant, approval, money authority or provider-effect authority.",
+    "Treat trade rules and documents as authoritative-source and human-review work; model output cannot establish legal finality.",
+    "Reference exact proposal, planner and artifact versions in recommendations and abstain on drift."
+  ],
+  "acceptance_proof_needed": [
+    "exact Sultan/API SHAs and pinned contract versions",
+    "unlicensed, stale, cross-tenant and unavailable-readback abstention tests",
+    "room-plan version/digest drift abstention tests",
+    "hidden-label model evaluation that never bypasses licensing or human review",
+    "signed tenant-bound deployed read-only journey"
+  ],
+  "known_limitations": [
+    "No Sultan OS source was edited by this producer handoff.",
+    "Sultan production model routing is currently degraded and provider readbacks are incomplete.",
+    "The API entitlement store and planner proposal bridge are locally proven producer contracts only."
+  ]
+}

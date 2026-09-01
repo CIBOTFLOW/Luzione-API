@@ -81,6 +81,9 @@ export type SultanAgentPolicyDecision = {
     actorType: "agent" | "service" | "user";
     tenantId: string;
   };
+  agent: SultanAgentDefinitionRef & {
+    binding: "DIRECT_CREDENTIAL" | "VERCEL_WORKLOAD_DELEGATION" | "UNVERIFIED";
+  };
   agentDefinitionVerified: boolean;
   autonomy: AutonomyEvaluation;
   businessStateMutated: false;

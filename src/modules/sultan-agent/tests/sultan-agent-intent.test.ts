@@ -78,6 +78,17 @@ function actor(overrides: Partial<ApiActor> = {}): ApiActor {
   };
 }
 
+function sultanWorkload(overrides: Partial<ApiActor> = {}): ApiActor {
+  return {
+    actorId: "service:sultan-os",
+    actorType: "service",
+    capabilities: ["sultan.agent.intent.evaluate", "analysis.read", "fulfillment.readiness.evaluate"],
+    source: "vercel-oidc",
+    tenantId: "luzione",
+    ...overrides,
+  };
+}
+
 function evaluate(intent: ReturnType<typeof parseSultanAgentIntent>, authenticatedActor = actor(), options: {
   policy?: TenantPolicySnapshot;
   verification?: "CANONICAL_READBACK" | "SYNTHETIC_SIMULATION" | "UNVERIFIED";
@@ -108,6 +119,58 @@ test("generic Sultan service identity cannot impersonate a registered agent", ()
   assert.equal(decision.status, "SIMULATE_ONLY");
   assert.equal(decision.agentDefinitionVerified, false);
   assert.ok(decision.reasonCodes.includes("AGENT_DEFINITION_NOT_BOUND_TO_CREDENTIAL"));
+});
+
+test("signed Sultan workload may delegate an exact registered Luzione steward for A0 reasoning", () => {
+  const intent = parseSultanAgentIntent(request());
+  const decision = evaluate(intent, sultanWorkload());
+  assert.equal(decision.status, "ADMIT_READ_ONLY");
+  assert.equal(decision.agentDefinitionVerified, true);
+  assert.equal(decision.agent.binding, "VERCEL_WORKLOAD_DELEGATION");
+  assert.equal(decision.agent.agentId, "agent.luzione.revenue-steward");
+  assert.deepEqual(decision.actor, {
+    actorId: "service:sultan-os",
+    actorType: "service",
+    tenantId: "luzione",
+  });
+  assert.equal(decision.tenantPolicy.allowedByPolicy, true);
+  assert.equal(decision.businessStateMutated, false);
+  assert.equal(decision.externalEffectsAuthorized, false);
+});
+
+test("signed Sultan workload cannot invent an agent or cross its registered case boundary", () => {
+  const invented = parseSultanAgentIntent(request({
+    agent: {
+      agentId: "agent.luzione.unregistered-steward",
+      agentVersion: "v1",
+      authorityDomain: "LUZIONE",
+    },
+  }));
+  const inventedDecision = evaluate(invented, sultanWorkload());
+  assert.equal(inventedDecision.status, "BLOCKED");
+  assert.ok(inventedDecision.reasonCodes.includes("AGENT_DELEGATION_NOT_REGISTERED"));
+
+  const wrongCase = parseSultanAgentIntent(request({
+    caseRef: { caseId: "order-1", caseType: "FULFILLMENT", expectedVersion: "v7" },
+  }));
+  const wrongCaseDecision = evaluate(wrongCase, sultanWorkload());
+  assert.equal(wrongCaseDecision.status, "BLOCKED");
+  assert.ok(wrongCaseDecision.reasonCodes.includes("AGENT_CASE_TYPE_NOT_DELEGATED"));
+});
+
+test("FEP and Sultan-internal agents cannot use the Luzione workload delegation boundary", () => {
+  const base = request().intent;
+  for (const agent of [
+    { agentId: "agent.fep.case-steward", agentVersion: "v1", authorityDomain: "FEP" },
+    { agentId: "agent.control.independent-critic", agentVersion: "v1", authorityDomain: "SULTAN_INTERNAL" },
+  ]) {
+    const intent = parseSultanAgentIntent(request({ agent }));
+    const decision = evaluate(intent, sultanWorkload());
+    assert.equal(decision.status, "BLOCKED");
+    assert.ok(decision.reasonCodes.includes("AGENT_DELEGATION_NOT_REGISTERED"));
+    assert.ok(decision.reasonCodes.includes("AUTHORITY_DOMAIN_MISMATCH"));
+  }
+  assert.equal(base.agent.authorityDomain, "LUZIONE");
 });
 
 test("agent capability is constrained by credential and constitution", () => {
@@ -254,4 +317,11 @@ test("manifest, schemas and runtime publish the same exact contract versions", (
     assert.ok(Object.values(schema.properties).some((property) => property.const === version), version);
     assert.ok(manifest.components.includes(version), version);
   }
+  const policySchema = JSON.parse(readFileSync("contracts/sultan/agent-policy-decision-v0.1.schema.json", "utf8")) as {
+    required: string[];
+    properties: Record<string, unknown>;
+  };
+  assert.ok(policySchema.required.includes("agent"));
+  assert.ok(policySchema.required.includes("tenantPolicy"));
+  assert.ok(policySchema.properties.agent);
 });

@@ -10,15 +10,12 @@ import {
   type SultanAgentPolicyDecision,
 } from "./contracts";
 import type { SultanAgentContextVerification } from "./contextVerifier";
+import { evaluateSultanAgentCredentialBinding } from "./delegationPolicy";
 
 function overallFreshness(intent: SultanAgentIntent) {
   if (intent.sourceContext.some((context) => context.freshness === "STALE")) return "STALE" as const;
   if (intent.sourceContext.some((context) => context.freshness === "UNKNOWN")) return "UNKNOWN" as const;
   return "FRESH" as const;
-}
-
-function expectedCredentialActorId(intent: SultanAgentIntent) {
-  return `${intent.agent.agentId}:${intent.agent.agentVersion}`;
 }
 
 function statusFromAutonomy(input: {
@@ -48,12 +45,12 @@ export function evaluateSultanAgentIntent(input: {
   const synthetic = input.intent.sourceContext.some((context) => context.sourceOwner === "SYNTHETIC_LUZIONE");
   const canonicalContextUnavailable = !synthetic
     && input.contextVerification.kind !== "CANONICAL_READBACK";
-  const identityVerified = input.actor.actorType === "agent"
-    && input.actor.actorId === expectedCredentialActorId(input.intent);
+  const credentialBinding = evaluateSultanAgentCredentialBinding({ actor: input.actor, intent: input.intent });
+  const identityVerified = credentialBinding.verified;
   const reasons: string[] = [];
 
   if (input.intent.agent.authorityDomain !== "LUZIONE") reasons.push("AUTHORITY_DOMAIN_MISMATCH");
-  if (!identityVerified) reasons.push("AGENT_DEFINITION_NOT_BOUND_TO_CREDENTIAL");
+  reasons.push(...credentialBinding.reasonCodes);
   if (!input.actor.capabilities.includes(input.intent.capability)) reasons.push("AGENT_CAPABILITY_NOT_BOUND_TO_CREDENTIAL");
   if (synthetic && input.intent.runMode !== "SIMULATION") reasons.push("SYNTHETIC_CONTEXT_REQUIRES_SIMULATION");
   if (!synthetic && input.intent.sourceContext.some((context) => context.sourceOwner !== "CIBOTFLOW/Luzione-API")) {
@@ -70,14 +67,14 @@ export function evaluateSultanAgentIntent(input: {
     purpose: input.intent.purpose,
   };
   const tenantPolicy = evaluateTenantPolicy({
-    actorType: input.actor.actorType,
+    actorType: identityVerified ? "agent" : input.actor.actorType,
     plan,
     policy: input.tenantPolicy,
   });
   const autonomy = evaluateAutonomyPlan(plan, {
     actor: {
-      actorId: input.actor.actorId,
-      actorType: input.actor.actorType,
+      actorId: identityVerified ? `${input.intent.agent.agentId}:${input.intent.agent.agentVersion}` : input.actor.actorId,
+      actorType: identityVerified ? "agent" : input.actor.actorType,
       tenantId: input.actor.tenantId,
     },
     now: input.now ?? new Date().toISOString(),
@@ -98,6 +95,10 @@ export function evaluateSultanAgentIntent(input: {
     status = "ABSTAIN_STALE_CONTEXT";
   } else if (uniqueReasons.some((reason) => [
     "AGENT_CAPABILITY_NOT_BOUND_TO_CREDENTIAL",
+    "AGENT_CAPABILITY_NOT_DELEGATED",
+    "AGENT_CASE_TYPE_NOT_DELEGATED",
+    "AGENT_DELEGATION_AUTHORITY_MISMATCH",
+    "AGENT_DELEGATION_NOT_REGISTERED",
     "AUTHORITY_DOMAIN_MISMATCH",
     "SOURCE_OWNER_MISMATCH",
     "SYNTHETIC_CONTEXT_REQUIRES_SIMULATION",
@@ -126,6 +127,10 @@ export function evaluateSultanAgentIntent(input: {
       actorId: input.actor.actorId,
       actorType: input.actor.actorType,
       tenantId: input.actor.tenantId,
+    }),
+    agent: Object.freeze({
+      ...input.intent.agent,
+      binding: credentialBinding.binding,
     }),
     agentDefinitionVerified: identityVerified,
     autonomy,

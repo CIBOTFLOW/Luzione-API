@@ -168,4 +168,4 @@ Performed: read-only production HTTP probes, authenticated UI/Sultan browser jou
 
 Not performed: destructive penetration testing, production writes, provider effects, production load/soak, managed restore/PITR, production migration application or independent consumer implementation of the new contracts.
 
-Machine-readable finding set: `engineering/execution/readiness/API_PC_016_PRODUCTION_READINESS_AUDIT_20260901.json`.
+Machine-readable finding set: `engineering/execution/readiness/API_PC_017_PRODUCTION_READINESS_AUDIT_20260901.json`.

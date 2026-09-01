@@ -1,14 +1,18 @@
 {
   "schema_version": 1,
-  "handoff_id": "API_PC_016_TO_ROOM_PLANNER_V1",
+  "handoff_id": "API_PC_017_TO_ROOM_PLANNER_V1",
   "producer_repository": "CIBOTFLOW/Luzione-API",
-  "producer_sha": "4ebc4b9280b480ba789712b29b4e84400663456b",
+  "producer_sha": "ebd2054765490b0aec05f9b27e43865fba3ded03",
   "producer_ref": "codex/productization-readiness-20260901",
   "contract_version": "luzione-room-plan-proposal-attachment/v0.1",
   "consumer_repository": "CIBOTFLOW/Luzione-Room-Planner-MVP",
   "consumer_main_sha_observed": "5fa529145a7af79dcfd172cd5e769322deca11d8",
   "consumer_production_deployment_observed": "WITHHELD_UNTIL_SECURITY_CONTAINMENT",
-  "consumer_project_paths": ["PLANNER-PC-000", "PLANNER-PC-016", "PLANNER-PC-018"],
+  "consumer_project_paths": [
+    "PLANNER-PC-000",
+    "PLANNER-PC-016",
+    "PLANNER-PC-018"
+  ],
   "stable_paths": {
     "schema": "contracts/productization/room-plan-proposal-attachment-v0.1.schema.json",
     "event_type": "room_plan.proposal_attachment.ready",
@@ -40,5 +44,20 @@
   "known_limitations": [
     "This handoff does not apply the planner migration, change its deployment or assert that managed data was accessed.",
     "The API attachment contract is producer-local until the planner and UI independently consume it."
-  ]
+  ],
+  "consumer_candidate": {
+    "pr": 12,
+    "sha": "8d340414c71af3715c5d7212ef00b3ff76ab4e3b",
+    "release_evidence": "PREVIEW_PROVEN_OPERATIONAL_BOUNDARY",
+    "effect_authority": "NO_EFFECT",
+    "production_changed": false,
+    "gates": [
+      "GitHub CI passed",
+      "33/33 tests, TypeScript and production build passed",
+      "landing page rendered without overlay or application console errors",
+      "/live returned 200 with exact SHA",
+      "/health correctly returned 503 for managed drift",
+      "direct /app returned 302 to Shopify Admin"
+    ]
+  }
 }

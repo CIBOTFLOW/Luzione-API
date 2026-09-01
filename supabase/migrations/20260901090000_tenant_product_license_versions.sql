@@ -3,7 +3,7 @@ begin;
 do $$
 begin
   if not exists (select 1 from pg_roles where rolname = 'luzione_api_runtime') then
-    raise exception 'API-PC-017 requires the API-PC-013 luzione_api_runtime role';
+    raise exception 'API-PC-018 requires the API-PC-013 luzione_api_runtime role';
   end if;
 end $$;
 
@@ -107,8 +107,8 @@ grant select on table
 to luzione_api_runtime;
 
 comment on table public.tenant_product_license_versions is
-  'API-PC-017 append-versioned tenant licenses with controlled current-version supersession. Provisioning is owner-only until a separate billing adapter is authorized.';
+  'API-PC-018 append-versioned tenant licenses with controlled current-version supersession. Provisioning is owner-only until a separate billing adapter is authorized.';
 comment on table public.tenant_product_module_entitlements is
-  'API-PC-017 exact-version module and access-mode entitlements. Licensing never grants business action authority.';
+  'API-PC-018 exact-version module and access-mode entitlements. Licensing never grants business action authority.';
 
 commit;

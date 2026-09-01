@@ -28,29 +28,62 @@ type VercelJwk = crypto.JsonWebKey & {
 
 type JwksLoader = (issuer: string, forceRefresh?: boolean) => Promise<readonly VercelJwk[]>;
 
-const VERCEL_CALLER = Object.freeze({
-  actorId: "service:luzione-ui",
-  actorType: "service" as const,
-  audience: "https://vercel.com/connor-spiegelmans-projects",
-  environment: "production",
-  owner: "connor-spiegelmans-projects",
-  ownerId: "team_ZB7I1yzyt3ywCXQtPCYn4kL9",
-  project: "luzione_ui",
-  projectId: "prj_WGbFwkzAYBij46rrVUqNPGEeWzCP",
-  tenantId: "luzione",
-  capabilities: Object.freeze([
-    "catalog.projection.read",
-    "governance.constitution.read",
-    "governance.evaluate",
-    "license.entitlement.read",
-    "platform.guarantees.read",
-    "security.rls.read",
-  ]),
-});
+type VercelCaller = CredentialActorIdentity & {
+  audience: string;
+  environment: "production";
+  owner: string;
+  ownerId: string;
+  project: string;
+  projectId: string;
+};
+
+const VERCEL_OWNER = "connor-spiegelmans-projects";
+const VERCEL_AUDIENCE = `https://vercel.com/${VERCEL_OWNER}`;
+const VERCEL_CALLERS: readonly VercelCaller[] = Object.freeze([
+  Object.freeze({
+    actorId: "service:luzione-ui",
+    actorType: "service" as const,
+    audience: VERCEL_AUDIENCE,
+    environment: "production" as const,
+    owner: VERCEL_OWNER,
+    ownerId: "team_ZB7I1yzyt3ywCXQtPCYn4kL9",
+    project: "luzione_ui",
+    projectId: "prj_WGbFwkzAYBij46rrVUqNPGEeWzCP",
+    tenantId: "luzione",
+    capabilities: Object.freeze([
+      "catalog.projection.read",
+      "governance.constitution.read",
+      "governance.evaluate",
+      "license.entitlement.read",
+      "platform.guarantees.read",
+      "security.rls.read",
+    ]),
+  }),
+  Object.freeze({
+    actorId: "service:sultan-os",
+    actorType: "service" as const,
+    audience: VERCEL_AUDIENCE,
+    environment: "production" as const,
+    owner: VERCEL_OWNER,
+    ownerId: "team_ZB7I1yzyt3ywCXQtPCYn4kL9",
+    project: "sultan-os",
+    projectId: "prj_5nTisld8OnGiBhIxegGbUpWrZNp0",
+    tenantId: "luzione",
+    capabilities: Object.freeze([
+      "analysis.read",
+      "account.health.evaluate",
+      "catalog.quality.evaluate",
+      "economic.integrity.evaluate",
+      "fulfillment.readiness.evaluate",
+      "partner.network.evaluate",
+      "sultan.agent.intent.evaluate",
+    ]),
+  }),
+]);
 
 const ALLOWED_VERCEL_ISSUERS = new Set([
   "https://oidc.vercel.com",
-  `https://oidc.vercel.com/${VERCEL_CALLER.owner}`,
+  `https://oidc.vercel.com/${VERCEL_OWNER}`,
 ]);
 const CLOCK_SKEW_SECONDS = 30;
 const JWKS_CACHE_MS = 5 * 60 * 1000;
@@ -131,11 +164,11 @@ function claimEquals(payload: JsonObject, name: string, expected: string) {
   return typeof payload[name] === "string" && payload[name] === expected;
 }
 
-function validAudience(value: unknown) {
-  if (typeof value === "string") return value === VERCEL_CALLER.audience;
+function validAudience(value: unknown, expected: string) {
+  if (typeof value === "string") return value === expected;
   return Array.isArray(value)
     && value.every((entry) => typeof entry === "string")
-    && value.includes(VERCEL_CALLER.audience);
+    && value.includes(expected);
 }
 
 function validLifetime(payload: JsonObject) {
@@ -151,33 +184,35 @@ function validLifetime(payload: JsonObject) {
   return true;
 }
 
-function validVercelClaims(payload: JsonObject, issuer: string) {
-  const subject = `owner:${VERCEL_CALLER.owner}:project:${VERCEL_CALLER.project}:environment:${VERCEL_CALLER.environment}`;
+function validVercelClaims(payload: JsonObject, issuer: string, caller: VercelCaller) {
+  const subject = `owner:${caller.owner}:project:${caller.project}:environment:${caller.environment}`;
   return claimEquals(payload, "iss", issuer)
-    && validAudience(payload.aud)
+    && validAudience(payload.aud, caller.audience)
     && claimEquals(payload, "sub", subject)
-    && claimEquals(payload, "owner", VERCEL_CALLER.owner)
-    && claimEquals(payload, "owner_id", VERCEL_CALLER.ownerId)
-    && claimEquals(payload, "project", VERCEL_CALLER.project)
-    && claimEquals(payload, "project_id", VERCEL_CALLER.projectId)
-    && claimEquals(payload, "environment", VERCEL_CALLER.environment)
+    && claimEquals(payload, "owner", caller.owner)
+    && claimEquals(payload, "owner_id", caller.ownerId)
+    && claimEquals(payload, "project", caller.project)
+    && claimEquals(payload, "project_id", caller.projectId)
+    && claimEquals(payload, "environment", caller.environment)
     && validLifetime(payload);
 }
 
-export async function verifyVercelWorkloadToken(
+export async function resolveVercelWorkloadIdentity(
   token: string,
   loadJwks: JwksLoader = loadVercelJwks,
-) {
+): Promise<CredentialActorIdentity | null> {
   const parts = token.split(".");
-  if (parts.length !== 3 || parts.some((part) => part.length === 0)) return false;
+  if (parts.length !== 3 || parts.some((part) => part.length === 0)) return null;
   const [encodedHeader, encodedPayload, encodedSignature] = parts;
   const header = decodeJwtPart(encodedHeader);
   const payload = decodeJwtPart(encodedPayload);
-  if (!header || !payload) return false;
-  if (header.alg !== "RS256" || typeof header.kid !== "string" || header.kid.length > 256) return false;
+  if (!header || !payload) return null;
+  if (header.alg !== "RS256" || typeof header.kid !== "string" || header.kid.length > 256) return null;
   const issuer = typeof payload.iss === "string" ? payload.iss : "";
-  if (!ALLOWED_VERCEL_ISSUERS.has(issuer) || !validVercelClaims(payload, issuer)) return false;
-  if (!/^[A-Za-z0-9_-]+$/.test(encodedSignature) || encodedSignature.length > 4_096) return false;
+  if (!ALLOWED_VERCEL_ISSUERS.has(issuer)) return null;
+  const caller = VERCEL_CALLERS.find((candidate) => validVercelClaims(payload, issuer, candidate));
+  if (!caller) return null;
+  if (!/^[A-Za-z0-9_-]+$/.test(encodedSignature) || encodedSignature.length > 4_096) return null;
 
   try {
     let keys = await loadJwks(issuer, false);
@@ -186,17 +221,31 @@ export async function verifyVercelWorkloadToken(
       keys = await loadJwks(issuer, true);
       key = keys.find((candidate) => candidate.kid === header.kid);
     }
-    if (!key || (key.alg && key.alg !== "RS256") || (key.use && key.use !== "sig")) return false;
+    if (!key || (key.alg && key.alg !== "RS256") || (key.use && key.use !== "sig")) return null;
     const publicKey = crypto.createPublicKey({ format: "jwk", key });
-    return crypto.verify(
+    const verified = crypto.verify(
       "RSA-SHA256",
       Buffer.from(`${encodedHeader}.${encodedPayload}`),
       publicKey,
       Buffer.from(encodedSignature, "base64url"),
     );
+    if (!verified) return null;
+    return Object.freeze({
+      actorId: caller.actorId,
+      actorType: caller.actorType,
+      capabilities: caller.capabilities,
+      tenantId: caller.tenantId,
+    });
   } catch {
-    return false;
+    return null;
   }
+}
+
+export async function verifyVercelWorkloadToken(
+  token: string,
+  loadJwks: JwksLoader = loadVercelJwks,
+) {
+  return Boolean(await resolveVercelWorkloadIdentity(token, loadJwks));
 }
 
 function boundedIdentityValue(value: string, field: string) {
@@ -261,10 +310,12 @@ export async function requireServiceActor(
   const authorization = headers.get("authorization") ?? "";
   const received = authorization.startsWith("Bearer ") ? authorization.slice(7) : "";
   let source: ApiActor["source"] | null = null;
+  let workloadIdentity: CredentialActorIdentity | null = null;
   if (configured && received && safeEqual(received, configured)) {
     source = "service-token";
-  } else if (received && await verifyVercelWorkloadToken(received)) {
-    source = "vercel-oidc";
+  } else if (received) {
+    workloadIdentity = await resolveVercelWorkloadIdentity(received);
+    if (workloadIdentity) source = "vercel-oidc";
   }
   if (!source) {
     if (!configured && process.env.LUZIONE_API_VERCEL_OIDC_ENABLED === "false") {
@@ -273,6 +324,6 @@ export async function requireServiceActor(
     throw new Error("Service authentication failed.");
   }
 
-  const identity = source === "vercel-oidc" ? VERCEL_CALLER : serviceTokenIdentity();
+  const identity = source === "vercel-oidc" ? workloadIdentity as CredentialActorIdentity : serviceTokenIdentity();
   return bindCredentialActor(headers, source, identity, requiredCapability);
 }

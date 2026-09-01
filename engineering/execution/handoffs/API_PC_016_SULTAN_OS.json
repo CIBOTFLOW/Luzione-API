@@ -2,40 +2,55 @@
   "schema_version": 1,
   "handoff_id": "API_PC_016_TO_SULTAN_OS_V1",
   "producer_repository": "CIBOTFLOW/Luzione-API",
-  "producer_sha": "4ebc4b9280b480ba789712b29b4e84400663456b",
-  "producer_ref": "codex/productization-readiness-20260901",
-  "contract_versions": [
-    "luzione-product-catalog/v0.1",
-    "luzione-tenant-license-entitlement/v0.1",
-    "luzione-room-plan-proposal-attachment/v0.1"
-  ],
+  "producer_sha": "b1c1d5fc8d6dab2cb61003d11bc047205524ef9c",
+  "producer_ref": "feat/api-pc-016-sultan-agent-journey",
+  "contract_name": "signed-sultan-workload-delegation",
+  "contract_version": "luzione-sultan-agent-policy/v0.1",
   "consumer_repository": "CIBOTFLOW/Sultan-OS",
-  "consumer_production_sha_observed": "77c81afd7995581be7d6bb564eb10eceab057290",
-  "consumer_project_paths": ["SULTAN-PC-016", "SULTAN-PC-017", "SULTAN-PC-018"],
-  "stable_paths": {
-    "public_catalog": "GET /api/v1/productization",
-    "product_catalog_schema": "contracts/productization/product-catalog-v0.1.schema.json",
-    "tenant_entitlements": "GET /api/v1/licensing/entitlements",
-    "room_plan_schema": "contracts/productization/room-plan-proposal-attachment-v0.1.schema.json",
-    "agent_policy_boundary": "POST /api/v1/sultan/agent-intents/evaluate"
+  "endpoint": "POST /api/v1/sultan/agent-intents/evaluate",
+  "credential_identity": {
+    "kind": "vercel-oidc",
+    "actor_id": "service:sultan-os",
+    "tenant_id": "luzione",
+    "required_environment": "production",
+    "required_project_id": "prj_5nTisld8OnGiBhIxegGbUpWrZNp0",
+    "token_source": "server-only VERCEL_OIDC_TOKEN"
+  },
+  "logical_delegation": {
+    "allowed_agents": [
+      "revenue-steward@v1",
+      "fulfillment-steward@v1",
+      "partner-steward@v1",
+      "catalog-steward@v1",
+      "account-steward@v1",
+      "economic-steward@v1"
+    ],
+    "autonomy_ceiling": "A0",
+    "effect_authority": "NO_EFFECT"
   },
   "required_consumer_behavior": [
-    "Use product modules as bounded planning context, not evidence that a tenant is entitled or a capability is available.",
-    "Obtain a fresh credential-bound entitlement decision before proposing module-specific work and abstain when readback is unavailable.",
-    "Never convert a license or room-plan attachment into an autonomy grant, approval, money authority or provider-effect authority.",
-    "Treat trade rules and documents as authoritative-source and human-review work; model output cannot establish legal finality.",
-    "Reference exact proposal, planner and artifact versions in recommendations and abstain on drift."
+    "Send the deployment-injected VERCEL_OIDC_TOKEN from Sultan server code only; never expose or copy it into a public environment variable.",
+    "Select an exact registered logical steward server-side and send no tenant, role, grant, approval, verified-deployment or effect authority in the request body.",
+    "Require policy.credentialActor.id=service:sultan-os, policy.agent.binding=VERCEL_WORKLOAD_DELEGATION and exact agent/version agreement before any model call.",
+    "Run synthetic cases only when the API returns SIMULATE_ONLY with verified synthetic context; require fresh canonical readback for any read-only live case.",
+    "Never treat model output, deployment acknowledgement or an admitted simulation as a business effect receipt."
   ],
   "acceptance_proof_needed": [
-    "exact Sultan/API SHAs and pinned contract versions",
-    "unlicensed, stale, cross-tenant and unavailable-readback abstention tests",
-    "room-plan version/digest drift abstention tests",
-    "hidden-label model evaluation that never bypasses licensing or human review",
-    "signed tenant-bound deployed read-only journey"
+    "exact Sultan candidate SHA",
+    "focused delegation parser and negative tests",
+    "signed deployed HTTP canary",
+    "zero-write readback",
+    "receipt retaining both workload and logical actor identities"
+  ],
+  "producer_evidence_refs": [
+    "src/lib/api/actor.ts",
+    "src/modules/sultan-agent/delegationPolicy.ts",
+    "src/modules/sultan-agent/tests/sultan-agent-intent.test.ts",
+    "engineering/execution/SYSTEMS_ENGINEERING_PROOF_LEDGER.json"
   ],
   "known_limitations": [
-    "No Sultan OS source was edited by this producer handoff.",
-    "Sultan production model routing is currently degraded and provider readbacks are incomplete.",
-    "The API entitlement store and planner proposal bridge are locally proven producer contracts only."
+    "The producer SHA is locally proven but not yet deployed.",
+    "Five of six Luzione stewards are synthetic-only until canonical context adapters exist.",
+    "No command or external-effect authority is included."
   ]
 }

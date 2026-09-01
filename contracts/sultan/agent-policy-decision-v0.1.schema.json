@@ -6,6 +6,7 @@
   "additionalProperties": false,
   "required": [
     "actor",
+    "agent",
     "agentDefinitionVerified",
     "autonomy",
     "businessStateMutated",
@@ -15,7 +16,8 @@
     "policyContractVersion",
     "reasonCodes",
     "sourceContext",
-    "status"
+    "status",
+    "tenantPolicy"
   ],
   "properties": {
     "actor": {
@@ -26,6 +28,17 @@
         "actorId": { "type": "string", "minLength": 1, "maxLength": 256 },
         "actorType": { "enum": ["agent", "service", "user"] },
         "tenantId": { "type": "string", "minLength": 1, "maxLength": 256 }
+      }
+    },
+    "agent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["agentId", "agentVersion", "authorityDomain", "binding"],
+      "properties": {
+        "agentId": { "type": "string", "pattern": "^agent\\.[a-z0-9.-]+$" },
+        "agentVersion": { "type": "string", "pattern": "^v[1-9][0-9]*$" },
+        "authorityDomain": { "enum": ["LUZIONE", "FEP", "SULTAN_INTERNAL"] },
+        "binding": { "enum": ["DIRECT_CREDENTIAL", "VERCEL_WORKLOAD_DELEGATION", "UNVERIFIED"] }
       }
     },
     "agentDefinitionVerified": { "type": "boolean" },
@@ -78,7 +91,7 @@
     "sourceContext": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["acceptedCount", "freshness", "synthetic"],
+      "required": ["acceptedCount", "freshness", "synthetic", "verification", "verifiedCount"],
       "properties": {
         "acceptedCount": { "type": "integer", "minimum": 1, "maximum": 64 },
         "freshness": { "enum": ["FRESH", "STALE", "UNKNOWN"] },

@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "handoff_id": "API_PC_016_TO_LUZIONE_UI_V1",
+  "handoff_id": "API_PC_017_TO_LUZIONE_UI_V1",
   "producer_repository": "CIBOTFLOW/Luzione-API",
-  "producer_sha": "4ebc4b9280b480ba789712b29b4e84400663456b",
+  "producer_sha": "ebd2054765490b0aec05f9b27e43865fba3ded03",
   "producer_ref": "codex/productization-readiness-20260901",
   "contract_versions": [
     "luzione-product-catalog/v0.1",
@@ -11,7 +11,11 @@
   ],
   "consumer_repository": "CIBOTFLOW/Luzione-UI",
   "consumer_production_sha_observed": "ea8da2e4d80557f03bf6e72ec93b294eaf603f48",
-  "consumer_project_paths": ["UI-PC-016", "UI-PC-017", "UI-PC-018"],
+  "consumer_project_paths": [
+    "UI-PC-016",
+    "UI-PC-017",
+    "UI-PC-018"
+  ],
   "stable_paths": {
     "public_catalog": "GET /api/v1/productization",
     "product_catalog_schema": "contracts/productization/product-catalog-v0.1.schema.json",
