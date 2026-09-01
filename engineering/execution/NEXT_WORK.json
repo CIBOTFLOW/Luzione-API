@@ -543,6 +543,23 @@
       "required_evidence": ["independent consumer tests", "canary and rollback", "authoritative readback", "production observations"],
       "irreversible_effects": [],
       "completion_evidence_ref": null
+    },
+    {
+      "project_id": "API-PC-016",
+      "platform_project": "PRODUCTION_CONVERGENCE_WAVE_4",
+      "title": "Signed Sultan Workload Delegation",
+      "priority": 485,
+      "status": "COMPLETE",
+      "depends_on": ["API-PC-004", "API-PC-012"],
+      "mutation_cone": ["identity", "sultan", "policy", "contracts", "tests", "handoffs"],
+      "core_outcome": "Authenticate the exact production Sultan OS workload with Vercel OIDC, then admit only API-owned, exact-version delegation to the six registered Luzione A0 stewards while retaining both credential and logical actor identity in the policy decision.",
+      "published_artifacts": ["workload identity resolver", "agent delegation policy", "dual-actor policy decision", "Sultan handoff"],
+      "required_evidence": ["exact workload claim validation", "delegation allowlist negatives", "independent Sultan consumption", "deployed signed canary"],
+      "irreversible_effects": [],
+      "completion_evidence_ref": "API_PC_016_LOCAL_SIGNED_SULTAN_DELEGATION_20260901",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM"
     }
   ]
 }

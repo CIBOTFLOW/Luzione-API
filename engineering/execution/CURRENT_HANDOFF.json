@@ -5,7 +5,7 @@
   "program_state": "S4_QUEUE_EXHAUSTED",
   "current_project": null,
   "next_projects": ["API-PC-014", "API-PC-015"],
-  "next_action": "Resume API-PC-014 only with an exact deployed preview candidate, managed recovery environment and authorized observation window. Revalidate the independent Sultan consumer against API-PC-012 hardening merge fe2430cccd8d3927996eea3e6f502acc9bb31547, including <agentId>:<agentVersion> credential identity and additive tenant-policy/context-verification fields, before a signed deployed HTTP canary. API-PC-015 remains dependency-blocked by API-PC-014's external quarantine and incomplete independent production evidence.",
+  "next_action": "Merge API-PC-016 through canonical CI, then have the exact Sultan runtime consume its dual-actor signed-workload delegation contract and run a deployed no-effect OIDC simulation canary. Resume API-PC-014 only with an exact deployed preview candidate, managed recovery environment and authorized observation window. API-PC-015 remains dependency-blocked by API-PC-014 and incomplete independent production evidence.",
   "canonical_program": "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md",
   "failure_ledger": "engineering/execution/SYSTEMS_ENGINEERING_FAILURE_LEDGER.json",
   "proof_ledger": "engineering/execution/SYSTEMS_ENGINEERING_PROOF_LEDGER.json",
@@ -32,17 +32,15 @@
     },
     {
       "repository": "CIBOTFLOW/Sultan-OS",
-      "sha": "123246edbab978c48b58a45e1936a039018da615",
-      "state": "BOUNDED_AGENT_CONTRACT_CONSUMER_CANDIDATE_PR_307_HARDENING_REVALIDATION_REQUIRED",
+      "sha": "add0d64c972f230882f4aec7b99437e1d37726fd",
+      "state": "MERGED_AGENT_CONTRACT_CONSUMER_SIGNED_WORKLOAD_RUNTIME_PENDING",
       "bounded_complete": [
         "SULTAN_SE_001",
         "API-PC-012 exact v0.1 consumer"
       ],
       "next": [
-        "revalidate Sultan PR #307 against API hardening merge fe2430cccd8d3927996eea3e6f502acc9bb31547",
-        "use credential actor ID <agentId>:<agentVersion> and consume or tolerate additive policy/context-verification fields",
-        "merge Sultan PR #307 only after the hardening revalidation",
-        "signed tenant-bound read-only API journey",
+        "consume API-PC-016 workload/logical-agent binding",
+        "signed deployed synthetic and tenant-bound read-only API journeys",
         "SULTAN_SE_002",
         "SULTAN_SE_003",
         "SULTAN_SE_005"
@@ -85,7 +83,7 @@
     "Managed backup/PITR and production recovery remain unproven despite bounded local recovery evidence.",
     "API_SE_019 certification semantics are implemented but cross-system certification remains quarantined.",
     "API_SE_020 remains NOT_READY and NOT_FINAL until the exact release-evidence invariants are actually observed.",
-    "The Section 20 production-convergence extension has admitted API-PC-001 through API-PC-015 into NEXT_WORK.json; Wave 0 producer artifacts do not prove UI/Sultan consumption or deployed release identity.",
+    "The Section 20 production-convergence extension now includes API-PC-016 for signed Sultan workload delegation; local producer artifacts do not prove deployed UI/Sultan identity or release behavior.",
     "API-PC-004 is locally proven only: production credential mappings, canonical membership persistence and independent UI/Sultan authenticated requests remain unobserved.",
     "API-PC-005 is locally proven only: the P110 baseline was rehearsed against fresh and observed legacy shapes in disposable Postgres, while managed/production migration application, domain HTTP commands and independent UI/Sultan command journeys remain unobserved.",
     "API-PC-006 is locally proven only: restart leases, inbox deduplication, DLQ/reconciliation and workflow CAS were exercised in disposable Postgres, while managed failover, live worker activation, provider effects and independent consumer journeys remain unobserved.",
@@ -97,10 +95,11 @@
     "API-PC-013 is locally proven only: role creation, grant convergence, forced RLS, exact runtime/worker ceilings, idempotent fresh/observed-shape migration and negative browser/missing-tenant/cross-tenant/worker-scope probes passed in disposable Postgres; managed migration, deployed login membership, credential rotation, UI/Sultan canaries and production observation remain unproven.",
     "API-PC-014 is locally proven and externally quarantined: the exact evidence bundle, operations registry, production build and logical restore/readback pass, while deployed telemetry/dashboards/alerts, exact production SLO windows, managed backup/PITR, preview rollback, production observation and independent consumers remain unproven.",
     "API_SE_003_BF1 is locally proven only: the API producer declares 22 of 713 observed table objects and keeps retirement fail closed, while UI/Sultan exact-version consumption, recurring source snapshots and deployed catalog evidence remain unobserved.",
-    "API-PC-012 hardening is locally proven only: the disposable authenticated route-handler/Postgres journey is not a deployed signed workload-identity request; independent Sultan compatibility with the corrected credential ID and additive decision fields, managed canonical context, business command receipt/readback, model-quality results and production autonomy remain unproven."
+    "API-PC-012 hardening is locally proven only: the disposable authenticated route-handler/Postgres journey is not a deployed signed workload-identity request; managed canonical context, business command receipt/readback and production autonomy remain unproven.",
+    "API-PC-016 is locally proven only: exact Vercel workload claim validation and the API-owned six-steward delegation matrix pass locally, while a deployed Sultan-to-API OIDC canary, model campaign and UI receipt readback remain unproven."
   ],
   "stop_code": "S4_QUEUE_EXHAUSTED",
-  "updated_at": "2026-08-31T18:32:00.000Z",
+  "updated_at": "2026-09-01T00:00:00.000Z",
   "api_pc_012": {
     "status": "BOUNDED_INTEGRATED_PASS_NO_EFFECT",
     "producer_candidate_sha": "2249637d5359332e53b66b00fefba311146d0892",
@@ -148,6 +147,32 @@
     "effect_authority": "NO_EFFECT",
     "live_http_journey": "LOCAL_DISPOSABLE_ROUTE_HANDLER_AND_POSTGRES_PROVEN_DEPLOYED_SIGNED_HTTP_NOT_RUN",
     "business_receipt_readback": "NOT_APPLICABLE_TO_EVALUATION_ONLY_PATH_AND_NOT_PROVEN_FOR_EFFECTS",
+    "production_observation": "NOT_RUN"
+  },
+  "api_pc_016": {
+    "status": "BOUNDED_PASS_NO_EFFECT",
+    "producer_candidate_sha": "b1c1d5fc8d6dab2cb61003d11bc047205524ef9c",
+    "consumer_repository": "CIBOTFLOW/Sultan-OS",
+    "credential_actor": "service:sultan-os",
+    "logical_agents": [
+      "revenue-steward@v1",
+      "fulfillment-steward@v1",
+      "partner-steward@v1",
+      "catalog-steward@v1",
+      "account-steward@v1",
+      "economic-steward@v1"
+    ],
+    "autonomy_ceiling": "A0",
+    "effect_authority": "NO_EFFECT",
+    "local_verification": {
+      "typecheck": "PASS",
+      "lint": "PASS",
+      "tests": "PASS_223_OF_223",
+      "webpack_production_build": "PASS",
+      "canonical_ci": "PENDING"
+    },
+    "live_http_journey": "DEPLOYED_SIGNED_OIDC_NOT_RUN",
+    "business_receipt_readback": "NOT_APPLICABLE_NO_EFFECT",
     "production_observation": "NOT_RUN"
   }
 }
