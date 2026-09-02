@@ -2,10 +2,14 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import {
+  EXPECTED_RLS_TABLES,
+  PRODUCTION_CONVERGENCE_TENANT_TABLES,
   type GlobalClientExposureRow,
   SENSITIVE_SERVER_ONLY_TABLES,
+  a01ReadinessSignature,
   evaluateRlsPosture,
   probeDeniedRead,
+  type RoleTablePostureRow,
   type RlsPostureRow,
 } from "../rlsPosture";
 import {
@@ -110,6 +114,68 @@ test("an expected relation missing from catalog readback fails closed", () => {
   });
   assert.equal(result.status, "FAIL");
   assert.deepEqual(result.violations, [{ code: "TABLE_MISSING", table: "auth_users" }]);
+});
+
+test("A01 production drift signature is exact and cannot pass by aggregate suppression", () => {
+  const missingTable = "order_fulfillment_intents";
+  const presentTenantTables = PRODUCTION_CONVERGENCE_TENANT_TABLES
+    .filter((table) => table !== missingTable);
+  const tenantRows: RlsPostureRow[] = presentTenantTables.map((table_name) => ({
+    anon_access: false,
+    authenticated_access: false,
+    policy_count: 1,
+    rls_enabled: true,
+    rls_forced: false,
+    service_role_select: true,
+    table_name,
+  }));
+  const missingRoleRows: RoleTablePostureRow[] = [
+    "luzione_api_runtime",
+    "luzione_provider_worker",
+  ].flatMap((role_name) => presentTenantTables.map((table_name) => ({
+    bypass_rls: null,
+    can_login: null,
+    create_db: null,
+    create_role: null,
+    delete_access: null,
+    insert_access: null,
+    owns_table: false,
+    replication: null,
+    role_exists: false,
+    role_name,
+    select_access: null,
+    superuser: null,
+    table_name,
+    trigger_access: null,
+    truncate_access: null,
+    update_access: null,
+  })));
+  const result = evaluateRlsPosture({
+    clientDefaultPrivileges: false,
+    expectedTables: EXPECTED_RLS_TABLES,
+    forceRlsTables: PRODUCTION_CONVERGENCE_TENANT_TABLES,
+    globalExposure: {
+      public_table_count: 713,
+      rls_disabled_client_accessible_count: 0,
+      rls_disabled_client_writable_count: 0,
+      rls_disabled_table_count: 0,
+    },
+    roleRows: missingRoleRows,
+    rows: [...protectedRows(), ...tenantRows],
+  });
+  const expectedDriftTables = [...presentTenantTables].sort();
+  assert.deepEqual(a01ReadinessSignature(result), {
+    expectedTableCount: 40,
+    failedProbeCount: 0,
+    legacyServiceRoleTables: expectedDriftTables,
+    missingRoles: ["luzione_api_runtime", "luzione_provider_worker"],
+    missingTables: [missingTable],
+    notForcedTables: expectedDriftTables,
+    observedTableCount: 39,
+    otherViolationCodes: [],
+    status: "FAIL",
+    violationCount: 61,
+  });
 });
 
 test("global public-table exposure fails the production gate", () => {
