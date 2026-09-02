@@ -2068,6 +2068,64 @@
         "run canonical CI and an authenticated preview canary when admitted",
         "hold A02 integration until A01 and D01 both meet G1"
       ]
+    },
+    {
+      "proof_id": "A02_G0_AUTOMATED_CI_20260902",
+      "project_id": "A02",
+      "recorded_at": "2026-09-02T22:46:16Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "3cd4cd6a1ed358a549fff9e29fac1daa28e78437",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "PREVIEW_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "Draft PR #58 makes the stacked A02 G0 candidate eligible for repository automation. The Release gate and CodeQL both passed at exact evidence head 3cd4cd6a1ed358a549fff9e29fac1daa28e78437, which contains the unchanged implementation f2d643a0913b888809c217adfd9bdcef0385b05a and its evidence. The exact-head preview build succeeded but remains SSO-protected. A02 stays dev_active and is neither integrated nor production-ready.",
+      "exercised_boundaries": [
+        "Draft PR #58 targets codex/a01-api-readiness-restoration at 9b5366266918ed4222acf54ce685bab15f6f104d, isolating exactly two A02 commits and 25 changed files from the A01 base.",
+        "PR #58 is open, draft and mergeable at exact head 3cd4cd6a1ed358a549fff9e29fac1daa28e78437.",
+        "Release gate run 33691790213 passed at the exact PR head after dependency install, compliance, typecheck, lint, 230/230 tests and production build.",
+        "CodeQL run 33691790139 passed at the exact PR head.",
+        "GitHub deployment 6232422081 and status 17702648058 succeeded at the exact PR head.",
+        "Release, livez, readyz and healthz preview requests all redirected to Vercel SSO and were not represented as application canary evidence.",
+        "No merge, default-branch update, production migration, secret, credential, activation, promotion, provider effect or rollback occurred."
+      ],
+      "untested_boundaries": [
+        "authenticated HTTP and browser content behind Vercel deployment protection",
+        "independent Luzione UI exact-pin adapter, negative and zero-write evidence",
+        "A01 and D01 G1 dependencies",
+        "managed migration, runtime activation, production readback and production rollback"
+      ],
+      "evidence_refs": [
+        "pull-request:CIBOTFLOW/Luzione-API#58",
+        "commit:3cd4cd6a1ed358a549fff9e29fac1daa28e78437",
+        "commit:f2d643a0913b888809c217adfd9bdcef0385b05a",
+        "github-actions:33691790213",
+        "github-actions:33691790139",
+        "github-deployment:6232422081",
+        "github-deployment-status:17702648058",
+        "engineering/execution/readiness/A02_G0_EVIDENCE_20260902.json",
+        "engineering/execution/handoffs/A02_CONTROLLER_HANDOFF.md",
+        "controller-review:CIBOTFLOW/Luzione-platform-program@bc04797a16ff0a7949c677cc7fa4c3aafc039c7b:evidence/SYNC_REVIEW_20260902T223450Z.md"
+      ],
+      "failure_refs": [],
+      "cross_repo_handoffs": [
+        "A02_G0_TO_LUZIONE_UI_V1",
+        "A02_G0_TO_SULTAN_OS_V1"
+      ],
+      "deferred_external_infra": [
+        "Vercel protected-preview authenticated access",
+        "independent Luzione UI consumer repository",
+        "A01 and D01 G1 evidence"
+      ],
+      "remaining_uncertainty": [
+        "Automated CI proves the exact repository candidate build and tests, not consumer integration or deployed behavior.",
+        "The implementation commit itself retains zero runs; the automated evidence is bound to its exact descendant evidence head.",
+        "The successful preview status does not expose application content through the available unauthenticated path."
+      ],
+      "next_proof_needed": [
+        "receive Luzione UI exact-SHA five-pin adapter, negative and zero-write evidence",
+        "retain the draft/no-effect boundary until A01 and D01 pass G1 and authenticated preview evidence is available"
+      ]
     }
   ]
 }

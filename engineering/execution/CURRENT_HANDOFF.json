@@ -2,10 +2,10 @@
   "schema_version": 2,
   "queue_id": "LUZIONE_API_SYSTEMS_ENGINEERING_V1",
   "repository": "CIBOTFLOW/Luzione-API",
-  "program_state": "A01_G1_BLOCKED_A02_G0_DRAFT_PUBLISHED_NO_EFFECT",
+  "program_state": "A01_G1_BLOCKED_A02_G0_AUTOMATED_CI_ENABLED_NO_EFFECT",
   "current_project": "A02",
   "next_projects": ["A01", "A02"],
-  "next_action": "Collect independent exact-SHA, exact-five-pin, local-adapter, negative-path and zero-write G0 evidence from Sultan OS and Luzione UI for A02 candidate f2d643a0913b888809c217adfd9bdcef0385b05a. In parallel, a named Supabase and Vercel owner may resume docs/runbooks/A01_PRODUCTION_READINESS_GATE.md only under explicit human G2 authorization: record an exact managed restore point, canary the protected A01 preview, apply the two checksummed migrations, preserve the reviewed NOINHERIT principal posture, promote exact implementation SHA 0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a, and prove 40/40 plus livez=200, readyz=200, healthz=200 and rollback. Do not begin A02 integration until both A01 and D01 meet G1.",
+  "next_action": "Luzione UI returns independent exact-SHA, exact-five-pin, local-adapter, negative-path and zero-write G0 evidence for A02. Preserve draft PR #58 and its NO_EFFECT boundary; do not begin A02 integration until both A01 and D01 meet G1. Any A01 production migration, protected-canary access change, promotion or rollback remains subject to explicit human G2 authorization.",
   "canonical_program": "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md",
   "failure_ledger": "engineering/execution/SYSTEMS_ENGINEERING_FAILURE_LEDGER.json",
   "proof_ledger": "engineering/execution/SYSTEMS_ENGINEERING_PROOF_LEDGER.json",
@@ -82,7 +82,7 @@
     "managed backup/PITR and production recovery exercise",
     "representative database/provider/mutation/queue/full-journey performance campaigns",
     "signed tenant-bound Sultan read-only API journey against a deployed environment",
-    "A02 authenticated preview canary, canonical CI trigger and independent UI/Sultan adapter evidence"
+    "A02 authenticated preview canary and independent Luzione UI adapter evidence"
   ],
   "remaining_uncertainty": [
     "Most API systems contracts are locally proven, not production-observed.",
@@ -108,10 +108,10 @@
     "API-PC-016 is locally proven only: exact Vercel workload claim validation and the API-owned six-steward delegation matrix pass locally, while a deployed Sultan-to-API OIDC canary, model campaign and UI receipt readback remain unproven.",
     "A01 is a bounded candidate only: production remains on 6f7191f0f5e59153541271ea291f3727015f5741 with livez=200, intermittently failing readyz due to a named-statement collision, and healthz=503 at 39/40 and 61 violations; preview build 7GjEgvN54RoN8JbrSnVS7TFrU7G2 is READY but its HTTP canary and release controls are inaccessible to the connected Vercel account.",
     "Supabase Pro plan entitlement indicates daily backups should exist, but the available management surface cannot list a project-specific backup receipt or PITR window; no production DDL is safe until that exact restore evidence is recorded.",
-    "A02 is a G0 bounded draft only: the API producer adapters and preview build pass, but no GitHub Actions run or authenticated preview canary exists for the exact SHA and neither consumer has returned independent evidence."
+    "A02 is a G0 bounded draft only: draft PR #58 enables automated CI and the first exact evidence-head Release gate and CodeQL passed, but the preview remains SSO-protected, Luzione UI evidence is outstanding, and A01/D01 have not met G1."
   ],
   "stop_code": "S1_IRREVERSIBLE_EXTERNAL_EFFECT",
-  "updated_at": "2026-09-02T21:30:08.599Z",
+  "updated_at": "2026-09-02T22:46:16.000Z",
   "a01": {
     "status": "BOUNDED_PASS_PRODUCTION_GATE",
     "starting_sha": "6f7191f0f5e59153541271ea291f3727015f5741",
@@ -134,10 +134,12 @@
     "runbook": "docs/runbooks/A01_PRODUCTION_READINESS_GATE.md"
   },
   "a02": {
-    "status": "G0_BOUNDED_DRAFT_PUBLISHED_NO_EFFECT",
+    "status": "G0_BOUNDED_DRAFT_AUTOMATED_CI_ENABLED_NO_EFFECT",
     "branch": "codex/a02-shared-contract-drafts-g0",
     "base_sha": "9b5366266918ed4222acf54ce685bab15f6f104d",
     "implementation_sha": "f2d643a0913b888809c217adfd9bdcef0385b05a",
+    "automated_ci_evidence_sha": "3cd4cd6a1ed358a549fff9e29fac1daa28e78437",
+    "draft_pull_request": 58,
     "contract_versions": [
       "luzione-shared-contracts/v0.2-draft.1",
       "luzione-identity-tenant/v0.2-draft.1",
@@ -147,11 +149,18 @@
     ],
     "local_verification": "PASS_COMPLIANCE_7_TYPECHECK_LINT_230_OF_230_TESTS_BUILD",
     "disposable_rehearsal": "PASS_FRESH_AND_OBSERVED_UPGRADE_NO_EFFECT_NEGATIVE_ROLLBACK_CROSS_TENANT",
-    "preview_deployment_id": 6232238860,
-    "preview_status_id": 17702151898,
-    "preview_url": "https://luzione-9lis0ykgh-connor-spiegelmans-projects.vercel.app",
+    "preview_deployment_id": 6232422081,
+    "preview_status_id": 17702648058,
+    "preview_url": "https://luzione-31hr9jwy9-connor-spiegelmans-projects.vercel.app",
     "preview_status": "SUCCESS_ACCESS_PROTECTED_CANARY_NOT_EXERCISED",
-    "canonical_ci": "NOT_RUN_BRANCH_PUSH_NOT_TRIGGERED",
+    "canonical_ci": {
+      "release_gate_run": 33691790213,
+      "release_gate_status": "PASS",
+      "codeql_run": 33691790139,
+      "codeql_status": "PASS",
+      "exact_sha": "3cd4cd6a1ed358a549fff9e29fac1daa28e78437",
+      "live_final_head_anchor": "pull-request:CIBOTFLOW/Luzione-API#58"
+    },
     "effect_authority": "NO_EFFECT",
     "runtime_activation": "NONE",
     "integration_gate": "BLOCKED_UNTIL_A01_AND_D01_G1",

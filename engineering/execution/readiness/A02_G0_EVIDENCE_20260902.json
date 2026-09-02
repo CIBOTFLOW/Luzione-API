@@ -6,6 +6,7 @@
   "base_sha": "9b5366266918ed4222acf54ce685bab15f6f104d",
   "implementation_sha": "f2d643a0913b888809c217adfd9bdcef0385b05a",
   "recorded_at": "2026-09-02T21:29:39Z",
+  "updated_at": "2026-09-02T22:46:16Z",
   "engineering_state": "BOUNDED_PASS",
   "release_evidence": "PREVIEW_PROVEN",
   "effect_authority": "NO_EFFECT",
@@ -67,9 +68,34 @@
     },
     "canary_claim": "NOT_EXERCISED_ACCESS_PROTECTED"
   },
+  "automated_ci_head_preview": {
+    "exact_sha": "3cd4cd6a1ed358a549fff9e29fac1daa28e78437",
+    "github_deployment_id": 6232422081,
+    "github_deployment_status_id": 17702648058,
+    "environment_url": "https://luzione-31hr9jwy9-connor-spiegelmans-projects.vercel.app",
+    "state": "SUCCESS",
+    "http_readback": {
+      "release": "302_VERCEL_SSO",
+      "livez": "302_VERCEL_SSO",
+      "readyz": "302_VERCEL_SSO",
+      "healthz": "302_VERCEL_SSO"
+    },
+    "canary_claim": "NOT_EXERCISED_ACCESS_PROTECTED"
+  },
   "github_workflows": {
-    "observed_runs_for_exact_sha": 0,
-    "interpretation": "The branch push produced a Vercel preview but no GitHub Actions run. Canonical CI remains unexercised until the repository workflow trigger admits this candidate."
+    "implementation_sha_runs": 0,
+    "draft_pull_request": 58,
+    "base_branch": "codex/a01-api-readiness-restoration",
+    "exact_ci_head_sha": "3cd4cd6a1ed358a549fff9e29fac1daa28e78437",
+    "release_gate": {
+      "run_id": 33691790213,
+      "conclusion": "success"
+    },
+    "codeql": {
+      "run_id": 33691790139,
+      "conclusion": "success"
+    },
+    "interpretation": "The implementation commit itself retains zero runs, but draft PR #58 makes the stacked candidate eligible for automated CI. Both canonical workflows passed at the exact evidence head containing the unchanged implementation."
   },
   "runtime_readback": "NOT_APPLICABLE_LIBRARY_ONLY_NO_ROUTE_NO_ACTIVATION",
   "consumer_delivery": {
@@ -85,8 +111,8 @@
     "production_rollback": "NOT_RUN"
   },
   "gate": {
-    "g0": "BOUNDED_DRAFT_PUBLISHED",
-    "g1": "BLOCKED_ON_A01_AND_D01_AND_INDEPENDENT_CONSUMER_EVIDENCE",
+    "g0": "BOUNDED_DRAFT_PUBLISHED_AUTOMATED_CI_ENABLED",
+    "g1": "BLOCKED_ON_A01_D01_UI_CONSUMER_AND_AUTHENTICATED_PREVIEW_READBACK",
     "g2": "NOT_REQUESTED_NOT_AUTHORIZED",
     "strongest_claim": "Exact-version API-owned draft schemas and adapters pass local contract, security, reliability, compatibility, fresh/upgrade persistence and rollback proof and have a successful access-protected preview build. They are not integrated or production-ready."
   }
