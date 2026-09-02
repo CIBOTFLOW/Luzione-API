@@ -1220,6 +1220,56 @@
         "A READY deployment badge does not prove preview health, production health or canonical catalog state."
       ],
       "next_action": "A named database and release owner follows docs/runbooks/A01_PRODUCTION_READINESS_GATE.md and records the managed restore point, migration receipt, principal membership, exact deployment ID and post-promotion readbacks."
+    },
+    {
+      "failure_id": "A01_PRODUCTION_READINESS_PREPARED_STATEMENT_20260902",
+      "project_id": "A01",
+      "observed_at": "2026-09-02T07:16:56Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a",
+      "environment": "production-old-sha-and-exact-candidate",
+      "layer": "dependency-readiness-database-probe",
+      "symptom": "Production readyz intermittently returned 503 even though healthz could still query the canonical database.",
+      "expected": "The dependency-readiness SELECT 1 probe remains stable through the configured Supavisor transaction pooler.",
+      "actual": "Managed PostgreSQL logs at 2026-09-02T07:16:56.418Z and 2026-09-02T07:20:53.675Z reported prepared statement readiness-v1 already exists. The old production route sent a client-named node-postgres statement through a pooled backend whose prepared-statement state the serverless process did not own.",
+      "classification": {
+        "domain": "PLATFORM",
+        "class": "INVALID",
+        "retry": "NEVER",
+        "severity": "ERROR"
+      },
+      "evidence_refs": [
+        "production request 0535093e-760e-4fdf-89a8-47dbe6cfb112",
+        "production request 3b391fb8-69be-4ba2-a3c4-54f5fdca8211",
+        "Supabase PostgreSQL logs at 2026-09-02T07:16:56.418Z and 2026-09-02T07:20:53.675Z",
+        "src/app/api/v1/readyz/route.ts",
+        "src/modules/platform-contracts/tests/execution-contracts.test.ts",
+        "engineering/execution/readiness/A01_PRODUCTION_PREFLIGHT_20260902.json",
+        "commit:0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a",
+        "github-actions:33603316756",
+        "github-actions:33603316773",
+        "vercel:7GjEgvN54RoN8JbrSnVS7TFrU7G2"
+      ],
+      "repair_attempts": [
+        "Correlated the bounded readyz failure timestamps with managed PostgreSQL logs.",
+        "Removed the client-provided prepared-statement name while retaining the exact SELECT 1 dependency probe.",
+        "Added a test-sensitive assertion that the route uses an unnamed query and cannot reintroduce readiness-v1.",
+        "Ran typecheck, lint, 225/225 tests, production build, GitHub Release gate and CodeQL at the exact candidate SHA."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [
+        "production dependency-readiness finality until the exact candidate is canary-proven and promoted"
+      ],
+      "deferred_external_infra": [
+        "Vercel protected preview canary",
+        "exact-SHA production promotion"
+      ],
+      "resolved": false,
+      "resolution_ref": "candidate:0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a",
+      "remaining_uncertainty": [
+        "The code defect is locally and independently repaired, but production remains on the old SHA and can still reproduce it."
+      ],
+      "next_action": "After the managed recovery and Vercel access gates pass, canary and promote exact candidate 0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a, then prove repeated readyz=200 through the production pooler."
     }
   ]
 }

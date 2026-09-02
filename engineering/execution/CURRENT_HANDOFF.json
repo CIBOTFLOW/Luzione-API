@@ -2,10 +2,10 @@
   "schema_version": 2,
   "queue_id": "LUZIONE_API_SYSTEMS_ENGINEERING_V1",
   "repository": "CIBOTFLOW/Luzione-API",
-  "program_state": "A01_PRODUCTION_GATE",
+  "program_state": "A01_PRODUCTION_GATE_BLOCKED_RECOVERY_AND_RELEASE_ACCESS",
   "current_project": "A01",
   "next_projects": ["A01", "A02"],
-  "next_action": "With named Supabase and Vercel owners, execute docs/runbooks/A01_PRODUCTION_READINESS_GATE.md: record a verified managed restore point, apply checksummed migrations 20260831070000 and 20260831090000 in order, review the deployed DATABASE_URL principal membership, promote exact implementation SHA 00d345eb29ecff3a8b031276a58d24b2a73972f1, and accept only after exact-SHA 40/40 plus livez=200, readyz=200 and healthz=200. A02 remains blocked by A01 and D01.",
+  "next_action": "With named Supabase and Vercel owners, resume docs/runbooks/A01_PRODUCTION_READINESS_GATE.md: expose and record an exact managed backup receipt or PITR window, use a Vercel owner session to canary protected preview 7GjEgvN54RoN8JbrSnVS7TFrU7G2, apply checksummed migrations 20260831070000 and 20260831090000 in order, preserve the reviewed NOINHERIT luzione_api_readiness principal posture, and promote exact implementation SHA 0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a only after the restore path is verified. Accept only after exact-SHA 40/40 plus livez=200, readyz=200, healthz=200 and rollback observation. A02 remains blocked by A01 and D01.",
   "canonical_program": "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md",
   "failure_ledger": "engineering/execution/SYSTEMS_ENGINEERING_FAILURE_LEDGER.json",
   "proof_ledger": "engineering/execution/SYSTEMS_ENGINEERING_PROOF_LEDGER.json",
@@ -48,7 +48,8 @@
     }
   ],
   "open_quarantines": [
-    "A01_PRODUCTION_RLS_CREDENTIAL_GATE_20260902: managed restore/PITR, production migration, deployed principal membership, exact-SHA canary and promotion are not authorized or exercised",
+    "A01_PRODUCTION_RLS_CREDENTIAL_GATE_20260902: the deployed principal is now reviewed, but no exact managed backup/PITR receipt or Vercel owner access is available; production migration, exact-SHA canary, promotion and rollback remain unexercised",
+    "A01_PRODUCTION_READINESS_PREPARED_STATEMENT_20260902: production readyz intermittently fails on the old SHA because the named readiness-v1 statement collides through Supavisor; candidate 0d4fa258 repairs it but is not canary-accessible or promoted",
     "API_SE_019_CROSS_SYSTEM_CERTIFICATION: UI bounded consumer evidence is present, but full exact-version UI journey/release evidence and Sultan exact-version API-consumer/journey evidence remain incomplete",
     "API_PC_014_EXTERNAL_PRODUCTION_EVIDENCE_DEFERRED_20260831: the exact local operations-evidence producer and logical restore proof pass, while deployed dashboards/alerts, preview rollback, managed restore/PITR, production SLO/security/readback and independent consumer evidence remain unavailable"
   ],
@@ -65,7 +66,8 @@
     "API-PC-014 publishes exact-SHA operations evidence, three dashboard definitions and seven alert definitions and proves a disposable logical restore with post-restore least-privilege and authoritative readback; the evaluator remains LOCAL_EVIDENCE_BOUNDED and productionReady=false.",
     "API-PC-012 publishes exact v0.1 agent context/intent/policy/outcome contracts and a credential-bound no-effect evaluator; independent Sultan OS PR #307 consumes all four versions, prepares the exact authority-free request body and passes 13/13 focused tests at a Vercel-READY exact implementation SHA.",
     "API-PC-012 hardening merge fe2430cccd8d3927996eea3e6f502acc9bb31547 removes client freshness authority, verifies FULFILLMENT Order context by tenant-scoped canonical readback, evaluates the active tenant policy, fixes credential-ID syntax and proves current/stale/policy/cross-tenant/identity/zero-write behavior in disposable Postgres.",
-    "A01 exact implementation SHA 00d345eb29ecff3a8b031276a58d24b2a73972f1 resolves the dependency audit with zero vulnerabilities, passes Release gate 33597984639 and CodeQL 33597984671, and proves exact 39/40 drift, 40/40 candidate convergence and rollback restore in isolated Postgres without weakening security."
+    "A01 exact implementation SHA 00d345eb29ecff3a8b031276a58d24b2a73972f1 resolves the dependency audit with zero vulnerabilities, passes Release gate 33597984639 and CodeQL 33597984671, and proves exact 39/40 drift, 40/40 candidate convergence and rollback restore in isolated Postgres without weakening security.",
+    "A01 follow-up candidate 0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a removes the production-observed Supavisor prepared-statement collision, passes 225/225 tests, Release gate 33603316756 and CodeQL 33603316773, and identifies luzione_api_readiness as a safe NOINHERIT, non-owner, zero-public-table-privilege deployed login without changing credential authority."
   ],
   "deferred_external_infra": [
     "owner-authenticated UI representative journey replay",
@@ -99,27 +101,29 @@
     "API_SE_003_BF1 is locally proven only: the API producer declares 22 of 713 observed table objects and keeps retirement fail closed, while UI/Sultan exact-version consumption, recurring source snapshots and deployed catalog evidence remain unobserved.",
     "API-PC-012 hardening is locally proven only: the disposable authenticated route-handler/Postgres journey is not a deployed signed workload-identity request; managed canonical context, business command receipt/readback and production autonomy remain unproven.",
     "API-PC-016 is locally proven only: exact Vercel workload claim validation and the API-owned six-steward delegation matrix pass locally, while a deployed Sultan-to-API OIDC canary, model campaign and UI receipt readback remain unproven.",
-    "A01 is a bounded candidate only: production remains on 6f7191f0f5e59153541271ea291f3727015f5741 with readyz=200 but healthz=503 at 39/40 and 61 violations; preview build E63DinBh2roTbkwWttTGxTw3Xfsp is READY but its HTTP canary is access-protected."
+    "A01 is a bounded candidate only: production remains on 6f7191f0f5e59153541271ea291f3727015f5741 with livez=200, intermittently failing readyz due to a named-statement collision, and healthz=503 at 39/40 and 61 violations; preview build 7GjEgvN54RoN8JbrSnVS7TFrU7G2 is READY but its HTTP canary and release controls are inaccessible to the connected Vercel account.",
+    "Supabase Pro plan entitlement indicates daily backups should exist, but the available management surface cannot list a project-specific backup receipt or PITR window; no production DDL is safe until that exact restore evidence is recorded."
   ],
   "stop_code": "S1_IRREVERSIBLE_EXTERNAL_EFFECT",
-  "updated_at": "2026-09-02T06:21:00.000Z",
+  "updated_at": "2026-09-02T07:25:19.000Z",
   "a01": {
     "status": "BOUNDED_PASS_PRODUCTION_GATE",
     "starting_sha": "6f7191f0f5e59153541271ea291f3727015f5741",
-    "implementation_sha": "00d345eb29ecff3a8b031276a58d24b2a73972f1",
+    "implementation_sha": "0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a",
     "pull_request": 57,
-    "release_gate_run": 33597984639,
-    "codeql_run": 33597984671,
-    "preview_deployment_id": "E63DinBh2roTbkwWttTGxTw3Xfsp",
+    "release_gate_run": 33603316756,
+    "codeql_run": 33603316773,
+    "preview_deployment_id": "7GjEgvN54RoN8JbrSnVS7TFrU7G2",
     "preview_status": "READY_ACCESS_PROTECTED_CANARY_NOT_EXERCISED",
     "production_deployment_id": "dpl_3TCkqyjzYwebcrDpjAdaw69Hc7SZ",
     "production_sha": "6f7191f0f5e59153541271ea291f3727015f5741",
-    "production_readback": "LIVEZ_200_READYZ_200_HEALTHZ_503_39_OF_40_61_VIOLATIONS",
-    "local_acceptance": "PASS_224_TESTS_ZERO_VULNERABILITIES_40_OF_40_NEGATIVE_AND_ROLLBACK",
+    "production_readback": "LIVEZ_200_READYZ_INTERMITTENT_503_PREPARED_STATEMENT_COLLISION_HEALTHZ_503_39_OF_40_61_VIOLATIONS",
+    "local_acceptance": "PASS_225_TESTS_ZERO_VULNERABILITIES_40_OF_40_NEGATIVE_AND_ROLLBACK",
     "effect_authority": "NO_EFFECT",
-    "managed_migration": "NOT_APPLIED",
+    "managed_migration": "NOT_APPLIED_MANAGED_RESTORE_POINT_UNVERIFIED",
+    "database_principal_review": "LUZIONE_API_READINESS_NOINHERIT_NO_UNSAFE_ATTRIBUTES_NO_OWNERSHIP_ZERO_PUBLIC_TABLE_PRIVILEGES_PRESERVE_WITHOUT_CREDENTIAL_CHANGE",
     "handoff": "engineering/execution/handoffs/A01_CONTROLLER_HANDOFF.md",
-    "evidence": "engineering/execution/readiness/A01_READINESS_EVIDENCE_20260902.json",
+    "evidence": "engineering/execution/readiness/A01_PRODUCTION_PREFLIGHT_20260902.json",
     "runbook": "docs/runbooks/A01_PRODUCTION_READINESS_GATE.md"
   },
   "api_pc_012": {
