@@ -386,6 +386,51 @@
       "effect": "NO_EFFECT"
     },
     {
+      "route_id": "sultan-tool-manifest-read",
+      "method": "GET",
+      "path": "/api/v1/sultan/tools",
+      "source_path": "src/app/api/v1/sultan/tools/route.ts",
+      "authentication": "signed Sultan workload with exact tool-manifest capability; tenant and logical agent are derived server-side",
+      "canonical_readback": "server-owned registry and capability intersection; discovery grants no authority",
+      "effect": "NO_EFFECT"
+    },
+    {
+      "route_id": "sultan-tool-invocation",
+      "method": "POST",
+      "path": "/api/v1/sultan/tool-invocations",
+      "source_path": "src/app/api/v1/sultan/tool-invocations/route.ts",
+      "authentication": "signed Sultan workload with exact invocation and per-tool capabilities; tenant and agent binding are derived server-side",
+      "canonical_readback": "tenant-scoped authoritative read result with exact object version and freshness",
+      "effect": "NO_EFFECT"
+    },
+    {
+      "route_id": "sultan-command-prepare",
+      "method": "POST",
+      "path": "/api/v1/sultan/commands/prepare",
+      "source_path": "src/app/api/v1/sultan/commands/prepare/route.ts",
+      "authentication": "signed Sultan workload with exact command-preparation and registered-tool capabilities; tenant and agent binding are derived server-side",
+      "canonical_readback": "tenant-scoped stable operation reservation, exact object version, command hash and risk classification; no command is executed",
+      "effect": "NO_EFFECT_COMMAND_RESERVATION"
+    },
+    {
+      "route_id": "sultan-command-execute",
+      "method": "POST",
+      "path": "/api/v1/sultan/commands/execute",
+      "source_path": "src/app/api/v1/sultan/commands/execute/route.ts",
+      "authentication": "signed Sultan workload with exact A1 execution capability plus distinct-human approval signature over the admitted command hash",
+      "canonical_readback": "tenant-scoped append-only internal action receipt and authoritative readback; A2 execution is structurally blocked",
+      "effect": "DEFAULT_OFF_APPROVED_A1_INTERNAL_MUTATION"
+    },
+    {
+      "route_id": "sultan-effect-readback",
+      "method": "GET",
+      "path": "/api/v1/sultan/effects/{receiptId}/readback",
+      "source_path": "src/app/api/v1/sultan/effects/[receiptId]/readback/route.ts",
+      "authentication": "signed Sultan workload with exact effect-read capability; tenant is derived server-side",
+      "canonical_readback": "tenant-scoped P110 receipt, outbox, provider acknowledgement and reconciliation state",
+      "effect": "NO_EFFECT"
+    },
+    {
       "route_id": "workflow-pack-catalog-read",
       "method": "GET",
       "path": "/api/v1/workflows",
@@ -562,6 +607,9 @@
     "LUZIONE_CANONICAL_TENANT_CODE",
     "LUZIONE_PROVIDER_WORKER_ID",
     "LUZIONE_PROVIDER_WORKER_TENANT_ID",
+    "LUZIONE_SULTAN_APPROVAL_SECRET",
+    "GMAIL_SULTAN_RFQ_ACCESS_TOKEN",
+    "SULTAN_RFQ_CANARY_SENDER",
     "NEXT_RUNTIME",
     "NODE_ENV",
     "PLATFORM_CONTINUATION_SECRET",

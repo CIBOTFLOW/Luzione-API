@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/sultan/command-preparation-v1.schema.json",
+  "title": "luzione-sultan-command-preparation/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contractVersion", "reservationId", "operationId", "runId", "toolCallId", "toolId", "toolVersion", "agent", "caseRef", "effectClass", "approvalMode", "commandHash", "argumentsHash", "state", "preview", "expiresAt", "executionAllowed", "nextSafeAction", "idempotentReplay"],
+  "properties": {
+    "contractVersion": { "const": "luzione-sultan-command-preparation/v1" },
+    "reservationId": { "type": "string", "maxLength": 256 },
+    "operationId": { "type": "string", "maxLength": 256 },
+    "runId": { "type": "string", "maxLength": 256 },
+    "toolCallId": { "type": "string", "maxLength": 256 },
+    "toolId": { "type": "string", "maxLength": 256 },
+    "toolVersion": { "type": "string", "maxLength": 64 },
+    "agent": { "type": "object" },
+    "caseRef": { "type": "object" },
+    "effectClass": { "enum": ["A1", "A2", "A3"] },
+    "approvalMode": { "enum": ["BLOCKED", "PER_COMMAND_HUMAN", "POLICY_ENVELOPE"] },
+    "commandHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "argumentsHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "state": { "enum": ["PREPARED", "EXECUTED", "CANCELLED", "RECONCILIATION_REQUIRED"] },
+    "preview": { "type": "object" },
+    "expiresAt": { "type": "string", "format": "date-time" },
+    "executionAllowed": { "type": "boolean" },
+    "nextSafeAction": { "type": "string", "maxLength": 1000 },
+    "idempotentReplay": { "type": "boolean" }
+  }
+}

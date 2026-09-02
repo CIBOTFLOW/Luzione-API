@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/sultan/tool-call-v1.schema.json",
+  "title": "Luzione Sultan Tool Call v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contractVersion", "operationId", "runId", "toolCallId", "toolId", "toolVersion", "agent", "caseRef", "purpose", "arguments", "argumentsHash", "contextRefs", "controlEvidence"],
+  "properties": {
+    "contractVersion": { "const": "luzione-sultan-tool-call/v1" },
+    "operationId": { "$ref": "#/$defs/id" },
+    "runId": { "$ref": "#/$defs/id" },
+    "toolCallId": { "$ref": "#/$defs/id" },
+    "toolId": { "$ref": "#/$defs/id" },
+    "toolVersion": { "$ref": "#/$defs/id" },
+    "agent": { "$ref": "#/$defs/agent" },
+    "caseRef": { "$ref": "#/$defs/caseRef" },
+    "purpose": { "type": "string", "minLength": 1, "maxLength": 4000 },
+    "arguments": { "type": "object", "maxProperties": 30 },
+    "argumentsHash": { "$ref": "#/$defs/hash" },
+    "contextRefs": { "type": "array", "maxItems": 50, "items": { "$ref": "#/$defs/contextRef" } },
+    "controlEvidence": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "object", "additionalProperties": false, "required": ["criticEventId", "criticPayloadHash", "criticVerdict"], "properties": { "criticEventId": { "$ref": "#/$defs/id" }, "criticPayloadHash": { "$ref": "#/$defs/hash" }, "criticVerdict": { "const": "AFFIRM" } } }
+      ]
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:@/-]{1,511}$" },
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "agent": { "type": "object", "additionalProperties": false, "required": ["agentId", "agentVersion"], "properties": { "agentId": { "$ref": "#/$defs/id" }, "agentVersion": { "$ref": "#/$defs/id" } } },
+    "caseRef": { "type": "object", "additionalProperties": false, "required": ["caseId", "caseType", "expectedVersion"], "properties": { "caseId": { "$ref": "#/$defs/id" }, "caseType": { "enum": ["PORTFOLIO", "COMMERCIAL", "FULFILLMENT", "PARTNER_RELATIONSHIP", "CATALOG_QUALITY", "ACCOUNT_RELATIONSHIP", "ECONOMIC_REVIEW", "FEP_CASE", "CONTROL_REVIEW"] }, "expectedVersion": { "type": ["string", "null"], "maxLength": 300 } } },
+    "contextRef": { "type": "object", "additionalProperties": false, "required": ["sourceRef", "sourceVersion", "integrityHash", "observedAt", "freshness"], "properties": { "sourceRef": { "type": "string", "minLength": 1, "maxLength": 512 }, "sourceVersion": { "type": "string", "minLength": 1, "maxLength": 256 }, "integrityHash": { "$ref": "#/$defs/hash" }, "observedAt": { "type": "string", "format": "date-time" }, "freshness": { "enum": ["FRESH", "STALE", "UNKNOWN"] } } }
+  }
+}

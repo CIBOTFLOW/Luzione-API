@@ -83,9 +83,29 @@ test("accepts only registered signed production workload identities", async () =
       "fulfillment.readiness.evaluate",
       "partner.network.evaluate",
       "sultan.agent.intent.evaluate",
+      "sultan.tool.manifest.read",
+      "sultan.tool.invoke",
+      "sultan.effect.read",
+      "sultan.case.read",
+      "sultan.command.prepare",
+      "sultan.command.execute",
+      "sultan.internal.command",
+      "sultan.rfq.canary.send",
     ],
     tenantId: "luzione",
   });
+});
+
+test("preview workload identities are admitted only by preview API deployments", async () => {
+  const previous = process.env.VERCEL_ENV;
+  process.env.VERCEL_ENV = "preview";
+  try {
+    const token = signedToken({ environment: "preview", sub: "owner:connor-spiegelmans-projects:project:luzione_ui:environment:preview" });
+    assert.equal(await verifyVercelWorkloadToken(token, loadJwks), true);
+    assert.equal(await verifyVercelWorkloadToken(signedToken(), loadJwks), false);
+  } finally {
+    if (previous === undefined) delete process.env.VERCEL_ENV; else process.env.VERCEL_ENV = previous;
+  }
 });
 
 test("rejects expired, algorithm-confused, unknown-key and tampered tokens", async () => {

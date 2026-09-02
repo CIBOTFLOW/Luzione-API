@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/sultan/tool-result-v1.schema.json",
+  "title": "Luzione Sultan Tool Result v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contractVersion", "operationId", "toolCallId", "toolId", "status", "effectClass", "policyDecision", "sourceFreshness", "sourceRefs", "result", "resultHash", "failureCode", "receiptRef", "readbackRef", "nextSafeAction"],
+  "properties": {
+    "contractVersion": { "const": "luzione-sultan-tool-result/v1" },
+    "operationId": { "$ref": "#/$defs/id" },
+    "toolCallId": { "$ref": "#/$defs/id" },
+    "toolId": { "$ref": "#/$defs/id" },
+    "status": { "enum": ["READY", "BLOCKED", "FAILED", "AWAITING_APPROVAL", "RECONCILIATION_REQUIRED"] },
+    "effectClass": { "enum": ["A0", "A1", "A2", "A3"] },
+    "policyDecision": { "enum": ["ALLOW", "BLOCK", "REQUIRE_APPROVAL"] },
+    "sourceFreshness": { "enum": ["FRESH", "STALE", "UNKNOWN"] },
+    "sourceRefs": { "type": "array", "maxItems": 50, "items": { "type": "string", "minLength": 1, "maxLength": 512 } },
+    "result": { "type": ["object", "null"] },
+    "resultHash": { "$ref": "#/$defs/hash" },
+    "failureCode": { "type": ["string", "null"], "maxLength": 128 },
+    "receiptRef": { "type": ["string", "null"], "maxLength": 512 },
+    "readbackRef": { "type": ["string", "null"], "maxLength": 512 },
+    "nextSafeAction": { "type": "string", "minLength": 1, "maxLength": 1000 }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:@/-]{1,511}$" },
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  }
+}

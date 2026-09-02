@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/sultan/command-execution-v1.schema.json",
+  "title": "luzione-sultan-command-execution/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contractVersion", "reservationId", "operationId", "commandHash", "state", "receipt", "readback", "idempotentReplay", "nextSafeAction"],
+  "properties": {
+    "contractVersion": { "const": "luzione-sultan-command-execution/v1" },
+    "reservationId": { "type": "string", "maxLength": 256 },
+    "operationId": { "type": "string", "maxLength": 256 },
+    "commandHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "state": { "enum": ["SOURCE_CONFIRMED", "RECONCILIATION_REQUIRED"] },
+    "receipt": { "$ref": "effect-receipt-v1.schema.json" },
+    "readback": { "$ref": "readback-v1.schema.json" },
+    "idempotentReplay": { "type": "boolean" },
+    "nextSafeAction": { "type": "string", "maxLength": 1000 }
+  }
+}
