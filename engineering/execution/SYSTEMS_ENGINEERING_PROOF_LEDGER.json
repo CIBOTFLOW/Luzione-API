@@ -1798,6 +1798,75 @@
         "run a signed deployed synthetic campaign and a tenant-bound canonical Fulfillment read-only canary",
         "prove zero business writes and preserve the resulting receipt in Luzione UI"
       ]
+    },
+    {
+      "proof_id": "A01_BOUNDED_READINESS_RESTORATION_20260902",
+      "project_id": "A01",
+      "recorded_at": "2026-09-02T06:21:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "00d345eb29ecff3a8b031276a58d24b2a73972f1",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The exact A01 implementation candidate has a zero-vulnerability dependency graph, passes the local and GitHub release gates and CodeQL, and deterministically reproduces the production 39/40 and 61-violation catalog drift before reaching 40/40 with zero violations under the existing checksummed migrations. Negative client, missing-tenant, cross-tenant and worker-scope cases pass, and dump/restore recovers the exact fail-closed baseline. Production remains intentionally not ready because no managed migration, credential/principal change or candidate promotion was authorized.",
+      "exercised_boundaries": [
+        "Clean npm install audited 391 packages with zero vulnerabilities; Next.js and eslint-config-next are 16.3.4 and tsx is 4.23.13.",
+        "Local compliance verification passed seven controls; typecheck, lint, 224/224 tests and the explicit Next.js webpack production build passed.",
+        "GitHub Release gate run 33597984639 and CodeQL run 33597984671 passed at exact implementation SHA 00d345eb29ecff3a8b031276a58d24b2a73972f1.",
+        "Vercel created READY exact-SHA preview deployment E63DinBh2roTbkwWttTGxTw3Xfsp; the HTTP canary remained access-protected and is not claimed as health proof.",
+        "Read-only production probes at starting SHA 6f7191f0f5e59153541271ea291f3727015f5741 proved livez=200, readyz=200 and healthz=503 with 39/40 and 61 violations while mutations remained disabled and effects unauthorized.",
+        "Read-only production catalogs identified exactly one missing relation, two missing roles, 29 non-forced convergence relations and 29 legacy service_role SELECT grants, with zero RLS-disabled client-accessible public relations.",
+        "An isolated PostgreSQL 16 observed-shape proof reproduced the exact aggregate and detailed failure signature, including four permission-denied active probes.",
+        "Checksummed migrations 20260831070000 and 20260831090000 were applied in order and 20260831090000 reapplied idempotently; authoritative catalog readback returned 40/40 and zero violations.",
+        "The existing API-PC-013 proof reported 90 client-role denials, cross-tenant insert denial, zero rows without tenant context, six worker-scoped relations and exact runtime/worker ceilings.",
+        "A pre-migration dump was restored after the candidate proof; candidate roles were removed and authoritative readback returned the exact original 39/40 and 61-violation fail-closed signature."
+      ],
+      "untested_boundaries": [
+        "authenticated HTTP canary against the protected preview deployment",
+        "managed Supabase backup/PITR restore and production lock-duration observation",
+        "production application of migrations 20260831070000 and 20260831090000",
+        "deployed DATABASE_URL principal membership, credential rotation and pool behavior after legacy service_role revocation",
+        "exact-candidate production promotion, 40/40 catalog readback and healthz=200",
+        "independent controller acceptance and A02 dependency release"
+      ],
+      "evidence_refs": [
+        "architecture/production-convergence/A01_WORKING_CONTRACT.md",
+        "engineering/execution/readiness/A01_READINESS_EVIDENCE_20260902.json",
+        "engineering/execution/handoffs/A01_CONTROLLER_HANDOFF.md",
+        "docs/runbooks/A01_PRODUCTION_READINESS_GATE.md",
+        "scripts/validation/run-a01-readiness-rehearsal.sh",
+        "src/modules/security-posture/tests/rls-posture.test.ts",
+        "pull-request:CIBOTFLOW/Luzione-API#57",
+        "commit:00d345eb29ecff3a8b031276a58d24b2a73972f1",
+        "github-actions:33597984639",
+        "github-actions:33597984671",
+        "vercel:E63DinBh2roTbkwWttTGxTw3Xfsp"
+      ],
+      "failure_refs": [
+        "A01_TURBOPACK_LOCAL_SOCKET_20260902",
+        "A01_PRODUCTION_RLS_CREDENTIAL_GATE_20260902"
+      ],
+      "cross_repo_handoffs": [],
+      "deferred_external_infra": [
+        "protected preview deployment access",
+        "managed Supabase restore/PITR window",
+        "production database migration and principal membership authority",
+        "production Vercel promotion and post-promotion observation",
+        "controller acceptance"
+      ],
+      "remaining_uncertainty": [
+        "The candidate's catalog and denial behavior is production-shaped but local; no local or CI result can establish managed database or production finality.",
+        "The deployment badge proves a successful preview build, not preview health or compatibility with protected environment configuration.",
+        "Production health remains correctly fail closed, so A01's production acceptance criterion is not met and A02 must not start."
+      ],
+      "next_proof_needed": [
+        "record a named managed restore point and production migration approval",
+        "apply the two checksummed migrations and record their managed receipts",
+        "review and bind the deployed database principal to the least-privilege runtime role without exposing the credential",
+        "promote the exact candidate and capture release, livez, readyz, authenticated 40/40 denial probes and healthz at one SHA",
+        "submit the complete handoff to the controller for acceptance before starting A02"
+      ]
     }
   ]
 }
