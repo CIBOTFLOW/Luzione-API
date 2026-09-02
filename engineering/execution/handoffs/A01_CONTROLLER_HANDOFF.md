@@ -113,7 +113,8 @@ the deeper security gate correctly returns 503.
 - No project-specific managed backup receipt or PITR window is visible through
   the connected Supabase authority, so the restore prerequisite is unverified.
 - The candidate is not promoted; production 40/40 and `healthz=200` at its exact SHA are therefore not proven.
-- Controller acceptance has not occurred; A02 remains blocked by A01 and D01.
+- Controller acceptance has not occurred; A02 G0 drafting may proceed, but A02
+  integration remains blocked until A01 and D01 both meet G1.
 
 ## Risks
 
@@ -131,9 +132,27 @@ local recovery evidence are materially stronger. The live-operation score and
 overall cap must not increase because production `healthz` remains 503 and the
 preview canary is access-protected. The controller awards any score change.
 
+## L1 reconciliation addendum — 2026-09-02T21:30:08.599Z
+
+Default `main` remains `6f7191f0f5e59153541271ea291f3727015f5741`.
+PR #57 remains an open, clean draft at
+`9b5366266918ed4222acf54ce685bab15f6f104d`; Release gate `33604340399`
+and CodeQL `33604340436` passed at that head. GitHub preview deployment
+`6217534258` is successful but redirects release and health requests to Vercel
+SSO, so it provides no HTTP canary proof.
+
+Fresh production readback returned release 200, livez 200, and three readyz 200
+samples with pooler detection and 39.8ms, 3.3ms and 3.2ms database latency.
+Those samples are a current availability observation only; production is still
+on the old SHA, so the previously observed prepared-statement collision remains
+unretired. Healthz request `4429dc76-b87f-4914-a52a-516fb786f1ef` returned 503
+with the unchanged 39/40 and 61-violation security signature, mutations disabled
+and external effects unauthorized. The immutable record is
+`engineering/execution/readiness/A01_L1_RECONCILIATION_20260902.json`.
+
 ## Next action
 
-The named Supabase and Vercel owners execute
+Only after explicit human G2 authorization, the named Supabase and Vercel owners execute
 `docs/runbooks/A01_PRODUCTION_READINESS_GATE.md`: record a verified managed
 restore point, apply the two checksummed migrations in order, review the
 `DATABASE_URL` principal's least-privilege membership, promote exact candidate

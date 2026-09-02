@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0",
+  "bundleVersion": "luzione-shared-contracts/v0.2-draft.1",
+  "ownerRepository": "CIBOTFLOW/Luzione-API",
+  "status": "G0_DRAFT_ONLY",
+  "integrationGate": "BLOCKED_UNTIL_A01_AND_D01_G1",
+  "effectAuthority": "NO_EFFECT",
+  "runtimeActivation": false,
+  "contracts": {
+    "identityTenant": "luzione-identity-tenant/v0.2-draft.1",
+    "command": "luzione-command-envelope/v0.2-draft.1",
+    "receipt": "luzione-receipt-envelope/v0.2-draft.1",
+    "readback": "luzione-readback-envelope/v0.2-draft.1"
+  },
+  "artifacts": {
+    "identityTenant": "contracts/drafts/identity-tenant-v0.2-draft.1.schema.json",
+    "command": "contracts/drafts/command-envelope-v0.2-draft.1.schema.json",
+    "receipt": "contracts/drafts/receipt-envelope-v0.2-draft.1.schema.json",
+    "readback": "contracts/drafts/readback-envelope-v0.2-draft.1.schema.json"
+  },
+  "adapters": [
+    "src/modules/shared-contract-drafts/contracts.ts",
+    "src/modules/shared-contract-drafts/adapters.ts"
+  ],
+  "sourceVersions": [
+    "luzione-authority-subject/v0.1",
+    "luzione-request-identity/v1",
+    "luzione-command-ledger/v0.1",
+    "luzione-platform-receipt/v1",
+    "luzione-causal-readback/v0.1"
+  ],
+  "consumerRule": "Pin every exact draft version and adapt locally; do not fork or redefine API-owned identity, tenant, command, receipt or readback fields."
+}

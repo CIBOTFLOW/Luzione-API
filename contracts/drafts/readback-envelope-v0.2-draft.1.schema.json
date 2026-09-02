@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/drafts/readback-envelope-v0.2-draft.1.schema.json",
+  "title": "Luzione Readback Envelope v0.2 draft 1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contractVersion", "tenantId", "finality", "businessFinal", "freshness", "object", "evidence", "reason"],
+  "properties": {
+    "contractVersion": { "const": "luzione-readback-envelope/v0.2-draft.1" },
+    "tenantId": { "type": "string", "minLength": 2, "maxLength": 512 },
+    "finality": { "enum": ["MISSING", "DOMAIN_COMMITTED", "PROVIDER_ACKNOWLEDGED", "RECONCILING", "SOURCE_CONFIRMED"] },
+    "businessFinal": { "type": "boolean" },
+    "freshness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "observedAt", "freshUntil"],
+      "properties": {
+        "state": { "enum": ["FRESH", "NOT_APPLICABLE", "STALE", "UNKNOWN"] },
+        "observedAt": { "type": ["string", "null"], "format": "date-time" },
+        "freshUntil": { "type": ["string", "null"], "format": "date-time" }
+      }
+    },
+    "object": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ownerProject", "type", "id", "version"],
+      "properties": {
+        "ownerProject": { "type": ["string", "null"], "maxLength": 512 },
+        "type": { "type": ["string", "null"], "maxLength": 512 },
+        "id": { "type": ["string", "null"], "maxLength": 512 },
+        "version": { "type": ["string", "null"], "maxLength": 512 }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["receiptId", "commandId", "eventId", "providerAcknowledgementRef", "reconciliationId", "sourceReadbackRef"],
+      "properties": {
+        "receiptId": { "type": "string", "minLength": 2, "maxLength": 512 },
+        "commandId": { "type": ["string", "null"], "maxLength": 512 },
+        "eventId": { "type": ["string", "null"], "maxLength": 512 },
+        "providerAcknowledgementRef": { "type": ["string", "null"], "maxLength": 512 },
+        "reconciliationId": { "type": ["string", "null"], "maxLength": 512 },
+        "sourceReadbackRef": { "type": ["string", "null"], "maxLength": 512 }
+      }
+    },
+    "reason": { "type": "string", "minLength": 1, "maxLength": 2000 }
+  }
+}

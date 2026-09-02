@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "project_id": "A01",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "observed_at": "2026-09-02T21:30:08.599Z",
+  "default_branch": {
+    "name": "main",
+    "exact_sha": "6f7191f0f5e59153541271ea291f3727015f5741",
+    "active": true
+  },
+  "pull_request": {
+    "number": 57,
+    "state": "OPEN_DRAFT",
+    "mergeable_state": "CLEAN",
+    "base": "main",
+    "head_ref": "codex/a01-api-readiness-restoration",
+    "head_sha": "9b5366266918ed4222acf54ce685bab15f6f104d",
+    "implementation_sha": "0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a",
+    "workflows": [
+      {
+        "name": "Release gate",
+        "run_id": 33604340399,
+        "head_sha": "9b5366266918ed4222acf54ce685bab15f6f104d",
+        "conclusion": "success"
+      },
+      {
+        "name": "CodeQL",
+        "run_id": 33604340436,
+        "head_sha": "9b5366266918ed4222acf54ce685bab15f6f104d",
+        "conclusion": "success"
+      },
+      {
+        "name": "Release gate",
+        "run_id": 33603316756,
+        "head_sha": "0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a",
+        "conclusion": "success"
+      },
+      {
+        "name": "CodeQL",
+        "run_id": 33603316773,
+        "head_sha": "0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "preview": {
+    "github_deployment_id": 6217534258,
+    "github_deployment_status_id": 17663823208,
+    "head_sha": "0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a",
+    "environment_url": "https://luzione-e84q8th95-connor-spiegelmans-projects.vercel.app",
+    "deployment_status": "SUCCESS",
+    "http_readback": "302_VERCEL_SSO_PROTECTED",
+    "canary_claim": "NOT_EXERCISED"
+  },
+  "production": {
+    "github_deployment_id": 6216256560,
+    "deployment_id": "dpl_3TCkqyjzYwebcrDpjAdaw69Hc7SZ",
+    "deployment_url": "https://luzione-ngvasz91n-connor-spiegelmans-projects.vercel.app",
+    "exact_sha": "6f7191f0f5e59153541271ea291f3727015f5741",
+    "release": {
+      "http": 200,
+      "request_id": "21efbfa8-c8f5-400b-aa26-813aa1a644eb",
+      "mutations": "DISABLED_FAIL_CLOSED"
+    },
+    "livez": {
+      "http": 200,
+      "status": "LIVE",
+      "request_id": "9ea3b196-47d6-4167-9a90-a900dd681664"
+    },
+    "readyz_samples": [
+      {
+        "http": 200,
+        "status": "READY",
+        "database_latency_ms": 39.8,
+        "pooler": "DETECTED",
+        "request_id": "99063635-7dfe-4d75-bc64-2328cee31062"
+      },
+      {
+        "http": 200,
+        "status": "READY",
+        "database_latency_ms": 3.3,
+        "pooler": "DETECTED",
+        "request_id": "e6f2f85c-edac-4fc7-bdbb-148a1e4c417c"
+      },
+      {
+        "http": 200,
+        "status": "READY",
+        "database_latency_ms": 3.2,
+        "pooler": "DETECTED",
+        "request_id": "164030cd-95ca-41b4-b7ff-888766013292"
+      }
+    ],
+    "healthz": {
+      "http": 503,
+      "status": "SECURITY_POSTURE_REQUIRED",
+      "expected_relations": 40,
+      "observed_relations": 39,
+      "violation_count": 61,
+      "mutations": "DISABLED_FAIL_CLOSED",
+      "external_effects_authorized": false,
+      "request_id": "4429dc76-b87f-4914-a52a-516fb786f1ef"
+    }
+  },
+  "interpretation": {
+    "readyz": "Three fresh successes show current availability only. They do not retire the production-old-SHA prepared-statement failure because the repair candidate is not deployed and the earlier managed error is reproducible on the current source.",
+    "healthz": "The canonical security gate remains fail closed at the exact known 39/40 and 61-violation signature.",
+    "a01_gate": "BLOCKED_MANAGED_RECOVERY_PREVIEW_ACCESS_MIGRATION_PROMOTION_AND_ROLLBACK",
+    "a02_dependency": "A01_HAS_NOT_MET_G1"
+  },
+  "production_actions": {
+    "database_ddl": "NOT_RUN",
+    "role_or_credential_change": "NOT_RUN",
+    "command_activation": "NOT_RUN",
+    "promotion": "NOT_RUN",
+    "rollback": "NOT_RUN"
+  },
+  "strongest_claim": "A01 remains a bounded exact-candidate repair with passing branch workflows and a successful protected preview build. Current production is live and returned three ready responses, but remains on the old SHA and correctly fails the 40/40 security gate; managed recovery, candidate canary, migration, promotion and rollback are unproven."
+}
