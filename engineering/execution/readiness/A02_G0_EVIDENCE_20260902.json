@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "project_id": "A02",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "branch": "codex/a02-shared-contract-drafts-g0",
+  "base_sha": "9b5366266918ed4222acf54ce685bab15f6f104d",
+  "implementation_sha": "f2d643a0913b888809c217adfd9bdcef0385b05a",
+  "recorded_at": "2026-09-02T21:29:39Z",
+  "engineering_state": "BOUNDED_PASS",
+  "release_evidence": "PREVIEW_PROVEN",
+  "effect_authority": "NO_EFFECT",
+  "finality": "BOUNDED_CLAIM",
+  "contract_versions": {
+    "bundle": "luzione-shared-contracts/v0.2-draft.1",
+    "identity_tenant": "luzione-identity-tenant/v0.2-draft.1",
+    "command": "luzione-command-envelope/v0.2-draft.1",
+    "receipt": "luzione-receipt-envelope/v0.2-draft.1",
+    "readback": "luzione-readback-envelope/v0.2-draft.1"
+  },
+  "local_verification": {
+    "dependency_install": "PASS_390_PACKAGES_FROM_EXISTING_LOCKFILE",
+    "compliance_verify": "PASS_7_CONTROL_DOCUMENTS",
+    "typecheck": "PASS",
+    "lint": "PASS",
+    "full_tests": "PASS_230_OF_230",
+    "focused_tests": "PASS_5_OF_5_WITH_NEGATIVE_FIXTURES",
+    "production_build": "PASS_NEXT_16_3_4_WEBPACK_WITH_SCOPED_FONT_NETWORK"
+  },
+  "isolated_rehearsal": {
+    "command": "npm run proof:a02-contracts",
+    "environment": "DISPOSABLE_LOCAL_POSTGRES_16",
+    "fresh_shape": "PASS",
+    "observed_upgrade_shape": "PASS",
+    "migration_application": "EXISTING_P110_P111_MIGRATIONS_ONLY_INSIDE_DISPOSABLE_DATABASES",
+    "draft_persistence": "VERSION_MAP_METADATA_ONLY_NO_NEW_TABLE_OR_SCHEMA",
+    "effect_class": "NO_EFFECT",
+    "idempotency_conflict": "PASS_DIFFERENT_PAYLOAD_DENIED_ORIGINAL_HASH_PRESERVED",
+    "transaction_rollback": "PASS_NO_PARTIAL_RECEIPT",
+    "legacy_preservation": "PASS_EXISTING_RECEIPT_RETAINED_AFTER_IDEMPOTENT_REAPPLY",
+    "cross_tenant_readback": "PASS_ZERO_ROWS",
+    "cleanup": "PASS_TEMPORARY_DATABASES_AND_CONTAINER_REMOVED"
+  },
+  "negative_paths": [
+    "credential actor versus request identity mismatch denied",
+    "verified tenant mismatch denied",
+    "unavailable credential capability denied",
+    "command actor, tenant and correlation drift denied",
+    "command payload hash drift denied",
+    "receipt payload and tenant mismatch denied",
+    "readback tenant, receipt and command mismatch denied",
+    "provider acknowledgement remains non-final",
+    "stale source confirmation returns RECONCILING and non-final",
+    "stale or locally forked consumer pin set denied",
+    "unknown consumer pins denied"
+  ],
+  "preview": {
+    "github_deployment_id": 6232238860,
+    "github_deployment_status_id": 17702151898,
+    "environment_url": "https://luzione-9lis0ykgh-connor-spiegelmans-projects.vercel.app",
+    "state": "SUCCESS",
+    "commit_status_id": 53420247512,
+    "http_readback": {
+      "release": "302_VERCEL_SSO",
+      "livez": "302_VERCEL_SSO",
+      "readyz": "302_VERCEL_SSO",
+      "healthz": "302_VERCEL_SSO"
+    },
+    "canary_claim": "NOT_EXERCISED_ACCESS_PROTECTED"
+  },
+  "github_workflows": {
+    "observed_runs_for_exact_sha": 0,
+    "interpretation": "The branch push produced a Vercel preview but no GitHub Actions run. Canonical CI remains unexercised until the repository workflow trigger admits this candidate."
+  },
+  "runtime_readback": "NOT_APPLICABLE_LIBRARY_ONLY_NO_ROUTE_NO_ACTIVATION",
+  "consumer_delivery": {
+    "sultan_thread_id": "01a063d4-0ce0-75f0-8754-74eead345c87",
+    "status": "EXACT_SHA_PINS_PATHS_AND_LOCAL_ADAPTER_GUIDANCE_SENT",
+    "luzione_ui": "REPOSITORY_HANDOFF_PREPARED_NOT_YET_CONSUMED"
+  },
+  "production_actions": {
+    "migration": "NOT_RUN",
+    "credential_or_secret_change": "NOT_RUN",
+    "command_activation": "NOT_RUN",
+    "public_promotion": "NOT_RUN",
+    "production_rollback": "NOT_RUN"
+  },
+  "gate": {
+    "g0": "BOUNDED_DRAFT_PUBLISHED",
+    "g1": "BLOCKED_ON_A01_AND_D01_AND_INDEPENDENT_CONSUMER_EVIDENCE",
+    "g2": "NOT_REQUESTED_NOT_AUTHORIZED",
+    "strongest_claim": "Exact-version API-owned draft schemas and adapters pass local contract, security, reliability, compatibility, fresh/upgrade persistence and rollback proof and have a successful access-protected preview build. They are not integrated or production-ready."
+  }
+}

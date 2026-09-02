@@ -1939,6 +1939,135 @@
         "promote exact candidate 0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a and record production readbacks",
         "exercise the approved rollback path and submit the resulting evidence to the controller"
       ]
+    },
+    {
+      "proof_id": "A01_L1_PRODUCTION_RECONCILIATION_20260902",
+      "project_id": "A01",
+      "recorded_at": "2026-09-02T21:30:08.599Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "6f7191f0f5e59153541271ea291f3727015f5741",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "PRODUCTION_OBSERVED",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "A fresh read-only reconciliation confirms that production remains on exact SHA 6f7191f0f5e59153541271ea291f3727015f5741 with mutations fail closed, release and livez at 200, three current readyz successes through the detected pooler and healthz still correctly failing at 39/40 relations with 61 violations. A01 PR #57 remains a clean draft with passing Release gate and CodeQL and a successful access-protected preview. This observation does not close the known intermittent old-SHA prepared-statement risk or the managed recovery, migration, canary, promotion and rollback gates.",
+      "exercised_boundaries": [
+        "GitHub default-branch readback identified main at exact SHA 6f7191f0f5e59153541271ea291f3727015f5741.",
+        "PR #57 is open and draft with clean mergeability at head 9b5366266918ed4222acf54ce685bab15f6f104d.",
+        "Release gate 33604340399 and CodeQL 33604340436 passed at the PR head; implementation runs 33603316756 and 33603316773 passed at 0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a.",
+        "GitHub preview deployment 6217534258 succeeded for the implementation candidate; its HTTP routes redirect to Vercel SSO and are not canary proof.",
+        "Production release request 21efbfa8-c8f5-400b-aa26-813aa1a644eb returned 200 at exact SHA 6f7191f0f5e59153541271ea291f3727015f5741 with mutations disabled.",
+        "Production livez request 9ea3b196-47d6-4167-9a90-a900dd681664 returned 200 LIVE.",
+        "Three consecutive readyz requests returned 200 READY with pooler detected and database latencies 39.8ms, 3.3ms and 3.2ms.",
+        "Production healthz request 4429dc76-b87f-4914-a52a-516fb786f1ef returned 503 with 39/40 relations, 61 violations, mutations disabled and external effects unauthorized."
+      ],
+      "untested_boundaries": [
+        "long-duration readyz stability on the current old SHA",
+        "authenticated preview HTTP canary",
+        "project-specific managed backup receipt or PITR window",
+        "managed migration application and principal membership",
+        "exact-candidate promotion, production 40/40 and rollback"
+      ],
+      "evidence_refs": [
+        "engineering/execution/readiness/A01_L1_RECONCILIATION_20260902.json",
+        "pull-request:CIBOTFLOW/Luzione-API#57",
+        "github-actions:33604340399",
+        "github-actions:33604340436",
+        "github-deployment:6217534258",
+        "production-deployment:dpl_3TCkqyjzYwebcrDpjAdaw69Hc7SZ",
+        "production-request:21efbfa8-c8f5-400b-aa26-813aa1a644eb",
+        "production-request:9ea3b196-47d6-4167-9a90-a900dd681664",
+        "production-request:99063635-7dfe-4d75-bc64-2328cee31062",
+        "production-request:e6f2f85c-edac-4fc7-bdbb-148a1e4c417c",
+        "production-request:164030cd-95ca-41b4-b7ff-888766013292",
+        "production-request:4429dc76-b87f-4914-a52a-516fb786f1ef"
+      ],
+      "failure_refs": [
+        "A01_PRODUCTION_RLS_CREDENTIAL_GATE_20260902",
+        "A01_PRODUCTION_READINESS_PREPARED_STATEMENT_20260902"
+      ],
+      "cross_repo_handoffs": [],
+      "deferred_external_infra": [
+        "managed restore evidence and migration authority",
+        "Vercel protected-preview access and promotion authority",
+        "production rollback authority"
+      ],
+      "remaining_uncertainty": [
+        "Three ready samples establish only a current availability snapshot and do not prove the old SHA free of the already-observed pooler collision.",
+        "Health remains deliberately not ready because the canonical production security posture has not changed.",
+        "No candidate code, migration or recovery path has been exercised in production."
+      ],
+      "next_proof_needed": [
+        "obtain a verified managed restore point and protected-preview access",
+        "run the existing A01 G1 migration, canary, exact-SHA readback and rollback sequence only with human G2 authorization"
+      ]
+    },
+    {
+      "proof_id": "A02_G0_SHARED_CONTRACT_DRAFTS_20260902",
+      "project_id": "A02",
+      "recorded_at": "2026-09-02T21:29:39Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "f2d643a0913b888809c217adfd9bdcef0385b05a",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "PREVIEW_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The exact A02 G0 candidate publishes one API-owned, exact-pin draft bundle for identity/tenant, command, receipt and readback semantics. Strict schemas, current-contract adapters, negative compatibility tests and disposable fresh/observed-upgrade P110 rehearsals pass; the exact SHA has a successful access-protected preview build. No runtime route, migration, activation, business write, external effect, integration or production-readiness claim is included.",
+      "exercised_boundaries": [
+        "All five exact version identifiers agree across TypeScript constants, strict JSON Schemas, the manifest and the platform contract registry.",
+        "Credential actor, logical actor, verified tenant, request/correlation identity, command/idempotency/payload hash, receipt/object version and causal readback are preserved by adapters.",
+        "Actor, tenant, capability, command, receipt, readback and pin drift fail closed; provider acknowledgement and stale source confirmation remain non-final.",
+        "Compliance passed 7 controls; typecheck and lint passed; the full suite passed 230/230 and the A02 suite passed 5/5.",
+        "The Next.js 16.3.4 webpack production build passed with scoped access to its configured font dependency.",
+        "Disposable PostgreSQL 16 fresh and observed-upgrade shapes passed version-metadata persistence, NO_EFFECT outbox classification, idempotency conflict preservation, transaction rollback, legacy receipt preservation and cross-tenant non-disclosure.",
+        "Vercel GitHub deployment 6232238860 and status 17702151898 succeeded at the exact candidate SHA.",
+        "Exact SHA, branch, pins, paths and Sultan-local adapter guidance were sent to the A03 task."
+      ],
+      "untested_boundaries": [
+        "canonical GitHub Actions for the exact branch SHA",
+        "authenticated HTTP canary against the access-protected preview",
+        "independent Luzione UI exact-pin adapter evidence",
+        "independent Sultan OS exact-pin adapter and zero-write evidence",
+        "A01 and D01 G1 dependencies",
+        "managed migration, runtime activation, production readback and rollback"
+      ],
+      "evidence_refs": [
+        "architecture/production-convergence/A02_G0_WORKING_CONTRACT.md",
+        "engineering/execution/readiness/A02_G0_EVIDENCE_20260902.json",
+        "engineering/execution/handoffs/A02_CONTROLLER_HANDOFF.md",
+        "engineering/execution/handoffs/A02_LUZIONE_UI.json",
+        "engineering/execution/handoffs/A02_SULTAN_OS.json",
+        "contracts/drafts/luzione-shared-contracts-v0.2-draft.1.manifest.json",
+        "src/modules/shared-contract-drafts/contracts.ts",
+        "src/modules/shared-contract-drafts/adapters.ts",
+        "src/modules/shared-contract-drafts/tests/shared-contract-drafts.test.ts",
+        "scripts/validation/run-a02-contract-draft-rehearsal.sh",
+        "commit:f2d643a0913b888809c217adfd9bdcef0385b05a",
+        "github-deployment:6232238860"
+      ],
+      "failure_refs": [
+        "A02_LOCAL_PROOF_ENVIRONMENT_20260902"
+      ],
+      "cross_repo_handoffs": [
+        "A02_G0_TO_LUZIONE_UI_V1",
+        "A02_G0_TO_SULTAN_OS_V1"
+      ],
+      "deferred_external_infra": [
+        "canonical CI trigger for the exact candidate",
+        "protected preview authentication",
+        "independent consumer repositories",
+        "A01 and D01 G1 evidence"
+      ],
+      "remaining_uncertainty": [
+        "The current adapters are producer-local compatibility evidence, not independent consumer integration.",
+        "The persistence rehearsal stores the draft version map only in disposable metadata and does not prove a managed upgrade.",
+        "The successful preview status proves a build, not HTTP behavior or production compatibility."
+      ],
+      "next_proof_needed": [
+        "receive exact-SHA local adapter, negative and zero-write handoffs from Sultan OS and Luzione UI",
+        "run canonical CI and an authenticated preview canary when admitted",
+        "hold A02 integration until A01 and D01 both meet G1"
+      ]
     }
   ]
 }

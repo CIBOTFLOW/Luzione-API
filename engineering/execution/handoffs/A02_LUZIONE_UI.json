@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "handoff_id": "A02_G0_TO_LUZIONE_UI_V1",
+  "recorded_at": "2026-09-02T21:29:39Z",
+  "producer": {
+    "repository": "CIBOTFLOW/Luzione-API",
+    "branch": "codex/a02-shared-contract-drafts-g0",
+    "candidate_sha": "f2d643a0913b888809c217adfd9bdcef0385b05a",
+    "base_sha": "9b5366266918ed4222acf54ce685bab15f6f104d",
+    "project_id": "A02"
+  },
+  "consumer": {
+    "repository": "CIBOTFLOW/Luzione-UI",
+    "execution_authority": "NO_EFFECT"
+  },
+  "status": "G0_DRAFT_AVAILABLE_FOR_LOCAL_ADAPTER_ONLY",
+  "contract_versions": {
+    "bundle": "luzione-shared-contracts/v0.2-draft.1",
+    "identity_tenant": "luzione-identity-tenant/v0.2-draft.1",
+    "command": "luzione-command-envelope/v0.2-draft.1",
+    "receipt": "luzione-receipt-envelope/v0.2-draft.1",
+    "readback": "luzione-readback-envelope/v0.2-draft.1"
+  },
+  "source_paths": [
+    "contracts/drafts/luzione-shared-contracts-v0.2-draft.1.manifest.json",
+    "contracts/drafts/identity-tenant-v0.2-draft.1.schema.json",
+    "contracts/drafts/command-envelope-v0.2-draft.1.schema.json",
+    "contracts/drafts/receipt-envelope-v0.2-draft.1.schema.json",
+    "contracts/drafts/readback-envelope-v0.2-draft.1.schema.json",
+    "src/modules/shared-contract-drafts/contracts.ts",
+    "src/modules/shared-contract-drafts/adapters.ts",
+    "docs/platform-engineering/A02_SHARED_CONTRACT_DRAFTS_V0.2.md"
+  ],
+  "required_consumer_behavior": [
+    "Pin all five exact versions together at the producer SHA.",
+    "Consume through a UI-local adapter; do not redefine API-owned shared fields.",
+    "Never send actor, tenant, capability, authority, approval or effect authority as caller-selected truth.",
+    "Preserve command, receipt and readback causal identifiers without using HTTP 200 or provider acknowledgement as business finality.",
+    "Fail closed on unknown or stale pins and enum values.",
+    "Keep draft presentation and tests NO_EFFECT."
+  ],
+  "acceptance_proof_needed": [
+    "exact UI candidate SHA and branch",
+    "exact five-version pin validation",
+    "UI-local adapter source paths",
+    "unauthorized and cross-tenant denial",
+    "duplicate/replay and stale-readback behavior",
+    "zero business writes and no external effects",
+    "UI-authored exact-SHA handoff"
+  ],
+  "producer_evidence": "engineering/execution/readiness/A02_G0_EVIDENCE_20260902.json",
+  "preview": {
+    "github_deployment_id": 6232238860,
+    "url": "https://luzione-9lis0ykgh-connor-spiegelmans-projects.vercel.app",
+    "state": "SUCCESS_ACCESS_PROTECTED_NO_HTTP_CANARY"
+  },
+  "non_claims": [
+    "A02 integration",
+    "runtime activation",
+    "production readiness",
+    "business effect",
+    "business finality"
+  ]
+}

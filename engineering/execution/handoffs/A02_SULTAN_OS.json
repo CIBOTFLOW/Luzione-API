@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "handoff_id": "A02_G0_TO_SULTAN_OS_V1",
+  "recorded_at": "2026-09-02T21:29:39Z",
+  "producer": {
+    "repository": "CIBOTFLOW/Luzione-API",
+    "branch": "codex/a02-shared-contract-drafts-g0",
+    "candidate_sha": "f2d643a0913b888809c217adfd9bdcef0385b05a",
+    "base_sha": "9b5366266918ed4222acf54ce685bab15f6f104d",
+    "project_id": "A02"
+  },
+  "consumer": {
+    "repository": "CIBOTFLOW/Sultan-OS",
+    "controller_project": "A03",
+    "execution_authority": "NO_EFFECT"
+  },
+  "status": "G0_DRAFT_AVAILABLE_FOR_LOCAL_ADAPTER_ONLY",
+  "contract_versions": {
+    "bundle": "luzione-shared-contracts/v0.2-draft.1",
+    "identity_tenant": "luzione-identity-tenant/v0.2-draft.1",
+    "command": "luzione-command-envelope/v0.2-draft.1",
+    "receipt": "luzione-receipt-envelope/v0.2-draft.1",
+    "readback": "luzione-readback-envelope/v0.2-draft.1"
+  },
+  "source_paths": [
+    "contracts/drafts/luzione-shared-contracts-v0.2-draft.1.manifest.json",
+    "contracts/drafts/identity-tenant-v0.2-draft.1.schema.json",
+    "contracts/drafts/command-envelope-v0.2-draft.1.schema.json",
+    "contracts/drafts/receipt-envelope-v0.2-draft.1.schema.json",
+    "contracts/drafts/readback-envelope-v0.2-draft.1.schema.json",
+    "src/modules/shared-contract-drafts/contracts.ts",
+    "src/modules/shared-contract-drafts/adapters.ts",
+    "docs/platform-engineering/A02_SHARED_CONTRACT_DRAFTS_V0.2.md"
+  ],
+  "required_consumer_behavior": [
+    "Pin all five exact versions together at the producer SHA.",
+    "Consume through a Sultan-local adapter; do not redefine API-owned identity, tenant, command, receipt or readback fields.",
+    "Keep credential workload actor and logical agent identities separate and preserve their causal binding.",
+    "Derive the exact tenant from the verified workload boundary and reject caller or model tenant authority.",
+    "Preserve command, correlation, idempotency key and payload hash through receipt and readback.",
+    "Treat provider acknowledgement as non-final; only fresh authoritative source confirmation may set business finality.",
+    "Fail closed on unknown or stale pins, authority, effect, receipt, finality or freshness values.",
+    "Keep all A03 execution NO_EFFECT."
+  ],
+  "acceptance_proof_needed": [
+    "exact Sultan candidate SHA and branch",
+    "exact five-version pin validation",
+    "Sultan-local adapter source paths",
+    "credential/logical actor separation test",
+    "unknown and stale pin abstention",
+    "cross-tenant and invalid-delegation denial",
+    "provider-acknowledgement non-finality test",
+    "zero business writes and no external effects",
+    "Sultan-authored exact-SHA handoff"
+  ],
+  "producer_evidence": "engineering/execution/readiness/A02_G0_EVIDENCE_20260902.json",
+  "preview": {
+    "github_deployment_id": 6232238860,
+    "url": "https://luzione-9lis0ykgh-connor-spiegelmans-projects.vercel.app",
+    "state": "SUCCESS_ACCESS_PROTECTED_NO_HTTP_CANARY"
+  },
+  "non_claims": [
+    "A02 integration",
+    "A03 integration",
+    "runtime activation",
+    "production readiness",
+    "business effect",
+    "business finality"
+  ]
+}
