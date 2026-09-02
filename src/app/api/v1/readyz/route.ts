@@ -15,7 +15,11 @@ export async function GET(request: Request) {
   if (config.databaseConfigured) {
     const databaseStartedAt = performance.now();
     try {
-      await databasePool().query({ name: "readiness-v1", text: "select 1", rowMode: "array" });
+      // Supavisor's transaction pooler can assign successive requests to a
+      // backend where the same client-side statement name already exists.
+      // Keep this probe unnamed so dependency readiness cannot fail on pooled
+      // prepared-statement state that the serverless process does not own.
+      await databasePool().query("select 1");
       database = "READY";
       databaseLatencyMs = Math.round((performance.now() - databaseStartedAt) * 10) / 10;
     } catch {
