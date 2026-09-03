@@ -1,0 +1,137 @@
+{
+  "schema_version": 1,
+  "handoff_id": "A02_CURRENT_MAIN_G0_20260903",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "controller_release": "96ce4a741a0c621c7d6127e69dfea02d6e499174",
+  "controller_evidence_commit": "f10d5abd5c010e0cb0cd83b2e216ef9ec687034e",
+  "discarded_nonexistent_evidence_reference": "f10d5ab23486b51d7a3a272a62c9cdb0d96b24e7",
+  "base_sha": "7ee5a0a53a3434c3e00969dc626a4daad33f9dc0",
+  "semantic_source_sha": "f2d643a0913b888809c217adfd9bdcef0385b05a",
+  "branch": "codex/a02-current-main-field-compat-g0-96ce4a7",
+  "implementation_sha": "12685f46a60edea23aaa0a5403e300bf8858066b",
+  "final_evidence_head_binding": "the commit containing this handoff; exact SHA is reported in the controller message after push",
+  "pull_request": {
+    "number": 62,
+    "state": "OPEN_DRAFT",
+    "base": "main",
+    "head_at_implementation_ci": "12685f46a60edea23aaa0a5403e300bf8858066b",
+    "url": "https://github.com/CIBOTFLOW/Luzione-API/pull/62"
+  },
+  "preserved_pull_requests": [58, 59, 61],
+  "contract_versions": {
+    "bundle": "luzione-shared-contracts/v0.2-draft.1",
+    "identityTenant": "luzione-identity-tenant/v0.2-draft.1",
+    "command": "luzione-command-envelope/v0.2-draft.1",
+    "receipt": "luzione-receipt-envelope/v0.2-draft.1",
+    "readback": "luzione-readback-envelope/v0.2-draft.1"
+  },
+  "authoritative_sources": {
+    "manifest": "contracts/drafts/luzione-shared-contracts-v0.2-draft.1.manifest.json",
+    "schemas": [
+      "contracts/drafts/identity-tenant-v0.2-draft.1.schema.json",
+      "contracts/drafts/command-envelope-v0.2-draft.1.schema.json",
+      "contracts/drafts/receipt-envelope-v0.2-draft.1.schema.json",
+      "contracts/drafts/readback-envelope-v0.2-draft.1.schema.json"
+    ],
+    "field_fixture": "contracts/drafts/fixtures/a02-v0.2-draft.1-producer-consumer.json",
+    "producer_types": "src/modules/shared-contract-drafts/contracts.ts",
+    "producer_adapters": "src/modules/shared-contract-drafts/adapters.ts",
+    "consumer_compatibility": "src/modules/shared-contract-drafts/consumerCompatibility.ts"
+  },
+  "changed_paths": [
+    "architecture/production-convergence/A02_G0_WORKING_CONTRACT.md",
+    "contracts/drafts/command-envelope-v0.2-draft.1.schema.json",
+    "contracts/drafts/fixtures/a02-v0.2-draft.1-producer-consumer.json",
+    "contracts/drafts/identity-tenant-v0.2-draft.1.schema.json",
+    "contracts/drafts/luzione-shared-contracts-v0.2-draft.1.manifest.json",
+    "contracts/drafts/readback-envelope-v0.2-draft.1.schema.json",
+    "contracts/drafts/receipt-envelope-v0.2-draft.1.schema.json",
+    "docs/platform-engineering/A02_SHARED_CONTRACT_DRAFTS_V0.2.md",
+    "engineering/execution/A02_CURRENT_MAIN_G0_WRITER_CLAIM.json",
+    "engineering/execution/CURRENT_HANDOFF.json",
+    "engineering/execution/SYSTEMS_ENGINEERING_FAILURE_LEDGER.json",
+    "engineering/execution/SYSTEMS_ENGINEERING_PROOF_LEDGER.json",
+    "engineering/execution/handoffs/A02_CURRENT_MAIN_G0_HANDOFF.json",
+    "package.json",
+    "scripts/validation/a02-contract-draft-rehearsal.sql",
+    "scripts/validation/a02-contract-draft-rehearsal.ts",
+    "scripts/validation/run-a02-contract-draft-rehearsal.sh",
+    "src/modules/platform-contracts/registry.ts",
+    "src/modules/platform-testing/taxonomy.ts",
+    "src/modules/shared-contract-drafts/adapters.ts",
+    "src/modules/shared-contract-drafts/consumerCompatibility.ts",
+    "src/modules/shared-contract-drafts/contracts.ts",
+    "src/modules/shared-contract-drafts/tests/consumer-compatibility-fixtures.test.ts",
+    "src/modules/shared-contract-drafts/tests/shared-contract-drafts.test.ts"
+  ],
+  "local_verification": {
+    "focused_a02": "PASS_28_OF_28",
+    "registry_and_taxonomy": "PASS_11_OF_11",
+    "compliance": "PASS_7_DOCUMENTS",
+    "typecheck": "PASS",
+    "lint": "PASS_ZERO_WARNINGS",
+    "canonical_tests": "PASS_285_OF_285",
+    "production_build": "PASS_NEXTJS_16_3_4_WEBPACK",
+    "disposable_postgres": "PASS_FRESH_AND_OBSERVED_UPGRADE_CROSS_TENANT_ZERO_NO_EFFECT_LEGACY_RECEIPT_PRESERVED_RESOURCES_REMOVED"
+  },
+  "implementation_ci": {
+    "release_gate": {
+      "run_id": 33718332906,
+      "job_id": 100532117751,
+      "conclusion": "SUCCESS"
+    },
+    "codeql": {
+      "run_id": 33718332872,
+      "job_id": 100532117411,
+      "conclusion": "SUCCESS"
+    }
+  },
+  "preview": {
+    "provider": "Vercel",
+    "deployment_id": "j2LwrHkUfLvJyGWXHfVYBRYZWzyw",
+    "status": "READY",
+    "git_bound_sha": "12685f46a60edea23aaa0a5403e300bf8858066b",
+    "url": "https://luzione-api-git-codex-a02-cu-102cdb-connor-spiegelmans-projects.vercel.app",
+    "readback": {
+      "/api/v1/release": "HTTP_302_VERCEL_SSO",
+      "/api/v1/livez": "HTTP_302_VERCEL_SSO",
+      "/api/v1/readyz": "HTTP_302_VERCEL_SSO",
+      "/api/v1/healthz": "HTTP_302_VERCEL_SSO"
+    },
+    "authenticated_connector_attempt": "UNAVAILABLE_COULD_NOT_CREATE_SHAREABLE_URL",
+    "claim_limit": "READY_BUILD_PROVEN_HTTP_APPLICATION_READBACK_NOT_PROVEN"
+  },
+  "negative_cases": [
+    "surplus fields at identity/tenant, command, receipt and readback boundaries",
+    "missing fields at identity/tenant, command, receipt and readback boundaries",
+    "wrong exact versions at all four boundaries",
+    "cross-tenant receipt and readback linkage",
+    "stale authoritative-source finality",
+    "same-key replay with changed payload hash",
+    "command effect-authority smuggling",
+    "receipt effect-authority smuggling"
+  ],
+  "rollback_proof": {
+    "code": "git reverse-apply check from implementation SHA to exact base passed",
+    "database": "fresh and observed-upgrade proof databases were dropped and the disposable container was removed",
+    "production": "NOT_TOUCHED",
+    "default_branch": "NOT_TOUCHED"
+  },
+  "consumer_guidance": "Pin the implementation SHA and all five exact versions together; consume only through a repository-local adapter; reject field, version, tenant, finality, replay and effect-authority drift; do not redefine API-owned fields.",
+  "effect_authority": "NO_EFFECT",
+  "engineering_state": "BOUNDED_PASS",
+  "release_evidence": "LOCAL_PROVEN_WITH_READY_PREVIEW_BUILD_HTTP_READBACK_DEFERRED",
+  "finality": "BOUNDED_CLAIM",
+  "g1_blockers": [
+    "A01 has not met G1",
+    "D01 has not met G1",
+    "authenticated exact-SHA preview application readback is unavailable",
+    "independent consumer return evidence remains outside this API-owned producer candidate"
+  ],
+  "risks": [
+    "strict additional-property rejection is deliberate and consumers must adapt before accepting fields",
+    "a Ready deployment badge does not prove runtime application behavior through protected ingress",
+    "the fixture is synthetic and cannot establish production identity, tenant, command, receipt or readback finality"
+  ],
+  "next_action": "The controller verifies PR #62 final-head CI and obtains authorized exact-SHA preview /api/v1/release, /livez, /readyz and /healthz readback before considering any later gate change."
+}

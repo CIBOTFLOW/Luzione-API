@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "repository": "CIBOTFLOW/Luzione-API",
+  "writer": "L1 API & Contracts",
+  "state": "RELEASED",
+  "claimed_at": "2026-09-03T05:10:31Z",
+  "released_at": "2026-09-03T05:21:42Z",
+  "controller_release": "96ce4a741a0c621c7d6127e69dfea02d6e499174",
+  "controller_evidence_commit": "f10d5abd5c010e0cb0cd83b2e216ef9ec687034e",
+  "discarded_controller_evidence_reference": "f10d5ab23486b51d7a3a272a62c9cdb0d96b24e7",
+  "base_sha": "7ee5a0a53a3434c3e00969dc626a4daad33f9dc0",
+  "branch": "codex/a02-current-main-field-compat-g0-96ce4a7",
+  "implementation_sha": "12685f46a60edea23aaa0a5403e300bf8858066b",
+  "release_evidence_head": "commit containing this released claim; exact SHA is reported in the controller handoff",
+  "effect_authority": "NO_EFFECT",
+  "preserved_pull_requests": [58, 59, 61]
+}
