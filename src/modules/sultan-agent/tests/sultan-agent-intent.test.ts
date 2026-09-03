@@ -2,9 +2,15 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import type { ApiActor } from "@/lib/api/actor";
+import type { VerifiedCanonicalReadbackRef } from "@/modules/sultan-stage5/contracts";
 import type { TenantPolicySnapshot } from "@/modules/tenant-policy/types";
 import { SULTAN_AGENT_CONTEXT_CONTRACT_VERSION, SULTAN_AGENT_INTENT_CONTRACT_VERSION } from "../contracts";
-import { canonicalOrderContextHash, verifySultanAgentContext, type SultanOrderReadback } from "../contextVerifier";
+import {
+  canonicalOrderContextHash,
+  stage5CanonicalReadbackReceiptIds,
+  verifySultanAgentContext,
+  type SultanOrderReadback,
+} from "../contextVerifier";
 import { evaluateSultanAgentIntent } from "../evaluator";
 import { parseSultanAgentIntent, SultanAgentIntentError } from "../parser";
 
@@ -86,6 +92,46 @@ function sultanWorkload(overrides: Partial<ApiActor> = {}): ApiActor {
     source: "vercel-oidc",
     tenantId: "luzione",
     ...overrides,
+  };
+}
+
+function stage5Readback(
+  suffix: string,
+  subjectType: VerifiedCanonicalReadbackRef["subjectType"],
+  overrides: Partial<VerifiedCanonicalReadbackRef> = {},
+): VerifiedCanonicalReadbackRef {
+  return {
+    apiDeploymentSha: "a".repeat(40),
+    claimEvidence: [{
+      claimId: "validation.value",
+      evidenceHash: suffix.repeat(64),
+      evidenceRef: `s5read_${suffix.repeat(32)}/validation.value`,
+    }],
+    consumerActorId: "service:luzione-ui",
+    consumerReleaseSha: "d".repeat(40),
+    freshUntil: "2026-08-31T12:05:00.000Z",
+    observedAt: NOW,
+    readbackHash: suffix.repeat(64),
+    readbackReceiptId: `s5read_${suffix.repeat(32)}`,
+    sourceRefs: [`postgres:public.${subjectType.toLowerCase()}`],
+    sourceVersion: `${subjectType.toLowerCase()}:subject-${suffix}:v1`,
+    status: "AVAILABLE",
+    subjectId: `subject-${suffix}`,
+    subjectType,
+    tenantId: "luzione",
+    ...overrides,
+  };
+}
+
+function stage5Context(readback: VerifiedCanonicalReadbackRef) {
+  return {
+    contextContractVersion: SULTAN_AGENT_CONTEXT_CONTRACT_VERSION,
+    freshness: "FRESH" as const,
+    integrityHash: readback.readbackHash,
+    observedAt: readback.observedAt,
+    sourceOwner: "CIBOTFLOW/Luzione-API" as const,
+    sourceRef: `api:canonical-readback/${readback.readbackReceiptId}`,
+    sourceVersion: readback.readbackHash,
   };
 }
 
@@ -252,6 +298,123 @@ test("canonical Order readback derives freshness and rejects version or hash dri
   assert.equal(stale.intent.sourceContext[0].integrityHash, integrityHash);
 });
 
+test("pre-inference policy verifies exact Stage 5 canonical receipts across supported subjects", () => {
+  const order = stage5Readback("a", "ORDER");
+  const account = stage5Readback("b", "ACCOUNT");
+  const intent = parseSultanAgentIntent(request({
+    sourceContext: [stage5Context(order), stage5Context(account)],
+  }));
+  assert.deepEqual(stage5CanonicalReadbackReceiptIds(intent), [order.readbackReceiptId, account.readbackReceiptId]);
+  const verified = verifySultanAgentContext({
+    canonicalReadbacks: [account, order],
+    intent,
+    now: NOW,
+    orderReadback: null,
+    stage5Pins: { maximumEvidenceAgeMs: 300_000, uiDeploymentSha: "d".repeat(40) },
+    tenantId: "luzione",
+  });
+  assert.equal(verified.verification.kind, "CANONICAL_READBACK");
+  assert.equal(verified.verification.verifiedCount, 2);
+  assert.deepEqual(verified.intent.sourceContext.map((context) => context.freshness), ["FRESH", "FRESH"]);
+  assert.deepEqual(verified.intent.sourceContext.map((context) => context.sourceVersion), [order.readbackHash, account.readbackHash]);
+  const decision = evaluateSultanAgentIntent({
+    actor: sultanWorkload(),
+    contextVerification: verified.verification,
+    intent: verified.intent,
+    now: NOW,
+    tenantPolicy: POLICY,
+  });
+  assert.equal(decision.status, "ADMIT_READ_ONLY");
+  assert.equal(decision.sourceContext.synthetic, false);
+  assert.equal(decision.sourceContext.verifiedCount, 2);
+});
+
+test("pre-inference policy rejects forged, cross-tenant, stale, duplicate, and mixed receipt evidence", () => {
+  const canonical = stage5Readback("c", "OPPORTUNITY");
+  const intent = parseSultanAgentIntent(request({ sourceContext: [stage5Context(canonical)] }));
+  for (const candidate of [
+    { ...canonical, readbackHash: "d".repeat(64) },
+    { ...canonical, sourceVersion: null },
+    { ...canonical, tenantId: "other" },
+    { ...canonical, consumerActorId: "service:sultan-os" as const },
+    { ...canonical, consumerReleaseSha: "e".repeat(40) },
+  ]) {
+    const result = verifySultanAgentContext({
+      canonicalReadbacks: [candidate],
+      intent,
+      now: NOW,
+      orderReadback: null,
+      stage5Pins: { maximumEvidenceAgeMs: 300_000, uiDeploymentSha: "d".repeat(40) },
+      tenantId: "luzione",
+    });
+    assert.equal(result.verification.kind, "UNVERIFIED");
+    assert.equal(result.intent.sourceContext[0].freshness, "STALE");
+  }
+  const forgedContextVersion = parseSultanAgentIntent(request({
+    sourceContext: [{ ...stage5Context(canonical), sourceVersion: "e".repeat(64) }],
+  }));
+  const forgedVersion = verifySultanAgentContext({
+    canonicalReadbacks: [canonical],
+    intent: forgedContextVersion,
+    now: NOW,
+    orderReadback: null,
+    stage5Pins: { maximumEvidenceAgeMs: 300_000, uiDeploymentSha: "d".repeat(40) },
+    tenantId: "luzione",
+  });
+  assert.equal(forgedVersion.verification.kind, "UNVERIFIED");
+  assert.equal(forgedVersion.intent.sourceContext[0].freshness, "STALE");
+  const stale = verifySultanAgentContext({
+    canonicalReadbacks: [{ ...canonical, freshUntil: "2026-08-31T11:59:59.000Z" }],
+    intent,
+    now: NOW,
+    orderReadback: null,
+    stage5Pins: { maximumEvidenceAgeMs: 300_000, uiDeploymentSha: "d".repeat(40) },
+    tenantId: "luzione",
+  });
+  assert.equal(stale.verification.kind, "CANONICAL_READBACK");
+  assert.equal(stale.intent.sourceContext[0].freshness, "STALE");
+
+  const aged = stage5Readback("e", "COMMITMENT", {
+    observedAt: "2026-08-31T11:59:58.000Z",
+    freshUntil: "2026-08-31T12:05:00.000Z",
+  });
+  const agedIntent = parseSultanAgentIntent(request({ sourceContext: [stage5Context(aged)] }));
+  const ageBounded = verifySultanAgentContext({
+    canonicalReadbacks: [aged],
+    intent: agedIntent,
+    now: NOW,
+    orderReadback: null,
+    stage5Pins: { maximumEvidenceAgeMs: 1_000, uiDeploymentSha: "d".repeat(40) },
+    tenantId: "luzione",
+  });
+  assert.equal(ageBounded.verification.kind, "CANONICAL_READBACK");
+  assert.equal(ageBounded.intent.sourceContext[0].freshness, "STALE");
+
+  const duplicateIntent = parseSultanAgentIntent(request({
+    sourceContext: [stage5Context(canonical), stage5Context(canonical)],
+  }));
+  assert.equal(stage5CanonicalReadbackReceiptIds(duplicateIntent), null);
+
+  const mixedIntent = parseSultanAgentIntent(request({
+    sourceContext: [
+      stage5Context(canonical),
+      { ...stage5Context(canonical), sourceOwner: "SYNTHETIC_LUZIONE" },
+    ],
+  }));
+  const mixed = verifySultanAgentContext({ intent: mixedIntent, orderReadback: null });
+  assert.equal(mixed.verification.kind, "UNVERIFIED");
+  const mixedDecision = evaluateSultanAgentIntent({
+    actor: sultanWorkload(),
+    contextVerification: mixed.verification,
+    intent: mixed.intent,
+    now: NOW,
+    tenantPolicy: POLICY,
+  });
+  assert.equal(mixedDecision.sourceContext.synthetic, false);
+  assert.ok(mixedDecision.reasonCodes.includes("MIXED_CONTEXT_CLASSES_DENIED"));
+  assert.notEqual(mixedDecision.status, "ADMIT_READ_ONLY");
+});
+
 test("unsupported or missing API context is replaced with unknown freshness", () => {
   const intent = parseSultanAgentIntent(request());
   const result = verifySultanAgentContext({ intent, orderReadback: null });
@@ -292,6 +455,7 @@ test("HTTP route is evaluation-only and never accepts a body grant", () => {
   const route = readFileSync("src/app/api/v1/sultan/agent-intents/evaluate/route.ts", "utf8");
   assert.match(route, /requireServiceActor\(request\.headers, "sultan\.agent\.intent\.evaluate"\)/);
   assert.match(route, /parseSultanAgentIntent\(body\)/);
+  assert.match(route, /readAdmissionEvidence\(actor\.tenantId, stage5ReceiptIds\)/);
   assert.doesNotMatch(route, /authorityGrant:\s*body/);
   assert.match(route, /businessStateMutated:\s*false/);
   assert.match(route, /externalEffectsAuthorized:\s*false/);

@@ -86,6 +86,134 @@
           "503": { "description": "Evaluation boundary unavailable" }
         }
       }
+    },
+    "/api/v1/sultan/tools": {
+      "get": {
+        "operationId": "getSultanToolManifest",
+        "summary": "Discover the tenant-bound tool intersection for one server-derived Sultan steward; discovery grants no authority",
+        "responses": {
+          "200": { "description": "luzione-sultan-tool-manifest/v1" },
+          "401": { "description": "Signed Sultan workload identity required" },
+          "403": { "description": "Logical-agent or capability binding denied" },
+          "503": { "description": "Tool discovery failed closed" }
+        }
+      }
+    },
+    "/api/v1/sultan/tool-invocations": {
+      "post": {
+        "operationId": "invokeSultanTool",
+        "summary": "Invoke one typed tenant-bound Sultan tool with server-side policy and effect classification",
+        "responses": {
+          "200": { "description": "luzione-sultan-tool-result/v1" },
+          "400": { "description": "Malformed contract or arguments" },
+          "401": { "description": "Signed Sultan workload identity required" },
+          "403": { "description": "Authority, capability, critic, or policy denied" },
+          "409": { "description": "Stale object version or idempotency conflict" },
+          "423": { "description": "Kill switch active" },
+          "429": { "description": "Canary quota exhausted" },
+          "503": { "description": "Tool invocation failed closed" }
+        }
+      }
+    },
+    "/api/v1/sultan/commands/prepare": {
+      "post": {
+        "operationId": "prepareSultanCommand",
+        "summary": "Risk-classify and reserve one exact consequential Sultan command without executing it",
+        "responses": {
+          "200": { "description": "luzione-sultan-command-preparation/v1" },
+          "400": { "description": "Malformed command preparation" },
+          "401": { "description": "Signed Sultan workload identity required" },
+          "403": { "description": "Capability, critic, or policy denied" },
+          "409": { "description": "Stale object version or command conflict" },
+          "503": { "description": "Command preparation unavailable" }
+        }
+      }
+    },
+    "/api/v1/sultan/commands/execute": {
+      "post": {
+        "operationId": "executeSultanCommand",
+        "summary": "Execute only an exact reserved command with a signed distinct-human admission",
+        "responses": {
+          "200": { "description": "luzione-sultan-command-execution/v1" },
+          "400": { "description": "Malformed command execution" },
+          "401": { "description": "Signed Sultan workload identity required" },
+          "403": { "description": "Human admission or policy denied" },
+          "409": { "description": "Command hash, state, or idempotency conflict" },
+          "503": { "description": "Command execution unavailable or indeterminate" }
+        }
+      }
+    },
+    "/api/v1/sultan/effects/{receiptId}/readback": {
+      "get": {
+        "operationId": "getSultanEffectReadback",
+        "summary": "Read the authoritative state of one tenant-bound Sultan effect receipt",
+        "parameters": [{ "name": "receiptId", "in": "path", "required": true, "schema": { "type": "string", "maxLength": 512 } }],
+        "responses": {
+          "200": { "description": "luzione-sultan-readback/v1" },
+          "401": { "description": "Signed Sultan workload identity required" },
+          "404": { "description": "Receipt not found in the authenticated tenant" },
+          "503": { "description": "Readback unavailable" }
+        }
+      }
+    },
+    "/api/v1/sultan/canonical-readbacks": {
+      "post": {
+        "operationId": "createSultanCanonicalReadback",
+        "summary": "Issue one immutable tenant-bound FACT/CALCULATION readback for an exact UI or Sultan deployment",
+        "responses": {
+          "200": { "description": "luzione-canonical-business-readback/v1" },
+          "400": { "description": "Invalid bounded readback query" },
+          "401": { "description": "Verified workload authentication required" },
+          "403": { "description": "Workload, tenant, capability, or deployment SHA denied" },
+          "409": { "description": "Idempotency conflict" },
+          "503": { "description": "Canonical source or receipt store unavailable" }
+        }
+      }
+    },
+    "/api/v1/sultan/admissions": {
+      "post": {
+        "operationId": "createSultanStage5Admission",
+        "summary": "Issue an immutable post-inference admission or denial receipt bound to exact participation, evidence, interaction and deployment hashes",
+        "responses": {
+          "200": { "description": "Completed A0 reasoning, simulation, or observation is bound post-inference with no effect; this response does not authorize inference" },
+          "202": { "description": "Consequential request requires a separate exact review/approval path" },
+          "400": { "description": "Invalid exact-version assertion" },
+          "401": { "description": "Verified Sultan workload authentication required" },
+          "403": { "description": "Immutable denial receipt issued" },
+          "409": { "description": "Idempotency conflict" },
+          "503": { "description": "Admission verifier or receipt store unavailable" }
+        }
+      }
+    },
+    "/api/v1/sultan/outcome-observations": {
+      "get": {
+        "operationId": "verifySultanOutcomeObservation",
+        "summary": "Read and verify one immutable tenant-bound outcome receipt against its admission and canonical readback lineage",
+        "parameters": [
+          { "name": "observationId", "in": "query", "required": true, "schema": { "type": "string", "pattern": "^s5out_[a-f0-9]{32}$" } }
+        ],
+        "responses": {
+          "200": { "description": "Authenticated database readback with receiptOriginVerified, receiptHashVerified, and tenantBindingVerified" },
+          "400": { "description": "Invalid observation receipt identifier" },
+          "401": { "description": "Verified UI or Sultan workload authentication required" },
+          "403": { "description": "Workload, tenant, or capability denied" },
+          "404": { "description": "Tenant-bound outcome observation not found" },
+          "503": { "description": "Stored receipt, admission, or readback lineage failed verification" }
+        }
+      },
+      "post": {
+        "operationId": "createSultanOutcomeObservation",
+        "summary": "Derive an immutable confirmed, refuted, unresolved, or superseded observation from a prior admission and later canonical readback",
+        "responses": {
+          "200": { "description": "luzione-sultan-outcome-observation/v1" },
+          "400": { "description": "Invalid observation request" },
+          "401": { "description": "Verified UI or Sultan workload authentication required" },
+          "403": { "description": "Workload, tenant, or capability denied" },
+          "404": { "description": "Tenant-bound admission or readback not found" },
+          "409": { "description": "Chronology, supersession, or idempotency conflict" },
+          "503": { "description": "Outcome verifier unavailable" }
+        }
+      }
     }
   }
 }

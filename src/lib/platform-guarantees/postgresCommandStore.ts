@@ -12,6 +12,7 @@ import type {
   LifecycleCommandReceipt,
   LifecycleCommandRequest,
 } from "@/modules/platform-guarantees/types";
+import { sha256 } from "@/modules/platform-guarantees/eventContract";
 
 export const POSTGRES_COMMAND_LEDGER_VERSION = "luzione-command-ledger/v0.1";
 
@@ -120,11 +121,17 @@ export class PostgresAtomicCommandStore implements AtomicCommandStore<CommandTra
     await transaction.client.query(
       `insert into public.p110_outbox_messages
         (tenant_id, outbox_message_id, receipt_id, event_id, destination, effect_class,
-         idempotency_key, payload, payload_hash, state)
-       values ($1,$2,$3,$4,'INTERNAL_WORKFLOW','NO_EFFECT',$5,$6::jsonb,$7,'PENDING')`,
+         authorization_ref, idempotency_key, payload, payload_hash, state, max_attempts)
+       values ($1,$2,$3,$4,$5,$6,$7,$8,$9::jsonb,$10,'PENDING',$11)`,
       [
         request.tenantId, write.outboxMessageId, receipt.receiptId, event.eventId,
-        request.idempotencyKey, JSON.stringify({ eventId: event.eventId }), event.payloadHash,
+        request.delivery?.destination ?? "INTERNAL_WORKFLOW",
+        request.delivery?.effectClass ?? 'NO_EFFECT',
+        request.delivery?.authorizationRef ?? null,
+        request.idempotencyKey,
+        JSON.stringify(request.delivery?.payload ?? { eventId: event.eventId }),
+        request.delivery ? sha256(request.delivery.payload) : event.payloadHash,
+        request.delivery?.maxAttempts ?? 5,
       ],
     );
   }

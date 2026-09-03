@@ -1,0 +1,271 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/sultan/api-admission-v1.schema.json",
+  "title": "Luzione Sultan API Admission v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contractVersion", "admissionTiming", "authorizesInference", "admissionReceiptId", "operationId", "runId", "interactionId", "interactionReceipt", "interactionReceiptHash", "status", "phase", "credentialActor", "logicalAgent", "caseRef", "participation", "evidence", "requestedCapability", "requestedEffectClass", "admittedEffectClass", "effectAuthority", "externalEffectsAuthorized", "policyVersion", "reasonCodes", "apiDeploymentSha", "requestedAt", "decidedAt", "idempotencyKey", "idempotentReplay", "outcomeExpectation", "outcomeExpectationBinding", "outcomeExpectationProof", "purpose", "receiptHash"],
+  "properties": {
+    "contractVersion": { "const": "luzione-sultan-api-admission/v1" },
+    "admissionTiming": { "const": "POST_INFERENCE" },
+    "authorizesInference": { "const": false },
+    "admissionReceiptId": { "type": "string", "pattern": "^s5admit_[a-f0-9]{32}$" },
+    "operationId": { "$ref": "#/$defs/id" },
+    "runId": { "$ref": "#/$defs/id" },
+    "interactionId": { "$ref": "#/$defs/id" },
+    "interactionReceipt": { "$ref": "#/$defs/interactionReceipt" },
+    "interactionReceiptHash": { "$ref": "#/$defs/hash" },
+    "status": { "enum": ["ADMITTED_NO_EFFECT", "DENIED", "SEPARATE_REVIEW_REQUIRED"] },
+    "phase": { "enum": ["REASONING", "SIMULATION", "ACTION_PREPARATION", "EXECUTION", "OBSERVATION"] },
+    "credentialActor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actorId", "actorType", "source", "tenantId"],
+      "properties": {
+        "actorId": { "const": "service:sultan-os" },
+        "actorType": { "const": "service" },
+        "source": { "const": "vercel-oidc" },
+        "tenantId": { "const": "luzione" }
+      }
+    },
+    "logicalAgent": { "$ref": "#/$defs/agent" },
+    "caseRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["caseId", "caseType", "expectedVersion"],
+      "properties": {
+        "caseId": { "$ref": "#/$defs/id" },
+        "caseType": { "enum": ["PORTFOLIO", "COMMERCIAL", "FULFILLMENT", "PARTNER_RELATIONSHIP", "CATALOG_QUALITY", "ACCOUNT_RELATIONSHIP", "ECONOMIC_REVIEW", "FEP_CASE", "CONTROL_REVIEW"] },
+        "expectedVersion": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] }
+      }
+    },
+    "participation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contractVersion", "contractSha", "contextHash", "groundingAssemblerDeploymentSha", "groundingPacketHash", "identityContractVersion", "identityContractHash", "modelVersion", "participantSetHash", "primaryAgent", "criticAgent", "sultanDeploymentSha"],
+      "properties": {
+        "contractVersion": { "const": "sultan.stage5-developmental-participation.v2" },
+        "contractSha": { "$ref": "#/$defs/gitSha" },
+        "contextHash": { "$ref": "#/$defs/hash" },
+        "groundingAssemblerDeploymentSha": { "$ref": "#/$defs/gitSha" },
+        "groundingPacketHash": { "$ref": "#/$defs/hash" },
+        "identityContractVersion": { "$ref": "#/$defs/id" },
+        "identityContractHash": { "$ref": "#/$defs/hash" },
+        "modelVersion": { "$ref": "#/$defs/id" },
+        "participantSetHash": { "$ref": "#/$defs/hash" },
+        "primaryAgent": { "$ref": "#/$defs/agent" },
+        "criticAgent": { "$ref": "#/$defs/agent" },
+        "sultanDeploymentSha": { "$ref": "#/$defs/gitSha" }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["consumedEvidence", "evidenceRefsHash", "readbackReceiptIds", "sourceVerification"],
+      "properties": {
+        "consumedEvidence": { "type": "array", "maxItems": 11, "uniqueItems": true, "items": { "$ref": "#/$defs/consumedEvidence" } },
+        "evidenceRefsHash": { "$ref": "#/$defs/hash" },
+        "readbackReceiptIds": { "type": "array", "minItems": 1, "maxItems": 64, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+        "sourceVerification": { "enum": ["API_CANONICAL_READBACKS_VERIFIED_CONTEXT_HASH_SULTAN_ASSERTED", "FAILED"] }
+      }
+    },
+    "requestedCapability": { "$ref": "#/$defs/id" },
+    "requestedEffectClass": { "enum": ["A0", "A1", "A2", "A3"] },
+    "admittedEffectClass": { "enum": ["A0", "NONE"] },
+    "effectAuthority": { "enum": ["NO_EFFECT", "NOT_GRANTED", "SEPARATE_REVIEW_REQUIRED"] },
+    "externalEffectsAuthorized": { "const": false },
+    "policyVersion": { "const": "luzione-sultan-stage5-policy/2026-09-02.v1" },
+    "reasonCodes": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+    "apiDeploymentSha": { "$ref": "#/$defs/gitSha" },
+    "requestedAt": { "type": "string", "format": "date-time" },
+    "decidedAt": { "type": "string", "format": "date-time" },
+    "idempotencyKey": { "$ref": "#/$defs/id" },
+    "idempotentReplay": { "type": "boolean" },
+    "outcomeExpectation": { "anyOf": [{ "type": "null" }, { "$ref": "#/$defs/expectation" }] },
+    "outcomeExpectationBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["expectationHash", "interactionReceiptBound", "proofHash", "source"],
+      "properties": {
+        "expectationHash": { "anyOf": [{ "$ref": "#/$defs/hash" }, { "type": "null" }] },
+        "interactionReceiptBound": { "const": true },
+        "proofHash": { "anyOf": [{ "$ref": "#/$defs/hash" }, { "type": "null" }] },
+        "source": { "enum": ["AUTHENTICATED_SULTAN_INTERACTION_RECEIPT", "NONE"] }
+      }
+    },
+    "outcomeExpectationProof": { "anyOf": [{ "type": "null" }, { "$ref": "#/$defs/expectationProof" }] },
+    "purpose": { "$ref": "#/$defs/id" },
+    "receiptHash": { "$ref": "#/$defs/hash" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "ADMITTED_NO_EFFECT" } }, "required": ["status"] },
+      "then": { "properties": {
+        "admittedEffectClass": { "const": "A0" },
+        "effectAuthority": { "const": "NO_EFFECT" },
+        "phase": { "const": "SIMULATION" },
+        "purpose": { "const": "agent-case-post-inference" },
+        "requestedCapability": { "const": "analysis.read" },
+        "requestedEffectClass": { "const": "A0" },
+        "reasonCodes": { "maxItems": 0 },
+        "evidence": { "properties": { "sourceVerification": { "const": "API_CANONICAL_READBACKS_VERIFIED_CONTEXT_HASH_SULTAN_ASSERTED" } } },
+        "interactionReceipt": { "properties": { "status": { "const": "READY" }, "surface": { "const": "AGENT_CASE" } } }
+      } }
+    },
+    {
+      "if": { "properties": { "status": { "const": "DENIED" } }, "required": ["status"] },
+      "then": { "properties": {
+        "admittedEffectClass": { "const": "NONE" },
+        "effectAuthority": { "const": "NOT_GRANTED" },
+        "reasonCodes": { "minItems": 1 },
+        "evidence": { "properties": { "sourceVerification": { "const": "FAILED" } } }
+      } }
+    },
+    {
+      "if": { "properties": { "status": { "const": "SEPARATE_REVIEW_REQUIRED" } }, "required": ["status"] },
+      "then": { "properties": {
+        "admittedEffectClass": { "const": "NONE" },
+        "effectAuthority": { "const": "SEPARATE_REVIEW_REQUIRED" },
+        "evidence": { "properties": { "sourceVerification": { "const": "API_CANONICAL_READBACKS_VERIFIED_CONTEXT_HASH_SULTAN_ASSERTED" } } }
+      } }
+    },
+    {
+      "if": { "properties": { "outcomeExpectation": { "type": "null" } }, "required": ["outcomeExpectation"] },
+      "then": { "properties": {
+        "outcomeExpectationProof": { "type": "null" },
+        "outcomeExpectationBinding": { "properties": {
+          "expectationHash": { "type": "null" },
+          "proofHash": { "type": "null" },
+          "source": { "const": "NONE" }
+        } },
+        "interactionReceipt": { "properties": { "outcomeExpectationHash": { "type": "null" } } }
+      } },
+      "else": { "properties": {
+        "outcomeExpectationProof": { "$ref": "#/$defs/expectationProof" },
+        "outcomeExpectationBinding": { "properties": {
+          "expectationHash": { "$ref": "#/$defs/hash" },
+          "proofHash": { "$ref": "#/$defs/hash" },
+          "source": { "const": "AUTHENTICATED_SULTAN_INTERACTION_RECEIPT" }
+        } },
+        "interactionReceipt": { "properties": { "outcomeExpectationHash": { "$ref": "#/$defs/hash" } } }
+      } }
+    }
+  ],
+  "$defs": {
+    "id": { "type": "string", "minLength": 2, "maxLength": 512, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:@/-]+$" },
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "gitSha": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+    "agent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["agentId", "agentVersion"],
+      "properties": { "agentId": { "type": "string", "pattern": "^agent\\.[a-z0-9][a-z0-9.-]+$" }, "agentVersion": { "type": "string", "pattern": "^v[1-9][0-9]*$" } }
+    },
+    "consumedEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claimId", "evidenceHash", "evidenceRef", "readbackHash", "readbackReceiptId"],
+      "properties": {
+        "claimId": { "type": "string", "pattern": "^[a-z][a-zA-Z0-9._-]{2,127}$" },
+        "evidenceHash": { "$ref": "#/$defs/hash" },
+        "evidenceRef": { "type": "string", "pattern": "^s5read_[a-f0-9]{32}/[a-z][a-zA-Z0-9._-]{2,127}$" },
+        "readbackHash": { "$ref": "#/$defs/hash" },
+        "readbackReceiptId": { "type": "string", "pattern": "^s5read_[a-f0-9]{32}$" }
+      }
+    },
+    "interactionReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "tenantId", "interactionId", "surface", "actorId", "contractVersion", "identityContractVersion", "identityContractHash", "deploymentSha", "participantSetHash", "sourceInteractionRefHash", "sourceRunIdHash", "queryHash", "responseHash", "outcomeExpectationHash", "contextHash", "groundingPacketHash", "groundingAssemblerWorkloadId", "groundingAssemblerDeploymentSha", "evidenceRefsUsed", "evidenceHashesUsed", "shadowReviewRefsUsed", "model", "modelVersion", "status", "occurredAt", "receiptHash", "controls"],
+      "properties": {
+        "schemaVersion": { "const": "sultan.developmental-interaction-receipt.v2" },
+        "tenantId": { "const": "luzione" },
+        "interactionId": { "type": "string", "pattern": "^interaction_[a-f0-9]{32}$" },
+        "surface": { "enum": ["SULTAN_CHAT", "AGENT_CASE"] },
+        "actorId": { "type": "string", "pattern": "^(user_[a-f0-9]{64}|operator:[A-Za-z0-9._:@/-]{1,240})$" },
+        "contractVersion": { "const": "sultan.stage5-developmental-participation.v2" },
+        "identityContractVersion": { "$ref": "#/$defs/id" },
+        "identityContractHash": { "$ref": "#/$defs/hash" },
+        "deploymentSha": { "$ref": "#/$defs/gitSha" },
+        "participantSetHash": { "$ref": "#/$defs/hash" },
+        "sourceInteractionRefHash": { "$ref": "#/$defs/hash" },
+        "sourceRunIdHash": { "anyOf": [{ "$ref": "#/$defs/hash" }, { "type": "null" }] },
+        "queryHash": { "$ref": "#/$defs/hash" },
+        "responseHash": { "$ref": "#/$defs/hash" },
+        "outcomeExpectationHash": { "anyOf": [{ "$ref": "#/$defs/hash" }, { "type": "null" }] },
+        "contextHash": { "$ref": "#/$defs/hash" },
+        "groundingPacketHash": { "anyOf": [{ "$ref": "#/$defs/hash" }, { "type": "null" }] },
+        "groundingAssemblerWorkloadId": { "enum": ["service:luzione-ui", null] },
+        "groundingAssemblerDeploymentSha": { "anyOf": [{ "$ref": "#/$defs/gitSha" }, { "type": "null" }] },
+        "evidenceRefsUsed": { "type": "array", "maxItems": 11, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+        "evidenceHashesUsed": { "type": "array", "maxItems": 11, "items": { "$ref": "#/$defs/hash" } },
+        "shadowReviewRefsUsed": { "type": "array", "maxItems": 4, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+        "model": { "type": ["string", "null"], "maxLength": 256 },
+        "modelVersion": { "type": ["string", "null"], "maxLength": 256 },
+        "status": { "enum": ["READY", "BLOCKED"] },
+        "occurredAt": { "type": "string", "format": "date-time" },
+        "receiptHash": { "$ref": "#/$defs/hash" },
+        "controls": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["noRawPromptPersisted", "noRawResponsePersisted", "learningState", "reviewRequiredForPromotion", "canonicalMemoryChanged", "canonicalBeliefChanged", "policyChanged", "authorityGranted", "businessStateMutated", "externalEffectAuthorized"],
+          "properties": {
+            "noRawPromptPersisted": { "const": true },
+            "noRawResponsePersisted": { "const": true },
+            "learningState": { "const": "OBSERVATION_ONLY" },
+            "reviewRequiredForPromotion": { "const": true },
+            "canonicalMemoryChanged": { "const": false },
+            "canonicalBeliefChanged": { "const": false },
+            "policyChanged": { "const": false },
+            "authorityGranted": { "const": false },
+            "businessStateMutated": { "const": false },
+            "externalEffectAuthorized": { "const": false }
+          }
+        }
+      }
+    },
+    "expectationProof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["bindingHash", "contractVersion", "expectationHash", "interactionId", "interactionReceiptHash"],
+      "properties": {
+        "bindingHash": { "$ref": "#/$defs/hash" },
+        "contractVersion": { "const": "sultan.outcome-expectation-binding/v1" },
+        "expectationHash": { "$ref": "#/$defs/hash" },
+        "interactionId": { "type": "string", "pattern": "^interaction_[a-f0-9]{32}$" },
+        "interactionReceiptHash": { "$ref": "#/$defs/hash" }
+      }
+    },
+    "expectation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claimId", "expectedValue", "operator", "subjectId", "subjectType"],
+      "properties": {
+        "claimId": { "type": "string", "pattern": "^[a-z][a-zA-Z0-9._-]+$" },
+        "expectedValue": {
+          "oneOf": [
+            { "type": "boolean" },
+            { "type": "integer", "minimum": -9007199254740991, "maximum": 9007199254740991 },
+            { "type": "string", "minLength": 1, "maxLength": 512 }
+          ]
+        },
+        "operator": { "enum": ["EQ", "GTE", "LTE", "NE"] },
+        "subjectId": { "$ref": "#/$defs/id" },
+        "subjectType": { "enum": ["ORDER", "SHIPMENT", "ACCOUNT", "OPPORTUNITY", "COMMITMENT", "LOGISTICS", "ECONOMIC_CALCULATION", "FEP_ALLOCATION"] }
+      },
+      "allOf": [{
+        "if": { "properties": { "operator": { "enum": ["GTE", "LTE"] } }, "required": ["operator"] },
+        "then": {
+          "properties": {
+            "expectedValue": {
+              "oneOf": [
+                { "type": "integer", "minimum": -9007199254740991, "maximum": 9007199254740991 },
+                { "type": "string", "pattern": "^-?(0|[1-9][0-9]{0,14})(\\.[0-9]{1,6})?$" }
+              ]
+            }
+          }
+        }
+      }]
+    }
+  }
+}

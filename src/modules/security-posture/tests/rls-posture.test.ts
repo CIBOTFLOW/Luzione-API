@@ -165,16 +165,16 @@ test("A01 production drift signature is exact and cannot pass by aggregate suppr
   });
   const expectedDriftTables = [...presentTenantTables].sort();
   assert.deepEqual(a01ReadinessSignature(result), {
-    expectedTableCount: 40,
+    expectedTableCount: 48,
     failedProbeCount: 0,
     legacyServiceRoleTables: expectedDriftTables,
     missingRoles: ["luzione_api_runtime", "luzione_provider_worker"],
     missingTables: [missingTable],
     notForcedTables: expectedDriftTables,
-    observedTableCount: 39,
+    observedTableCount: 47,
     otherViolationCodes: [],
     status: "FAIL",
-    violationCount: 61,
+    violationCount: 77,
   });
 });
 

@@ -42,7 +42,10 @@ export function evaluateSultanAgentIntent(input: {
   tenantPolicy: TenantPolicySnapshot;
 }): SultanAgentPolicyDecision {
   const freshness = overallFreshness(input.intent);
-  const synthetic = input.intent.sourceContext.some((context) => context.sourceOwner === "SYNTHETIC_LUZIONE");
+  const syntheticCount = input.intent.sourceContext.filter((context) =>
+    context.sourceOwner === "SYNTHETIC_LUZIONE").length;
+  const synthetic = syntheticCount === input.intent.sourceContext.length;
+  const mixedSyntheticAndCanonical = syntheticCount > 0 && !synthetic;
   const canonicalContextUnavailable = !synthetic
     && input.contextVerification.kind !== "CANONICAL_READBACK";
   const credentialBinding = evaluateSultanAgentCredentialBinding({ actor: input.actor, intent: input.intent });
@@ -53,6 +56,7 @@ export function evaluateSultanAgentIntent(input: {
   reasons.push(...credentialBinding.reasonCodes);
   if (!input.actor.capabilities.includes(input.intent.capability)) reasons.push("AGENT_CAPABILITY_NOT_BOUND_TO_CREDENTIAL");
   if (synthetic && input.intent.runMode !== "SIMULATION") reasons.push("SYNTHETIC_CONTEXT_REQUIRES_SIMULATION");
+  if (mixedSyntheticAndCanonical) reasons.push("MIXED_CONTEXT_CLASSES_DENIED");
   if (!synthetic && input.intent.sourceContext.some((context) => context.sourceOwner !== "CIBOTFLOW/Luzione-API")) {
     reasons.push("SOURCE_OWNER_MISMATCH");
   }
@@ -100,6 +104,7 @@ export function evaluateSultanAgentIntent(input: {
     "AGENT_DELEGATION_AUTHORITY_MISMATCH",
     "AGENT_DELEGATION_NOT_REGISTERED",
     "AUTHORITY_DOMAIN_MISMATCH",
+    "MIXED_CONTEXT_CLASSES_DENIED",
     "SOURCE_OWNER_MISMATCH",
     "SYNTHETIC_CONTEXT_REQUIRES_SIMULATION",
   ].includes(reason))) {

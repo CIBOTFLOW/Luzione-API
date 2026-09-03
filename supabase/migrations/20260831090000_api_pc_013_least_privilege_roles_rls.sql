@@ -10,8 +10,17 @@ begin
   end if;
 end $$;
 
-alter role luzione_api_runtime nologin nosuperuser nocreatedb nocreaterole noreplication nobypassrls;
-alter role luzione_provider_worker nologin nosuperuser nocreatedb nocreaterole noreplication nobypassrls;
+do $$
+declare unsafe_roles text[];
+begin
+  select array_agg(rolname order by rolname) into unsafe_roles
+    from pg_catalog.pg_roles
+   where rolname in ('luzione_api_runtime', 'luzione_provider_worker')
+     and (rolsuper or rolcreatedb or rolcreaterole or rolcanlogin or rolreplication or rolbypassrls);
+  if unsafe_roles is not null then
+    raise exception 'API-PC-013 refuses unsafe pre-existing role attributes: %', unsafe_roles;
+  end if;
+end $$;
 
 revoke all on schema public from luzione_api_runtime, luzione_provider_worker;
 grant usage on schema public to luzione_api_runtime, luzione_provider_worker;

@@ -3,9 +3,11 @@ import { apiResponse, createRequestIdentity, logRequestCompletion } from "@/lib/
 import { readActiveTenantPolicy } from "@/lib/tenant-policy/readService";
 import { OrderFulfillmentStore } from "@/modules/order-fulfillment/store";
 import { bindAuthenticatedRequestIdentity } from "@/modules/platform-contracts/requestIdentity";
-import { verifySultanAgentContext } from "@/modules/sultan-agent/contextVerifier";
+import { stage5CanonicalReadbackReceiptIds, verifySultanAgentContext } from "@/modules/sultan-agent/contextVerifier";
 import { evaluateSultanAgentIntent } from "@/modules/sultan-agent/evaluator";
 import { parseSultanAgentIntent, SultanAgentIntentError } from "@/modules/sultan-agent/parser";
+import { stage5Pins } from "@/modules/sultan-stage5/config";
+import { PostgresSultanStage5Store } from "@/modules/sultan-stage5/postgresStore";
 
 export const dynamic = "force-dynamic";
 
@@ -60,11 +62,23 @@ export async function POST(request: Request) {
       && context.sourceRef === `api:orders:${intent.caseRef.caseId}`
       ? intent.caseRef.caseId
       : null;
-    const [orderReadback, tenantPolicy] = await Promise.all([
+    const stage5ReceiptIds = stage5CanonicalReadbackReceiptIds(intent);
+    const exactStage5Pins = stage5ReceiptIds ? stage5Pins() : undefined;
+    const [orderReadback, stage5Readbacks, tenantPolicy] = await Promise.all([
       supportedOrderId ? new OrderFulfillmentStore().readOrder(actor, supportedOrderId) : Promise.resolve(null),
+      stage5ReceiptIds
+        ? new PostgresSultanStage5Store().readAdmissionEvidence(actor.tenantId, stage5ReceiptIds)
+        : Promise.resolve([]),
       readActiveTenantPolicy(actor.tenantId),
     ]);
-    const verified = verifySultanAgentContext({ intent, orderReadback });
+    const verified = verifySultanAgentContext({
+      canonicalReadbacks: stage5Readbacks,
+      intent,
+      now: new Date().toISOString(),
+      orderReadback,
+      stage5Pins: exactStage5Pins,
+      tenantId: actor.tenantId,
+    });
     const decision = evaluateSultanAgentIntent({
       actor,
       contextVerification: verified.verification,

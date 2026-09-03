@@ -1,0 +1,555 @@
+{
+  "schema_version": 1,
+  "handoff_id": "API_STAGE5_001_TO_SULTAN_OS_AND_LUZIONE_UI",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_candidate_sha": "6f61c9c1aeeab41c8332cbfa049a4fe965a50f0a",
+  "producer_ref": "codex/stage5-authority-outcomes-v2",
+  "sha_lineage": {
+    "implementation_sha": "6f61c9c1aeeab41c8332cbfa049a4fe965a50f0a",
+    "working_tree_base_sha": "bf61bc86c659992beb99a059a8702d6711b722eb",
+    "implementation_scope": "Runtime, contracts, migrations, and test-sensitivity source. Consumers must pin this SHA, not an evidence-only head.",
+    "evidence_snapshot_sha": null,
+    "evidence_snapshot_state": "PENDING_FINAL_IMPLEMENTATION_EVIDENCE_COMMIT",
+    "transport_head_rule": "The pull-request head may advance for evidence-only metadata; it is not a replacement implementation pin."
+  },
+  "state": "EXACT_IMPLEMENTATION_AND_MANAGED_RECOVERY_PASS_PUBLICATION_PENDING_PRODUCTION_BLOCKED",
+  "effect_authority": "NO_EFFECT",
+  "consumed_sultan_contract": {
+    "repository": "CIBOTFLOW/Sultan-OS",
+    "pull_request": 322,
+    "safe_implementation_sha": "5b43e539eb27e83a8f14dffbcf9a401d740b6cd9",
+    "machine_contract_commit": "5b43e539eb27e83a8f14dffbcf9a401d740b6cd9",
+    "pin_state": "PINNED_TO_MERGED_GREEN_MAIN",
+    "deployment_sha": null,
+    "deployment_state": "NOT_PROVEN",
+    "path": "architecture/contracts/SULTAN_STAGE5_PARTICIPATION_CONTRACT.json",
+    "contract_version": "sultan.stage5-developmental-participation.v2",
+    "grounding_schema": "luzione.sultan-grounding-packet.v2",
+    "participation_schema": "sultan.developmental-participation-context.v2",
+    "interaction_receipt_schema": "sultan.developmental-interaction-receipt.v2",
+    "feedback_receipt_schema": "sultan.developmental-feedback-receipt.v2",
+    "chat_response_receipt_path": "developmental.interactionReceipt"
+  },
+  "published_contracts": [
+    {
+      "version": "luzione-sultan-api-admission/v1",
+      "schema": "contracts/sultan/api-admission-v1.schema.json",
+      "endpoint": "POST /api/v1/sultan/admissions",
+      "caller": "service:sultan-os",
+      "capability": "sultan.stage5.admission.request"
+    },
+    {
+      "version": "luzione-canonical-business-readback/v1",
+      "schema": "contracts/sultan/canonical-business-readback-v1.schema.json",
+      "endpoint": "POST /api/v1/sultan/canonical-readbacks",
+      "callers": [
+        "service:luzione-ui",
+        "service:sultan-os"
+      ],
+      "capability": "sultan.canonical.readback.read"
+    },
+    {
+      "version": "luzione-sultan-outcome-observation/v1",
+      "schema": "contracts/sultan/outcome-observation-v1.schema.json",
+      "endpoint": "POST /api/v1/sultan/outcome-observations",
+      "callers": [
+        "service:luzione-ui",
+        "service:sultan-os"
+      ],
+      "capability": "sultan.outcome.observe"
+    }
+  ],
+  "canonical_subject_types": [
+    "ORDER",
+    "SHIPMENT",
+    "ACCOUNT",
+    "OPPORTUNITY",
+    "COMMITMENT",
+    "LOGISTICS",
+    "ECONOMIC_CALCULATION",
+    "FEP_ALLOCATION"
+  ],
+  "canonical_claim_kinds": [
+    "FACT",
+    "CALCULATION"
+  ],
+  "auth": {
+    "mechanism": "Vercel OIDC RS256",
+    "tenant": "luzione",
+    "issuer_allowlist": [
+      "https://oidc.vercel.com",
+      "https://oidc.vercel.com/connor-spiegelmans-projects"
+    ],
+    "audience": "https://vercel.com/connor-spiegelmans-projects",
+    "owner": "connor-spiegelmans-projects",
+    "owner_id": "team_ZB7I1yzyt3ywCXQtPCYn4kL9",
+    "workloads": [
+      {
+        "actor_id": "service:luzione-ui",
+        "project": "luzione_ui",
+        "project_id": "prj_WGbFwkzAYBij46rrVUqNPGEeWzCP",
+        "environments": [
+          "preview",
+          "production"
+        ]
+      },
+      {
+        "actor_id": "service:sultan-os",
+        "project": "sultan-os",
+        "project_id": "prj_5nTisld8OnGiBhIxegGbUpWrZNp0",
+        "environments": [
+          "preview",
+          "production"
+        ]
+      }
+    ],
+    "client_selected_actor_tenant_capability_approval_or_authority": false
+  },
+  "http_consumption": {
+    "origin": {
+      "consumer_environment_variable": "LUZIONE_API_BASE_URL",
+      "declared_production_origin": "https://api.luzione.com",
+      "production_origin_observed": false,
+      "requirements": [
+        "absolute HTTPS origin only",
+        "no credentials, query, fragment, or non-root path in the configured origin",
+        "fail closed when the origin is absent or not explicitly admitted for the consumer environment"
+      ]
+    },
+    "headers": {
+      "required": [
+        "authorization: Bearer <Vercel OIDC RS256 JWT>",
+        "content-type: application/json"
+      ],
+      "optional_identity_assertions": [
+        "x-luzione-tenant: luzione",
+        "x-luzione-actor: service:luzione-ui or service:sultan-os",
+        "x-luzione-actor-type: service"
+      ],
+      "assertion_rule": "Optional identity headers may match the verified credential but can never select or broaden identity, tenant, capability, approval, or authority."
+    },
+    "canonical_readback": {
+      "method": "POST",
+      "path": "/api/v1/sultan/canonical-readbacks",
+      "request_envelope": {
+        "readback": {
+          "consumerDeploymentSha": "exact 40-character caller deployment SHA",
+          "contractVersion": "luzione-canonical-business-readback/v1",
+          "idempotencyKey": "bounded stable unique key",
+          "requestedAt": "ISO-8601 timestamp",
+          "subjectId": "canonical subject identifier",
+          "subjectType": "one canonical_subject_types value"
+        }
+      },
+      "success_http_status": 200,
+      "success_envelope_fields": [
+        "ok=true",
+        "receipt",
+        "factsOrCalculationsOnly=true",
+        "grantsAuthority=false",
+        "requestId",
+        "correlationId",
+        "requestIdentityContractVersion",
+        "traceId",
+        "durationMs"
+      ],
+      "receipt_statuses": [
+        "AVAILABLE",
+        "NOT_FOUND",
+        "SCHEMA_MISMATCH",
+        "SOURCE_UNAVAILABLE"
+      ],
+      "grounding_eligibility": "Only AVAILABLE, unexpired, exact-tenant and exact-caller-SHA receipts may enter grounding.",
+      "receipt_schema": "contracts/sultan/canonical-business-readback-v1.schema.json"
+    },
+    "admission": {
+      "method": "POST",
+      "path": "/api/v1/sultan/admissions",
+      "caller": "service:sultan-os only",
+      "timing": "POST_INFERENCE",
+      "request_envelope": "{\"admission\": Stage5AdmissionAssertion}",
+      "current_policy_profile": {
+        "purpose": "agent-case-post-inference",
+        "phase": "SIMULATION",
+        "requestedCapability": "analysis.read",
+        "requestedEffectClass": "A0",
+        "surface": "AGENT_CASE",
+        "sourceRunIdHash": "sha256(runId)",
+        "possible_statuses": [
+          "ADMITTED_NO_EFFECT",
+          "DENIED"
+        ],
+        "reserved_but_not_emitted_status": "SEPARATE_REVIEW_REQUIRED"
+      },
+      "receipt_field_set": [
+        "admittedEffectClass",
+        "admissionTiming",
+        "admissionReceiptId",
+        "apiDeploymentSha",
+        "authorizesInference",
+        "caseRef",
+        "contractVersion",
+        "credentialActor",
+        "decidedAt",
+        "effectAuthority",
+        "evidence",
+        "externalEffectsAuthorized",
+        "idempotentReplay",
+        "idempotencyKey",
+        "interactionId",
+        "interactionReceipt",
+        "interactionReceiptHash",
+        "logicalAgent",
+        "operationId",
+        "outcomeExpectation",
+        "outcomeExpectationBinding",
+        "outcomeExpectationProof",
+        "participation",
+        "phase",
+        "policyVersion",
+        "purpose",
+        "reasonCodes",
+        "receiptHash",
+        "requestedAt",
+        "requestedCapability",
+        "requestedEffectClass",
+        "runId",
+        "status"
+      ],
+      "outcome_expectation_binding": {
+        "field_set": [
+          "expectationHash",
+          "interactionReceiptBound",
+          "proofHash",
+          "source"
+        ],
+        "verified_value": {
+          "interactionReceiptBound": true,
+          "source": "AUTHENTICATED_SULTAN_INTERACTION_RECEIPT"
+        },
+        "no_expectation_value": {
+          "expectationHash": null,
+          "interactionReceiptBound": true,
+          "proofHash": null,
+          "source": "NONE"
+        },
+        "proof_rule": "API independently rehashes the full Sultan interaction receipt, checks its derived interactionId, verifies outcomeExpectationHash and then verifies the acyclic outcomeExpectationProof.bindingHash. The proof remains outside Sultan interaction-receipt hash material."
+      },
+      "consumed_evidence_rule": "receipt.evidence.consumedEvidence is hash-covered and contains exact {claimId,evidenceHash,evidenceRef,readbackHash,readbackReceiptId} entries. evidenceRef is {readbackReceiptId}/{claimId}; each index-paired interactionReceipt evidence hash must equal the API-computed canonical claim binding, every asserted readback must contribute at least one consumed claim, and extra, duplicate, cross-receipt or cross-subject mappings fail closed.",
+      "source_verification_values": [
+        "API_CANONICAL_READBACKS_VERIFIED_CONTEXT_HASH_SULTAN_ASSERTED",
+        "FAILED"
+      ],
+      "receipt_schema": "contracts/sultan/api-admission-v1.schema.json",
+      "success_http_statuses": {
+        "ADMITTED_NO_EFFECT": 200,
+        "SEPARATE_REVIEW_REQUIRED": 202,
+        "DENIED": 403
+      },
+      "inference_authority": false,
+      "causal_rule": "interactionId and interactionReceiptHash must be the real final immutable Sultan interaction receipt. Placeholder or predicted hashes are invalid; this endpoint cannot run before inference.",
+      "execution_phase_rule": "EXECUTION is always denied at this admission boundary; a separate exact reviewed command path is required."
+    },
+    "outcome_observation": {
+      "method": "POST",
+      "path": "/api/v1/sultan/outcome-observations",
+      "direct_callers": [
+        "service:luzione-ui",
+        "service:sultan-os"
+      ],
+      "ui_direct_call_allowed": true,
+      "request_envelope": {
+        "observation": {
+          "admissionReceiptId": "exact prior admission receipt ID",
+          "contractVersion": "luzione-sultan-outcome-observation/v1",
+          "idempotencyKey": "bounded stable unique key",
+          "mode": "OBSERVE or SUPERSEDE",
+          "readbackReceiptId": "exact later canonical readback receipt ID",
+          "requestedAt": "ISO-8601 timestamp",
+          "supersedesObservationId": "null for OBSERVE; exact prior observation ID for SUPERSEDE"
+        }
+      },
+      "success_http_status": 200,
+      "receipt_schema": "contracts/sultan/outcome-observation-v1.schema.json",
+      "post_success_envelope_fields": [
+        "ok=true",
+        "receipt",
+        "learningPromotionAuthorized=false",
+        "externalEffectsAuthorized=false",
+        "requestId",
+        "correlationId",
+        "requestIdentityContractVersion",
+        "traceId",
+        "durationMs"
+      ],
+      "receipt_field_set": [
+        "admissionLineage",
+        "admissionReceiptId",
+        "apiDeploymentSha",
+        "classification",
+        "contractVersion",
+        "evidence",
+        "expectationBinding",
+        "idempotentReplay",
+        "idempotencyKey",
+        "observationId",
+        "observationRequest",
+        "observedAt",
+        "observer",
+        "reasonCode",
+        "receiptHash",
+        "supersedesObservationId"
+      ],
+      "request_time_rule": "observationRequest.requestedAt must be greater than or equal to receipt.observedAt, which equals the exact later canonical readback observedAt; receipt.observedAt must be greater than or equal to admission.decidedAt.",
+      "reason_codes": [
+        "CANONICAL_CLAIM_CONTRADICTED",
+        "CANONICAL_CLAIM_MATCHED",
+        "CANONICAL_READBACK_UNAVAILABLE",
+        "CLAIM_TYPES_NOT_COMPARABLE",
+        "EXPECTED_CLAIM_NOT_OBSERVED",
+        "EXPECTED_SUBJECT_NOT_OBSERVED",
+        "NEWER_CANONICAL_OBSERVATION_SUPERSEDES_PRIOR",
+        "NO_STRUCTURED_EXPECTATION"
+      ],
+      "receipt_lineage": [
+        "apiDeploymentSha",
+        "admissionLineage.admissionReceiptHash",
+        "admissionLineage.operationId",
+        "admissionLineage.runId",
+        "admissionLineage.interactionId",
+        "admissionLineage.interactionReceiptHash",
+        "admissionLineage.contextHash",
+        "admissionLineage.groundingPacketHash",
+        "admissionLineage.sultanDeploymentSha"
+      ],
+      "authenticated_verification": {
+        "method": "GET",
+        "path": "/api/v1/sultan/outcome-observations?observationId={s5out_ID}",
+        "success_http_status": 200,
+        "required_true_fields": [
+          "receiptOriginVerified",
+          "receiptHashVerified",
+          "tenantBindingVerified"
+        ],
+        "success_envelope_fields": [
+          "ok=true",
+          "receipt",
+          "receiptOriginVerified=true",
+          "receiptHashVerified=true",
+          "tenantBindingVerified=true",
+          "externalEffectsAuthorized=false",
+          "learningPromotionAuthorized=false",
+          "requestId",
+          "correlationId",
+          "requestIdentityContractVersion",
+          "traceId",
+          "durationMs"
+        ],
+        "validation": "API exact-reads scalar columns plus tenant-bound immutable outcome, admission and canonical readback receipt JSON, independently verifies every parent hash and child lineage, and recomputes classification, claim, observed value, reason code and source refs from the hash-covered observationRequest. Hash equality without this authenticated API readback does not prove receipt origin."
+      },
+      "expectation_provenance": {
+        "source": "AUTHENTICATED_SULTAN_INTERACTION_RECEIPT",
+        "api_generated": false,
+        "browser_selected": false,
+        "server_checks": "Admission accepts the bounded structure only from the exact Sultan OS OIDC workload, independently validates the full interaction receipt and acyclic proof, requires the expectation claim and subject to occur in the same exactly consumed canonical receipt, and binds the verified expectation into admission and outcome hashes.",
+        "current_limit": "Source validation is locally tested and source-constrained, but no published exact API SHA, deployed authenticated journey, or final additive database rehearsal exists yet."
+      },
+      "learning_authority": false
+    },
+    "hash_algorithm": {
+      "name": "SHA-256",
+      "encoding": "lowercase hexadecimal",
+      "input": "UTF-8 JSON after recursively sorting object keys; array order is preserved",
+      "canonical_readback_excludes": [
+        "idempotentReplay",
+        "readbackHash"
+      ],
+      "admission_excludes": [
+        "idempotentReplay",
+        "receiptHash"
+      ],
+      "outcome_observation_excludes": [
+        "idempotentReplay",
+        "receiptHash"
+      ],
+      "implementation": "src/modules/platform-guarantees/eventContract.ts#canonicalJson and src/modules/sultan-stage5/contracts.ts"
+    }
+  },
+  "phase_boundaries": {
+    "ui_grounding_to_pre_inference_context_adapter": {
+      "ui_claim_evidence_relevant_fields": {
+        "evidenceRef": "s5read_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/claim-order-state",
+        "contentHash": "claim-specific SHA-256; not used as receipt integrity",
+        "sourceOwner": "CIBOTFLOW/Luzione-API",
+        "sourceVersion": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "provenanceRef": "s5read_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observedAt": "2026-09-03T00:00:00.000Z",
+        "freshUntil": "2026-09-03T00:05:00.000Z"
+      },
+      "sultan_receipt_level_context_ref": {
+        "contextContractVersion": "luzione-sultan-agent-context/v0.1",
+        "freshness": "FRESH",
+        "integrityHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "observedAt": "2026-09-03T00:00:00.000Z",
+        "sourceOwner": "CIBOTFLOW/Luzione-API",
+        "sourceRef": "api:canonical-readback/s5read_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "sourceVersion": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "aggregation_rule": "Sultan groups all canonical claim items by provenanceRef and emits exactly one context ref per receipt. Every grouped item must have the same sourceOwner, sourceVersion/readbackHash, observedAt and freshUntil; any disagreement fails closed.",
+      "field_mapping": {
+        "sourceRef": "api:canonical-readback/{GroundingEvidence.provenanceRef}",
+        "integrityHash": "GroundingEvidence.sourceVersion (the canonical receipt readbackHash)",
+        "sourceVersion": "GroundingEvidence.sourceVersion (the same canonical receipt readbackHash)",
+        "observedAt": "GroundingEvidence.observedAt"
+      },
+      "business_source_version": "The business-row version remains receipt.provenance.sourceVersion inside the immutable API receipt and is covered by readbackHash. It is not repeated through the v0.1 context field. API reloads the receipt and requires that business source version to be non-null.",
+      "content_hash_rule": "Per-claim GroundingEvidence.contentHash proves the claim representation to Sultan but is not the API receipt integrity hash and must not be mapped to integrityHash.",
+      "freshness_rule": "The caller's FRESH label grants nothing. API reloads observedAt and freshUntil and enforces the configured maximumEvidenceAgeMs."
+    },
+    "pre_inference_identity_policy": {
+      "endpoint": "POST /api/v1/sultan/agent-intents/evaluate",
+      "intent_contract": "luzione-sultan-agent-intent/v0.1",
+      "context_contract": "luzione-sultan-agent-context/v0.1",
+      "policy_contract": "luzione-sultan-agent-policy/v0.1",
+      "stage5_canonical_source_ref": "api:canonical-readback/{readbackReceiptId}",
+      "required_stage5_evidence": "Every sourceContext item must be an exact API canonical-readback receipt produced for service:luzione-ui at the exact pinned UI deployment SHA. Receipt ID, readback hash in both integrityHash and sourceVersion, tenant, non-null business provenance source version, observedAt, AVAILABLE status, freshUntil, and configured maximum age are server-verified before ADMIT_READ_ONLY.",
+      "knowledge_rule": "Knowledge, memory, public research, and model text remain outside API authority sourceContext. They must not be relabelled SYNTHETIC_LUZIONE; mixed synthetic/canonical sourceContext is denied.",
+      "externalEffectsAuthorized": false
+    },
+    "post_inference_receipt_and_action_gate": {
+      "endpoint": "POST /api/v1/sultan/admissions",
+      "requires_final_interaction_receipt": true,
+      "admissionTiming": "POST_INFERENCE",
+      "authorizesInference": false,
+      "externalEffectsAuthorized": false
+    },
+    "known_gap": "The two receipts are causally distinct and are not yet linked by a dedicated pre-inference policy receipt identifier; do not claim a single end-to-end deployed admission receipt until consumer integration and deployment exercise this boundary."
+  },
+  "required_runtime_pins": {
+    "VERCEL_GIT_COMMIT_SHA": "exact deployed Luzione API SHA; server-derived",
+    "SULTAN_STAGE5_PARTICIPATION_CONTRACT_SHA": "5b43e539eb27e83a8f14dffbcf9a401d740b6cd9 (exact merged green Sultan OS main contract SHA)",
+    "SULTAN_STAGE5_DEPLOYMENT_SHA": "exact deployed Sultan OS SHA; no deployed value proven",
+    "LUZIONE_UI_DEPLOYMENT_SHA": "exact deployed Luzione UI SHA; no deployed value proven",
+    "SULTAN_STAGE5_MAX_EVIDENCE_AGE_MS": "300000 default; bounded 1000 through 3600000"
+  },
+  "registered_direct_api_consumers": [
+    "agent.sultan.supervisor@v1",
+    "agent.luzione.revenue-steward@v1",
+    "agent.luzione.fulfillment-steward@v1",
+    "agent.luzione.partner-network-steward@v1",
+    "agent.luzione.catalog-steward@v1",
+    "agent.luzione.account-relationship-steward@v1",
+    "agent.luzione.economic-integrity-steward@v1",
+    "agent.fep.case-steward@v1"
+  ],
+  "explicit_non_consuming_controls": [
+    {
+      "agent": "agent.sultan.chat@v1",
+      "reason": "Chat may consume canonical readbacks but has no durable agent-case run or API admission/effect pathway; this post-inference endpoint rejects it."
+    },
+    {
+      "agent": "agent.control.independent-critic@v1",
+      "reason": "Required as the exact critic participant; cannot self-admit as primary."
+    },
+    {
+      "agent": "agent.control.readback-verifier@v1",
+      "reason": "Consumes immutable receipts inside Sultan OS; no direct API-admitted inference."
+    },
+    {
+      "agent": "agent.control.process-engineer@v1",
+      "reason": "Consumes reviewed outcomes inside Sultan OS; no direct API reasoning or effect capability."
+    }
+  ],
+  "migration_order": [
+    "20260901123000_sultan_agent_policy_envelopes",
+    "20260901130000_sultan_agent_internal_actions",
+    "20260902010000_sultan_stage5_authority_outcomes",
+    "20260902010100_sultan_stage5_post_inference_receipt_constraints"
+  ],
+  "managed_validation": {
+    "project_id": "pkplkkmivhzdjsjvlcdt",
+    "evidence": "engineering/execution/readiness/API_STAGE5_MANAGED_REHEARSAL_20260902.json",
+    "result": "PASS_ALL_FOUR_STAGE5_MIGRATIONS_ROLLBACK_FORWARD_RECOVERY_RECEIPT_VERIFIED_SYNTHETIC_NEGATIVE_PATHS_8_OF_8_RLS_FORCED_ZERO_UNINDEXED_FK",
+    "production": false
+  },
+  "test_identities": [
+    {
+      "class": "SIGNED_TEST_OIDC_FIXTURE",
+      "actor_id": "service:sultan-os",
+      "tenant": "luzione",
+      "project_id": "prj_5nTisld8OnGiBhIxegGbUpWrZNp0",
+      "contains_credential": false
+    },
+    {
+      "class": "SIGNED_TEST_OIDC_FIXTURE",
+      "actor_id": "service:luzione-ui",
+      "tenant": "luzione",
+      "project_id": "prj_WGbFwkzAYBij46rrVUqNPGEeWzCP",
+      "contains_credential": false
+    }
+  ],
+  "verification": {
+    "recorded_at_utc": "2026-09-03T02:22:00.000Z",
+    "source_state": "IMPLEMENTATION_COMMIT_6f61c9c1aeeab41c8332cbfa049a4fe965a50f0a_ON_MERGED_A01_MAIN_PUBLICATION_PENDING",
+    "focused_tests": "PASS_24_OF_24_FINAL_FOCUSED_PLUS_PRIOR_46_OF_46",
+    "full_tests": "PASS_257_OF_257",
+    "strict_typecheck": "PASS",
+    "lint": "PASS_ZERO_WARNINGS",
+    "build": "PASS_NEXTJS_16_3_4_WEBPACK",
+    "security_tests": "PASS_26_OF_26",
+    "compliance": "PASS_7_CONTROL_DOCUMENTS",
+    "dependency_audit": "PASS_ZERO_VULNERABILITIES_487_TOTAL_DEPENDENCIES",
+    "git_diff_check": "PASS",
+    "repository_disposable_postgres": "BLOCKED_EXECUTOR_HAS_NO_DOCKER_PODMAN_PSQL_OR_POSTGRES_MANAGED_VALIDATION_PASS_USED_INSTEAD",
+    "negative_control_matrix": "engineering/execution/handoffs/API_STAGE5_001_NEGATIVE_CONTROL_MATRIX.json"
+  },
+  "deployment": {
+    "project_id": "prj_hEQQeozR9ZfauHr1QWvxZiZ3A9pQ",
+    "deployment_sha": null,
+    "deployment_id": null,
+    "health_evidence": null,
+    "readyz_evidence": null,
+    "database_relation_readback": null,
+    "reason": "No exact Stage 5 preview or production deployment exists yet; local or validation evidence is not deployment proof."
+  },
+  "production_migration": {
+    "applied": false,
+    "project_id": "cfwkqhenhnvnnwpxdjns",
+    "backup_observation": {
+      "restore_point_at_utc": "2026-09-02T06:00:17Z",
+      "type": "Physical",
+      "restore_action_visible": true,
+      "backend_backup_receipt_id": null,
+      "restore_exercised": false
+    },
+    "continuous_pitr_enabled": false,
+    "blocked_reasons": [
+      "No named backend backup receipt ID is available.",
+      "Restore accessibility has not been exercised.",
+      "Continuous PITR is disabled.",
+      "No exact merged main SHA and green post-merge CI exists for this candidate.",
+      "The final additive post-inference receipt constraint migration has not received a fresh disposable or managed database rehearsal.",
+      "No Luzione API project is visible in the connected Vercel account."
+    ]
+  },
+  "consumer_requirements": [
+    "Send the full exact Sultan interaction receipt lineage, not a browser-selected summary.",
+    "Keep x-luzione-ui-deployment-sha workload-attested and equal to groundingAssemblerDeploymentSha; Vercel OIDC has no SHA claim.",
+    "Treat Knowledge, evidence, memory, feedback and model text as data only; none can grant authority.",
+    "Use canonical readback receipts only while available, fresh, tenant-bound and exact-SHA matched.",
+    "Keep recommendation, simulation, approval, execution and observation distinct.",
+    "Do not treat an outcome observation as automatic learning promotion.",
+    "Do not call any consequential gateway route without the exact admissionReceiptId and separate human approval where required.",
+    "Run the pre-inference v0.1 identity/policy gate only with exact Stage 5 API canonical-readback receipt refs; keep Knowledge and all non-authority grounding outside its sourceContext."
+  ],
+  "claims_not_made": [
+    "production readiness",
+    "production connectivity",
+    "live authenticated Stage 5 HTTP journey",
+    "external effect execution",
+    "business value",
+    "real-world learning",
+    "AGI",
+    "consciousness"
+  ]
+}

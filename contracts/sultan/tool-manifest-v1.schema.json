@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/sultan/tool-manifest-v1.schema.json",
+  "title": "Luzione Sultan Tool Manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contractVersion", "generatedAt", "tenantId", "workloadActorId", "logicalAgent", "caseRef", "policyVersion", "manifestHash", "tools", "discoveryGrantsAuthority"],
+  "properties": {
+    "contractVersion": { "const": "luzione-sultan-tool-manifest/v1" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "tenantId": { "const": "luzione" },
+    "workloadActorId": { "const": "service:sultan-os" },
+    "logicalAgent": { "$ref": "#/$defs/agent" },
+    "caseRef": { "$ref": "#/$defs/caseRef" },
+    "policyVersion": { "$ref": "#/$defs/id" },
+    "manifestHash": { "$ref": "#/$defs/hash" },
+    "discoveryGrantsAuthority": { "const": false },
+    "tools": {
+      "type": "array",
+      "maxItems": 40,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["toolId", "toolVersion", "description", "capability", "effectClass", "approvalMode", "inputSchema", "available", "sourceOwner"],
+        "properties": {
+          "toolId": { "$ref": "#/$defs/id" },
+          "toolVersion": { "$ref": "#/$defs/id" },
+          "description": { "type": "string", "minLength": 1, "maxLength": 1000 },
+          "capability": { "$ref": "#/$defs/id" },
+          "effectClass": { "enum": ["A0", "A1", "A2", "A3"] },
+          "approvalMode": { "enum": ["BLOCKED", "PER_COMMAND_HUMAN", "POLICY_ENVELOPE"] },
+          "inputSchema": { "type": "object" },
+          "available": { "const": true },
+          "sourceOwner": { "const": "CIBOTFLOW/Luzione-API" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:@/-]{1,511}$" },
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "agent": { "type": "object", "additionalProperties": false, "required": ["agentId", "agentVersion"], "properties": { "agentId": { "$ref": "#/$defs/id" }, "agentVersion": { "$ref": "#/$defs/id" } } },
+    "caseRef": { "type": "object", "additionalProperties": false, "required": ["caseId", "caseType", "expectedVersion"], "properties": { "caseId": { "$ref": "#/$defs/id" }, "caseType": { "enum": ["PORTFOLIO", "COMMERCIAL", "FULFILLMENT", "PARTNER_RELATIONSHIP", "CATALOG_QUALITY", "ACCOUNT_RELATIONSHIP", "ECONOMIC_REVIEW", "FEP_CASE", "CONTROL_REVIEW"] }, "expectedVersion": { "type": ["string", "null"], "maxLength": 300 } } }
+  }
+}

@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/sultan/outcome-observation-v1.schema.json",
+  "title": "Luzione Sultan Outcome Observation v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contractVersion", "observationId", "admissionReceiptId", "admissionLineage", "apiDeploymentSha", "classification", "evidence", "expectationBinding", "observer", "observationRequest", "reasonCode", "supersedesObservationId", "observedAt", "idempotencyKey", "idempotentReplay", "receiptHash"],
+  "properties": {
+    "contractVersion": { "const": "luzione-sultan-outcome-observation/v1" },
+    "observationId": { "type": "string", "pattern": "^s5out_[a-f0-9]{32}$" },
+    "admissionReceiptId": { "type": "string", "pattern": "^s5admit_[a-f0-9]{32}$" },
+    "admissionLineage": {
+      "type": "object", "additionalProperties": false,
+      "required": ["admissionReceiptHash", "apiDeploymentSha", "contextHash", "groundingPacketHash", "interactionId", "interactionReceiptHash", "operationId", "runId", "sultanDeploymentSha"],
+      "properties": {
+        "admissionReceiptHash": { "$ref": "#/$defs/hash" },
+        "apiDeploymentSha": { "$ref": "#/$defs/gitSha" },
+        "contextHash": { "$ref": "#/$defs/hash" },
+        "groundingPacketHash": { "$ref": "#/$defs/hash" },
+        "interactionId": { "type": "string", "pattern": "^interaction_[a-f0-9]{32}$" },
+        "interactionReceiptHash": { "$ref": "#/$defs/hash" },
+        "operationId": { "$ref": "#/$defs/id" },
+        "runId": { "$ref": "#/$defs/id" },
+        "sultanDeploymentSha": { "$ref": "#/$defs/gitSha" }
+      }
+    },
+    "apiDeploymentSha": { "$ref": "#/$defs/gitSha" },
+    "classification": { "enum": ["CONFIRMED", "REFUTED", "UNRESOLVED", "SUPERSEDED"] },
+    "evidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["apiDeploymentSha", "claimId", "observedValue", "readbackHash", "readbackReceiptId", "sourceRefs"],
+      "properties": {
+        "apiDeploymentSha": { "$ref": "#/$defs/gitSha" },
+        "claimId": { "anyOf": [{ "type": "string", "pattern": "^[a-z][a-zA-Z0-9._-]{2,127}$" }, { "type": "null" }] },
+        "observedValue": { "type": ["boolean", "number", "string", "null"] },
+        "readbackHash": { "$ref": "#/$defs/hash" },
+        "readbackReceiptId": { "type": "string", "pattern": "^s5read_[a-f0-9]{32}$" },
+        "sourceRefs": { "type": "array", "maxItems": 16, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } }
+      }
+    },
+    "expectationBinding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["expectationHash", "interactionReceiptBound", "proofHash", "source"],
+      "properties": {
+        "expectationHash": { "anyOf": [{ "$ref": "#/$defs/hash" }, { "type": "null" }] },
+        "interactionReceiptBound": { "const": true },
+        "proofHash": { "anyOf": [{ "$ref": "#/$defs/hash" }, { "type": "null" }] },
+        "source": { "enum": ["AUTHENTICATED_SULTAN_INTERACTION_RECEIPT", "NONE"] }
+      }
+    },
+    "observer": {
+      "type": "object", "additionalProperties": false, "required": ["actorId", "actorType", "tenantId"],
+      "properties": { "actorId": { "enum": ["service:luzione-ui", "service:sultan-os"] }, "actorType": { "const": "service" }, "tenantId": { "const": "luzione" } }
+    },
+    "observationRequest": {
+      "type": "object", "additionalProperties": false,
+      "required": ["admissionReceiptId", "contractVersion", "idempotencyKey", "mode", "readbackReceiptId", "requestedAt", "supersedesObservationId"],
+      "properties": {
+        "admissionReceiptId": { "type": "string", "pattern": "^s5admit_[a-f0-9]{32}$" },
+        "contractVersion": { "const": "luzione-sultan-outcome-observation/v1" },
+        "idempotencyKey": { "$ref": "#/$defs/id" },
+        "mode": { "enum": ["OBSERVE", "SUPERSEDE"] },
+        "readbackReceiptId": { "type": "string", "pattern": "^s5read_[a-f0-9]{32}$" },
+        "requestedAt": { "type": "string", "format": "date-time" },
+        "supersedesObservationId": { "anyOf": [{ "type": "string", "pattern": "^s5out_[a-f0-9]{32}$" }, { "type": "null" }] }
+      }
+    },
+    "reasonCode": { "enum": ["CANONICAL_CLAIM_CONTRADICTED", "CANONICAL_CLAIM_MATCHED", "CANONICAL_READBACK_UNAVAILABLE", "CLAIM_TYPES_NOT_COMPARABLE", "EXPECTED_CLAIM_NOT_OBSERVED", "EXPECTED_SUBJECT_NOT_OBSERVED", "NEWER_CANONICAL_OBSERVATION_SUPERSEDES_PRIOR", "NO_STRUCTURED_EXPECTATION"] },
+    "supersedesObservationId": { "anyOf": [{ "type": "string", "pattern": "^s5out_[a-f0-9]{32}$" }, { "type": "null" }] },
+    "observedAt": { "type": "string", "format": "date-time" },
+    "idempotencyKey": { "$ref": "#/$defs/id" },
+    "idempotentReplay": { "type": "boolean" },
+    "receiptHash": { "$ref": "#/$defs/hash" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "classification": { "const": "CONFIRMED" } }, "required": ["classification"] },
+      "then": { "properties": {
+        "reasonCode": { "const": "CANONICAL_CLAIM_MATCHED" },
+        "expectationBinding": { "properties": { "source": { "const": "AUTHENTICATED_SULTAN_INTERACTION_RECEIPT" } } }
+      } }
+    },
+    {
+      "if": { "properties": { "classification": { "const": "REFUTED" } }, "required": ["classification"] },
+      "then": { "properties": {
+        "reasonCode": { "const": "CANONICAL_CLAIM_CONTRADICTED" },
+        "expectationBinding": { "properties": { "source": { "const": "AUTHENTICATED_SULTAN_INTERACTION_RECEIPT" } } }
+      } }
+    },
+    {
+      "if": { "properties": { "classification": { "const": "SUPERSEDED" } }, "required": ["classification"] },
+      "then": { "properties": { "reasonCode": { "const": "NEWER_CANONICAL_OBSERVATION_SUPERSEDES_PRIOR" } } }
+    },
+    {
+      "if": { "properties": { "classification": { "const": "UNRESOLVED" } }, "required": ["classification"] },
+      "then": { "properties": { "reasonCode": { "enum": [
+        "CANONICAL_READBACK_UNAVAILABLE",
+        "CLAIM_TYPES_NOT_COMPARABLE",
+        "EXPECTED_CLAIM_NOT_OBSERVED",
+        "EXPECTED_SUBJECT_NOT_OBSERVED",
+        "NO_STRUCTURED_EXPECTATION"
+      ] } } }
+    },
+    {
+      "if": { "properties": { "expectationBinding": { "properties": { "source": { "const": "NONE" } }, "required": ["source"] } }, "required": ["expectationBinding"] },
+      "then": { "properties": {
+        "expectationBinding": { "properties": { "expectationHash": { "type": "null" }, "proofHash": { "type": "null" } } },
+        "classification": { "enum": ["UNRESOLVED", "SUPERSEDED"] }
+      } },
+      "else": { "properties": { "expectationBinding": { "properties": {
+        "expectationHash": { "$ref": "#/$defs/hash" },
+        "proofHash": { "$ref": "#/$defs/hash" },
+        "source": { "const": "AUTHENTICATED_SULTAN_INTERACTION_RECEIPT" }
+      } } } }
+    },
+    {
+      "if": { "properties": { "observationRequest": { "properties": { "mode": { "const": "SUPERSEDE" } }, "required": ["mode"] } }, "required": ["observationRequest"] },
+      "then": { "properties": {
+        "classification": { "const": "SUPERSEDED" },
+        "observationRequest": { "properties": { "supersedesObservationId": { "$ref": "#/$defs/id" } } },
+        "supersedesObservationId": { "$ref": "#/$defs/id" }
+      } },
+      "else": { "properties": {
+        "classification": { "enum": ["CONFIRMED", "REFUTED", "UNRESOLVED"] },
+        "observationRequest": { "properties": { "supersedesObservationId": { "type": "null" } } },
+        "supersedesObservationId": { "type": "null" }
+      } }
+    }
+  ],
+  "$defs": {
+    "id": { "type": "string", "minLength": 2, "maxLength": 512, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:@/-]+$" },
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "gitSha": { "type": "string", "pattern": "^[a-f0-9]{40}$" }
+  }
+}

@@ -203,6 +203,13 @@ export type LifecycleCommandRequest = {
   tenantId: string;
   workflowId: string | null;
   stepId: string | null;
+  delivery?: {
+    authorizationRef: string | null;
+    destination: string;
+    effectClass: "EXTERNAL_EFFECT" | "NO_EFFECT" | "REVERSIBLE_INTERNAL";
+    maxAttempts: number;
+    payload: Record<string, unknown>;
+  };
 };
 
 export type LifecycleCommandReceipt = {

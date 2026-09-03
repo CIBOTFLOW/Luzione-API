@@ -4,6 +4,7 @@ import { PostgresWorkflowDeliveryStore } from "../src/lib/platform-guarantees/po
 import { ProviderAdapterRegistry } from "../src/modules/provider-runtime/registry";
 import { ProviderWorkerRuntime } from "../src/modules/provider-runtime/runtime";
 import { SandboxEchoProviderAdapter } from "../src/modules/provider-runtime/sandboxEchoAdapter";
+import { GmailRfqCanaryAdapter } from "../src/modules/sultan-agent-gateway/gmailRfqCanaryAdapter";
 
 async function main() {
   const tenantId = process.env.LUZIONE_PROVIDER_WORKER_TENANT_ID?.trim();
@@ -21,7 +22,7 @@ async function main() {
 
   const runtime = new ProviderWorkerRuntime(
     new PostgresWorkflowDeliveryStore(pool),
-    new ProviderAdapterRegistry([new SandboxEchoProviderAdapter()]),
+    new ProviderAdapterRegistry([new SandboxEchoProviderAdapter(), new GmailRfqCanaryAdapter()]),
   );
   let stopping = false;
   process.on("SIGINT", () => { stopping = true; });

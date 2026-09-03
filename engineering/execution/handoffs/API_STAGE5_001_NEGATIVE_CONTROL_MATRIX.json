@@ -1,0 +1,217 @@
+{
+  "schema_version": 1,
+  "matrix_id": "API_STAGE5_001_NEGATIVE_CONTROL_MATRIX",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "source_candidate_sha": "6f61c9c1aeeab41c8332cbfa049a4fe965a50f0a",
+  "sha_lineage": {
+    "implementation_sha": "6f61c9c1aeeab41c8332cbfa049a4fe965a50f0a",
+    "working_tree_base_sha": "bf61bc86c659992beb99a059a8702d6711b722eb",
+    "evidence_snapshot_sha": null,
+    "evidence_snapshot_state": "PENDING_FINAL_IMPLEMENTATION_EVIDENCE_COMMIT",
+    "consumer_pin": "implementation_sha"
+  },
+  "upstream_participation_contract": {
+    "repository": "CIBOTFLOW/Sultan-OS",
+    "implementation_sha": "5b43e539eb27e83a8f14dffbcf9a401d740b6cd9",
+    "machine_contract_commit": "5b43e539eb27e83a8f14dffbcf9a401d740b6cd9",
+    "pin_state": "PINNED_TO_MERGED_GREEN_MAIN",
+    "deployment_sha": null,
+    "deployment_state": "NOT_PROVEN",
+    "contract_version": "sultan.stage5-developmental-participation.v2"
+  },
+  "controls": [
+    {
+      "threat": "forged_workload_identity",
+      "expected": "DENY_BEFORE_ADMISSION",
+      "status": "PASS_LOCAL",
+      "evidence": [
+        "src/lib/tests/api-actor.test.ts",
+        "src/modules/sultan-stage5/tests/sultan-stage5.test.ts#admission verifies workload, agent, purpose, exact SHAs, freshness and canonical evidence"
+      ]
+    },
+    {
+      "threat": "wrong_tenant",
+      "expected": "DENY_OR_ZERO_ROWS",
+      "status": "PASS_LOCAL_AND_MANAGED",
+      "evidence": [
+        "src/lib/tests/api-actor.test.ts#credential identity denies cross-tenant assertions and missing capabilities",
+        "engineering/execution/readiness/API_STAGE5_MANAGED_REHEARSAL_20260902.json#negative_probes"
+      ]
+    },
+    {
+      "threat": "stale_or_mismatched_evidence",
+      "expected": "DENIED_RECEIPT",
+      "status": "PASS_LOCAL",
+      "evidence": [
+        "src/modules/sultan-stage5/tests/sultan-stage5.test.ts#admission verifies workload, agent, purpose, exact SHAs, freshness and canonical evidence"
+      ]
+    },
+    {
+      "threat": "pre_inference_wrong_ui_producer_sha_tenant_age_or_mixed_context",
+      "expected": "ABSTAIN_OR_DENY_BEFORE_MODEL_INFERENCE",
+      "status": "PASS_LOCAL",
+      "evidence": [
+        "src/modules/sultan-agent/contextVerifier.ts",
+        "src/modules/sultan-agent/tests/sultan-agent-intent.test.ts#pre-inference policy verifies exact Stage 5 canonical receipts across supported subjects",
+        "src/modules/sultan-agent/tests/sultan-agent-intent.test.ts#pre-inference policy rejects forged, cross-tenant, stale, duplicate, and mixed receipt evidence"
+      ]
+    },
+    {
+      "threat": "claim_content_hash_or_business_source_version_misused_as_receipt_integrity",
+      "expected": "DENY_UNLESS_INTEGRITY_HASH_AND_CONTEXT_SOURCE_VERSION_BOTH_EQUAL_STORED_READBACK_HASH",
+      "status": "PASS_LOCAL",
+      "evidence": [
+        "src/modules/sultan-agent/contextVerifier.ts#verifyStage5CanonicalReadbacks",
+        "src/modules/sultan-agent/tests/sultan-agent-intent.test.ts#pre-inference policy rejects forged, cross-tenant, stale, duplicate, and mixed receipt evidence",
+        "engineering/execution/handoffs/API_STAGE5_001_CONSUMER_HANDOFF.json#phase_boundaries.ui_grounding_to_pre_inference_context_adapter"
+      ]
+    },
+    {
+      "threat": "configured_service_token_impersonates_ui_or_sultan_stage5_workload",
+      "expected": "DENY_BEFORE_STAGE5_STORAGE_REQUIRES_EXACT_VERCEL_OIDC_WORKLOAD",
+      "status": "PASS_LOCAL",
+      "evidence": [
+        "src/modules/sultan-stage5/workload.ts",
+        "src/modules/sultan-stage5/service.ts#assertConsumer",
+        "src/modules/sultan-stage5/tests/sultan-stage5.test.ts#Stage 5 readback and outcome boundaries reject configured service-token impersonation"
+      ]
+    },
+    {
+      "threat": "forged_or_detached_outcome_receipt_presented_by_hash_alone",
+      "expected": "DENY_UNLESS_AUTHENTICATED_TENANT_BOUND_API_READBACK_REVALIDATES_ADMISSION_AND_CANONICAL_LINEAGE",
+      "status": "PASS_LOCAL_SOURCE_AND_UNIT",
+      "evidence": [
+        "GET /api/v1/sultan/outcome-observations?observationId={s5out_ID}",
+        "src/modules/sultan-stage5/runtime.ts#verifyOutcomeObservationReceipt",
+        "src/modules/sultan-stage5/tests/sultan-stage5.test.ts#authenticated outcome readback verifies immutable admission and canonical evidence lineage",
+        "supabase/migrations/20260902010100_sultan_stage5_post_inference_receipt_constraints.sql"
+      ],
+      "limitation": "No deployed authenticated outcome readback has been exercised, and the final additive database constraint migration remains unrehearsed."
+    },
+    {
+      "threat": "self_rehashed_false_outcome_classification_or_corrupted_parent_receipt",
+      "expected": "DENY_AFTER_RECOMPUTING_CLASSIFICATION_AND_EVERY_PARENT_HASH",
+      "status": "PASS_LOCAL_SOURCE_AND_UNIT",
+      "evidence": [
+        "src/modules/sultan-stage5/runtime.ts#verifyOutcomeObservationReceipt",
+        "src/modules/sultan-stage5/postgresStore.ts#recordOutcome",
+        "src/modules/sultan-stage5/tests/sultan-stage5.test.ts#authenticated outcome readback verifies immutable admission and canonical evidence lineage"
+      ]
+    },
+    {
+      "threat": "cross_spliced_expectation_claim_and_subject_from_two_readbacks",
+      "expected": "DENIED_RECEIPT_UNLESS_CLAIM_AND_SUBJECT_SHARE_THE_SAME_EXACTLY_CONSUMED_READBACK",
+      "status": "PASS_LOCAL",
+      "evidence": [
+        "src/modules/sultan-stage5/policy.ts",
+        "src/modules/sultan-stage5/tests/sultan-stage5.test.ts#admission rejects case-domain mismatch and cross-spliced expectation claim lineage"
+      ]
+    },
+    {
+      "threat": "forged_missing_or_incomplete_database_claim_lineage",
+      "expected": "SQLSTATE_23514_OR_23503_AND_TRANSACTION_ROLLBACK",
+      "status": "SOURCE_ASSERTED_LOCAL_POSTGRES_EXECUTION_PENDING",
+      "evidence": [
+        "scripts/validation/sultan-stage5-rehearsal.ts",
+        "src/modules/sultan-stage5/tests/sultan-stage5-sql.test.ts#disposable proof directly rejects forged and incomplete database lineage",
+        "supabase/migrations/20260902010100_sultan_stage5_post_inference_receipt_constraints.sql"
+      ],
+      "limitation": "The direct SQL negative probes are implemented and statically sensitivity-tested, but this executor has no Docker, Podman, psql or postgres executable."
+    },
+    {
+      "threat": "fabricated_pre_inference_interaction_receipt_hash",
+      "expected": "POST_INFERENCE_ONLY_AND_NEVER_AUTHORIZES_INFERENCE",
+      "status": "PASS_LOCAL_SOURCE_AND_CONSTRAINT_TEST",
+      "evidence": [
+        "src/app/api/v1/sultan/admissions/route.ts",
+        "src/modules/sultan-stage5/tests/sultan-stage5-sql.test.ts#Stage 5 routes authenticate server workloads and never report execution authority",
+        "supabase/migrations/20260902010100_sultan_stage5_post_inference_receipt_constraints.sql"
+      ],
+      "limitation": "The final additive database constraint migration has not yet been rerun in disposable or managed Postgres."
+    },
+    {
+      "threat": "replay_or_idempotency_conflict",
+      "expected": "EXACT_REPLAY_OR_409_WITH_IMMUTABLE_ORIGINAL",
+      "status": "PASS_MANAGED_CONSTRAINT_AND_IMPLEMENTED_RUNTIME",
+      "evidence": [
+        "src/modules/sultan-stage5/postgresStore.ts",
+        "scripts/validation/sultan-stage5-rehearsal.ts",
+        "engineering/execution/readiness/API_STAGE5_MANAGED_REHEARSAL_20260902.json#negative_probes"
+      ],
+      "limitation": "The end-to-end repository runtime replay proof is defined but could not run locally because no disposable Postgres executable is installed."
+    },
+    {
+      "threat": "duplicate_action_or_admission_bypass",
+      "expected": "DENY_BEFORE_READ_OR_PREPARATION",
+      "status": "PASS_LOCAL_AND_MANAGED_FK",
+      "evidence": [
+        "src/modules/sultan-agent-gateway/tests/sultan-agent-gateway.test.ts#no Sultan read or command preparation can bypass exact Stage 5 admission",
+        "engineering/execution/readiness/API_STAGE5_MANAGED_REHEARSAL_20260902.json#negative_probes"
+      ]
+    },
+    {
+      "threat": "missing_or_forged_human_approval",
+      "expected": "DENY_EXECUTION",
+      "status": "PASS_LOCAL",
+      "evidence": [
+        "src/modules/sultan-agent-gateway/tests/sultan-agent-gateway.test.ts#command parser accepts only the versioned execution envelope",
+        "src/modules/sultan-agent-gateway/tests/sultan-agent-gateway.test.ts#A1 command prepares, interrupts, and executes only with an exact signed human approval"
+      ]
+    },
+    {
+      "threat": "privilege_escalation",
+      "expected": "NO_BROWSER_OR_PROVIDER_WORKER_ACCESS_AND_NO_DESTRUCTIVE_RUNTIME_ACCESS",
+      "status": "PASS_LOCAL_AND_MANAGED",
+      "evidence": [
+        "src/modules/sultan-stage5/tests/sultan-stage5-sql.test.ts",
+        "src/modules/sultan-stage5/tests/sultan-stage5.test.ts#observation is explicit per-agent capability and execution is never admitted at this boundary",
+        "engineering/execution/readiness/API_STAGE5_MANAGED_REHEARSAL_20260902.json#fixture_receipt"
+      ]
+    },
+    {
+      "threat": "prompt_injection_or_client_selected_authority",
+      "expected": "REJECT_AT_PARSER_OR_DATABASE_CONSTRAINT",
+      "status": "PASS_LOCAL_AND_MANAGED",
+      "evidence": [
+        "src/modules/sultan-stage5/tests/sultan-stage5.test.ts#Stage 5 parser accepts the exact Sultan v2 participation binding and rejects client authority",
+        "src/modules/sultan-agent-gateway/tests/sultan-agent-gateway.test.ts#parser rejects client-forged tenant authority at any depth",
+        "engineering/execution/readiness/API_STAGE5_MANAGED_REHEARSAL_20260902.json#negative_probes"
+      ]
+    },
+    {
+      "threat": "provider_failure_or_ambiguous_acknowledgement",
+      "expected": "FAIL_WITHOUT_BLIND_RETRY_OR_BUSINESS_FINALITY",
+      "status": "PASS_LOCAL",
+      "evidence": [
+        "src/modules/sultan-agent-gateway/tests/sultan-agent-gateway.test.ts#Gmail adapter records PROVIDER_ACCEPTED identity and never retries an indeterminate send"
+      ]
+    },
+    {
+      "threat": "mismatched_exact_sha",
+      "expected": "DENIED_RECEIPT_OR_403",
+      "status": "PASS_LOCAL",
+      "evidence": [
+        "src/modules/sultan-stage5/tests/sultan-stage5.test.ts#admission verifies workload, agent, purpose, exact SHAs, freshness and canonical evidence",
+        "src/modules/sultan-stage5/config.ts"
+      ]
+    },
+    {
+      "threat": "wrong_agent_version_capability_purpose_case_or_critic",
+      "expected": "DENIED_RECEIPT",
+      "status": "PASS_LOCAL",
+      "evidence": [
+        "src/modules/sultan-stage5/policy.ts",
+        "src/modules/sultan-stage5/tests/sultan-stage5.test.ts",
+        "src/modules/sultan-stage5/tests/sultan-stage5.test.ts#every API-consuming Sultan participant is registered and non-consuming controls are explicitly excluded"
+      ]
+    }
+  ],
+  "local_verification": {
+    "recorded_at_utc": "2026-09-03T02:22:00.000Z",
+    "focused_tests": "PASS_24_OF_24_FINAL_FOCUSED_PLUS_PRIOR_46_OF_46",
+    "full_tests": "PASS_257_OF_257",
+    "security_posture": "PASS_26_OF_26",
+    "database_negative_execution": "PASS_MANAGED_VALIDATION_CROSS_TENANT_FORGED_JSON_FORGED_CHILD_MISSING_EVIDENCE_APPEND_ONLY"
+  },
+  "production_claim": false
+}
