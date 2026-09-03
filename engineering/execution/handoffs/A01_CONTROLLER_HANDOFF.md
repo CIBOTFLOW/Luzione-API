@@ -188,3 +188,50 @@ The Vercel project owner creates one expiring share link scoped to deployment
 `BxyW3w9ezAf2tm46NN3uNycEViMa`; L1 then records exact-SHA `release`, `livez`,
 `readyz` and `healthz` HTTP readback without disabling or changing deployment
 protection.
+
+## L1 public-alias reconciliation addendum — 2026-09-03T03:09:01Z
+
+The controller's new 404 observation is valid and supersedes the earlier public
+availability sample only for the eight paths actually tested:
+`/release`, `/livez`, `/readyz`, `/healthz`, `/api/release`, `/api/livez`,
+`/api/readyz` and `/api/healthz`. All eight return 404 HTML on current deployment
+`dpl_8b8nWrNAe5ydeGYNuPRJ8ir4Xwxz`. They are not declared API routes.
+
+The same deployment serves the API-owned paths declared by OpenAPI and source:
+
+- `/api/v1/release` = 200 JSON, exact production SHA
+  `7ee5a0a53a3434c3e00969dc626a4daad33f9dc0`, mutations fail closed;
+- `/api/v1/livez` = 200 `LIVE`;
+- `/api/v1/readyz` = 200 `READY`, database `READY`;
+- `/api/v1/healthz` = 503 `SECURITY_POSTURE_REQUIRED`, 39/48 relations and
+  69 violations, mutations disabled, bounded internal projections enabled and
+  external effects unauthorized.
+
+Twelve additional canonical readiness samples returned 200/database `READY`
+with 2.1–35.0 ms database latency. The exact production source contains the
+unnamed `databasePool().query("select 1")` repair. PR #57 was externally
+squash-merged at `bf61bc86c659992beb99a059a8702d6711b722eb`; its source tree is
+identical to reviewed head `9b5366266918ed4222acf54ce685bab15f6f104d` at tree
+`4208c5fb27dbfcf3dd68c17ebd07a36391477a19`. PR #60 then externally merged as
+current default head `7ee5a0a53a3434c3e00969dc626a4daad33f9dc0`. The matching public
+release identity makes an automatic default-branch production deployment the
+supported inference. L1 changed neither default nor production state.
+
+Default-head Release gate `33708504750` and CodeQL `33708504804` passed.
+Artifact `9876106441` has digest
+`sha256:0d2c4ea14f35663bd9530badfbdd2f92a54c53b36359722677d2c78ed3c73bf9`.
+No routing implementation change is required or justified: adding unversioned
+aliases would introduce a new compatibility surface without a contract or
+consumer inventory.
+
+PR #59 remains a protected, pre-Stage-5 candidate. Its deployment
+`BxyW3w9ezAf2tm46NN3uNycEViMa` returns 302 to Vercel SSO on all four canonical
+paths. Its exact synthetic negative and rollback proof covers the older 39/40
+to 40/40 shape only; it cannot be relabeled as current 39/48 to 48/48 recovery
+evidence. PR #58 and its five `v0.2-draft.1` pins are unchanged.
+
+### Exact next action
+
+The Supabase project owner records one exact managed backup or PITR receipt
+bound to production SHA `7ee5a0a53a3434c3e00969dc626a4daad33f9dc0` and deployment
+`dpl_8b8nWrNAe5ydeGYNuPRJ8ir4Xwxz`.

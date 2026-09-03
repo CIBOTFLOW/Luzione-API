@@ -1,0 +1,234 @@
+{
+  "schema_version": 1,
+  "project_id": "A01",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "controller_release": "CIBOTFLOW/Luzione-platform-program@f8f705527ab15038b9525fdaa41b322c7b76ebb9",
+  "observed_at": "2026-09-03T03:09:01Z",
+  "effect_authority": "NO_EFFECT",
+  "production_alias": {
+    "url": "https://api.luzione.com",
+    "deployment_id": "dpl_8b8nWrNAe5ydeGYNuPRJ8ir4Xwxz",
+    "deployment_url": "https://luzione-l9c4mp340-connor-spiegelmans-projects.vercel.app",
+    "exact_sha": "7ee5a0a53a3434c3e00969dc626a4daad33f9dc0",
+    "environment": "production",
+    "evidence_state": "DEPLOYED_INCOMPLETE",
+    "mutations": "DISABLED_FAIL_CLOSED",
+    "source_branch": "main",
+    "source_change": "EXTERNAL_TO_L1",
+    "source_history": [
+      {
+        "pull_request": 57,
+        "state": "MERGED_EXTERNALLY",
+        "head_sha": "9b5366266918ed4222acf54ce685bab15f6f104d",
+        "merge_sha": "bf61bc86c659992beb99a059a8702d6711b722eb",
+        "merged_at": "2026-09-03T02:03:53Z",
+        "head_and_merge_tree_sha": "4208c5fb27dbfcf3dd68c17ebd07a36391477a19"
+      },
+      {
+        "pull_request": 60,
+        "state": "MERGED_EXTERNALLY",
+        "head_sha": "5c8c50619cec7a1b017e27f41f82a983edf12c58",
+        "merge_sha": "7ee5a0a53a3434c3e00969dc626a4daad33f9dc0",
+        "merged_at": "2026-09-03T02:40:18Z"
+      }
+    ],
+    "default_head_exact_match": true,
+    "deployment_origin_inference": "The public release exact SHA equals origin/main immediately after PR #60 merged and Vercel served a new deployment ID; this is consistent with an automatic default-branch production deployment. L1 did not perform or authorize the merge, alias change or deployment."
+  },
+  "route_ownership": {
+    "owner": "CIBOTFLOW/Luzione-API",
+    "authority_sources": [
+      "contracts/openapi/luzione-api-v0.1.yaml",
+      "src/app/api/v1/release/route.ts",
+      "src/app/api/v1/livez/route.ts",
+      "src/app/api/v1/readyz/route.ts",
+      "src/app/api/v1/healthz/route.ts",
+      "src/modules/platform-service-catalog/registry.ts",
+      "src/app/engineering/page.tsx"
+    ],
+    "canonical_routes": [
+      "GET /api/v1/release",
+      "GET /api/v1/livez",
+      "GET /api/v1/readyz",
+      "GET /api/v1/healthz"
+    ],
+    "compatibility_aliases_declared": [],
+    "routing_repair_required": false,
+    "routing_repair_reason": "All API-owned canonical routes are present and responding on the same exact deployment. Adding unversioned aliases without an admitted compatibility contract or consumer inventory would create a second surface rather than repair a missing canonical route."
+  },
+  "public_http_readback": {
+    "reported_legacy_paths": [
+      {"path": "/release", "http": 404, "content_type": "text/html; charset=utf-8"},
+      {"path": "/livez", "http": 404, "content_type": "text/html; charset=utf-8"},
+      {"path": "/readyz", "http": 404, "content_type": "text/html; charset=utf-8"},
+      {"path": "/healthz", "http": 404, "content_type": "text/html; charset=utf-8"},
+      {"path": "/api/release", "http": 404, "content_type": "text/html; charset=utf-8"},
+      {"path": "/api/livez", "http": 404, "content_type": "text/html; charset=utf-8"},
+      {"path": "/api/readyz", "http": 404, "content_type": "text/html; charset=utf-8"},
+      {"path": "/api/healthz", "http": 404, "content_type": "text/html; charset=utf-8"}
+    ],
+    "canonical": {
+      "release": {
+        "path": "/api/v1/release",
+        "http": 200,
+        "content_type": "application/json",
+        "exact_sha": "7ee5a0a53a3434c3e00969dc626a4daad33f9dc0",
+        "deployment_id": "dpl_8b8nWrNAe5ydeGYNuPRJ8ir4Xwxz",
+        "evidence_state": "DEPLOYED_INCOMPLETE",
+        "mutations": "DISABLED_FAIL_CLOSED",
+        "request_id": "958c20d9-4629-46a2-8d5f-3da7fec834a7"
+      },
+      "livez": {
+        "path": "/api/v1/livez",
+        "http": 200,
+        "content_type": "application/json",
+        "status": "LIVE",
+        "release": "7ee5a0a53a34",
+        "request_id": "2dc2929e-d385-413e-b630-4347f80a4aa6"
+      },
+      "readyz": {
+        "path": "/api/v1/readyz",
+        "http": 200,
+        "content_type": "application/json",
+        "status": "READY",
+        "database": "READY",
+        "service_authentication": "CONFIGURED",
+        "continuation_signing": "CONFIGURED",
+        "pooler": "DETECTED",
+        "request_id": "91742acd-6239-449a-8d87-ae2701ecadd0"
+      },
+      "healthz": {
+        "path": "/api/v1/healthz",
+        "http": 503,
+        "content_type": "application/json",
+        "status": "SECURITY_POSTURE_REQUIRED",
+        "database": "RLS_GATE_FAIL",
+        "expected_relations": 48,
+        "observed_relations": 39,
+        "violation_count": 69,
+        "mutations": "DISABLED_FAIL_CLOSED",
+        "internal_projections": "ENABLED_BOUNDED",
+        "external_effects_authorized": false,
+        "production_release_ready": false,
+        "request_id": "41e5d849-f6b9-4ab8-a911-c4721136d365"
+      }
+    },
+    "interpretation": "The 404 evidence is current and valid only for uncontracted paths. It does not describe the same deployment's canonical /api/v1 readiness surface."
+  },
+  "dependency_readiness_reconciliation": {
+    "runtime_repair_sha": "0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a",
+    "merged_tree_sha": "4208c5fb27dbfcf3dd68c17ebd07a36391477a19",
+    "merged_source_sha": "bf61bc86c659992beb99a059a8702d6711b722eb",
+    "production_source_sha": "7ee5a0a53a3434c3e00969dc626a4daad33f9dc0",
+    "production_probe": "databasePool().query(\"select 1\")",
+    "client_prepared_statement_name_present": false,
+    "samples": [
+      {"http": 200, "database": "READY", "database_latency_ms": 35.0, "request_id": "d26049ff-e47b-484e-a78e-0d00a2ba3ae3"},
+      {"http": 200, "database": "READY", "database_latency_ms": 2.5, "request_id": "3b4216fd-ee4a-4e5f-84e3-3f9a40c0f3ac"},
+      {"http": 200, "database": "READY", "database_latency_ms": 2.5, "request_id": "cacc17d0-0e8a-4039-8b24-74684824b922"},
+      {"http": 200, "database": "READY", "database_latency_ms": 2.4, "request_id": "ea238302-12c3-4837-9a60-4f5007cd99b6"},
+      {"http": 200, "database": "READY", "database_latency_ms": 2.3, "request_id": "f3782d7e-fc31-4448-87bb-b1de4d7d5c2b"},
+      {"http": 200, "database": "READY", "database_latency_ms": 2.4, "request_id": "2d48eb06-d105-40d6-8f9e-c746c0d6b2c7"},
+      {"http": 200, "database": "READY", "database_latency_ms": 2.3, "request_id": "ffa5a4d1-21e3-4b16-9e5f-91220a6f711c"},
+      {"http": 200, "database": "READY", "database_latency_ms": 2.2, "request_id": "5c0a5bcd-1a20-4797-a63d-819a2c7c522c"},
+      {"http": 200, "database": "READY", "database_latency_ms": 2.2, "request_id": "708350d7-c585-403b-9cd7-cb7db50acff9"},
+      {"http": 200, "database": "READY", "database_latency_ms": 2.1, "request_id": "0339484d-9490-4bbc-8b07-ac3fae57545d"},
+      {"http": 200, "database": "READY", "database_latency_ms": 2.2, "request_id": "51df0bb2-04f2-4301-ab8d-a309d4ee574d"},
+      {"http": 200, "database": "READY", "database_latency_ms": 2.5, "request_id": "f7e380c3-df4b-456b-9699-2236ea94b2ec"}
+    ],
+    "prepared_statement_failure": "RESOLVED_IN_SOURCE_AND_BOUNDED_PRODUCTION_OBSERVATION",
+    "observation_limit": "The available Supabase log page contains no events after 2026-09-03T02:12:27.685Z and therefore cannot establish a post-deployment zero-error interval."
+  },
+  "default_head_ci": {
+    "release_gate": {
+      "run_id": 33708504750,
+      "conclusion": "success",
+      "verify_job_id": 100502776250,
+      "result": "PASS_COMPLIANCE_TYPECHECK_LINT_TESTS_AND_BUILD"
+    },
+    "codeql": {
+      "run_id": 33708504804,
+      "conclusion": "success"
+    },
+    "artifact": {
+      "artifact_id": 9876106441,
+      "name": "release-evidence-7ee5a0a53a3434c3e00969dc626a4daad33f9dc0",
+      "digest": "sha256:0d2c4ea14f35663bd9530badfbdd2f92a54c53b36359722677d2c78ed3c73bf9",
+      "expires_at": "2026-12-02T02:40:21Z"
+    }
+  },
+  "candidate_preview_evidence": {
+    "branch": "codex/a01-readiness-regression-evidence-g0",
+    "pull_request": 59,
+    "pull_request_state": "OPEN_DRAFT_PRESERVED",
+    "automation_candidate_sha": "fd1698e80ea9873564c615ab5d2c5163e1c10812",
+    "evidence_head_before_this_record": "59e931d9c862192f12e023628e82c2d385268c48",
+    "runtime_implementation_sha": "0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a",
+    "vercel_deployment_id": "BxyW3w9ezAf2tm46NN3uNycEViMa",
+    "github_deployment_id": 6234868473,
+    "github_deployment_status_id": 17709031739,
+    "deployment_status": "SUCCESS_READY_ACCESS_PROTECTED",
+    "http_readback": {
+      "release": "302_VERCEL_SSO",
+      "livez": "302_VERCEL_SSO",
+      "readyz": "302_VERCEL_SSO",
+      "healthz": "302_VERCEL_SSO"
+    },
+    "exact_head_ci": {
+      "release_gate_run": 33702725344,
+      "codeql_run": 33702725310,
+      "a01_job_id": 100485272734,
+      "verify_job_id": 100485272869,
+      "artifact_id": 9874111324,
+      "artifact_digest": "sha256:ea0f943ceb6d6b587195484771807ee8f2b10e8622c7e2bde4ef6ba1765eb6ea"
+    },
+    "negative_paths": {
+      "active_denial_probes": 4,
+      "client_role_denials": 90,
+      "cross_tenant_insert_denied": true,
+      "missing_tenant_rows": 0,
+      "public_policies": 0
+    },
+    "rollback": {
+      "method": "RESTORE_PRE_MIGRATION_PG_DUMP_INTO_DISPOSABLE_DATABASE_AND_REMOVE_CANDIDATE_ROLES",
+      "readyz_http": 200,
+      "healthz_http": 503,
+      "restored_relations": "39/40",
+      "restored_violations": 61,
+      "mutations": "DISABLED_FAIL_CLOSED",
+      "external_effects_authorized": false
+    },
+    "claim_boundary": "The candidate proof is exact-SHA synthetic and pre-Stage-5. It does not prove managed preview ingress, the current production SHA, the expanded 48-relation target or current-schema rollback."
+  },
+  "pull_request_preservation": {
+    "pr_57": "MERGED_EXTERNALLY_AT_BF61BC86C659992BEB99A059A8702D6711B722EB_NO_L1_ACTION",
+    "pr_58": "OPEN_DRAFT_UNCHANGED_AT_5BD078DB71FDA5186CEBD8C471988D4DA298F649",
+    "pr_59": "OPEN_DRAFT_PRESERVED_AT_59E931D9C862192F12E023628E82C2D385268C48_BEFORE_THIS_EVIDENCE_ONLY_RECORD"
+  },
+  "a02_preservation": {
+    "pull_request": 58,
+    "implementation_sha": "f2d643a0913b888809c217adfd9bdcef0385b05a",
+    "versions": [
+      "luzione-shared-contracts/v0.2-draft.1",
+      "luzione-identity-tenant/v0.2-draft.1",
+      "luzione-command-envelope/v0.2-draft.1",
+      "luzione-receipt-envelope/v0.2-draft.1",
+      "luzione-readback-envelope/v0.2-draft.1"
+    ],
+    "changed": false,
+    "integration_gate": "BLOCKED_UNTIL_A01_AND_D01_G1"
+  },
+  "l1_actions": {
+    "route_or_runtime_change": "NONE_NOT_REQUIRED",
+    "default_branch_change": "NOT_RUN",
+    "alias_or_dns_change": "NOT_RUN",
+    "production_deployment": "NOT_RUN",
+    "migration": "NOT_RUN",
+    "secret_or_credential_change": "NOT_RUN",
+    "deployment_protection_change": "NOT_RUN",
+    "promotion": "NOT_RUN",
+    "production_rollback": "NOT_RUN"
+  },
+  "strongest_claim": "The reported public 404s are current for eight uncontracted paths but do not represent loss of the API-owned route surface. Exact production SHA 7ee5a0a53a3434c3e00969dc626a4daad33f9dc0 serves all four canonical /api/v1 routes, and the previously repaired unnamed database probe returned READY in twelve fresh production samples. Security readiness remains deliberately blocked at 39/48 and 69 violations, the PR #59 preview remains SSO-protected and pre-Stage-5, and A01 is not G1 or production-ready.",
+  "next_action": "The Supabase project owner records one exact managed backup or PITR receipt bound to production SHA 7ee5a0a53a3434c3e00969dc626a4daad33f9dc0 and deployment dpl_8b8nWrNAe5ydeGYNuPRJ8ir4Xwxz."
+}

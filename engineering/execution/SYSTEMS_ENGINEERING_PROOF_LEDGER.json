@@ -2012,6 +2012,81 @@
         "record a project-specific managed restore point before any production DDL",
         "preserve all G2 stops until a named human authorizes the managed migration and release gate"
       ]
+    },
+    {
+      "proof_id": "A01_PUBLIC_ALIAS_ROUTE_RECONCILIATION_20260902",
+      "project_id": "A01",
+      "recorded_at": "2026-09-03T03:09:01Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "7ee5a0a53a3434c3e00969dc626a4daad33f9dc0",
+      "engineering_state": "IMPLEMENTED",
+      "release_evidence": "PRODUCTION_OBSERVED",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The A01 unnamed dependency-readiness probe is now present on and observed through the exact default-branch production release. The reported 404s are confined to eight uncontracted unversioned paths; all four API-owned /api/v1 routes exist on the same deployment. Dependency readiness returned 200 in twelve fresh samples, while security readiness correctly remains fail closed at the expanded 39/48 and 69-violation target. This does not establish A01 G1, current-schema recovery, managed rollback or production readiness.",
+      "exercised_boundaries": [
+        "api.luzione.com /api/v1/release returned 200 and bound deployment dpl_8b8nWrNAe5ydeGYNuPRJ8ir4Xwxz to production SHA 7ee5a0a53a3434c3e00969dc626a4daad33f9dc0 with mutations disabled.",
+        "origin/main independently resolved to the same SHA after external squash merges bf61bc86c659992beb99a059a8702d6711b722eb for PR #57 and 7ee5a0a53a3434c3e00969dc626a4daad33f9dc0 for PR #60.",
+        "PR #57 head 9b5366266918ed4222acf54ce685bab15f6f104d and squash merge bf61bc86c659992beb99a059a8702d6711b722eb have identical tree 4208c5fb27dbfcf3dd68c17ebd07a36391477a19; the production default head retains the unnamed databasePool().query(\"select 1\") probe.",
+        "The eight reported paths /release, /livez, /readyz, /healthz, /api/release, /api/livez, /api/readyz and /api/healthz each returned 404 text/html.",
+        "The same deployment returned /api/v1/release=200 JSON, /api/v1/livez=200 LIVE JSON, /api/v1/readyz=200 READY JSON and /api/v1/healthz=503 SECURITY_POSTURE_REQUIRED JSON.",
+        "Twelve additional /api/v1/readyz samples returned 200 with database READY and databaseLatencyMs from 2.1 to 35.0.",
+        "The production health response reported 39/48 relations, 69 violations, mutations DISABLED_FAIL_CLOSED, bounded internal projections enabled and externalEffectsAuthorized=false.",
+        "Default-head Release gate 33708504750 and CodeQL 33708504804 passed; artifact 9876106441 has digest sha256:0d2c4ea14f35663bd9530badfbdd2f92a54c53b36359722677d2c78ed3c73bf9.",
+        "Default-head OpenAPI, route filesystem, engineering portal and service catalog consistently own only /api/v1/release, /api/v1/livez, /api/v1/readyz and /api/v1/healthz; no redirect or compatibility alias is declared.",
+        "PR #58 and PR #59 remained open drafts and no L1 alias, DNS, production, default-branch, credential, migration or protection mutation occurred."
+      ],
+      "untested_boundaries": [
+        "a long-running production dependency-readiness SLO window",
+        "post-deployment Supabase error-log coverage because the available page's newest event predates the deployment",
+        "managed preview HTTP readback for the PR #59 candidate through Vercel SSO",
+        "isolated convergence and rollback from the current 39/48 production shape",
+        "a project-specific managed backup receipt or PITR window",
+        "authorized current-schema production migration and managed rollback",
+        "controller A01 G1 acceptance and A02 integration"
+      ],
+      "evidence_refs": [
+        "engineering/execution/readiness/A01_PUBLIC_ALIAS_ROUTE_RECONCILIATION_20260902.json",
+        "engineering/execution/handoffs/A01_CONTROLLER_HANDOFF.md",
+        "contracts/openapi/luzione-api-v0.1.yaml",
+        "src/app/api/v1/readyz/route.ts",
+        "pull-request:CIBOTFLOW/Luzione-API#57",
+        "pull-request:CIBOTFLOW/Luzione-API#59",
+        "pull-request:CIBOTFLOW/Luzione-API#60",
+        "merge:bf61bc86c659992beb99a059a8702d6711b722eb",
+        "production:7ee5a0a53a3434c3e00969dc626a4daad33f9dc0",
+        "vercel:dpl_8b8nWrNAe5ydeGYNuPRJ8ir4Xwxz",
+        "github-actions:33708504750",
+        "github-actions:33708504804",
+        "github-artifact:9876106441",
+        "production-request:958c20d9-4629-46a2-8d5f-3da7fec834a7",
+        "production-request:2dc2929e-d385-413e-b630-4347f80a4aa6",
+        "production-request:91742acd-6239-449a-8d87-ae2701ecadd0",
+        "production-request:41e5d849-f6b9-4ab8-a911-c4721136d365"
+      ],
+      "failure_refs": [
+        "A01_PRODUCTION_RLS_CREDENTIAL_GATE_20260902",
+        "A01_PRODUCTION_READINESS_PREPARED_STATEMENT_20260902",
+        "A01_PUBLIC_ALIAS_ROUTE_SCOPE_MISINTERPRETATION_20260902",
+        "A01_EXACT_PREVIEW_HTTP_ACCESS_20260902"
+      ],
+      "cross_repo_handoffs": [],
+      "deferred_external_infra": [
+        "Supabase project-specific managed backup/PITR evidence",
+        "isolated current 48-relation recovery rehearsal",
+        "managed current-schema migration and rollback authorization",
+        "controller G1 decision"
+      ],
+      "remaining_uncertainty": [
+        "The new production release is exact-SHA observable, but its 39/48 security drift is larger than the older PR #59 candidate's 39/40 baseline.",
+        "PR #59 synthetic 40/40 rollback evidence predates Stage 5 and cannot be relabeled as current 48-relation recovery proof.",
+        "The automatic production deployment followed an external default-branch merge; L1 did not authorize or perform it."
+      ],
+      "next_proof_needed": [
+        "record one exact managed backup or PITR receipt bound to production SHA 7ee5a0a53a3434c3e00969dc626a4daad33f9dc0 and deployment dpl_8b8nWrNAe5ydeGYNuPRJ8ir4Xwxz",
+        "then rehearse the current 39/48 to 48/48 convergence and rollback shape only in an isolated disposable environment",
+        "preserve every G2 stop until a named human authorizes any managed migration or production action"
+      ]
     }
   ]
 }
