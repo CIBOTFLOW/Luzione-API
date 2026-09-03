@@ -1231,7 +1231,7 @@
       "layer": "dependency-readiness-database-probe",
       "symptom": "Production readyz intermittently returned 503 even though healthz could still query the canonical database.",
       "expected": "The dependency-readiness SELECT 1 probe remains stable through the configured Supavisor transaction pooler.",
-      "actual": "Managed PostgreSQL logs at 2026-09-02T07:16:56.418Z and 2026-09-02T07:20:53.675Z reported prepared statement readiness-v1 already exists. The old production route sent a client-named node-postgres statement through a pooled backend whose prepared-statement state the serverless process did not own.",
+      "actual": "Managed PostgreSQL logs at 2026-09-02T07:16:56.418Z and 2026-09-02T07:20:53.675Z reported prepared statement readiness-v1 already exists. Independent recurrence review found five more identical errors from 2026-09-02T23:54:32.129Z through 23:54:55.070Z while production still ran the old SHA. The old production route sends a client-named node-postgres statement through a pooled backend whose prepared-statement state the serverless process does not own; later successful samples show only intermittent availability and do not resolve the defect.",
       "classification": {
         "domain": "PLATFORM",
         "class": "INVALID",
@@ -1248,13 +1248,18 @@
         "commit:0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a",
         "github-actions:33603316756",
         "github-actions:33603316773",
-        "vercel:7GjEgvN54RoN8JbrSnVS7TFrU7G2"
+        "vercel:7GjEgvN54RoN8JbrSnVS7TFrU7G2",
+        "engineering/execution/readiness/A01_REGRESSION_RECOVERY_20260902.json",
+        "github-actions:33702096449",
+        "github-artifact:9873897168",
+        "Supabase PostgreSQL logs from 2026-09-02T23:54:32.129Z through 2026-09-02T23:54:55.070Z"
       ],
       "repair_attempts": [
         "Correlated the bounded readyz failure timestamps with managed PostgreSQL logs.",
         "Removed the client-provided prepared-statement name while retaining the exact SELECT 1 dependency probe.",
         "Added a test-sensitive assertion that the route uses an unnamed query and cannot reintroduce readiness-v1.",
-        "Ran typecheck, lint, 225/225 tests, production build, GitHub Release gate and CodeQL at the exact candidate SHA."
+        "Ran typecheck, lint, 225/225 tests, production build, GitHub Release gate and CodeQL at the exact candidate SHA.",
+        "Bound the existing disposable recovery rehearsal and built HTTP readback to exact evidence SHA fd1698e80ea9873564c615ab5d2c5163e1c10812 in GitHub Actions, including 40/40 candidate readiness and fail-closed rollback."
       ],
       "strategy_reset": null,
       "quarantine_scope": [
@@ -1267,9 +1272,92 @@
       "resolved": false,
       "resolution_ref": "candidate:0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a",
       "remaining_uncertainty": [
-        "The code defect is locally and independently repaired, but production remains on the old SHA and can still reproduce it."
+        "The code defect is locally and independently repaired, but production remains on the old SHA and can still reproduce it.",
+        "The managed Vercel preview is SSO-protected, so Supavisor behavior at the exact repaired preview SHA is not observed."
       ],
       "next_action": "After the managed recovery and Vercel access gates pass, canary and promote exact candidate 0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a, then prove repeated readyz=200 through the production pooler."
+    },
+    {
+      "failure_id": "A01_EXACT_PREVIEW_HTTP_ACCESS_20260902",
+      "project_id": "A01",
+      "observed_at": "2026-09-03T01:05:05Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "fd1698e80ea9873564c615ab5d2c5163e1c10812",
+      "environment": "preview",
+      "layer": "vercel-deployment-protection",
+      "symptom": "The exact-SHA Vercel preview built successfully, but release, livez, readyz and healthz all redirect to Vercel SSO and no scoped share link can be created by the connected identity.",
+      "expected": "An authorized reviewer can read the four exact-SHA preview endpoints through an expiring deployment-scoped access mechanism without disabling deployment protection.",
+      "actual": "Preview BxyW3w9ezAf2tm46NN3uNycEViMa is Ready at SHA fd1698e80ea9873564c615ab5d2c5163e1c10812, but direct requests return 302 to Vercel SSO, authenticated connector fetch cannot create access, and the deployment is not visible through the connected Vercel account.",
+      "classification": {
+        "domain": "AUTH",
+        "class": "DENIED",
+        "retry": "HUMAN",
+        "severity": "ERROR"
+      },
+      "evidence_refs": [
+        "engineering/execution/readiness/A01_REGRESSION_RECOVERY_20260902.json",
+        "vercel:BxyW3w9ezAf2tm46NN3uNycEViMa",
+        "github-deployment:6234868473",
+        "github-deployment-status:17709031739",
+        "preview-url:https://luzione-dzwaelsks-connor-spiegelmans-projects.vercel.app"
+      ],
+      "repair_attempts": [
+        "Requested a temporary deployment-scoped share link through the connected Vercel access tool.",
+        "Attempted authenticated connector fetches for release, livez, readyz and healthz.",
+        "Opened the protected readyz URL in the available browser session; it reached Vercel login with no authorized session.",
+        "Preserved SSO, aliases, secrets and project protection unchanged and produced a separate exact-SHA synthetic HTTP artifact without treating it as managed-preview proof."
+      ],
+      "strategy_reset": "Quarantine managed-preview HTTP finality and retain the successful immutable build plus synthetic exact-SHA artifact until the project owner supplies deployment-scoped access.",
+      "quarantine_scope": [
+        "managed preview HTTP canary",
+        "Supavisor compatibility at the exact preview SHA",
+        "preview release-evidence promotion"
+      ],
+      "deferred_external_infra": [
+        "Vercel project prj_hEQQeozR9ZfauHr1QWvxZiZ3A9pQ owner or member access"
+      ],
+      "resolved": false,
+      "resolution_ref": null,
+      "remaining_uncertainty": [
+        "The deployed preview runtime and managed DATABASE_URL cannot be read back through protected ingress.",
+        "The CI artifact proves the built route behavior only against disposable direct PostgreSQL, not managed Supavisor."
+      ],
+      "next_action": "The Vercel project owner creates one expiring share link scoped to deployment BxyW3w9ezAf2tm46NN3uNycEViMa so L1 can capture release, livez, readyz and healthz readback without changing project protection."
+    },
+    {
+      "failure_id": "A01_SYNTHETIC_HTTP_PREVIEW_PORT_COLLISION_20260902",
+      "project_id": "A01",
+      "observed_at": "2026-09-03T01:01:55Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "fd1698e80ea9873564c615ab5d2c5163e1c10812",
+      "environment": "local",
+      "layer": "synthetic-http-evidence-harness",
+      "symptom": "The first local synthetic HTTP rehearsal could not bind fixed port 3101.",
+      "expected": "The evidence server starts without depending on a machine-specific port assignment.",
+      "actual": "Next.js returned EADDRINUSE for port 3101 before any HTTP assertion ran; the disposable database was removed by the existing cleanup trap.",
+      "classification": {
+        "domain": "PLATFORM",
+        "class": "CONFLICT",
+        "retry": "RECONCILE_FIRST",
+        "severity": "DEGRADED"
+      },
+      "evidence_refs": [
+        "scripts/validation/run-a01-readiness-rehearsal.sh",
+        "local-run:2026-09-03T01:01:55Z",
+        "github-actions:33702096449"
+      ],
+      "repair_attempts": [
+        "Replaced the fixed port with an ephemeral loopback port selected at runtime.",
+        "Reran the complete local rehearsal successfully through candidate and rollback HTTP readback.",
+        "Reran the exact-head GitHub job successfully and uploaded immutable artifact 9873897168."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "commit:fd1698e80ea9873564c615ab5d2c5163e1c10812;github-actions:33702096449",
+      "remaining_uncertainty": [],
+      "next_action": "None; retain ephemeral loopback port allocation in the synthetic evidence harness."
     }
   ]
 }
