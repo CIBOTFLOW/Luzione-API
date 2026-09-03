@@ -58,19 +58,19 @@
         "https://github.com/advisories/GHSA-f88m-g3jw-g9cj",
         "https://github.com/advisories/GHSA-fxqj-rqcc-2cmp"
       ],
-      "repair_attempts": [],
+      "repair_attempts": [
+        "Updated Next.js and eslint-config-next to 16.3.4 and tsx to 4.23.13 without changing the React or application contract surface.",
+        "Ran a clean install, npm audit, the full local release gate, GitHub Release gate and CodeQL on exact A01 implementation SHA 00d345eb29ecff3a8b031276a58d24b2a73972f1."
+      ],
       "strategy_reset": null,
       "quarantine_scope": [
         "release-readiness claims for the main-branch dependency graph"
       ],
       "deferred_external_infra": [],
-      "resolved": false,
-      "resolution_ref": null,
-      "remaining_uncertainty": [
-        "Runtime exploitability was not individually assessed in the API_SE_001 documentation/discovery mutation cone.",
-        "The available Next.js 16.3.3 update still needs exact-head type, lint, test, build and audit proof after convergence with current work."
-      ],
-      "next_action": "Converge the existing dependency-update pull requests or an equivalent Next.js 16.3.3 lockfile update, then rerun the full release gate and npm audit on the exact candidate SHA."
+      "resolved": true,
+      "resolution_ref": "engineering/execution/readiness/A01_READINESS_EVIDENCE_20260902.json",
+      "remaining_uncertainty": [],
+      "next_action": "Retain exact-lockfile audit and Release gate evidence for subsequent dependency updates."
     },
     {
       "failure_id": "API_SE_014_DOCKER_SOCKET_SANDBOX_20260829",
@@ -1132,6 +1132,144 @@
       "resolution_ref": "API_PC_012_LOCAL_CANONICAL_CONTEXT_HARDENING_20260831",
       "remaining_uncertainty": ["Cold offline builds remain dependent on the configured external font."],
       "next_action": "Preserve the exact-SHA successful build evidence without treating the sandbox denial as an application failure."
+    },
+    {
+      "failure_id": "A01_TURBOPACK_LOCAL_SOCKET_20260902",
+      "project_id": "A01",
+      "observed_at": "2026-09-02T06:10:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "00d345eb29ecff3a8b031276a58d24b2a73972f1",
+      "environment": "local",
+      "layer": "production-build-bundler",
+      "symptom": "After the patched Next.js update, the default Turbopack production build could not create its PostCSS worker process because the local execution environment denied port binding.",
+      "expected": "The canonical package build creates an optimized production application from a clean dependency install.",
+      "actual": "Next.js's supported webpack production path compiled, typed, generated and traced every route; package.json now selects that path explicitly, and GitHub Release gate 33597984639 passed it at the exact implementation SHA.",
+      "classification": {
+        "domain": "TOOL",
+        "class": "UNAVAILABLE",
+        "retry": "NEVER",
+        "severity": "INFO"
+      },
+      "evidence_refs": [
+        "first npm run verify Turbopack binding failure",
+        "package.json",
+        "GitHub Release gate run 33597984639",
+        "https://nextjs.org/docs/app/api-reference/turbopack#using-webpack-instead"
+      ],
+      "repair_attempts": [
+        "Retried the default Turbopack build with scoped network access after the initial Google Fonts denial; the environment still denied the worker socket.",
+        "Ran npx next build --webpack to isolate the failure from application source and confirmed a complete production build.",
+        "Made the documented webpack path the deterministic release command and reran the full local and GitHub release gates."
+      ],
+      "strategy_reset": "Use Next.js's supported explicit webpack production path while retaining Turbopack for development.",
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "engineering/execution/readiness/A01_READINESS_EVIDENCE_20260902.json",
+      "remaining_uncertainty": [
+        "The local environment's Turbopack worker socket limitation was not reproduced in GitHub or Vercel because the canonical release build now uses webpack."
+      ],
+      "next_action": "Keep npm run build explicit and revisit Turbopack only in a separate measured build-system change."
+    },
+    {
+      "failure_id": "A01_PRODUCTION_RLS_CREDENTIAL_GATE_20260902",
+      "project_id": "A01",
+      "observed_at": "2026-09-02T06:20:23Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "00d345eb29ecff3a8b031276a58d24b2a73972f1",
+      "environment": "production",
+      "layer": "managed-database-and-release-gate",
+      "symptom": "Production health remains intentionally fail closed because one required relation, two least-privilege roles, forced RLS and legacy grant convergence are absent; the exact candidate preview is access-protected and managed migration, credential and promotion authority are not present.",
+      "expected": "The same exact production SHA reports 40/40, zero violations, livez=200, readyz=200 and healthz=200 after an authorized migration with tested managed recovery.",
+      "actual": "Production SHA 6f7191f0f5e59153541271ea291f3727015f5741 reports livez=200 and readyz=200 but healthz=503 with 39/40 and 61 violations. The exact candidate passes 40/40 and rollback in isolated Postgres, Release gate, CodeQL and a Vercel preview build, but production DDL, DATABASE_URL principal membership, managed recovery and promotion were not exercised.",
+      "classification": {
+        "domain": "DATA",
+        "class": "DENIED",
+        "retry": "HUMAN",
+        "severity": "ERROR"
+      },
+      "evidence_refs": [
+        "engineering/execution/readiness/A01_READINESS_EVIDENCE_20260902.json",
+        "engineering/execution/handoffs/A01_CONTROLLER_HANDOFF.md",
+        "docs/runbooks/A01_PRODUCTION_READINESS_GATE.md",
+        "production request 7884a0ba-538e-4f52-b42e-4dcfcbafe84a",
+        "Vercel preview E63DinBh2roTbkwWttTGxTw3Xfsp"
+      ],
+      "repair_attempts": [
+        "Confirmed the database connection path independently recovered and the transaction pooler is detected.",
+        "Read the production catalogs without mutation and reduced the health failure to one missing relation, two missing roles, 29 non-forced relations and 29 legacy grants.",
+        "Reproduced the exact 61-violation signature, reached 40/40 and restored the failing baseline in an isolated PostgreSQL 16 container.",
+        "Published an exact-SHA preview and attempted authenticated preview fetch through the Vercel connector; deployment authorization was unavailable."
+      ],
+      "strategy_reset": "Quarantine only the managed production mutation and protected-canary cone; preserve fail-closed production behavior and the verified candidate.",
+      "quarantine_scope": [
+        "managed production migration",
+        "deployed DATABASE_URL principal membership or credential change",
+        "managed restore/PITR proof",
+        "protected preview canary",
+        "production promotion and authoritative 40/40 observation"
+      ],
+      "deferred_external_infra": [
+        "Supabase project cfwkqhenhnvnnwpxdjns production owner and recovery window",
+        "Vercel project prj_hEQQeozR9ZfauHr1QWvxZiZ3A9pQ release owner and deployment access"
+      ],
+      "resolved": false,
+      "resolution_ref": null,
+      "remaining_uncertainty": [
+        "Local dump/restore proves migration reversibility in a production-like shape, not managed PITR readiness or the deployed login principal's compatibility.",
+        "A READY deployment badge does not prove preview health, production health or canonical catalog state."
+      ],
+      "next_action": "A named database and release owner follows docs/runbooks/A01_PRODUCTION_READINESS_GATE.md and records the managed restore point, migration receipt, principal membership, exact deployment ID and post-promotion readbacks."
+    },
+    {
+      "failure_id": "A01_PRODUCTION_READINESS_PREPARED_STATEMENT_20260902",
+      "project_id": "A01",
+      "observed_at": "2026-09-02T07:16:56Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a",
+      "environment": "production-old-sha-and-exact-candidate",
+      "layer": "dependency-readiness-database-probe",
+      "symptom": "Production readyz intermittently returned 503 even though healthz could still query the canonical database.",
+      "expected": "The dependency-readiness SELECT 1 probe remains stable through the configured Supavisor transaction pooler.",
+      "actual": "Managed PostgreSQL logs at 2026-09-02T07:16:56.418Z and 2026-09-02T07:20:53.675Z reported prepared statement readiness-v1 already exists. The old production route sent a client-named node-postgres statement through a pooled backend whose prepared-statement state the serverless process did not own.",
+      "classification": {
+        "domain": "PLATFORM",
+        "class": "INVALID",
+        "retry": "NEVER",
+        "severity": "ERROR"
+      },
+      "evidence_refs": [
+        "production request 0535093e-760e-4fdf-89a8-47dbe6cfb112",
+        "production request 3b391fb8-69be-4ba2-a3c4-54f5fdca8211",
+        "Supabase PostgreSQL logs at 2026-09-02T07:16:56.418Z and 2026-09-02T07:20:53.675Z",
+        "src/app/api/v1/readyz/route.ts",
+        "src/modules/platform-contracts/tests/execution-contracts.test.ts",
+        "engineering/execution/readiness/A01_PRODUCTION_PREFLIGHT_20260902.json",
+        "commit:0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a",
+        "github-actions:33603316756",
+        "github-actions:33603316773",
+        "vercel:7GjEgvN54RoN8JbrSnVS7TFrU7G2"
+      ],
+      "repair_attempts": [
+        "Correlated the bounded readyz failure timestamps with managed PostgreSQL logs.",
+        "Removed the client-provided prepared-statement name while retaining the exact SELECT 1 dependency probe.",
+        "Added a test-sensitive assertion that the route uses an unnamed query and cannot reintroduce readiness-v1.",
+        "Ran typecheck, lint, 225/225 tests, production build, GitHub Release gate and CodeQL at the exact candidate SHA."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [
+        "production dependency-readiness finality until the exact candidate is canary-proven and promoted"
+      ],
+      "deferred_external_infra": [
+        "Vercel protected preview canary",
+        "exact-SHA production promotion"
+      ],
+      "resolved": false,
+      "resolution_ref": "candidate:0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a",
+      "remaining_uncertainty": [
+        "The code defect is locally and independently repaired, but production remains on the old SHA and can still reproduce it."
+      ],
+      "next_action": "After the managed recovery and Vercel access gates pass, canary and promote exact candidate 0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a, then prove repeated readyz=200 through the production pooler."
     }
   ]
 }

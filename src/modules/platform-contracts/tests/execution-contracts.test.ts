@@ -171,3 +171,9 @@ test("health scopes remain distinct and connector configuration is not observati
   assert.match(runtime, /observedAt:\s*null/);
   assert.match(runtime, /authoritative Google Drive reachability/);
 });
+
+test("dependency readiness does not use a named statement through the transaction pooler", () => {
+  const readiness = readFileSync("src/app/api/v1/readyz/route.ts", "utf8");
+  assert.match(readiness, /databasePool\(\)\.query\("select 1"\)/);
+  assert.doesNotMatch(readiness, /name:\s*["']readiness-v1["']/);
+});

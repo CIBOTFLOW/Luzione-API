@@ -133,6 +133,19 @@ export type RlsViolation = {
   table: string;
 };
 
+export type A01ReadinessSignature = {
+  expectedTableCount: number;
+  failedProbeCount: number;
+  legacyServiceRoleTables: string[];
+  missingRoles: string[];
+  missingTables: string[];
+  notForcedTables: string[];
+  observedTableCount: number;
+  otherViolationCodes: string[];
+  status: "FAIL" | "PASS";
+  violationCount: number;
+};
+
 type QueryClient = {
   query(sql: string): Promise<unknown>;
 };
@@ -270,5 +283,46 @@ export function evaluateRlsPosture(input: {
     probes: input.probes ?? [],
     rolePostureRowsObserved: roleRows.length,
     violations,
+  };
+}
+
+/**
+ * Produce a deterministic, non-secret readiness signature for release evidence.
+ * The full authenticated readback remains authoritative; this projection makes
+ * aggregate health failures test-sensitive without exposing catalog or connection
+ * details through a public route.
+ */
+export function a01ReadinessSignature(input: {
+  expectedTableCount: number;
+  observedTableCount: number;
+  status: "FAIL" | "PASS";
+  violations: readonly RlsViolation[];
+}): A01ReadinessSignature {
+  const violationsFor = (code: RlsViolation["code"]) => input.violations
+    .filter((violation) => violation.code === code);
+  const selectedCodes = new Set<RlsViolation["code"]>([
+    "ACTIVE_DENIAL_PROBE_FAILED",
+    "LEGACY_SERVICE_ROLE_PRIVILEGE_PRESENT",
+    "RLS_NOT_FORCED",
+    "ROLE_MISSING",
+    "TABLE_MISSING",
+  ]);
+  return {
+    expectedTableCount: input.expectedTableCount,
+    failedProbeCount: violationsFor("ACTIVE_DENIAL_PROBE_FAILED").length,
+    legacyServiceRoleTables: violationsFor("LEGACY_SERVICE_ROLE_PRIVILEGE_PRESENT")
+      .map((violation) => violation.table).sort(),
+    missingRoles: violationsFor("ROLE_MISSING")
+      .map((violation) => violation.role ?? "<unknown>").sort(),
+    missingTables: violationsFor("TABLE_MISSING")
+      .map((violation) => violation.table).sort(),
+    notForcedTables: violationsFor("RLS_NOT_FORCED")
+      .map((violation) => violation.table).sort(),
+    observedTableCount: input.observedTableCount,
+    otherViolationCodes: input.violations
+      .filter((violation) => !selectedCodes.has(violation.code))
+      .map((violation) => violation.code).sort(),
+    status: input.status,
+    violationCount: input.violations.length,
   };
 }

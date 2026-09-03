@@ -1,0 +1,163 @@
+{
+  "schema_version": 1,
+  "project_id": "A01",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "branch": "codex/a01-api-readiness-restoration",
+  "observed_at": "2026-09-02T07:25:19Z",
+  "controller": {
+    "queue_blob_sha": "2213eed730f9910f7d86b286d771b210592ee376",
+    "status": "evidence_submitted",
+    "decision": "rejected_for_final_acceptance",
+    "a02_status": "blocked_on_A01_and_D01"
+  },
+  "candidate": {
+    "implementation_sha": "0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a",
+    "change": "Remove the named readiness-v1 prepared statement from the Supavisor transaction-pooler probe.",
+    "local_verification": "PASS_TYPECHECK_LINT_225_OF_225_TESTS_PRODUCTION_BUILD",
+    "disposable_rehearsal": "PASS_EXACT_39_OF_40_TO_40_OF_40_WITH_NEGATIVE_TESTS_AND_ROLLBACK_RESTORE",
+    "release_gate": {
+      "run_id": 33603316756,
+      "conclusion": "success"
+    },
+    "codeql": {
+      "run_id": 33603316773,
+      "conclusion": "success"
+    },
+    "preview": {
+      "deployment_id": "7GjEgvN54RoN8JbrSnVS7TFrU7G2",
+      "url": "https://luzione-api-git-codex-a01-ap-f5c72d-connor-spiegelmans-projects.vercel.app",
+      "status": "READY_ACCESS_PROTECTED",
+      "http_observation": "RELEASE_READYZ_HEALTHZ_REDIRECT_302_TO_VERCEL_SSO",
+      "connector_access": "UNAVAILABLE_PROJECT_AND_DEPLOYMENT_NOT_VISIBLE_TO_CONNECTED_VERCEL_ACCOUNT"
+    }
+  },
+  "production": {
+    "release_sha": "6f7191f0f5e59153541271ea291f3727015f5741",
+    "deployment_id": "dpl_3TCkqyjzYwebcrDpjAdaw69Hc7SZ",
+    "release": {
+      "http": 200,
+      "request_id": "3e04bd45-d9d9-4cc6-8e3f-de80db379fe9"
+    },
+    "livez": {
+      "http": 200,
+      "status": "LIVE",
+      "request_id": "78f3df20-25b6-45c0-a5e0-ce4c75ab67e9"
+    },
+    "readyz": {
+      "initial_http": 200,
+      "latest_http": 503,
+      "latest_status": "NOT_READY_DATABASE_UNAVAILABLE",
+      "latest_request_id": "3b391fb8-69be-4ba2-a3c4-54f5fdca8211",
+      "root_cause": "NAMED_PREPARED_STATEMENT_COLLISION_THROUGH_SUPAVISOR_TRANSACTION_POOLER",
+      "postgres_errors": [
+        {
+          "observed_at": "2026-09-02T07:16:56.418Z",
+          "message": "prepared statement readiness-v1 already exists"
+        },
+        {
+          "observed_at": "2026-09-02T07:20:53.675Z",
+          "message": "prepared statement readiness-v1 already exists"
+        }
+      ]
+    },
+    "healthz": {
+      "http": 503,
+      "status": "SECURITY_POSTURE_REQUIRED",
+      "expected_relations": 40,
+      "observed_relations": 39,
+      "violation_count": 61,
+      "mutations": "DISABLED_FAIL_CLOSED",
+      "external_effects_authorized": false,
+      "request_id": "4c68dd92-a716-4a91-9f18-e403586d916c"
+    }
+  },
+  "database_principal_review": {
+    "identification_method": "Supabase pg_stat_activity immediately after a production readiness request",
+    "login": "luzione_api_readiness",
+    "application_name": "Supavisor",
+    "attributes": {
+      "login": true,
+      "inherit": false,
+      "superuser": false,
+      "create_database": false,
+      "create_role": false,
+      "replication": false,
+      "bypass_rls": false
+    },
+    "memberships": [
+      "anon",
+      "authenticated",
+      "luzione_api_projection"
+    ],
+    "owned_public_relations": 0,
+    "effective_public_table_privileges": {
+      "select": 0,
+      "insert": 0,
+      "update": 0,
+      "delete": 0,
+      "truncate": 0,
+      "trigger": 0
+    },
+    "schema_usage": true,
+    "schema_create": false,
+    "decision": "DO_NOT_ENABLE_INHERIT_OR_CHANGE_CREDENTIAL_WITHOUT_SEPARATE_REVIEW",
+    "reason": "The login is deliberately NOINHERIT and already has three memberships. Enabling inheritance to activate a new runtime membership would also change the authority of its existing memberships."
+  },
+  "managed_recovery": {
+    "supabase_project": "cfwkqhenhnvnnwpxdjns",
+    "project_status": "ACTIVE_HEALTHY",
+    "database_version": "17.6.1.141",
+    "organization_plan": "pro",
+    "plan_entitlement": "Supabase documents daily physical backups and seven days of daily-backup access for Pro projects.",
+    "development_branches": 0,
+    "latest_backup_receipt": null,
+    "pitr_window": null,
+    "status": "UNVERIFIED",
+    "blocker": "The connected Supabase tools can query and migrate the database but expose no list-backups operation; no project-specific backup ID, timestamp, status, or PITR window could be recorded. Plan entitlement is not a verified restore point."
+  },
+  "migration_preflight": {
+    "applied": false,
+    "migration_history_contains_candidates": false,
+    "files": [
+      {
+        "version": "20260831070000",
+        "path": "supabase/migrations/20260831070000_order_fulfillment_intent_dark_path.sql",
+        "sha256": "a179b3d6d38fbdb7e9fc6ab1179e0f60572f43062c6ba7ea45ca8583794fa982"
+      },
+      {
+        "version": "20260831090000",
+        "path": "supabase/migrations/20260831090000_api_pc_013_least_privilege_roles_rls.sql",
+        "sha256": "281615cbd3c421fe40893ca415cef25b645ed033c6e9573d6c3540b8ac803dc1"
+      }
+    ],
+    "security_advisors": {
+      "observed_at": "2026-09-02T07:20:44.508Z",
+      "total": 439,
+      "warnings": {
+        "function_search_path_mutable": 1,
+        "extension_in_public": 1
+      },
+      "informational_rls_enabled_no_policy": 437
+    },
+    "performance_advisors": {
+      "observed_at": "2026-09-02T07:20:42.524Z",
+      "total": 858,
+      "warnings": {
+        "auth_rls_initplan": 212,
+        "duplicate_index": 6
+      }
+    }
+  },
+  "production_actions": {
+    "database_ddl": "NOT_RUN",
+    "role_or_credential_change": "NOT_RUN",
+    "preview_access_change": "NOT_RUN",
+    "production_promotion": "NOT_RUN",
+    "rollback": "NOT_RUN"
+  },
+  "acceptance": {
+    "status": "BLOCKED",
+    "stop_reason": "MANAGED_RECOVERY_AND_VERCEL_RELEASE_ACCESS_UNRESOLVED",
+    "strongest_claim": "The newly observed pooler-specific readiness defect is repaired and verified at an exact local/CI/Ready-preview candidate. Production remains on the old SHA, its dependency readiness is intermittently 503, its security posture is 39/40 with 61 violations, and no managed restore point can be verified through the available authority."
+  }
+}

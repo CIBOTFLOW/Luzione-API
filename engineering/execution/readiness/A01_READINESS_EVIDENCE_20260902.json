@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "project_id": "A01",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "branch": "codex/a01-api-readiness-restoration",
+  "starting_sha": "6f7191f0f5e59153541271ea291f3727015f5741",
+  "implementation_sha": "00d345eb29ecff3a8b031276a58d24b2a73972f1",
+  "recorded_at": "2026-09-02T06:21:00Z",
+  "engineering_state": "BOUNDED_PASS",
+  "release_evidence": "LOCAL_PROVEN",
+  "effect_authority": "NO_EFFECT",
+  "finality": "BOUNDED_CLAIM",
+  "release_gate": {
+    "clean_install": "PASS_391_PACKAGES_ZERO_VULNERABILITIES",
+    "compliance": "PASS_7_CONTROLS",
+    "typecheck": "PASS",
+    "lint": "PASS",
+    "tests": "PASS_224_OF_224",
+    "production_build": "PASS_NEXT_16_3_4_WEBPACK",
+    "github_release_gate": {
+      "run_id": 33597984639,
+      "conclusion": "success",
+      "exact_sha": "00d345eb29ecff3a8b031276a58d24b2a73972f1"
+    },
+    "github_codeql": {
+      "run_id": 33597984671,
+      "conclusion": "success",
+      "exact_sha": "00d345eb29ecff3a8b031276a58d24b2a73972f1"
+    }
+  },
+  "production_drift_observed": {
+    "observed_at": "2026-09-02T06:20:23.434Z",
+    "release_sha": "6f7191f0f5e59153541271ea291f3727015f5741",
+    "deployment_id": "dpl_3TCkqyjzYwebcrDpjAdaw69Hc7SZ",
+    "github_deployment_id": 6216256560,
+    "livez": {
+      "http": 200,
+      "status": "LIVE",
+      "request_id": "496e02aa-bdb2-4f52-b42e-4dcfcbafe84a"
+    },
+    "readyz": {
+      "http": 200,
+      "status": "READY",
+      "database": "READY",
+      "pooler": "DETECTED",
+      "request_id": "2de47f32-fe10-4a95-8cb8-3c425d7f1ef2"
+    },
+    "healthz": {
+      "http": 503,
+      "status": "SECURITY_POSTURE_REQUIRED",
+      "expected_relations": 40,
+      "observed_relations": 39,
+      "violation_count": 61,
+      "mutations": "DISABLED_FAIL_CLOSED",
+      "external_effects_authorized": false,
+      "request_id": "7884a0ba-538e-486d-be7d-51117e555762"
+    },
+    "catalog_signature": {
+      "missing_relations": ["public.order_fulfillment_intents"],
+      "missing_roles": ["luzione_api_runtime", "luzione_provider_worker"],
+      "not_forced_rls_relations": 29,
+      "legacy_service_role_select_relations": 29,
+      "rls_disabled_public_relations": 0,
+      "client_accessible_rls_disabled_relations": 0
+    }
+  },
+  "disposable_acceptance": {
+    "command": "npm run proof:a01-readiness",
+    "environment": "isolated-postgres-16-container",
+    "pre_migration": "PASS_EXACT_39_OF_40_AND_61_VIOLATIONS",
+    "candidate": "PASS_40_OF_40_ZERO_VIOLATIONS",
+    "active_denial_probes": 4,
+    "client_role_denials": 90,
+    "cross_tenant_insert_denied": true,
+    "missing_tenant_rows": 0,
+    "worker_scoped_relations": 6,
+    "migration_reapplication": "PASS_IDEMPOTENT",
+    "rollback_restore": "PASS_PRE_MIGRATION_SIGNATURE_RESTORED",
+    "migration_checksums": {
+      "20260831070000_order_fulfillment_intent_dark_path.sql": "a179b3d6d38fbdb7e9fc6ab1179e0f60572f43062c6ba7ea45ca8583794fa982",
+      "20260831090000_api_pc_013_least_privilege_roles_rls.sql": "281615cbd3c421fe40893ca415cef25b645ed033c6e9573d6c3540b8ac803dc1"
+    }
+  },
+  "preview": {
+    "project_id": "prj_hEQQeozR9ZfauHr1QWvxZiZ3A9pQ",
+    "deployment_id": "E63DinBh2roTbkwWttTGxTw3Xfsp",
+    "deployment_url": "https://luzione-api-git-codex-a01-ap-f5c72d-connor-spiegelmans-projects.vercel.app",
+    "status": "READY_ACCESS_PROTECTED",
+    "exact_sha": "00d345eb29ecff3a8b031276a58d24b2a73972f1",
+    "health_canary": "NOT_EXERCISED_VERCEL_AUTHORIZATION_UNAVAILABLE"
+  },
+  "managed_migration_status": "NOT_APPLIED",
+  "production_gate": {
+    "status": "BLOCKED_PENDING_NAMED_PRODUCTION_AND_RECOVERY_AUTHORITY",
+    "required_resources": [
+      "Supabase project cfwkqhenhnvnnwpxdjns managed restore point or verified PITR window",
+      "application of the two checksummed API-owned migrations in order",
+      "Vercel project prj_hEQQeozR9ZfauHr1QWvxZiZ3A9pQ DATABASE_URL principal membership review",
+      "exact-candidate production promotion and post-promotion readback"
+    ],
+    "acceptance": "40/40, zero violations, livez=200, readyz=200 and healthz=200 at the same exact production SHA",
+    "runbook": "docs/runbooks/A01_PRODUCTION_READINESS_GATE.md"
+  }
+}
