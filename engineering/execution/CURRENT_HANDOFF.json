@@ -109,9 +109,9 @@
   "api_stage5_001": {
     "status": "EXACT_IMPLEMENTATION_AND_MANAGED_RECOVERY_PASS_PUBLICATION_PENDING_PRODUCTION_BLOCKED",
     "branch": "codex/stage5-authority-outcomes-v2",
-    "candidate_sha": "6f61c9c1aeeab41c8332cbfa049a4fe965a50f0a",
+    "candidate_sha": "ad5a305b22c3af4f074f7e3f105028a2b9306e81",
     "sha_lineage": {
-      "implementation_sha": "6f61c9c1aeeab41c8332cbfa049a4fe965a50f0a",
+      "implementation_sha": "ad5a305b22c3af4f074f7e3f105028a2b9306e81",
       "working_tree_base_sha": "bf61bc86c659992beb99a059a8702d6711b722eb",
       "evidence_snapshot_sha": null,
       "evidence_snapshot_state": "PENDING_FINAL_IMPLEMENTATION_EVIDENCE_COMMIT",

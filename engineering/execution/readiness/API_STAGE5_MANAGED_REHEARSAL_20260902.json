@@ -2,14 +2,14 @@
   "schema_version": 2,
   "evidence_id": "API_STAGE5_MANAGED_REHEARSAL_20260902",
   "repository": "CIBOTFLOW/Luzione-API",
-  "source_candidate_sha": "6f61c9c1aeeab41c8332cbfa049a4fe965a50f0a",
+  "source_candidate_sha": "ad5a305b22c3af4f074f7e3f105028a2b9306e81",
   "sha_lineage": {
-    "implementation_sha": "6f61c9c1aeeab41c8332cbfa049a4fe965a50f0a",
+    "implementation_sha": "ad5a305b22c3af4f074f7e3f105028a2b9306e81",
     "working_tree_base_sha": "bf61bc86c659992beb99a059a8702d6711b722eb",
     "evidence_snapshot_sha": null,
     "evidence_snapshot_state": "PENDING_FINAL_IMPLEMENTATION_EVIDENCE_COMMIT",
     "managed_rehearsal_first_committed_source_sha": "360679b0a6c64e789b7176cffe4480d00aaee34f",
-    "managed_rehearsal_note": "The final managed run exercised the exact implementation at 6f61c9c1aeeab41c8332cbfa049a4fe965a50f0a after the A01 prerequisite migrations. It exposed and repaired a hosted-role ALTER portability fault, a BEFORE-trigger/generated-column lineage fault, and three uncovered foreign keys before the final rollback/recovery pass.",
+    "managed_rehearsal_note": "The final managed run exercised the exact source tree published as ad5a305b22c3af4f074f7e3f105028a2b9306e81 after the A01 prerequisite migrations. It exposed and repaired a hosted-role ALTER portability fault, a BEFORE-trigger/generated-column lineage fault, and three uncovered foreign keys before the final rollback/recovery pass.",
     "prerequisite_migration_content_sha256": {
       "20260831070000_order_fulfillment_intent_dark_path.sql": "a179b3d6d38fbdb7e9fc6ab1179e0f60572f43062c6ba7ea45ca8583794fa982",
       "20260831090000_api_pc_013_least_privilege_roles_rls.sql": "40cce8f043c10a0b27537a6e8760a28109bd4b05f26bda134213737f18e6bcea"
@@ -39,7 +39,7 @@
   },
   "local_source_verification": {
     "recorded_at_utc": "2026-09-03T02:22:00.000Z",
-    "source_state": "IMPLEMENTATION_COMMIT_6f61c9c1aeeab41c8332cbfa049a4fe965a50f0a_ON_MERGED_A01_MAIN",
+    "source_state": "PUBLISHED_IMPLEMENTATION_COMMIT_ad5a305b22c3af4f074f7e3f105028a2b9306e81_ON_MERGED_A01_MAIN",
     "npm_run_verify": "PASS_TYPECHECK_LINT_ZERO_WARNINGS_257_OF_257_TESTS_NEXTJS_16_3_4_WEBPACK_BUILD",
     "focused_stage5_agent_security": "PASS_24_OF_24_FINAL_FOCUSED_PLUS_PRIOR_46_OF_46",
     "security_posture": "PASS_26_OF_26",

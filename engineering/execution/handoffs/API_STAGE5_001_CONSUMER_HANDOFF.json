@@ -2,10 +2,10 @@
   "schema_version": 1,
   "handoff_id": "API_STAGE5_001_TO_SULTAN_OS_AND_LUZIONE_UI",
   "producer_repository": "CIBOTFLOW/Luzione-API",
-  "producer_candidate_sha": "6f61c9c1aeeab41c8332cbfa049a4fe965a50f0a",
+  "producer_candidate_sha": "ad5a305b22c3af4f074f7e3f105028a2b9306e81",
   "producer_ref": "codex/stage5-authority-outcomes-v2",
   "sha_lineage": {
-    "implementation_sha": "6f61c9c1aeeab41c8332cbfa049a4fe965a50f0a",
+    "implementation_sha": "ad5a305b22c3af4f074f7e3f105028a2b9306e81",
     "working_tree_base_sha": "bf61bc86c659992beb99a059a8702d6711b722eb",
     "implementation_scope": "Runtime, contracts, migrations, and test-sensitivity source. Consumers must pin this SHA, not an evidence-only head.",
     "evidence_snapshot_sha": null,
@@ -490,7 +490,7 @@
   ],
   "verification": {
     "recorded_at_utc": "2026-09-03T02:22:00.000Z",
-    "source_state": "IMPLEMENTATION_COMMIT_6f61c9c1aeeab41c8332cbfa049a4fe965a50f0a_ON_MERGED_A01_MAIN_PUBLICATION_PENDING",
+    "source_state": "PUBLISHED_IMPLEMENTATION_COMMIT_ad5a305b22c3af4f074f7e3f105028a2b9306e81_ON_MERGED_A01_MAIN",
     "focused_tests": "PASS_24_OF_24_FINAL_FOCUSED_PLUS_PRIOR_46_OF_46",
     "full_tests": "PASS_257_OF_257",
     "strict_typecheck": "PASS",
