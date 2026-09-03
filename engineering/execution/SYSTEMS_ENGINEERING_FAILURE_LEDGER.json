@@ -1179,9 +1179,9 @@
       "exact_sha": "00d345eb29ecff3a8b031276a58d24b2a73972f1",
       "environment": "production",
       "layer": "managed-database-and-release-gate",
-      "symptom": "Production health remains intentionally fail closed because one required relation, two least-privilege roles, forced RLS and legacy grant convergence are absent; the exact candidate preview is access-protected and managed migration, credential and promotion authority are not present.",
-      "expected": "The same exact production SHA reports 40/40, zero violations, livez=200, readyz=200 and healthz=200 after an authorized migration with tested managed recovery.",
-      "actual": "Production SHA 6f7191f0f5e59153541271ea291f3727015f5741 reports livez=200 and readyz=200 but healthz=503 with 39/40 and 61 violations. The exact candidate passes 40/40 and rollback in isolated Postgres, Release gate, CodeQL and a Vercel preview build, but production DDL, DATABASE_URL principal membership, managed recovery and promotion were not exercised.",
+      "symptom": "Production health remains intentionally fail closed because the current exact release observes only 39 of 48 required relations and 69 RLS/grant posture violations; managed recovery, migration and rollback authority are not present.",
+      "expected": "The same exact production SHA reports the current 48/48 relation target, zero violations, livez=200, readyz=200 and healthz=200 after authorized migrations with tested managed recovery.",
+      "actual": "The original production SHA 6f7191f0f5e59153541271ea291f3727015f5741 reported healthz=503 with 39/40 and 61 violations. After PR #57 and Stage 5 PR #60 were merged externally, api.luzione.com automatically advanced to default head 7ee5a0a53a3434c3e00969dc626a4daad33f9dc0 / dpl_8b8nWrNAe5ydeGYNuPRJ8ir4Xwxz. Its canonical /api/v1/healthz remains deliberately fail closed at the expanded 39/48 target with 69 violations, mutations disabled and external effects unauthorized. The older PR #59 candidate passes only the pre-Stage-5 40/40 shape and is not current 48-relation managed-recovery evidence.",
       "classification": {
         "domain": "DATA",
         "class": "DENIED",
@@ -1193,21 +1193,26 @@
         "engineering/execution/handoffs/A01_CONTROLLER_HANDOFF.md",
         "docs/runbooks/A01_PRODUCTION_READINESS_GATE.md",
         "production request 7884a0ba-538e-4f52-b42e-4dcfcbafe84a",
-        "Vercel preview E63DinBh2roTbkwWttTGxTw3Xfsp"
+        "Vercel preview E63DinBh2roTbkwWttTGxTw3Xfsp",
+        "engineering/execution/readiness/A01_PUBLIC_ALIAS_ROUTE_RECONCILIATION_20260902.json",
+        "production:7ee5a0a53a3434c3e00969dc626a4daad33f9dc0",
+        "vercel:dpl_8b8nWrNAe5ydeGYNuPRJ8ir4Xwxz",
+        "production-request:41e5d849-f6b9-4ab8-a911-c4721136d365"
       ],
       "repair_attempts": [
         "Confirmed the database connection path independently recovered and the transaction pooler is detected.",
         "Read the production catalogs without mutation and reduced the health failure to one missing relation, two missing roles, 29 non-forced relations and 29 legacy grants.",
         "Reproduced the exact 61-violation signature, reached 40/40 and restored the failing baseline in an isolated PostgreSQL 16 container.",
-        "Published an exact-SHA preview and attempted authenticated preview fetch through the Vercel connector; deployment authorization was unavailable."
+        "Published an exact-SHA preview and attempted authenticated preview fetch through the Vercel connector; deployment authorization was unavailable.",
+        "Reconciled the externally changed default branch and public production alias without changing either, and confirmed canonical release/livez/readyz remain available while healthz rejects the expanded 39/48 posture."
       ],
-      "strategy_reset": "Quarantine only the managed production mutation and protected-canary cone; preserve fail-closed production behavior and the verified candidate.",
+      "strategy_reset": "Quarantine the managed current-schema mutation and recovery cone; preserve fail-closed production behavior and keep the older pre-Stage-5 candidate evidence explicitly scoped.",
       "quarantine_scope": [
         "managed production migration",
         "deployed DATABASE_URL principal membership or credential change",
         "managed restore/PITR proof",
         "protected preview canary",
-        "production promotion and authoritative 40/40 observation"
+        "authorized current-schema migration and authoritative 48/48 observation"
       ],
       "deferred_external_infra": [
         "Supabase project cfwkqhenhnvnnwpxdjns production owner and recovery window",
@@ -1217,9 +1222,9 @@
       "resolution_ref": null,
       "remaining_uncertainty": [
         "Local dump/restore proves migration reversibility in a production-like shape, not managed PITR readiness or the deployed login principal's compatibility.",
-        "A READY deployment badge does not prove preview health, production health or canonical catalog state."
+        "The older 40-relation rehearsal does not prove convergence or rollback for the current 48-relation target."
       ],
-      "next_action": "A named database and release owner follows docs/runbooks/A01_PRODUCTION_READINESS_GATE.md and records the managed restore point, migration receipt, principal membership, exact deployment ID and post-promotion readbacks."
+      "next_action": "The Supabase project owner records one exact managed backup or PITR receipt bound to production SHA 7ee5a0a53a3434c3e00969dc626a4daad33f9dc0 and deployment dpl_8b8nWrNAe5ydeGYNuPRJ8ir4Xwxz before any current-schema production migration is considered."
     },
     {
       "failure_id": "A01_PRODUCTION_READINESS_PREPARED_STATEMENT_20260902",
@@ -1231,7 +1236,7 @@
       "layer": "dependency-readiness-database-probe",
       "symptom": "Production readyz intermittently returned 503 even though healthz could still query the canonical database.",
       "expected": "The dependency-readiness SELECT 1 probe remains stable through the configured Supavisor transaction pooler.",
-      "actual": "Managed PostgreSQL logs at 2026-09-02T07:16:56.418Z and 2026-09-02T07:20:53.675Z reported prepared statement readiness-v1 already exists. The old production route sent a client-named node-postgres statement through a pooled backend whose prepared-statement state the serverless process did not own.",
+      "actual": "Managed PostgreSQL logs at 2026-09-02T07:16:56.418Z and 2026-09-02T07:20:53.675Z reported prepared statement readiness-v1 already exists. Independent recurrence review found five more identical errors from 2026-09-02T23:54:32.129Z through 23:54:55.070Z while production still ran the old SHA. The old route sent a client-named node-postgres statement through a pooled backend whose prepared-statement state the serverless process did not own. PR #57 was then externally squash-merged as bf61bc86c659992beb99a059a8702d6711b722eb, and production default head 7ee5a0a53a3434c3e00969dc626a4daad33f9dc0 contains the unnamed query. Twelve fresh canonical /api/v1/readyz samples on deployment dpl_8b8nWrNAe5ydeGYNuPRJ8ir4Xwxz returned 200/database READY.",
       "classification": {
         "domain": "PLATFORM",
         "class": "INVALID",
@@ -1248,28 +1253,158 @@
         "commit:0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a",
         "github-actions:33603316756",
         "github-actions:33603316773",
-        "vercel:7GjEgvN54RoN8JbrSnVS7TFrU7G2"
+        "vercel:7GjEgvN54RoN8JbrSnVS7TFrU7G2",
+        "engineering/execution/readiness/A01_REGRESSION_RECOVERY_20260902.json",
+        "github-actions:33702096449",
+        "github-artifact:9873897168",
+        "Supabase PostgreSQL logs from 2026-09-02T23:54:32.129Z through 2026-09-02T23:54:55.070Z",
+        "engineering/execution/readiness/A01_PUBLIC_ALIAS_ROUTE_RECONCILIATION_20260902.json",
+        "merge:bf61bc86c659992beb99a059a8702d6711b722eb",
+        "production:7ee5a0a53a3434c3e00969dc626a4daad33f9dc0",
+        "vercel:dpl_8b8nWrNAe5ydeGYNuPRJ8ir4Xwxz",
+        "production-request:91742acd-6239-449a-8d87-ae2701ecadd0"
       ],
       "repair_attempts": [
         "Correlated the bounded readyz failure timestamps with managed PostgreSQL logs.",
         "Removed the client-provided prepared-statement name while retaining the exact SELECT 1 dependency probe.",
         "Added a test-sensitive assertion that the route uses an unnamed query and cannot reintroduce readiness-v1.",
-        "Ran typecheck, lint, 225/225 tests, production build, GitHub Release gate and CodeQL at the exact candidate SHA."
+        "Ran typecheck, lint, 225/225 tests, production build, GitHub Release gate and CodeQL at the exact candidate SHA.",
+        "Bound the existing disposable recovery rehearsal and built HTTP readback to exact evidence SHA fd1698e80ea9873564c615ab5d2c5163e1c10812 in GitHub Actions, including 40/40 candidate readiness and fail-closed rollback.",
+        "Observed the identical repaired readyz source on externally merged default head 7ee5a0a53a3434c3e00969dc626a4daad33f9dc0 and recorded twelve successful database-ready production requests."
       ],
       "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "merge:bf61bc86c659992beb99a059a8702d6711b722eb;production:7ee5a0a53a3434c3e00969dc626a4daad33f9dc0;vercel:dpl_8b8nWrNAe5ydeGYNuPRJ8ir4Xwxz",
+      "remaining_uncertainty": [
+        "The twelve production samples are a bounded window rather than a long-running SLO window.",
+        "The available Supabase log page's newest event predates the new deployment, so it cannot independently establish a post-deployment zero-error interval."
+      ],
+      "next_action": "None for the source defect; retain the unnamed probe and continue ordinary exact-SHA readiness observation."
+    },
+    {
+      "failure_id": "A01_EXACT_PREVIEW_HTTP_ACCESS_20260902",
+      "project_id": "A01",
+      "observed_at": "2026-09-03T01:05:05Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "fd1698e80ea9873564c615ab5d2c5163e1c10812",
+      "environment": "preview",
+      "layer": "vercel-deployment-protection",
+      "symptom": "The exact-SHA Vercel preview built successfully, but release, livez, readyz and healthz all redirect to Vercel SSO and no scoped share link can be created by the connected identity.",
+      "expected": "An authorized reviewer can read the four exact-SHA preview endpoints through an expiring deployment-scoped access mechanism without disabling deployment protection.",
+      "actual": "Preview BxyW3w9ezAf2tm46NN3uNycEViMa is Ready at SHA fd1698e80ea9873564c615ab5d2c5163e1c10812, but direct requests return 302 to Vercel SSO, authenticated connector fetch cannot create access, and the deployment is not visible through the connected Vercel account.",
+      "classification": {
+        "domain": "AUTH",
+        "class": "DENIED",
+        "retry": "HUMAN",
+        "severity": "ERROR"
+      },
+      "evidence_refs": [
+        "engineering/execution/readiness/A01_REGRESSION_RECOVERY_20260902.json",
+        "vercel:BxyW3w9ezAf2tm46NN3uNycEViMa",
+        "github-deployment:6234868473",
+        "github-deployment-status:17709031739",
+        "preview-url:https://luzione-dzwaelsks-connor-spiegelmans-projects.vercel.app"
+      ],
+      "repair_attempts": [
+        "Requested a temporary deployment-scoped share link through the connected Vercel access tool.",
+        "Attempted authenticated connector fetches for release, livez, readyz and healthz.",
+        "Opened the protected readyz URL in the available browser session; it reached Vercel login with no authorized session.",
+        "Preserved SSO, aliases, secrets and project protection unchanged and produced a separate exact-SHA synthetic HTTP artifact without treating it as managed-preview proof."
+      ],
+      "strategy_reset": "Quarantine managed-preview HTTP finality and retain the successful immutable build plus synthetic exact-SHA artifact until the project owner supplies deployment-scoped access.",
       "quarantine_scope": [
-        "production dependency-readiness finality until the exact candidate is canary-proven and promoted"
+        "managed preview HTTP canary",
+        "Supavisor compatibility at the exact preview SHA",
+        "preview release-evidence promotion"
       ],
       "deferred_external_infra": [
-        "Vercel protected preview canary",
-        "exact-SHA production promotion"
+        "Vercel project prj_hEQQeozR9ZfauHr1QWvxZiZ3A9pQ owner or member access"
       ],
       "resolved": false,
-      "resolution_ref": "candidate:0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a",
+      "resolution_ref": null,
       "remaining_uncertainty": [
-        "The code defect is locally and independently repaired, but production remains on the old SHA and can still reproduce it."
+        "The deployed preview runtime and managed DATABASE_URL cannot be read back through protected ingress.",
+        "The CI artifact proves the built route behavior only against disposable direct PostgreSQL, not managed Supavisor."
       ],
-      "next_action": "After the managed recovery and Vercel access gates pass, canary and promote exact candidate 0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a, then prove repeated readyz=200 through the production pooler."
+      "next_action": "The Vercel project owner creates one expiring share link scoped to deployment BxyW3w9ezAf2tm46NN3uNycEViMa so L1 can capture release, livez, readyz and healthz readback without changing project protection."
+    },
+    {
+      "failure_id": "A01_SYNTHETIC_HTTP_PREVIEW_PORT_COLLISION_20260902",
+      "project_id": "A01",
+      "observed_at": "2026-09-03T01:01:55Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "fd1698e80ea9873564c615ab5d2c5163e1c10812",
+      "environment": "local",
+      "layer": "synthetic-http-evidence-harness",
+      "symptom": "The first local synthetic HTTP rehearsal could not bind fixed port 3101.",
+      "expected": "The evidence server starts without depending on a machine-specific port assignment.",
+      "actual": "Next.js returned EADDRINUSE for port 3101 before any HTTP assertion ran; the disposable database was removed by the existing cleanup trap.",
+      "classification": {
+        "domain": "PLATFORM",
+        "class": "CONFLICT",
+        "retry": "RECONCILE_FIRST",
+        "severity": "DEGRADED"
+      },
+      "evidence_refs": [
+        "scripts/validation/run-a01-readiness-rehearsal.sh",
+        "local-run:2026-09-03T01:01:55Z",
+        "github-actions:33702096449"
+      ],
+      "repair_attempts": [
+        "Replaced the fixed port with an ephemeral loopback port selected at runtime.",
+        "Reran the complete local rehearsal successfully through candidate and rollback HTTP readback.",
+        "Reran the exact-head GitHub job successfully and uploaded immutable artifact 9873897168."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "commit:fd1698e80ea9873564c615ab5d2c5163e1c10812;github-actions:33702096449",
+      "remaining_uncertainty": [],
+      "next_action": "None; retain ephemeral loopback port allocation in the synthetic evidence harness."
+    },
+    {
+      "failure_id": "A01_PUBLIC_ALIAS_ROUTE_SCOPE_MISINTERPRETATION_20260902",
+      "project_id": "A01",
+      "observed_at": "2026-09-03T03:09:01Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "7ee5a0a53a3434c3e00969dc626a4daad33f9dc0",
+      "environment": "production",
+      "layer": "http-route-contract",
+      "symptom": "The public alias returned HTML 404 for release, liveness and readiness probes at unversioned root and /api paths after its deployment marker changed.",
+      "expected": "The API-owned canonical versioned routes remain available on the current exact production deployment, while uncontracted paths fail closed rather than silently aliasing to a different semantic surface.",
+      "actual": "On deployment dpl_8b8nWrNAe5ydeGYNuPRJ8ir4Xwxz, /release, /livez, /readyz, /healthz and /api/release, /api/livez, /api/readyz, /api/healthz all returned 404 text/html. The same deployment returned JSON from the only API-owned routes declared by OpenAPI and source: /api/v1/release=200, /api/v1/livez=200, /api/v1/readyz=200 and /api/v1/healthz=503 fail closed. No routing regression or missing route implementation was found.",
+      "classification": {
+        "domain": "PLATFORM",
+        "class": "INVALID",
+        "retry": "NEVER",
+        "severity": "DEGRADED"
+      },
+      "evidence_refs": [
+        "engineering/execution/readiness/A01_PUBLIC_ALIAS_ROUTE_RECONCILIATION_20260902.json",
+        "contracts/openapi/luzione-api-v0.1.yaml",
+        "src/app/api/v1/release/route.ts",
+        "src/app/api/v1/livez/route.ts",
+        "src/app/api/v1/readyz/route.ts",
+        "src/app/api/v1/healthz/route.ts",
+        "production:7ee5a0a53a3434c3e00969dc626a4daad33f9dc0",
+        "vercel:dpl_8b8nWrNAe5ydeGYNuPRJ8ir4Xwxz"
+      ],
+      "repair_attempts": [
+        "Swept all eight reported unversioned paths and all four canonical /api/v1 paths against the same public alias.",
+        "Read the exact release identity from /api/v1/release and matched its SHA to origin/main.",
+        "Compared default-head source, OpenAPI, portal links and service-catalog ownership and found only /api/v1 routes declared.",
+        "Declined to add redirects or aliases because no compatibility contract or consumer inventory establishes ownership of the unversioned paths."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "engineering/execution/readiness/A01_PUBLIC_ALIAS_ROUTE_RECONCILIATION_20260902.json",
+      "remaining_uncertainty": [],
+      "next_action": "None; callers must use the published /api/v1 route contract unless a separately versioned compatibility requirement is admitted."
     }
   ]
 }

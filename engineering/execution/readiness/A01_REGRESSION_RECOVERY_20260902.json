@@ -1,0 +1,193 @@
+{
+  "schema_version": 1,
+  "project_id": "A01",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "controller_release": "CIBOTFLOW/Luzione-platform-program@f8f705527ab15038b9525fdaa41b322c7b76ebb9",
+  "observed_at": "2026-09-03T01:04:42Z",
+  "effect_authority": "NO_EFFECT",
+  "candidate": {
+    "branch": "codex/a01-readiness-regression-evidence-g0",
+    "pull_request": 59,
+    "pull_request_state": "OPEN_DRAFT_STACKED_ON_PR_57",
+    "exact_sha": "fd1698e80ea9873564c615ab5d2c5163e1c10812",
+    "runtime_implementation_sha": "0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a",
+    "runtime_change": "UNCHANGED_UNNAMED_SELECT_1_READINESS_PROBE",
+    "changed_paths": [
+      ".github/workflows/ci.yml",
+      "scripts/validation/run-a01-readiness-rehearsal.sh"
+    ],
+    "contract_versions_changed": []
+  },
+  "automated_ci": {
+    "release_gate": {
+      "run_id": 33702096449,
+      "conclusion": "success",
+      "exact_head_checkout": "fd1698e80ea9873564c615ab5d2c5163e1c10812",
+      "verify_job_id": 100483366851,
+      "verify_result": "PASS_COMPLIANCE_TYPECHECK_LINT_225_OF_225_TESTS_PRODUCTION_BUILD",
+      "a01_recovery_job_id": 100483366543,
+      "a01_recovery_result": "PASS_EXACT_HEAD_39_OF_40_TO_40_OF_40_HTTP_READBACK_NEGATIVES_AND_ROLLBACK"
+    },
+    "codeql": {
+      "run_id": 33702096468,
+      "conclusion": "success"
+    },
+    "readback_artifact": {
+      "artifact_id": 9873897168,
+      "name": "a01-readiness-fd1698e80ea9873564c615ab5d2c5163e1c10812",
+      "digest": "sha256:7a068f41e3aebb45155d17919e5abda4005018a983bc7c6e9e28659f0891b0d5",
+      "expires_at": "2026-12-02T01:03:32Z"
+    }
+  },
+  "synthetic_http_readback": {
+    "environment": "CI_SYNTHETIC_HTTP_PREVIEW_DISPOSABLE_POSTGRES",
+    "candidate": {
+      "release": {
+        "http": 200,
+        "exact_sha": "fd1698e80ea9873564c615ab5d2c5163e1c10812",
+        "evidence_state": "EXACT_RELEASE_BOUND",
+        "mutations": "DISABLED_FAIL_CLOSED",
+        "request_id": "eef6dd6d-eff6-4c0a-bc78-ee07f76516b5"
+      },
+      "livez": {
+        "http": 200,
+        "status": "LIVE",
+        "request_id": "907810b5-62d2-403b-95bf-332091e5b19e"
+      },
+      "readyz": {
+        "http": 200,
+        "status": "READY",
+        "database": "READY",
+        "request_id": "325ea7b4-ad1d-4087-949d-11b0be019bad"
+      },
+      "healthz": {
+        "http": 200,
+        "status": "READY_READ_ONLY",
+        "expected_relations": 40,
+        "observed_relations": 40,
+        "violation_count": 0,
+        "mutations": "DISABLED_FAIL_CLOSED",
+        "internal_projections": "DISABLED_FAIL_CLOSED",
+        "external_effects_authorized": false,
+        "request_id": "0fd2c429-0ffa-4aa1-91cd-d97aecb6b400"
+      }
+    },
+    "negative_paths": {
+      "active_denial_probes": 4,
+      "client_role_denials": 90,
+      "cross_tenant_insert_denied": true,
+      "missing_tenant_rows": 0,
+      "public_policies": 0,
+      "forced_rls_relations": 30
+    },
+    "rollback": {
+      "method": "RESTORE_PRE_MIGRATION_PG_DUMP_INTO_DISPOSABLE_DATABASE_AND_REMOVE_CANDIDATE_ROLES",
+      "readyz": {
+        "http": 200,
+        "status": "READY",
+        "database": "READY",
+        "request_id": "a1a7ebc4-296d-43a7-92ee-a0f51f3a0da8"
+      },
+      "healthz": {
+        "http": 503,
+        "status": "SECURITY_POSTURE_REQUIRED",
+        "expected_relations": 40,
+        "observed_relations": 39,
+        "violation_count": 61,
+        "mutations": "DISABLED_FAIL_CLOSED",
+        "external_effects_authorized": false,
+        "request_id": "c315b6ab-137d-4112-be4d-7aa8cb7e821f"
+      }
+    },
+    "claim_boundary": "ACCESSIBLE_GITHUB_ARTIFACT_AND_LOGS_ONLY_NOT_MANAGED_VERCEL_PREVIEW_OR_PRODUCTION"
+  },
+  "vercel_preview": {
+    "vercel_deployment_id": "BxyW3w9ezAf2tm46NN3uNycEViMa",
+    "github_deployment_id": 6234868473,
+    "github_deployment_status_id": 17709031739,
+    "exact_sha": "fd1698e80ea9873564c615ab5d2c5163e1c10812",
+    "environment_url": "https://luzione-dzwaelsks-connor-spiegelmans-projects.vercel.app",
+    "deployment_status": "SUCCESS_READY",
+    "http_readback": {
+      "release": "302_VERCEL_SSO",
+      "livez": "302_VERCEL_SSO",
+      "readyz": "302_VERCEL_SSO",
+      "healthz": "302_VERCEL_SSO"
+    },
+    "share_link_creation": "FAILED_CONNECTED_IDENTITY_CANNOT_ACCESS_PROJECT",
+    "canary_claim": "NOT_EXERCISED"
+  },
+  "production_reconciliation": {
+    "url": "https://api.luzione.com",
+    "exact_sha": "6f7191f0f5e59153541271ea291f3727015f5741",
+    "deployment_id": "dpl_3TCkqyjzYwebcrDpjAdaw69Hc7SZ",
+    "release": {
+      "http": 200,
+      "mutations": "DISABLED_FAIL_CLOSED",
+      "request_id": "db4d07ec-2212-4baf-8f2b-7e0ea705ce33"
+    },
+    "livez": {
+      "http": 200,
+      "status": "LIVE",
+      "request_id": "38a209d5-c36e-45a5-9584-14cfbf492e6d"
+    },
+    "healthz": {
+      "http": 503,
+      "status": "SECURITY_POSTURE_REQUIRED",
+      "expected_relations": 40,
+      "observed_relations": 39,
+      "violation_count": 61,
+      "mutations": "DISABLED_FAIL_CLOSED",
+      "external_effects_authorized": false,
+      "request_id": "c0cb1fa5-2b94-42b0-949d-07402b492a9e"
+    },
+    "readyz_samples": [
+      {"http": 200, "latency_ms": 3.5, "request_id": "b11b33e4-5abf-453c-af40-e301d62c0fc8"},
+      {"http": 200, "latency_ms": 3.3, "request_id": "523a0c1e-c20a-443b-a953-dce68e6a7945"},
+      {"http": 200, "latency_ms": 3.3, "request_id": "f8071f85-8bd3-4db2-b2c9-31c8f7d92103"},
+      {"http": 200, "latency_ms": 3.3, "request_id": "2275e7af-2a4e-4a4e-83d1-086122b05621"},
+      {"http": 200, "latency_ms": 3.6, "request_id": "4bf705fc-d9bd-4155-bdd3-14ad945172f3"},
+      {"http": 200, "latency_ms": 3.3, "request_id": "1eef50a9-f828-48cc-a585-2ba7ff6d026d"},
+      {"http": 200, "latency_ms": 3.3, "request_id": "17579ba9-06b5-41a7-b756-8d60ae4f1fd6"},
+      {"http": 200, "latency_ms": 3.3, "request_id": "366c2984-5e0a-4c0a-875f-3f4a01edcf68"}
+    ],
+    "supabase": {
+      "project_id": "cfwkqhenhnvnnwpxdjns",
+      "project_status": "ACTIVE_HEALTHY",
+      "postgres_version": "17.6.1.141",
+      "prepared_statement_collision_errors": [
+        {"timestamp": "2026-09-02T23:54:32.129Z", "log_id": "fe2a5a34-7b12-4a7d-b3bc-e092789cc927"},
+        {"timestamp": "2026-09-02T23:54:39.319Z", "log_id": "41a2f693-8b9f-4976-a8a3-8cfb5031a80b"},
+        {"timestamp": "2026-09-02T23:54:54.608Z", "log_id": "c01c0700-c28e-4066-b18e-8ebf0dd29f4d"},
+        {"timestamp": "2026-09-02T23:54:54.842Z", "log_id": "ce7fd55d-250e-437e-8784-1352a6064436"},
+        {"timestamp": "2026-09-02T23:54:55.070Z", "log_id": "6869feda-5b52-4fef-bc1d-880d70fec45f"}
+      ],
+      "interpretation": "Fresh successes show current availability only. They do not retire the intermittent named-statement defect on the old production SHA."
+    }
+  },
+  "a02_preservation": {
+    "pull_request": 58,
+    "terminal_head_sha": "5bd078db71fda5186cebd8c471988d4da298f649",
+    "implementation_sha": "f2d643a0913b888809c217adfd9bdcef0385b05a",
+    "versions": [
+      "luzione-shared-contracts/v0.2-draft.1",
+      "luzione-identity-tenant/v0.2-draft.1",
+      "luzione-command-envelope/v0.2-draft.1",
+      "luzione-receipt-envelope/v0.2-draft.1",
+      "luzione-readback-envelope/v0.2-draft.1"
+    ],
+    "changed": false,
+    "integration_gate": "BLOCKED_UNTIL_A01_AND_D01_G1"
+  },
+  "production_actions": {
+    "migration": "NOT_RUN",
+    "secret_or_credential_change": "NOT_RUN",
+    "database_principal_change": "NOT_RUN",
+    "deployment_protection_change": "NOT_RUN",
+    "promotion": "NOT_RUN",
+    "rollback": "NOT_RUN",
+    "default_branch_change": "NOT_RUN"
+  },
+  "strongest_claim": "The unchanged A01 unnamed-query runtime repair now has exact-head automated CI plus an accessible immutable synthetic HTTP readback artifact proving 40/40 readiness, denial paths, and fail-closed rollback. The managed Vercel preview built successfully but remains SSO-protected, production remains on the old SHA with an independently confirmed intermittent prepared-statement collision and 39/40 security posture, and A01 is not G1, integrated, or production-ready.",
+  "next_action": "The Vercel project owner creates one expiring share link scoped to deployment BxyW3w9ezAf2tm46NN3uNycEViMa so L1 can record exact-SHA release, livez, readyz and healthz HTTP readback without changing deployment protection."
+}
