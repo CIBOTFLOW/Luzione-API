@@ -1270,6 +1270,49 @@
         "The code defect is locally and independently repaired, but production remains on the old SHA and can still reproduce it."
       ],
       "next_action": "After the managed recovery and Vercel access gates pass, canary and promote exact candidate 0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a, then prove repeated readyz=200 through the production pooler."
+    },
+    {
+      "failure_id": "A02_CURRENT_MAIN_PREVIEW_PROTECTION_20260903",
+      "project_id": "A02",
+      "observed_at": "2026-09-03T05:20:42Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "12685f46a60edea23aaa0a5403e300bf8858066b",
+      "environment": "preview",
+      "layer": "exact-sha-application-readback",
+      "symptom": "The Git-bound A02 preview is Ready, but each canonical release and health route redirects to Vercel SSO and authenticated connector access could not be created.",
+      "expected": "An authorized observer can read /api/v1/release, /api/v1/livez, /api/v1/readyz and /api/v1/healthz and bind application behavior to the exact candidate SHA.",
+      "actual": "Direct requests to all four canonical routes returned HTTP 302 to Vercel SSO. The authenticated Vercel fetch reported that it was unable to create a shareable URL. No application response body was observed.",
+      "classification": {
+        "domain": "AUTH",
+        "class": "DENIED",
+        "retry": "HUMAN",
+        "severity": "DEGRADED"
+      },
+      "evidence_refs": [
+        "pull-request:CIBOTFLOW/Luzione-API#62",
+        "commit:12685f46a60edea23aaa0a5403e300bf8858066b",
+        "vercel:j2LwrHkUfLvJyGWXHfVYBRYZWzyw",
+        "preview-url:https://luzione-api-git-codex-a02-cu-102cdb-connor-spiegelmans-projects.vercel.app"
+      ],
+      "repair_attempts": [
+        "Opened a draft pull request so GitHub Actions and Git-integrated Vercel automation ran at the exact implementation SHA.",
+        "Confirmed Vercel Ready status through the exact commit status and PR deployment record.",
+        "Attempted all four canonical routes directly and through the authenticated Vercel connector without changing deployment protection."
+      ],
+      "strategy_reset": "Keep the preview application-readback claim deferred; retain local, CI and Ready-build evidence as separate bounded facts.",
+      "quarantine_scope": [
+        "authenticated preview application readback",
+        "any preview-proven or integrated A02 claim"
+      ],
+      "deferred_external_infra": [
+        "authorized Vercel project access or an approved protected-preview bypass"
+      ],
+      "resolved": false,
+      "resolution_ref": null,
+      "remaining_uncertainty": [
+        "The preview application may or may not return exact-SHA release and healthy dependency readback behind protected ingress."
+      ],
+      "next_action": "A Vercel-authorized observer reads the four canonical preview routes and records exact SHA, deployment ID, status, database readiness and fail-closed health truth without promoting the deployment."
     }
   ]
 }
