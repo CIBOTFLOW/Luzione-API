@@ -341,10 +341,61 @@ function parseRfqCanaryArguments(value: Readonly<Record<string, unknown>>): Sult
   if (!Array.isArray(value.evidenceRefs) || value.evidenceRefs.length < 1 || value.evidenceRefs.length > 20) throw new SultanAgentGatewayError("RFQ_CANARY_EVIDENCE_REQUIRED", "The RFQ canary requires bounded evidence references.", 422);
   const evidenceRefs = [...new Set(value.evidenceRefs.map((reference) => bounded(reference, "evidenceRef", 512)))];
   const content = `${subject}\n${bodyText}`;
-  const otherEmails = content.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi) ?? [];
-  if (otherEmails.some((email) => email.toLowerCase() !== SULTAN_RFQ_CANARY_RECIPIENT)) throw new SultanAgentGatewayError("RFQ_CANARY_PERSONAL_DATA_DENIED", "The RFQ canary cannot contain other email addresses.", 422);
+  if (containsEmailOtherThan(content, SULTAN_RFQ_CANARY_RECIPIENT)) throw new SultanAgentGatewayError("RFQ_CANARY_PERSONAL_DATA_DENIED", "The RFQ canary cannot contain other email addresses.", 422);
   if (/https?:\/\/|www\.|\b(?:confidential|secret|password|api[_ -]?key|social security)\b|\b\+?\d[\d ()-]{8,}\d\b/i.test(content)) throw new SultanAgentGatewayError("RFQ_CANARY_CONTENT_DENIED", "The RFQ canary cannot contain links, credentials, confidential markers, or personal phone-like data.", 422);
   return { recipient: SULTAN_RFQ_CANARY_RECIPIENT, subject, bodyText, contentClass: value.contentClass, evidenceRefs };
+}
+
+function containsEmailOtherThan(content: string, allowedEmail: string) {
+  const normalizedAllowed = allowedEmail.toLowerCase();
+  let cursor = 0;
+  while (cursor < content.length) {
+    if (!isEmailLocalCharacter(content.charCodeAt(cursor))) {
+      cursor += 1;
+      continue;
+    }
+
+    const localStart = cursor;
+    while (cursor < content.length && isEmailLocalCharacter(content.charCodeAt(cursor))) cursor += 1;
+    if (cursor >= content.length || content.charCodeAt(cursor) !== 64) continue;
+
+    const at = cursor;
+    cursor += 1;
+    const domainStart = cursor;
+    while (cursor < content.length && isEmailDomainCharacter(content.charCodeAt(cursor))) cursor += 1;
+
+    let domainEnd = cursor;
+    while (domainEnd > domainStart && (content.charCodeAt(domainEnd - 1) === 46 || content.charCodeAt(domainEnd - 1) === 45)) domainEnd -= 1;
+    let lastDot = domainEnd - 1;
+    while (lastDot > domainStart && content.charCodeAt(lastDot) !== 46) lastDot -= 1;
+
+    const hasBoundedShape = at > localStart
+      && lastDot > domainStart
+      && domainEnd - lastDot > 2
+      && allAsciiLetters(content, lastDot + 1, domainEnd);
+    if (hasBoundedShape && content.slice(localStart, domainEnd).toLowerCase() !== normalizedAllowed) return true;
+  }
+  return false;
+}
+
+function isEmailLocalCharacter(code: number) {
+  return isAsciiLetterOrDigit(code) || code === 46 || code === 95 || code === 37 || code === 43 || code === 45;
+}
+
+function isEmailDomainCharacter(code: number) {
+  return isAsciiLetterOrDigit(code) || code === 46 || code === 45;
+}
+
+function isAsciiLetterOrDigit(code: number) {
+  return (code >= 48 && code <= 57) || (code >= 65 && code <= 90) || (code >= 97 && code <= 122);
+}
+
+function allAsciiLetters(value: string, start: number, end: number) {
+  for (let index = start; index < end; index += 1) {
+    const code = value.charCodeAt(index);
+    if (!((code >= 65 && code <= 90) || (code >= 97 && code <= 122))) return false;
+  }
+  return true;
 }
 
 function validateRfqCanaryEvidence(call: SultanToolCall, observedCase: AuthoritativeCaseSnapshot, args: SultanRfqCanaryArguments) {

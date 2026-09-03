@@ -298,6 +298,15 @@ test("A2 RFQ canary stops at preparation and cannot reserve provider dispatch", 
 
   const altered = { ...args, recipient: "supplier@example.com" };
   await assert.rejects(() => service.invoke({ actor: actor(), call: call("luzione.supplier_rfq_email.send", altered) }), /exactly hello@ciflow.io/);
+
+  await assert.rejects(
+    () => service.invoke({ actor: actor(), call: call("luzione.supplier_rfq_email.send", { ...args, bodyText: "Send a copy to supplier@example.com." }) }),
+    (error: unknown) => error instanceof SultanAgentGatewayError && error.code === "RFQ_CANARY_PERSONAL_DATA_DENIED",
+  );
+  await assert.rejects(
+    () => service.invoke({ actor: actor(), call: call("luzione.supplier_rfq_email.send", { ...args, bodyText: `${"%".repeat(4_980)}x@y.io` }) }),
+    (error: unknown) => error instanceof SultanAgentGatewayError && error.code === "RFQ_CANARY_PERSONAL_DATA_DENIED",
+  );
 });
 
 test("command parser accepts only the versioned execution envelope", () => {
