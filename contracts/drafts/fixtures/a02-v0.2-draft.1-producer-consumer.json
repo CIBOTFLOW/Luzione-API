@@ -1,0 +1,284 @@
+{
+  "schemaVersion": "luzione-a02-producer-consumer-fixtures/v1",
+  "classification": "G0_FIELD_LEVEL_NO_EFFECT",
+  "sourceImplementationSha": "f2d643a0913b888809c217adfd9bdcef0385b05a",
+  "contractVersions": {
+    "bundle": "luzione-shared-contracts/v0.2-draft.1",
+    "identityTenant": "luzione-identity-tenant/v0.2-draft.1",
+    "command": "luzione-command-envelope/v0.2-draft.1",
+    "receipt": "luzione-receipt-envelope/v0.2-draft.1",
+    "readback": "luzione-readback-envelope/v0.2-draft.1"
+  },
+  "producer": {
+    "identityTenant": {
+      "authority": {
+        "authorityClass": "A0_READ_ONLY",
+        "capability": "fulfillment.readiness.evaluate",
+        "purpose": "synthetic-fulfillment-readiness"
+      },
+      "contractVersion": "luzione-identity-tenant/v0.2-draft.1",
+      "credentialActor": {
+        "actorId": "service:sultan-os",
+        "actorType": "service",
+        "credentialSource": "vercel-oidc"
+      },
+      "logicalActor": {
+        "actorId": "fulfillment-steward@v1",
+        "actorType": "agent",
+        "definitionVersion": "fulfillment-steward/v1",
+        "delegationEvidenceRef": "delegation-policy:v1"
+      },
+      "request": {
+        "correlationId": "correlation-a02-draft-1",
+        "requestId": "request-a02-draft-1",
+        "requestedAt": "2026-09-02T20:00:00.000Z",
+        "spanId": "0101010101010101",
+        "traceId": "01010101010101010101010101010101"
+      },
+      "serverDerived": true,
+      "sourceVersionRefs": [
+        "order:v7",
+        "policy:v3"
+      ],
+      "tenant": {
+        "boundary": "EXACT",
+        "source": "VERIFIED_CREDENTIAL",
+        "tenantId": "tenant-luzione"
+      }
+    },
+    "command": {
+      "activation": "DRAFT_ONLY",
+      "commandId": "command-a02-1",
+      "commandType": "fulfillment.readiness.evaluate",
+      "context": {
+        "authority": {
+          "authorityClass": "A0_READ_ONLY",
+          "capability": "fulfillment.readiness.evaluate",
+          "purpose": "synthetic-fulfillment-readiness"
+        },
+        "contractVersion": "luzione-identity-tenant/v0.2-draft.1",
+        "credentialActor": {
+          "actorId": "service:sultan-os",
+          "actorType": "service",
+          "credentialSource": "vercel-oidc"
+        },
+        "logicalActor": {
+          "actorId": "fulfillment-steward@v1",
+          "actorType": "agent",
+          "definitionVersion": "fulfillment-steward/v1",
+          "delegationEvidenceRef": "delegation-policy:v1"
+        },
+        "request": {
+          "correlationId": "correlation-a02-draft-1",
+          "requestId": "request-a02-draft-1",
+          "requestedAt": "2026-09-02T20:00:00.000Z",
+          "spanId": "0101010101010101",
+          "traceId": "01010101010101010101010101010101"
+        },
+        "serverDerived": true,
+        "sourceVersionRefs": [
+          "order:v7",
+          "policy:v3"
+        ],
+        "tenant": {
+          "boundary": "EXACT",
+          "source": "VERIFIED_CREDENTIAL",
+          "tenantId": "tenant-luzione"
+        }
+      },
+      "contractVersion": "luzione-command-envelope/v0.2-draft.1",
+      "expectedObjectVersion": "order:v7",
+      "idempotencyKey": "a02-command-1",
+      "payload": {
+        "orderId": "order-1",
+        "simulation": true
+      },
+      "payloadHash": "4604d0362d5663d771bc7e22aa9e01830004c0d56c3261d62baf466c442c27f7",
+      "policyVersionRefs": [
+        "policy:v3"
+      ],
+      "requestedAt": "2026-09-02T20:00:00.000Z",
+      "requestedEffect": {
+        "authorizationRef": null,
+        "effectClass": "NO_EFFECT"
+      },
+      "target": {
+        "objectId": "order-1",
+        "objectType": "order",
+        "objectVersion": "order:v7",
+        "ownerProject": "LUZIONE_COMMERCE_ORDER"
+      }
+    },
+    "receipt": {
+      "commandId": "command-a02-1",
+      "contractVersion": "luzione-receipt-envelope/v0.2-draft.1",
+      "correlationId": "correlation-a02-draft-1",
+      "effectAuthority": "NOT_GRANTED_BY_CONTRACT",
+      "evidence": {
+        "eventId": "event-a02-1",
+        "outboxMessageId": "outbox-a02-1"
+      },
+      "idempotency": {
+        "key": "a02-command-1",
+        "payloadHash": "4604d0362d5663d771bc7e22aa9e01830004c0d56c3261d62baf466c442c27f7",
+        "replay": false
+      },
+      "object": {
+        "id": "order-1",
+        "ownerProject": "LUZIONE_COMMERCE_ORDER",
+        "type": "order",
+        "version": "order:v8"
+      },
+      "receiptId": "receipt-a02-1",
+      "state": "DISPATCH_PENDING",
+      "tenantId": "tenant-luzione"
+    },
+    "readback": {
+      "businessFinal": true,
+      "contractVersion": "luzione-readback-envelope/v0.2-draft.1",
+      "evidence": {
+        "commandId": "command-a02-1",
+        "eventId": "event-a02-1",
+        "providerAcknowledgementRef": "provider:ack-1",
+        "receiptId": "receipt-a02-1",
+        "reconciliationId": null,
+        "sourceReadbackRef": "postgres:order-1:v8"
+      },
+      "finality": "SOURCE_CONFIRMED",
+      "freshness": {
+        "freshUntil": "2026-09-02T20:05:45.000Z",
+        "observedAt": "2026-09-02T20:00:45.000Z",
+        "state": "FRESH"
+      },
+      "object": {
+        "id": "order-1",
+        "ownerProject": "LUZIONE_COMMERCE_ORDER",
+        "type": "order",
+        "version": "order:v8"
+      },
+      "reason": "Fresh authoritative source readback confirms the committed object version.",
+      "tenantId": "tenant-luzione"
+    }
+  },
+  "consumerExpectations": {
+    "acceptedBoundaries": [
+      "identityTenant",
+      "command",
+      "receipt",
+      "readback"
+    ],
+    "negativeCases": [
+      {
+        "id": "identity-surplus-field",
+        "boundary": "identityTenant",
+        "mutations": [{ "operation": "add", "path": ["surplus"], "value": true }],
+        "expectedCode": "A02_FIELD_SET_MISMATCH"
+      },
+      {
+        "id": "identity-missing-field",
+        "boundary": "identityTenant",
+        "mutations": [{ "operation": "remove", "path": ["tenant"] }],
+        "expectedCode": "A02_FIELD_SET_MISMATCH"
+      },
+      {
+        "id": "identity-wrong-version",
+        "boundary": "identityTenant",
+        "mutations": [{ "operation": "replace", "path": ["contractVersion"], "value": "luzione-identity-tenant/v0.2-draft.0" }],
+        "expectedCode": "A02_WRONG_VERSION"
+      },
+      {
+        "id": "command-surplus-field",
+        "boundary": "command",
+        "mutations": [{ "operation": "add", "path": ["requestedEffect", "approval"], "value": "caller-selected" }],
+        "expectedCode": "A02_FIELD_SET_MISMATCH"
+      },
+      {
+        "id": "command-missing-field",
+        "boundary": "command",
+        "mutations": [{ "operation": "remove", "path": ["idempotencyKey"] }],
+        "expectedCode": "A02_FIELD_SET_MISMATCH"
+      },
+      {
+        "id": "command-wrong-version",
+        "boundary": "command",
+        "mutations": [{ "operation": "replace", "path": ["contractVersion"], "value": "luzione-command-envelope/v0.2-draft.2" }],
+        "expectedCode": "A02_WRONG_VERSION"
+      },
+      {
+        "id": "receipt-surplus-field",
+        "boundary": "receipt",
+        "mutations": [{ "operation": "add", "path": ["idempotency", "consumerReplay"], "value": true }],
+        "expectedCode": "A02_FIELD_SET_MISMATCH"
+      },
+      {
+        "id": "receipt-missing-field",
+        "boundary": "receipt",
+        "mutations": [{ "operation": "remove", "path": ["evidence"] }],
+        "expectedCode": "A02_FIELD_SET_MISMATCH"
+      },
+      {
+        "id": "receipt-wrong-version",
+        "boundary": "receipt",
+        "mutations": [{ "operation": "replace", "path": ["contractVersion"], "value": "luzione-receipt-envelope/v1" }],
+        "expectedCode": "A02_WRONG_VERSION"
+      },
+      {
+        "id": "readback-surplus-field",
+        "boundary": "readback",
+        "mutations": [{ "operation": "add", "path": ["evidence", "providerSaysDone"], "value": true }],
+        "expectedCode": "A02_FIELD_SET_MISMATCH"
+      },
+      {
+        "id": "readback-missing-field",
+        "boundary": "readback",
+        "mutations": [{ "operation": "remove", "path": ["freshness"] }],
+        "expectedCode": "A02_FIELD_SET_MISMATCH"
+      },
+      {
+        "id": "readback-wrong-version",
+        "boundary": "readback",
+        "mutations": [{ "operation": "replace", "path": ["contractVersion"], "value": "local-readback/v1" }],
+        "expectedCode": "A02_WRONG_VERSION"
+      },
+      {
+        "id": "receipt-cross-tenant",
+        "boundary": "receipt",
+        "mutations": [{ "operation": "replace", "path": ["tenantId"], "value": "tenant-other" }],
+        "expectedCode": "A02_CROSS_TENANT"
+      },
+      {
+        "id": "readback-cross-tenant",
+        "boundary": "readback",
+        "mutations": [{ "operation": "replace", "path": ["tenantId"], "value": "tenant-other" }],
+        "expectedCode": "A02_CROSS_TENANT"
+      },
+      {
+        "id": "stale-source-finality",
+        "boundary": "readback",
+        "mutations": [{ "operation": "replace", "path": ["freshness", "state"], "value": "STALE" }],
+        "expectedCode": "A02_STALE_FINALITY"
+      },
+      {
+        "id": "replay-payload-hash-drift",
+        "boundary": "receipt",
+        "mutations": [
+          { "operation": "replace", "path": ["idempotency", "replay"], "value": true },
+          { "operation": "replace", "path": ["idempotency", "payloadHash"], "value": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" }
+        ],
+        "expectedCode": "A02_IDEMPOTENCY_CONFLICT"
+      },
+      {
+        "id": "command-effect-authority-smuggling",
+        "boundary": "command",
+        "mutations": [{ "operation": "replace", "path": ["requestedEffect", "effectClass"], "value": "LIVE_EFFECT" }],
+        "expectedCode": "A02_EFFECT_AUTHORITY_DENIED"
+      },
+      {
+        "id": "receipt-effect-authority-smuggling",
+        "boundary": "receipt",
+        "mutations": [{ "operation": "replace", "path": ["effectAuthority"], "value": "AUTHORIZED" }],
+        "expectedCode": "A02_EFFECT_AUTHORITY_DENIED"
+      }
+    ]
+  }
+}
