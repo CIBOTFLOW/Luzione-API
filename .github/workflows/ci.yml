@@ -45,10 +45,16 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: actions/setup-node@v7
         with:
           node-version: 20
           cache: npm
+      - name: Bind rehearsal to the exact candidate SHA
+        env:
+          A01_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: test "$(git rev-parse HEAD)" = "${A01_CANDIDATE_SHA}"
       - run: npm ci --ignore-scripts
       - name: Rehearse A01 convergence, denial paths, and rollback
         run: npm run proof:a01-readiness
