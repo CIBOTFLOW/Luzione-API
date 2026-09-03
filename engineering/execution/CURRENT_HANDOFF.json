@@ -105,13 +105,13 @@
     "Supabase Pro plan entitlement indicates daily backups should exist, but the available management surface cannot list a project-specific backup receipt or PITR window; no production DDL is safe until that exact restore evidence is recorded."
   ],
   "stop_code": "S1_IRREVERSIBLE_EXTERNAL_EFFECT",
-  "updated_at": "2026-09-03T02:22:00.000Z",
+  "updated_at": "2026-09-03T02:36:33.000Z",
   "api_stage5_001": {
     "status": "EXACT_IMPLEMENTATION_AND_MANAGED_RECOVERY_PASS_PUBLICATION_PENDING_PRODUCTION_BLOCKED",
     "branch": "codex/stage5-authority-outcomes-v2",
-    "candidate_sha": "ad5a305b22c3af4f074f7e3f105028a2b9306e81",
+    "candidate_sha": "f8df79333649fc86e1097fafe632f095505a27b3",
     "sha_lineage": {
-      "implementation_sha": "ad5a305b22c3af4f074f7e3f105028a2b9306e81",
+      "implementation_sha": "f8df79333649fc86e1097fafe632f095505a27b3",
       "working_tree_base_sha": "bf61bc86c659992beb99a059a8702d6711b722eb",
       "evidence_snapshot_sha": null,
       "evidence_snapshot_state": "PENDING_FINAL_IMPLEMENTATION_EVIDENCE_COMMIT",
@@ -128,7 +128,7 @@
       "luzione-canonical-business-readback/v1",
       "luzione-sultan-outcome-observation/v1"
     ],
-    "local_verification": "PASS_TYPECHECK_LINT_ZERO_WARNINGS_257_OF_257_TESTS_NEXTJS_16_3_4_WEBPACK_BUILD_24_OF_24_FINAL_FOCUSED",
+    "local_verification": "PASS_TYPECHECK_LINT_ZERO_WARNINGS_257_OF_257_TESTS_NEXTJS_16_3_4_WEBPACK_BUILD_24_OF_24_FINAL_FOCUSED_CODEQL_REGEX_REMEDIATED_WITH_LINEAR_SCAN",
     "managed_validation": "PASS_ALL_FOUR_STAGE5_MIGRATIONS_EXACT_ROLLBACK_FORWARD_RECOVERY_RECEIPT_VERIFIED_SYNTHETIC_NEGATIVE_PATHS_8_OF_8_RLS_FORCED_ZERO_UNINDEXED_FK",
     "managed_evidence": "engineering/execution/readiness/API_STAGE5_MANAGED_REHEARSAL_20260902.json",
     "consumer_handoff": "engineering/execution/handoffs/API_STAGE5_001_CONSUMER_HANDOFF.json",
