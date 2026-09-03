@@ -117,9 +117,19 @@ test("an expected relation missing from catalog readback fails closed", () => {
 });
 
 test("A01 production drift signature is exact and cannot pass by aggregate suppression", () => {
-  const missingTable = "order_fulfillment_intents";
+  const missingTables = new Set([
+    "order_fulfillment_intents",
+    "sultan_agent_policy_envelopes",
+    "sultan_agent_command_reservations",
+    "sultan_agent_internal_actions",
+    "sultan_stage5_idempotency_conflicts",
+    "sultan_canonical_readback_receipts",
+    "sultan_api_admission_receipts",
+    "sultan_api_admission_evidence_refs",
+    "sultan_outcome_observations",
+  ]);
   const presentTenantTables = PRODUCTION_CONVERGENCE_TENANT_TABLES
-    .filter((table) => table !== missingTable);
+    .filter((table) => !missingTables.has(table));
   const tenantRows: RlsPostureRow[] = presentTenantTables.map((table_name) => ({
     anon_access: false,
     authenticated_access: false,
@@ -169,12 +179,12 @@ test("A01 production drift signature is exact and cannot pass by aggregate suppr
     failedProbeCount: 0,
     legacyServiceRoleTables: expectedDriftTables,
     missingRoles: ["luzione_api_runtime", "luzione_provider_worker"],
-    missingTables: [missingTable],
+    missingTables: [...missingTables].sort(),
     notForcedTables: expectedDriftTables,
-    observedTableCount: 47,
+    observedTableCount: 39,
     otherViolationCodes: [],
     status: "FAIL",
-    violationCount: 77,
+    violationCount: 69,
   });
 });
 

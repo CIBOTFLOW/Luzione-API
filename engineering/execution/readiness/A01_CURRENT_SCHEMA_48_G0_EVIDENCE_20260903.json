@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "evidence_id": "A01_CURRENT_SCHEMA_48_G0_20260903",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "branch": "codex/a01-current-schema-48-rehearsal-g0",
+  "base_sha": "7ee5a0a53a3434c3e00969dc626a4daad33f9dc0",
+  "implementation_sha": "48dee5d107309e749d77ad7d99607bc2bac45efd",
+  "pull_request": 61,
+  "recorded_at": "2026-09-03T03:45:48Z",
+  "engineering_state": "BOUNDED_PASS",
+  "release_evidence": "LOCAL_PROVEN",
+  "effect_authority": "NO_EFFECT",
+  "finality": "BOUNDED_CLAIM",
+  "relation_contract": "A01_CURRENT_48_RELATION_TRUTH",
+  "production_accessed": false,
+  "production_evidence": false,
+  "managed_backup_or_pitr_receipt": null,
+  "production_observation_from_controller": {
+    "release": "/api/v1/release 200",
+    "livez": "/api/v1/livez 200",
+    "readyz": "/api/v1/readyz 200; database READY",
+    "healthz": "/api/v1/healthz 503; 39/48 relations; 69 violations",
+    "canonical_route_note": "Non-v1 404 routes are expected and no alias was added."
+  },
+  "isolated_rehearsal": {
+    "environment": "disposable PostgreSQL 16 and synthetic local HTTP",
+    "baseline": {
+      "observed_relations": 39,
+      "expected_relations": 48,
+      "violations": 69,
+      "missing_relations": 9,
+      "not_forced_relations": 29,
+      "legacy_service_role_grants": 29,
+      "missing_roles": 2
+    },
+    "candidate": {
+      "observed_relations": 48,
+      "expected_relations": 48,
+      "violations": 0,
+      "active_denial_probes": 5,
+      "anon_and_authenticated_denials": 96,
+      "legacy_service_role_tenant_denials": 38,
+      "runtime_sensitive_relation_denials": 10,
+      "provider_worker_out_of_scope_denials": 42,
+      "cross_tenant_insert_denials": 2,
+      "missing_tenant_representative_rows": 0,
+      "runtime_owned_relations": 0,
+      "public_policies": 0
+    },
+    "candidate_http": {
+      "release": 200,
+      "livez": 200,
+      "readyz": 200,
+      "healthz": 200,
+      "authenticated_rls_readback": 200,
+      "health_status": "READY_READ_ONLY",
+      "mutations": "DISABLED_FAIL_CLOSED",
+      "internal_projections": "DISABLED_FAIL_CLOSED",
+      "external_effects_authorized": false
+    },
+    "negative_http": {
+      "unauthenticated_rls_readback": 401,
+      "invalid_active_probe_parameter": 400
+    },
+    "rollback": {
+      "exact_baseline_restored": true,
+      "readyz": 200,
+      "healthz": 503,
+      "authenticated_rls_readback": 503,
+      "observed_relations": 39,
+      "expected_relations": 48,
+      "violations": 69,
+      "mutations": "DISABLED_FAIL_CLOSED",
+      "external_effects_authorized": false
+    }
+  },
+  "local_verification": {
+    "compliance_controls": "PASS_7_OF_7",
+    "typecheck": "PASS",
+    "lint": "PASS_ZERO_WARNINGS",
+    "focused_security_tests": "PASS_26_OF_26",
+    "repository_tests": "PASS_257_OF_257",
+    "production_build": "PASS_NEXTJS_16_3_4_WEBPACK",
+    "a01_rehearsal": "PASS_EXACT_SHA_SYNTHETIC_HTTP_AND_ROLLBACK"
+  },
+  "github": {
+    "release_gate_run": 33712446489,
+    "release_gate_conclusion": "success",
+    "a01_job": 100514622780,
+    "a01_job_conclusion": "success",
+    "verify_job": 100514622911,
+    "verify_job_conclusion": "success",
+    "codeql_run": 33712446424,
+    "codeql_conclusion": "success",
+    "artifact_id": 9877379010,
+    "artifact_name": "a01-current-schema-48dee5d107309e749d77ad7d99607bc2bac45efd",
+    "artifact_digest": "sha256:b45605e8e0824c73a1a4ec9eff49b83fe7a259dd91372097b7dd7a4c8717577f",
+    "artifact_expires_at": "2026-12-02T03:44:19Z"
+  },
+  "ordered_existing_migrations": [
+    {
+      "path": "supabase/migrations/20260831070000_order_fulfillment_intent_dark_path.sql",
+      "sha256": "a179b3d6d38fbdb7e9fc6ab1179e0f60572f43062c6ba7ea45ca8583794fa982"
+    },
+    {
+      "path": "supabase/migrations/20260831090000_api_pc_013_least_privilege_roles_rls.sql",
+      "sha256": "40cce8f043c10a0b27537a6e8760a28109bd4b05f26bda134213737f18e6bcea"
+    },
+    {
+      "path": "supabase/migrations/20260901123000_sultan_agent_policy_envelopes.sql",
+      "sha256": "d0fc315bd4ea95409f1bceda50ce225e8546e6aeeca0d0359a07446908dff7b6"
+    },
+    {
+      "path": "supabase/migrations/20260901130000_sultan_agent_internal_actions.sql",
+      "sha256": "522b28d7d265dac410926475b8d350c8b6bec9cce6a0c0df5c17f9fffa95d54c"
+    },
+    {
+      "path": "supabase/migrations/20260902010000_sultan_stage5_authority_outcomes.sql",
+      "sha256": "3305d5850499b21a86b20e81400c069ce790ea54e608a3754947c2e671a39403"
+    },
+    {
+      "path": "supabase/migrations/20260902010100_sultan_stage5_post_inference_receipt_constraints.sql",
+      "sha256": "27e99da11db0ffeaf61d140c5c99abbd2f6bf1b632568eb0c24a4a9a8f48b91d"
+    }
+  ],
+  "preserved_a02": {
+    "pull_request": 58,
+    "implementation_sha": "f2d643a0913b888809c217adfd9bdcef0385b05a",
+    "versions": [
+      "luzione-shared-contracts/v0.2-draft.1",
+      "luzione-identity-tenant/v0.2-draft.1",
+      "luzione-command-envelope/v0.2-draft.1",
+      "luzione-receipt-envelope/v0.2-draft.1",
+      "luzione-readback-envelope/v0.2-draft.1"
+    ],
+    "changed": false
+  },
+  "strongest_claim": "The implementation SHA is exact-head CI and CodeQL proven for an isolated, synthetic, no-effect 39/48 to 48/48 convergence rehearsal with exact fail-closed rollback. It is not integrated or production-ready.",
+  "g1_blockers": [
+    "No project-specific managed backup/PITR receipt or tested managed restore exists.",
+    "No production migration, deployed principal membership change, exact candidate deployment, production 48/48 readback or production rollback was authorized or exercised.",
+    "A01 has not been accepted at G1 and D01 remains below G1, so A02 integration remains stopped."
+  ],
+  "next_action": "A named human database owner must record one accessible project-specific managed backup/PITR restore receipt before any production migration window is considered."
+}

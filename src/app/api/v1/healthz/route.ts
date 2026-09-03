@@ -2,6 +2,7 @@ import { apiResponse, createRequestIdentity } from "@/lib/api/http";
 import { runtimeConfig } from "@/lib/api/config";
 import { readRlsReadiness } from "@/lib/security-posture/readService";
 import { logRlsReadbackFailure } from "@/modules/security-posture/readbackFailure";
+import { EXPECTED_RLS_TABLES } from "@/modules/security-posture/rlsPosture";
 import { deriveDesiredObservedState } from "@/modules/platform-contracts/stateContract";
 import { deriveReadinessEvidenceSummary, runtimeReadinessEvidenceContext, type ReadinessEvidence } from "@/modules/platform-readiness/evidence";
 
@@ -109,7 +110,7 @@ export async function GET(request: Request) {
         serviceAuthentication: config.serviceTokenConfigured ? "CONFIGURED" : "MISSING",
       },
       security: {
-        expectedTableCount: security?.expectedTableCount ?? 47,
+        expectedTableCount: security?.expectedTableCount ?? EXPECTED_RLS_TABLES.length,
         observedTableCount: security?.observedTableCount ?? 0,
         status: security?.status ?? "UNAVAILABLE",
         violationCount: security?.violations.length ?? 1,

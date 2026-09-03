@@ -39,3 +39,37 @@ jobs:
             docs/compliance/
             supabase/migrations/
           retention-days: 90
+
+  a01-current-schema-recovery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 20
+          cache: npm
+      - name: Bind rehearsal to the exact candidate SHA
+        env:
+          A01_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: test "$(git rev-parse HEAD)" = "${A01_CANDIDATE_SHA}"
+      - run: npm ci --ignore-scripts
+      - name: Build the exact candidate for isolated HTTP readback
+        run: npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+      - name: Rehearse 39/48 convergence, denials, and exact rollback
+        run: npm run proof:a01-readiness
+        env:
+          A01_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          A01_HTTP_EVIDENCE_PATH: a01-current-schema-readback.json
+          A01_HTTP_PREVIEW: "true"
+      - name: Upload A01 current-schema evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: a01-current-schema-${{ github.event.pull_request.head.sha || github.sha }}
+          path: a01-current-schema-readback.json
+          retention-days: 90
