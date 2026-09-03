@@ -39,3 +39,16 @@ jobs:
             docs/compliance/
             supabase/migrations/
           retention-days: 90
+
+  a01-readiness-recovery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Rehearse A01 convergence, denial paths, and rollback
+        run: npm run proof:a01-readiness
