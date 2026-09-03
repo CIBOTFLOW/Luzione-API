@@ -9,11 +9,26 @@ export const API_CONTRACT_RELEASE_COMPONENTS = Object.freeze([
   "luzione-readiness-evidence/v1",
   "luzione-release-identity/v0.1",
   "luzione-receipt-reference/v0.1",
+  "luzione-sultan-tool-manifest/v1",
+  "luzione-sultan-tool-call/v1",
+  "luzione-sultan-tool-result/v1",
+  "luzione-sultan-effect-receipt/v1",
+  "luzione-sultan-readback/v1",
+  "luzione-sultan-command-preparation/v1",
+  "luzione-sultan-command-execution/v1",
+  "luzione-sultan-api-admission/v1",
+  "luzione-canonical-business-readback/v1",
+  "luzione-sultan-outcome-observation/v1",
+  "sultan.stage5-developmental-participation.v2",
 ]);
 
 export const API_SCHEMA_VERSIONS = Object.freeze([
   "20260828210000_tenant_ai_governance_and_workflow_packs",
   "20260828213000_workflow_pack_foreign_key_indexes",
+  "20260901123000_sultan_agent_policy_envelopes",
+  "20260901130000_sultan_agent_internal_actions",
+  "20260902010000_sultan_stage5_authority_outcomes",
+  "20260902010100_sultan_stage5_post_inference_receipt_constraints",
 ]);
 
 const SHA = /^[a-f0-9]{40}$/;

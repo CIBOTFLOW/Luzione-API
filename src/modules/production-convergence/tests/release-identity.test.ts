@@ -24,7 +24,11 @@ test("exact preview release identity binds SHA, build, deployment, contracts and
   assert.equal(identity.exactSha, "a".repeat(40));
   assert.equal(identity.mutations, "DISABLED_FAIL_CLOSED");
   assert.ok(identity.contractComponents.includes("luzione-request-identity/v1"));
+  assert.ok(identity.contractComponents.includes("luzione-sultan-api-admission/v1"));
+  assert.ok(identity.contractComponents.includes("sultan.stage5-developmental-participation.v2"));
   assert.ok(identity.schemaVersions.includes("20260828213000_workflow_pack_foreign_key_indexes"));
+  assert.ok(identity.schemaVersions.includes("20260902010000_sultan_stage5_authority_outcomes"));
+  assert.ok(identity.schemaVersions.includes("20260902010100_sultan_stage5_post_inference_receipt_constraints"));
 });
 
 test("local and incomplete deployed identities stay visibly unbound", () => {

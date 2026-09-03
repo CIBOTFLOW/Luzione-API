@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/sultan/canonical-business-readback-v1.schema.json",
+  "title": "Luzione Canonical Business Readback v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contractVersion", "readbackReceiptId", "tenantId", "subjectType", "subjectId", "status", "claims", "consumer", "provenance", "apiDeploymentSha", "observedAt", "freshUntil", "idempotencyKey", "idempotentReplay", "readbackHash"],
+  "properties": {
+    "contractVersion": { "const": "luzione-canonical-business-readback/v1" },
+    "readbackReceiptId": { "type": "string", "pattern": "^s5read_[a-f0-9]{32}$" },
+    "tenantId": { "const": "luzione" },
+    "subjectType": { "enum": ["ORDER", "SHIPMENT", "ACCOUNT", "OPPORTUNITY", "COMMITMENT", "LOGISTICS", "ECONOMIC_CALCULATION", "FEP_ALLOCATION"] },
+    "subjectId": { "$ref": "#/$defs/id" },
+    "status": { "enum": ["AVAILABLE", "NOT_FOUND", "SCHEMA_MISMATCH", "SOURCE_UNAVAILABLE"] },
+    "claims": { "type": "array", "maxItems": 64, "items": { "$ref": "#/$defs/claim" } },
+    "consumer": {
+      "type": "object", "additionalProperties": false, "required": ["actorId", "deploymentSha"],
+      "properties": { "actorId": { "enum": ["service:luzione-ui", "service:sultan-os"] }, "deploymentSha": { "$ref": "#/$defs/gitSha" } }
+    },
+    "provenance": {
+      "type": "object", "additionalProperties": false, "required": ["authority", "sourceRefs", "sourceVersion"],
+      "properties": {
+        "authority": { "enum": ["CANONICAL_POSTGRES", "NONE"] },
+        "sourceRefs": { "type": "array", "maxItems": 16, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+        "sourceVersion": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] }
+      }
+    },
+    "apiDeploymentSha": { "$ref": "#/$defs/gitSha" },
+    "observedAt": { "type": "string", "format": "date-time" },
+    "freshUntil": { "anyOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }] },
+    "idempotencyKey": { "$ref": "#/$defs/id" },
+    "idempotentReplay": { "type": "boolean" },
+    "readbackHash": { "$ref": "#/$defs/hash" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "AVAILABLE" } }, "required": ["status"] },
+      "then": {
+        "properties": {
+          "freshUntil": { "type": "string", "format": "date-time" },
+          "provenance": {
+            "properties": {
+              "authority": { "const": "CANONICAL_POSTGRES" },
+              "sourceVersion": { "$ref": "#/$defs/id" }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "claims": { "maxItems": 0 },
+          "freshUntil": { "type": "null" },
+          "provenance": {
+            "properties": {
+              "authority": { "const": "NONE" },
+              "sourceVersion": { "type": "null" }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "id": { "type": "string", "minLength": 2, "maxLength": 512, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:@/-]+$" },
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "gitSha": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+    "claim": {
+      "type": "object", "additionalProperties": false,
+      "required": ["claimId", "kind", "unit", "value", "valueType"],
+      "properties": {
+        "claimId": { "type": "string", "pattern": "^[a-z][a-zA-Z0-9._-]{2,127}$" },
+        "kind": { "enum": ["FACT", "CALCULATION"] },
+        "unit": { "type": ["string", "null"], "maxLength": 128 },
+        "value": { "type": ["boolean", "number", "string", "null"] },
+        "valueType": { "enum": ["BOOLEAN", "INTEGER", "MONEY_MINOR", "NUMBER", "STRING", "TIMESTAMP"] }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "valueType": { "const": "BOOLEAN" } }, "required": ["valueType"] },
+          "then": { "properties": { "value": { "type": ["boolean", "null"] } } }
+        },
+        {
+          "if": { "properties": { "valueType": { "const": "INTEGER" } }, "required": ["valueType"] },
+          "then": { "properties": { "value": { "anyOf": [
+            { "type": "integer", "minimum": -9007199254740991, "maximum": 9007199254740991 },
+            { "type": "null" }
+          ] } } }
+        },
+        {
+          "if": { "properties": { "valueType": { "const": "MONEY_MINOR" } }, "required": ["valueType"] },
+          "then": { "properties": { "value": { "anyOf": [
+            { "type": "integer", "minimum": -9007199254740991, "maximum": 9007199254740991 },
+            { "type": "string", "pattern": "^-?(0|[1-9][0-9]{0,14})$" },
+            { "type": "null" }
+          ] } } }
+        },
+        {
+          "if": { "properties": { "valueType": { "const": "NUMBER" } }, "required": ["valueType"] },
+          "then": { "properties": { "value": { "anyOf": [
+            { "type": "integer", "minimum": -9007199254740991, "maximum": 9007199254740991 },
+            { "type": "string", "pattern": "^-?(0|[1-9][0-9]{0,14})(\\.[0-9]{1,6})?$" },
+            { "type": "null" }
+          ] } } }
+        },
+        {
+          "if": { "properties": { "valueType": { "const": "STRING" } }, "required": ["valueType"] },
+          "then": { "properties": { "value": { "type": ["string", "null"], "maxLength": 2048 } } }
+        },
+        {
+          "if": { "properties": { "valueType": { "const": "TIMESTAMP" } }, "required": ["valueType"] },
+          "then": { "properties": { "value": { "anyOf": [
+            { "type": "string", "format": "date-time" },
+            { "type": "null" }
+          ] } } }
+        }
+      ]
+    }
+  }
+}

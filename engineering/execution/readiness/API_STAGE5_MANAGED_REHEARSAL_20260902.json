@@ -1,0 +1,350 @@
+{
+  "schema_version": 2,
+  "evidence_id": "API_STAGE5_MANAGED_REHEARSAL_20260902",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "source_candidate_sha": "f8df79333649fc86e1097fafe632f095505a27b3",
+  "sha_lineage": {
+    "implementation_sha": "f8df79333649fc86e1097fafe632f095505a27b3",
+    "working_tree_base_sha": "bf61bc86c659992beb99a059a8702d6711b722eb",
+    "evidence_snapshot_sha": null,
+    "evidence_snapshot_state": "PENDING_FINAL_IMPLEMENTATION_EVIDENCE_COMMIT",
+    "managed_rehearsal_first_committed_source_sha": "360679b0a6c64e789b7176cffe4480d00aaee34f",
+    "managed_rehearsal_note": "The final managed run exercised the exact source tree published as ad5a305b22c3af4f074f7e3f105028a2b9306e81 after the A01 prerequisite migrations. It exposed and repaired a hosted-role ALTER portability fault, a BEFORE-trigger/generated-column lineage fault, and three uncovered foreign keys before the final rollback/recovery pass.",
+    "prerequisite_migration_content_sha256": {
+      "20260831070000_order_fulfillment_intent_dark_path.sql": "a179b3d6d38fbdb7e9fc6ab1179e0f60572f43062c6ba7ea45ca8583794fa982",
+      "20260831090000_api_pc_013_least_privilege_roles_rls.sql": "40cce8f043c10a0b27537a6e8760a28109bd4b05f26bda134213737f18e6bcea"
+    },
+    "migration_content_sha256": {
+      "20260901123000_sultan_agent_policy_envelopes.sql": "d0fc315bd4ea95409f1bceda50ce225e8546e6aeeca0d0359a07446908dff7b6",
+      "20260901130000_sultan_agent_internal_actions.sql": "522b28d7d265dac410926475b8d350c8b6bec9cce6a0c0df5c17f9fffa95d54c",
+      "20260902010000_sultan_stage5_authority_outcomes.sql": "3305d5850499b21a86b20e81400c069ce790ea54e608a3754947c2e671a39403",
+      "20260902010100_sultan_stage5_post_inference_receipt_constraints.sql": "27e99da11db0ffeaf61d140c5c99abbd2f6bf1b632568eb0c24a4a9a8f48b91d",
+      "sultan-stage5-managed-rehearsal.sql": "cdd2c4bb577f4afe33a282f189343dc6dbf0012a596881a4565aab4cce278b6f"
+    }
+  },
+  "upstream_sultan_contract": {
+    "repository": "CIBOTFLOW/Sultan-OS",
+    "merged_main_sha": "5b43e539eb27e83a8f14dffbcf9a401d740b6cd9",
+    "machine_contract_commit": "5b43e539eb27e83a8f14dffbcf9a401d740b6cd9",
+    "pin_state": "PINNED_TO_MERGED_GREEN_MAIN",
+    "deployment_sha": null,
+    "deployment_state": "NOT_PROVEN"
+  },
+  "final_source_rehearsal": {
+    "required_migration": "20260902010100_sultan_stage5_post_inference_receipt_constraints",
+    "disposable_database": "NOT_RUN_EXECUTOR_HAS_NO_DOCKER_PODMAN_PSQL_OR_POSTGRES",
+    "managed_validation": "PASS_EXACT_APPLY_ROLLBACK_FORWARD_RECOVERY_RECEIPT_FIXTURE_NEGATIVE_PATHS",
+    "candidate_checksum_state": "EXACT_IMPLEMENTATION_SHA_AND_CONTENT_CHECKSUMS_REHEARSED",
+    "strongest_claim": "RECEIPT_VERIFIED_SYNTHETIC_MANAGED_HARNESS_PASS_NO_PRODUCTION_OR_BUSINESS_VALUE_CLAIM"
+  },
+  "local_source_verification": {
+    "recorded_at_utc": "2026-09-03T02:36:33.000Z",
+    "source_state": "PUBLISHED_SECURITY_REMEDIATED_IMPLEMENTATION_COMMIT_f8df79333649fc86e1097fafe632f095505a27b3_ON_MERGED_A01_MAIN",
+    "npm_run_verify": "PASS_TYPECHECK_LINT_ZERO_WARNINGS_257_OF_257_TESTS_NEXTJS_16_3_4_WEBPACK_BUILD",
+    "focused_stage5_agent_security": "PASS_24_OF_24_FINAL_FOCUSED_PLUS_PRIOR_46_OF_46",
+    "security_posture": "PASS_26_OF_26_AND_CODEQL_POLYNOMIAL_REGEX_FINDING_REMEDIATED_WITH_BOUNDED_LINEAR_SCAN",
+    "compliance": "PASS_7_CONTROL_DOCUMENTS",
+    "dependency_audit": "PASS_ZERO_VULNERABILITIES_487_TOTAL_DEPENDENCIES",
+    "json_and_diff_validation": "PASS",
+    "database_execution": "PASS_MANAGED_VALIDATION_EXACT_APPLY_ROLLBACK_FORWARD_RECOVERY_AND_RECEIPT_FIXTURE"
+  },
+  "environment": {
+    "class": "MANAGED_VALIDATION_PROJECT",
+    "project_id": "pkplkkmivhzdjsjvlcdt",
+    "project_name": "luzione-sultan-validation",
+    "region": "us-west-1",
+    "postgres_version": "17.6.1.166",
+    "production": false
+  },
+  "exclusive_window": {
+    "authorized": true,
+    "other_writer_like_sessions_before": 0,
+    "other_writer_like_sessions_after": 0,
+    "production_project_touched": false
+  },
+  "initial_forward_migrations": [
+    {
+      "version": "20260902232744",
+      "applied_at_utc": "2026-09-02T23:27:44Z",
+      "name": "api_stage5_validation_roles_20260902",
+      "result": "SUCCESS"
+    },
+    {
+      "version": "20260902232753",
+      "applied_at_utc": "2026-09-02T23:27:53Z",
+      "name": "api_stage5_gateway_policy_envelopes_20260902",
+      "result": "SUCCESS"
+    },
+    {
+      "version": "20260902232759",
+      "applied_at_utc": "2026-09-02T23:27:59Z",
+      "name": "api_stage5_gateway_internal_actions_20260902",
+      "result": "SUCCESS"
+    },
+    {
+      "version": "20260902232806",
+      "applied_at_utc": "2026-09-02T23:28:06Z",
+      "name": "api_stage5_authority_outcomes_20260902",
+      "result": "SUCCESS"
+    },
+    {
+      "version": "20260902233155",
+      "applied_at_utc": "2026-09-02T23:31:55Z",
+      "name": "api_stage5_validation_runtime_membership_20260902",
+      "result": "SUCCESS",
+      "note": "Temporary validation-only role membership enabled SET ROLE through the managed SQL surface."
+    }
+  ],
+  "fixture_receipt": {
+    "canonical_subject_types": [
+      "ACCOUNT",
+      "COMMITMENT",
+      "ECONOMIC_CALCULATION",
+      "FEP_ALLOCATION",
+      "LOGISTICS",
+      "OPPORTUNITY",
+      "ORDER",
+      "SHIPMENT"
+    ],
+    "canonical_readback_count": 8,
+    "admission_receipt_count": 2,
+    "admission_statuses": [
+      "ADMITTED_NO_EFFECT",
+      "SEPARATE_REVIEW_REQUIRED"
+    ],
+    "outcome_classifications": [
+      "CONFIRMED"
+    ],
+    "idempotency_conflict_rows": 1,
+    "reservation_admission_binding": true,
+    "external_effects_authorized": false,
+    "all_seven_relations_force_rls_with_policy": true,
+    "denied_role_privilege_leaks": 0
+  },
+  "negative_probes": [
+    {
+      "probe": "cross_tenant_insert",
+      "expected": "DENY",
+      "result": "PASS",
+      "sqlstate": "42501",
+      "evidence": "new row violates row-level security policy"
+    },
+    {
+      "probe": "wrong_tenant_read",
+      "expected": "ZERO_ROWS",
+      "result": "PASS",
+      "observed": {
+        "admissions": 0,
+        "readbacks": 0,
+        "outcomes": 0
+      }
+    },
+    {
+      "probe": "forbidden_raw_prompt",
+      "expected": "DENY",
+      "result": "PASS",
+      "sqlstate": "23514"
+    },
+    {
+      "probe": "duplicate_idempotency_key",
+      "expected": "DENY",
+      "result": "PASS",
+      "sqlstate": "23505"
+    },
+    {
+      "probe": "command_reservation_missing_admission",
+      "expected": "DENY",
+      "result": "PASS",
+      "sqlstate": "23503"
+    },
+    {
+      "probe": "append_only_receipt_update",
+      "expected": "DENY",
+      "result": "PASS",
+      "sqlstate": "P0001"
+    }
+  ],
+  "rollback": {
+    "first_attempt": {
+      "result": "FAILED_ATOMICALLY",
+      "sqlstate": "2BP01",
+      "reason": "The temporary validation role still held USAGE on public; the transaction left no partial rollback."
+    },
+    "successful_migration": {
+      "version": "20260902233440",
+      "applied_at_utc": "2026-09-02T23:34:40Z",
+      "name": "api_stage5_validation_rollback_v2_20260902",
+      "result": "SUCCESS"
+    },
+    "readback": {
+      "tables_remaining": 0,
+      "roles_remaining": 0,
+      "functions_remaining": 0
+    }
+  },
+  "forward_recovery_migrations": [
+    {
+      "version": "20260902233501",
+      "applied_at_utc": "2026-09-02T23:35:01Z",
+      "name": "api_stage5_validation_roles_recovery_20260902",
+      "result": "SUCCESS"
+    },
+    {
+      "version": "20260902233508",
+      "applied_at_utc": "2026-09-02T23:35:08Z",
+      "name": "api_stage5_gateway_policy_envelopes_recovery_20260902",
+      "result": "SUCCESS"
+    },
+    {
+      "version": "20260902233515",
+      "applied_at_utc": "2026-09-02T23:35:15Z",
+      "name": "api_stage5_gateway_internal_actions_recovery_20260902",
+      "result": "SUCCESS"
+    },
+    {
+      "version": "20260902233523",
+      "applied_at_utc": "2026-09-02T23:35:23Z",
+      "name": "api_stage5_authority_outcomes_recovery_20260902",
+      "result": "SUCCESS"
+    },
+    {
+      "version": "20260902233529",
+      "applied_at_utc": "2026-09-02T23:35:29Z",
+      "name": "api_stage5_validation_runtime_membership_recovery_20260902",
+      "result": "SUCCESS"
+    }
+  ],
+  "forward_recovery_readback": {
+    "relations_present": 7,
+    "all_force_rls_with_policy": true,
+    "bounded_runtime_role": true,
+    "admission_receipt_count": 1,
+    "canonical_readback_count": 1,
+    "wrong_tenant_admissions_visible": 0,
+    "wrong_tenant_readbacks_visible": 0,
+    "external_effects_authorized": false
+  },
+  "advisor_remediation": {
+    "migration": {
+      "version": "20260902233715",
+      "applied_at_utc": "2026-09-02T23:37:15Z",
+      "name": "api_stage5_advisor_remediation_20260902",
+      "result": "SUCCESS"
+    },
+    "source_changes": [
+      "init-plan-safe tenant policy expressions",
+      "covering indexes for outcome readback and supersession foreign keys"
+    ],
+    "stage5_security_findings_after": 0,
+    "stage5_performance_findings_after": "Only INFO unused-index notices in the short-lived empty rehearsal schema."
+  },
+  "cleanup": {
+    "version": "20260902233734",
+    "applied_at_utc": "2026-09-02T23:37:34Z",
+    "name": "api_stage5_validation_cleanup_20260902",
+    "result": "SUCCESS",
+    "final_readback": {
+      "tables_remaining": 0,
+      "roles_remaining": 0,
+      "functions_remaining": 0,
+      "other_writer_like_sessions": 0
+    },
+    "independent_readback_at_utc": "2026-09-02T23:38:47Z",
+    "independent_readback_result": "0 expected relations, 0 expected roles, 0 expected functions, 0 other writer-like sessions"
+  },
+  "final_managed_rehearsal_20260903": {
+    "executed_at_utc": "2026-09-03T02:19:27Z",
+    "production_project_touched": false,
+    "prerequisite_migrations": [
+      {
+        "version": "20260903020648",
+        "name": "api_a01_order_fulfillment_20260903_final",
+        "result": "SUCCESS"
+      },
+      {
+        "name": "api_a01_least_privilege_20260903_final",
+        "result": "FAILED_ATOMICALLY",
+        "reason": "The managed migration principal cannot alter protected SUPERUSER, REPLICATION or BYPASSRLS attributes even to their negative values. No role or grant change committed."
+      },
+      {
+        "version": "20260903020806",
+        "name": "api_a01_least_privilege_20260903_managed_fix",
+        "result": "SUCCESS",
+        "repair": "New roles retain exact safe CREATE attributes; pre-existing protected attributes are catalog-validated and fail closed instead of being altered."
+      }
+    ],
+    "first_complete_apply": {
+      "versions": [
+        "20260903020813",
+        "20260903020821",
+        "20260903020831",
+        "20260903020841"
+      ],
+      "result": "SUCCESS",
+      "review_findings": [
+        "Outcome parent verification was a BEFORE trigger reading generated columns before PostgreSQL computes them.",
+        "Three exact lineage foreign keys lacked full covering indexes."
+      ]
+    },
+    "rollback_and_forward_recovery": {
+      "first_rollback_version": "20260903021609",
+      "first_rollback_readback": "ZERO_OF_EIGHT_STAGE5_RELATIONS_REMAINED_A01_BASE_AND_SAFE_ROLES_PRESERVED",
+      "first_recovery_versions": [
+        "20260903021626",
+        "20260903021628",
+        "20260903021630",
+        "20260903021633"
+      ],
+      "advisor_clean_rollback_version": "20260903021855",
+      "final_recovery_versions": [
+        "20260903021905",
+        "20260903021907",
+        "20260903021909",
+        "20260903021911"
+      ],
+      "result": "PASS"
+    },
+    "receipt_fixture": {
+      "class": "RECEIPT_VERIFIED_SYNTHETIC",
+      "result": "PASS",
+      "readback_receipt_id": "s5read_11111111111111111111111111111111",
+      "admission_receipt_id": "s5admit_1111111111111111111111111111111",
+      "outcome_observation_id": "s5out_11111111111111111111111111111111",
+      "outcome_classification": "CONFIRMED",
+      "negative_paths": [
+        "cross_tenant_insert_denied",
+        "wrong_tenant_reads_empty",
+        "forged_readback_json_denied",
+        "forged_evidence_child_denied",
+        "missing_evidence_set_denied",
+        "append_only_update_denied"
+      ],
+      "fixture_rows_after_rollback": 0,
+      "external_effects_authorized": false,
+      "production_evidence": false
+    },
+    "final_security_readback": {
+      "stage5_relations_present": 8,
+      "stage5_relations_rls_enabled_and_forced": 8,
+      "unsafe_runtime_role_count": 0,
+      "browser_or_service_role_stage5_grants": 0,
+      "provider_worker_stage5_grants": 0,
+      "temporary_postgres_runtime_membership_revoked": true,
+      "other_writer_like_sessions_after": 0
+    },
+    "advisor_readback": {
+      "stage5_security_findings": 0,
+      "stage5_performance_warn_or_error_findings": 0,
+      "stage5_unindexed_foreign_keys": 0,
+      "stage5_info_findings": 11,
+      "info_explanation": "Unused-index notices are expected on an empty short-lived fixture schema."
+    }
+  },
+  "limitations": [
+    "The managed rehearsal used synthetic validation-only rows and did not prove production connectivity or business value.",
+    "The managed SQL surface returns migration success and exact migration versions/names but no separate backend receipt ID.",
+    "The repository Docker rehearsal could not run in this executor because Docker, Podman, psql and postgres are unavailable.",
+    "No deployed authenticated HTTP request or provider effect was executed."
+  ],
+  "claim": "FINAL_MANAGED_APPLY_ROLLBACK_FORWARD_RECOVERY_AND_RECEIPT_VERIFIED_SYNTHETIC_HARNESS_PASS_NO_PRODUCTION_OR_VALUE_CLAIM"
+}

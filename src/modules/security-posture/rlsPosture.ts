@@ -42,6 +42,14 @@ export const PRODUCTION_CONVERGENCE_TENANT_TABLES = Object.freeze([
   "orders",
   "order_lines",
   "order_fulfillment_intents",
+  "sultan_agent_policy_envelopes",
+  "sultan_agent_command_reservations",
+  "sultan_agent_internal_actions",
+  "sultan_stage5_idempotency_conflicts",
+  "sultan_canonical_readback_receipts",
+  "sultan_api_admission_receipts",
+  "sultan_api_admission_evidence_refs",
+  "sultan_outcome_observations",
 ]);
 
 export const EXPECTED_RLS_TABLES = Object.freeze([
@@ -62,6 +70,7 @@ export const ACTIVE_DENIAL_PROBES = Object.freeze([
   Object.freeze({ role: "authenticated", table: "auth_users" }),
   Object.freeze({ role: "anon", table: "orders" }),
   Object.freeze({ role: "authenticated", table: "p110_outbox_messages" }),
+  Object.freeze({ role: "authenticated", table: "sultan_api_admission_receipts" }),
 ]);
 
 export type RlsPostureRow = {

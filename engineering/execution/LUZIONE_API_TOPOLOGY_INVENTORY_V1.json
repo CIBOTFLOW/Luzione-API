@@ -368,6 +368,42 @@
       "effect": "NO_EFFECT"
     },
     {
+      "route_id": "sultan-stage5-admission",
+      "method": "POST",
+      "path": "/api/v1/sultan/admissions",
+      "source_path": "src/app/api/v1/sultan/admissions/route.ts",
+      "authentication": "exact signed Sultan OS Vercel workload with Stage 5 admission capability; tenant and API SHA are server-derived",
+      "canonical_readback": "immutable admission or denial receipt bound to exact participation, interaction, evidence and deployment hashes",
+      "effect": "NO_EFFECT_OR_SEPARATE_REVIEW_REQUIRED"
+    },
+    {
+      "route_id": "sultan-stage5-canonical-readback",
+      "method": "POST",
+      "path": "/api/v1/sultan/canonical-readbacks",
+      "source_path": "src/app/api/v1/sultan/canonical-readbacks/route.ts",
+      "authentication": "exact signed Sultan OS or Luzione UI Vercel workload with canonical-readback capability; tenant is server-derived",
+      "canonical_readback": "immutable structured FACT/CALCULATION receipt over a bounded canonical business subject",
+      "effect": "NO_EFFECT"
+    },
+    {
+      "route_id": "sultan-stage5-outcome-observation",
+      "method": "POST",
+      "path": "/api/v1/sultan/outcome-observations",
+      "source_path": "src/app/api/v1/sultan/outcome-observations/route.ts",
+      "authentication": "exact signed Sultan OS or Luzione UI Vercel workload with outcome-observation capability; tenant is server-derived",
+      "canonical_readback": "immutable confirmed, refuted, unresolved or superseded observation bound to prior admission and later canonical readback",
+      "effect": "NO_EFFECT_NO_AUTOMATIC_LEARNING_PROMOTION"
+    },
+    {
+      "route_id": "sultan-stage5-outcome-observation-verify",
+      "method": "GET",
+      "path": "/api/v1/sultan/outcome-observations",
+      "source_path": "src/app/api/v1/sultan/outcome-observations/route.ts",
+      "authentication": "exact signed Sultan OS or Luzione UI Vercel workload with outcome-observation capability; tenant is server-derived",
+      "canonical_readback": "tenant-bound immutable outcome receipt revalidated against its admission receipt, canonical readback and exact hashes",
+      "effect": "NO_EFFECT_NO_AUTOMATIC_LEARNING_PROMOTION"
+    },
+    {
       "route_id": "sultan-agent-intent-evaluate",
       "method": "POST",
       "path": "/api/v1/sultan/agent-intents/evaluate",
@@ -386,6 +422,51 @@
       "effect": "NO_EFFECT"
     },
     {
+      "route_id": "sultan-tool-manifest-read",
+      "method": "GET",
+      "path": "/api/v1/sultan/tools",
+      "source_path": "src/app/api/v1/sultan/tools/route.ts",
+      "authentication": "signed Sultan workload with exact tool-manifest capability; tenant and logical agent are derived server-side",
+      "canonical_readback": "server-owned registry and capability intersection; discovery grants no authority",
+      "effect": "NO_EFFECT"
+    },
+    {
+      "route_id": "sultan-tool-invocation",
+      "method": "POST",
+      "path": "/api/v1/sultan/tool-invocations",
+      "source_path": "src/app/api/v1/sultan/tool-invocations/route.ts",
+      "authentication": "signed Sultan workload with exact invocation and per-tool capabilities; tenant and agent binding are derived server-side",
+      "canonical_readback": "tenant-scoped authoritative read result with exact object version and freshness",
+      "effect": "NO_EFFECT"
+    },
+    {
+      "route_id": "sultan-command-prepare",
+      "method": "POST",
+      "path": "/api/v1/sultan/commands/prepare",
+      "source_path": "src/app/api/v1/sultan/commands/prepare/route.ts",
+      "authentication": "signed Sultan workload with exact command-preparation and registered-tool capabilities; tenant and agent binding are derived server-side",
+      "canonical_readback": "tenant-scoped stable operation reservation, exact object version, command hash and risk classification; no command is executed",
+      "effect": "NO_EFFECT_COMMAND_RESERVATION"
+    },
+    {
+      "route_id": "sultan-command-execute",
+      "method": "POST",
+      "path": "/api/v1/sultan/commands/execute",
+      "source_path": "src/app/api/v1/sultan/commands/execute/route.ts",
+      "authentication": "signed Sultan workload with exact A1 execution capability plus distinct-human approval signature over the admitted command hash",
+      "canonical_readback": "tenant-scoped append-only internal action receipt and authoritative readback; A2 execution is structurally blocked",
+      "effect": "DEFAULT_OFF_APPROVED_A1_INTERNAL_MUTATION"
+    },
+    {
+      "route_id": "sultan-effect-readback",
+      "method": "GET",
+      "path": "/api/v1/sultan/effects/{receiptId}/readback",
+      "source_path": "src/app/api/v1/sultan/effects/[receiptId]/readback/route.ts",
+      "authentication": "signed Sultan workload with exact effect-read capability; tenant is derived server-side",
+      "canonical_readback": "tenant-scoped P110 receipt, outbox, provider acknowledgement and reconciliation state",
+      "effect": "NO_EFFECT"
+    },
+    {
       "route_id": "workflow-pack-catalog-read",
       "method": "GET",
       "path": "/api/v1/workflows",
@@ -397,6 +478,13 @@
   ],
   "database_relations": {
     "repo_migration_owned": [
+      "sultan_agent_policy_envelopes",
+      "sultan_agent_command_reservations",
+      "sultan_agent_internal_actions",
+      "sultan_stage5_idempotency_conflicts",
+      "sultan_canonical_readback_receipts",
+      "sultan_api_admission_receipts",
+      "sultan_outcome_observations",
       "tenant_field_definitions",
       "tenant_workflow_pack_settings",
       "workflow_pack_registry"
@@ -562,6 +650,13 @@
     "LUZIONE_CANONICAL_TENANT_CODE",
     "LUZIONE_PROVIDER_WORKER_ID",
     "LUZIONE_PROVIDER_WORKER_TENANT_ID",
+    "LUZIONE_SULTAN_APPROVAL_SECRET",
+    "LUZIONE_UI_DEPLOYMENT_SHA",
+    "GMAIL_SULTAN_RFQ_ACCESS_TOKEN",
+    "SULTAN_RFQ_CANARY_SENDER",
+    "SULTAN_STAGE5_DEPLOYMENT_SHA",
+    "SULTAN_STAGE5_MAX_EVIDENCE_AGE_MS",
+    "SULTAN_STAGE5_PARTICIPATION_CONTRACT_SHA",
     "NEXT_RUNTIME",
     "NODE_ENV",
     "PLATFORM_CONTINUATION_SECRET",

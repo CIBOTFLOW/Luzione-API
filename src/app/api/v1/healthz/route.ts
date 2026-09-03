@@ -109,7 +109,7 @@ export async function GET(request: Request) {
         serviceAuthentication: config.serviceTokenConfigured ? "CONFIGURED" : "MISSING",
       },
       security: {
-        expectedTableCount: security?.expectedTableCount ?? 10,
+        expectedTableCount: security?.expectedTableCount ?? 47,
         observedTableCount: security?.observedTableCount ?? 0,
         status: security?.status ?? "UNAVAILABLE",
         violationCount: security?.violations.length ?? 1,

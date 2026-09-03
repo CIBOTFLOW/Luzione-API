@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/sultan/readback-v1.schema.json",
+  "title": "Luzione Sultan Effect Readback v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contractVersion", "receiptId", "observedAt", "state", "providerRef", "sourceReadbackRef", "authoritativeSource", "businessFinal", "deliveryProven", "nextSafeAction"],
+  "properties": {
+    "contractVersion": { "const": "luzione-sultan-readback/v1" },
+    "receiptId": { "$ref": "#/$defs/id" },
+    "observedAt": { "type": "string", "format": "date-time" },
+    "state": { "enum": ["NOT_DISPATCHED", "PROVIDER_ACCEPTED", "SOURCE_CONFIRMED", "RECONCILIATION_REQUIRED", "BLOCKED", "FAILED"] },
+    "providerRef": { "type": ["string", "null"], "maxLength": 512 },
+    "sourceReadbackRef": { "type": ["string", "null"], "maxLength": 512 },
+    "authoritativeSource": { "type": "string", "minLength": 1, "maxLength": 512 },
+    "businessFinal": { "type": "boolean" },
+    "deliveryProven": { "const": false },
+    "nextSafeAction": { "type": "string", "minLength": 1, "maxLength": 1000 }
+  },
+  "$defs": { "id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:@/-]{1,511}$" } }
+}

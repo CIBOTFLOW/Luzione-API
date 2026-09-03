@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/sultan/effect-receipt-v1.schema.json",
+  "title": "Luzione Sultan Effect Receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contractVersion", "receiptId", "operationId", "toolCallId", "toolId", "effectClass", "state", "idempotentReplay", "providerRef", "resultHash", "createdAt", "businessFinal"],
+  "properties": {
+    "contractVersion": { "const": "luzione-sultan-effect-receipt/v1" },
+    "receiptId": { "$ref": "#/$defs/id" },
+    "operationId": { "$ref": "#/$defs/id" },
+    "toolCallId": { "$ref": "#/$defs/id" },
+    "toolId": { "$ref": "#/$defs/id" },
+    "effectClass": { "enum": ["A1", "A2", "A3"] },
+    "state": { "enum": ["DISPATCH_PENDING", "PROVIDER_ACCEPTED", "SOURCE_CONFIRMED", "RECONCILIATION_REQUIRED", "BLOCKED", "FAILED"] },
+    "idempotentReplay": { "type": "boolean" },
+    "providerRef": { "type": ["string", "null"], "maxLength": 512 },
+    "resultHash": { "$ref": "#/$defs/hash" },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "businessFinal": { "type": "boolean" }
+  },
+  "$defs": { "id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:@/-]{1,511}$" }, "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" } }
+}

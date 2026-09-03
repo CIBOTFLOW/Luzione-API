@@ -30,7 +30,7 @@ type JwksLoader = (issuer: string, forceRefresh?: boolean) => Promise<readonly V
 
 type VercelCaller = CredentialActorIdentity & {
   audience: string;
-  environment: "production";
+  environment: "production" | "preview";
   owner: string;
   ownerId: string;
   project: string;
@@ -39,7 +39,7 @@ type VercelCaller = CredentialActorIdentity & {
 
 const VERCEL_OWNER = "connor-spiegelmans-projects";
 const VERCEL_AUDIENCE = `https://vercel.com/${VERCEL_OWNER}`;
-const VERCEL_CALLERS: readonly VercelCaller[] = Object.freeze([
+const PRODUCTION_VERCEL_CALLERS: readonly VercelCaller[] = Object.freeze([
   Object.freeze({
     actorId: "service:luzione-ui",
     actorType: "service" as const,
@@ -56,6 +56,8 @@ const VERCEL_CALLERS: readonly VercelCaller[] = Object.freeze([
       "governance.evaluate",
       "platform.guarantees.read",
       "security.rls.read",
+      "sultan.canonical.readback.read",
+      "sultan.outcome.observe",
     ]),
   }),
   Object.freeze({
@@ -76,9 +78,24 @@ const VERCEL_CALLERS: readonly VercelCaller[] = Object.freeze([
       "fulfillment.readiness.evaluate",
       "partner.network.evaluate",
       "sultan.agent.intent.evaluate",
+      "sultan.stage5.admission.request",
+      "sultan.canonical.readback.read",
+      "sultan.outcome.observe",
+      "sultan.tool.manifest.read",
+      "sultan.tool.invoke",
+      "sultan.effect.read",
+      "sultan.case.read",
+      "sultan.command.prepare",
+      "sultan.command.execute",
+      "sultan.internal.command",
+      "sultan.rfq.canary.send",
     ]),
   }),
 ]);
+const VERCEL_CALLERS: readonly VercelCaller[] = Object.freeze(PRODUCTION_VERCEL_CALLERS.flatMap((caller) => [
+  caller,
+  Object.freeze({ ...caller, environment: "preview" as const }),
+]));
 
 const ALLOWED_VERCEL_ISSUERS = new Set([
   "https://oidc.vercel.com",
@@ -193,7 +210,13 @@ function validVercelClaims(payload: JsonObject, issuer: string, caller: VercelCa
     && claimEquals(payload, "project", caller.project)
     && claimEquals(payload, "project_id", caller.projectId)
     && claimEquals(payload, "environment", caller.environment)
+    && deploymentAdmitsCallerEnvironment(caller.environment)
     && validLifetime(payload);
+}
+
+function deploymentAdmitsCallerEnvironment(environment: VercelCaller["environment"]) {
+  if (process.env.VERCEL_ENV === "preview") return environment === "preview";
+  return environment === "production";
 }
 
 export async function resolveVercelWorkloadIdentity(

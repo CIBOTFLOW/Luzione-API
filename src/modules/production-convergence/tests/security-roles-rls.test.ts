@@ -16,6 +16,9 @@ test("API-PC-013 roles are non-login, non-owner and cannot bypass RLS", () => {
   assert.ok(ownership.roles.every((role) => !role.login && !role.bypass_rls && !role.relation_owner));
   assert.match(migration, /create role luzione_api_runtime nologin nosuperuser nocreatedb nocreaterole noreplication nobypassrls/);
   assert.match(migration, /create role luzione_provider_worker nologin nosuperuser nocreatedb nocreaterole noreplication nobypassrls/);
+  assert.match(migration, /rolsuper or rolcreatedb or rolcreaterole or rolcanlogin or rolreplication or rolbypassrls/);
+  assert.match(migration, /refuses unsafe pre-existing role attributes/);
+  assert.doesNotMatch(migration, /alter role luzione_(?:api_runtime|provider_worker)[^;]*(?:superuser|replication|bypassrls)/i);
   assert.doesNotMatch(migration, /alter table [^;]+ owner to luzione_(?:api_runtime|provider_worker)/i);
 });
 
