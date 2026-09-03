@@ -1270,6 +1270,136 @@
         "The code defect is locally and independently repaired, but production remains on the old SHA and can still reproduce it."
       ],
       "next_action": "After the managed recovery and Vercel access gates pass, canary and promote exact candidate 0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a, then prove repeated readyz=200 through the production pooler."
+    },
+    {
+      "failure_id": "A01_CURRENT_SCHEMA_PREFLIGHT_DRIFT_20260903",
+      "project_id": "A01",
+      "observed_at": "2026-09-03T03:32:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "48dee5d107309e749d77ad7d99607bc2bac45efd",
+      "environment": "disposable",
+      "layer": "current-schema-readiness-rehearsal",
+      "symptom": "The superseded A01 preflight expected 40 relations and always ran active denial probes, so the synthetic current 39/48 baseline failed on an intentionally missing Stage-5 relation before the exact drift signature could be asserted.",
+      "expected": "The rehearsal separately proves the no-probe public 39/48 and 69-violation health signature and runs active denial probes only after all 48 expected relations exist.",
+      "actual": "The exact implementation derives the 48-relation count from the canonical registry, asserts the precise nine missing relations and 69 violations in drift mode, and runs five active permission-denied probes at 48/48. The local and GitHub exact-SHA rehearsals pass.",
+      "classification": {
+        "domain": "TOOL",
+        "class": "INVALID",
+        "retry": "NEVER",
+        "severity": "ERROR"
+      },
+      "evidence_refs": [
+        "scripts/validation/a01-readiness-preflight.ts",
+        "src/modules/security-posture/tests/rls-posture.test.ts",
+        "engineering/execution/readiness/A01_CURRENT_SCHEMA_48_G0_EVIDENCE_20260903.json",
+        "github-actions:33712446489",
+        "artifact:9877379010"
+      ],
+      "repair_attempts": [
+        "Rebound the preflight and test sensitivity to the canonical 48-relation registry.",
+        "Separated drift-mode public catalog readback from pass-mode active denial probes.",
+        "Reran exact baseline, convergence, negative-path, HTTP and rollback proof locally and in GitHub Actions."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "commit:48dee5d107309e749d77ad7d99607bc2bac45efd",
+      "remaining_uncertainty": [],
+      "next_action": "Preserve the exact relation registry binding and reject aggregate-only or stale-count evidence."
+    },
+    {
+      "failure_id": "API_STAGE5_001_DISPOSABLE_REHEARSAL_DRIFT_20260903",
+      "project_id": "API_STAGE5_001",
+      "observed_at": "2026-09-03T03:37:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "48dee5d107309e749d77ad7d99607bc2bac45efd",
+      "environment": "disposable",
+      "layer": "stage5-synthetic-business-rehearsal",
+      "symptom": "An attempted reuse of the separate Stage-5 business rehearsal exposed fixture drift: the canonical fixture references an order_lines.source_system column absent from the canonical order migration; a temporary diagnostic correction then exposed SELECT FOR UPDATE against append-only receipt tables whose runtime grant is intentionally select/insert only.",
+      "expected": "The standalone Stage-5 disposable proof exercises its fixture and append-only runtime path using only the privileges declared by its migrations.",
+      "actual": "All temporary Stage-5 changes were reverted. A01 remains isolated to catalog, RLS, client-role, tenant, HTTP and dump/restore evidence; the standalone Stage-5 business rehearsal is not claimed by A01.",
+      "classification": {
+        "domain": "PLATFORM",
+        "class": "INVALID",
+        "retry": "NEVER",
+        "severity": "DEGRADED"
+      },
+      "evidence_refs": [
+        "scripts/validation/sultan-stage5-canonical-fixture.sql",
+        "scripts/validation/run-sultan-stage5-disposable-proof.sh",
+        "src/modules/sultan-stage5/postgresStore.ts",
+        "supabase/migrations/20260831070000_order_fulfillment_intent_dark_path.sql",
+        "supabase/migrations/20260902010000_sultan_stage5_authority_outcomes.sql"
+      ],
+      "repair_attempts": [
+        "Removed the Stage-5 business fixture from the A01 mutation cone.",
+        "Preserved Stage-5 relation RLS and representative cross-tenant coverage in the dedicated A01 current-schema security proof.",
+        "Reverted all temporary Stage-5 fixture and runtime-harness changes."
+      ],
+      "strategy_reset": "Quarantine the unrelated Stage-5 business rehearsal and complete only A01 security-convergence evidence.",
+      "quarantine_scope": [
+        "standalone Stage-5 disposable business rehearsal"
+      ],
+      "deferred_external_infra": [],
+      "resolved": false,
+      "resolution_ref": null,
+      "remaining_uncertainty": [
+        "The Stage-5 unit and repository suites pass, but the standalone disposable business proof requires a separately scoped fixture and locking repair."
+      ],
+      "next_action": "After the A01 writer lock is released, repair the Stage-5 fixture and redundant row-locking query in a separately reviewed no-effect candidate without changing its contract versions."
+    },
+    {
+      "failure_id": "A01_CURRENT_PRODUCTION_39_OF_48_GATE_20260903",
+      "project_id": "A01",
+      "observed_at": "2026-09-03T03:03:04Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "48dee5d107309e749d77ad7d99607bc2bac45efd",
+      "environment": "production",
+      "layer": "managed-database-security-readiness",
+      "symptom": "Canonical production readiness is available but security health remains fail closed at 39/48 expected relations and 69 violations.",
+      "expected": "After an explicitly authorized managed recovery gate and migration, one exact deployed production candidate reports readyz database READY, healthz READY_READ_ONLY, 48/48, zero violations and authenticated denial readback.",
+      "actual": "Controller-observed production returns release 200, livez 200, readyz 200/database READY and healthz 503 at 39/48 with 69 violations. Candidate 48dee5d reaches 48/48 only in isolated synthetic proof; no production connection, DDL, role membership, deployment, promotion or rollback was accessed or changed.",
+      "classification": {
+        "domain": "DATA",
+        "class": "DENIED",
+        "retry": "HUMAN",
+        "severity": "ERROR"
+      },
+      "evidence_refs": [
+        "engineering/execution/readiness/A01_CURRENT_SCHEMA_48_G0_EVIDENCE_20260903.json",
+        "engineering/execution/handoffs/A01_CURRENT_SCHEMA_48_CONTROLLER_HANDOFF.md",
+        "commit:48dee5d107309e749d77ad7d99607bc2bac45efd",
+        "github-actions:33712446489",
+        "github-actions:33712446424",
+        "artifact:9877379010"
+      ],
+      "repair_attempts": [
+        "Reproduced the exact current 39/48 and 69-violation signature from synthetic structure only.",
+        "Applied the six existing checksummed migrations in order to disposable PostgreSQL 16 and reached 48/48 with zero violations.",
+        "Proved client-role, legacy-service-role, runtime-sensitive, worker-scope, missing-tenant and cross-tenant denials.",
+        "Restored the exact pre-change dump and re-observed readyz 200 plus fail-closed healthz and authenticated RLS 503 at 39/48 and 69 violations."
+      ],
+      "strategy_reset": "Preserve fail-closed production and stop at a no-effect exact-SHA candidate until managed recovery evidence and explicit human authority exist.",
+      "quarantine_scope": [
+        "managed production migration",
+        "production principal membership or credential changes",
+        "exact candidate deployment or promotion",
+        "managed and production rollback",
+        "A02 integration"
+      ],
+      "deferred_external_infra": [
+        "project-specific accessible managed backup/PITR restore receipt",
+        "named production database owner and approved migration window",
+        "exact deployed candidate and production readback authority"
+      ],
+      "resolved": false,
+      "resolution_ref": null,
+      "remaining_uncertainty": [
+        "A local or CI dump/restore does not prove managed backup/PITR availability or restore correctness.",
+        "The isolated candidate does not prove the deployed production principal, pooler, configuration or canonical data at 48/48."
+      ],
+      "next_action": "A named human database owner records one accessible project-specific managed backup/PITR restore receipt before any production migration window is considered."
     }
   ]
 }

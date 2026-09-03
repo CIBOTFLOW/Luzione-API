@@ -1939,6 +1939,75 @@
         "promote exact candidate 0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a and record production readbacks",
         "exercise the approved rollback path and submit the resulting evidence to the controller"
       ]
+    },
+    {
+      "proof_id": "A01_CURRENT_SCHEMA_48_G0_20260903",
+      "project_id": "A01",
+      "recorded_at": "2026-09-03T03:45:48Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "48dee5d107309e749d77ad7d99607bc2bac45efd",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The exact A01 implementation candidate deterministically reproduces the current production-shaped 39/48 and 69-violation catalog signature from synthetic structure, applies only six existing ordered migrations in disposable PostgreSQL 16, reaches 48/48 with zero violations, proves client-role/runtime/worker/missing-tenant/cross-tenant denials, and restores the exact fail-closed baseline. Exact-head GitHub Release gate and CodeQL pass. This is isolated G0 evidence, not managed recovery, integration or production readiness.",
+      "exercised_boundaries": [
+        "The preflight and unit test are test-sensitive to the canonical 48-relation registry and exact nine missing relations rather than the superseded 40 or 47 counts.",
+        "Synthetic baseline readback returned 39/48, 69 violations, 29 not-forced relations, 29 legacy service_role grants, two missing roles and zero RLS-disabled browser-accessible relations.",
+        "The existing migrations 20260831070000, 20260831090000, 20260901123000, 20260901130000, 20260902010000 and 20260902010100 were checksummed and applied in order; 20260831090000 was reapplied idempotently.",
+        "Candidate catalog readback returned 48/48, zero violations and five permission-denied active probes.",
+        "The current-schema proof exercised 96 anon/authenticated denials, 38 legacy service_role tenant denials, ten runtime sensitive-relation denials, 42 provider-worker out-of-scope denials and two representative cross-tenant insert denials.",
+        "Representative legacy and Stage-5 tenant rows were visible only to the correct runtime tenant; cross-tenant and missing-tenant reads returned zero rows; runtime roles owned zero relations and no public tenant policies existed.",
+        "Exact-SHA synthetic HTTP returned release/livez/readyz/healthz/authenticated-RLS 200 with READY_READ_ONLY, 48/48, zero violations, mutations and projections disabled and no external-effect authority.",
+        "HTTP negative paths returned unauthenticated RLS 401 and invalid activeProbes 400.",
+        "Dump/restore recreated the exact baseline evidence byte-for-byte; readyz remained 200 while healthz and authenticated RLS returned 503 at exactly 39/48 and 69 violations, demonstrating independent dependency readiness and fail-closed security.",
+        "Local compliance 7/7, typecheck, zero-warning lint, 26/26 focused security tests, 257/257 repository tests, Next.js webpack production build and exact-SHA rehearsal passed.",
+        "Draft PR #61 exact-head Release gate 33712446489 and CodeQL 33712446424 passed; A01 job 100514622780 uploaded immutable artifact 9877379010 with digest sha256:b45605e8e0824c73a1a4ec9eff49b83fe7a259dd91372097b7dd7a4c8717577f."
+      ],
+      "untested_boundaries": [
+        "project-specific managed backup/PITR creation, accessibility and restore",
+        "production application of any migration or principal membership change",
+        "deployed exact candidate readiness, authenticated denial readback and configuration compatibility",
+        "production 48/48, zero violations and healthz 200",
+        "production rollback and post-rollback authoritative readback",
+        "controller A01 G1 acceptance and D01 G1",
+        "A02 integration and independent UI consumer evidence"
+      ],
+      "evidence_refs": [
+        "architecture/production-convergence/A01_CURRENT_SCHEMA_48_WORKING_CONTRACT.md",
+        "engineering/execution/readiness/A01_CURRENT_SCHEMA_48_G0_EVIDENCE_20260903.json",
+        "engineering/execution/handoffs/A01_CURRENT_SCHEMA_48_CONTROLLER_HANDOFF.md",
+        "scripts/validation/a01-readiness-preflight.ts",
+        "scripts/validation/a01-current-schema-security.ts",
+        "scripts/validation/run-a01-readiness-rehearsal.sh",
+        "src/modules/security-posture/tests/rls-posture.test.ts",
+        "pull-request:CIBOTFLOW/Luzione-API#61",
+        "commit:48dee5d107309e749d77ad7d99607bc2bac45efd",
+        "github-actions:33712446489",
+        "github-actions:33712446424",
+        "artifact:9877379010"
+      ],
+      "failure_refs": [
+        "A01_CURRENT_SCHEMA_PREFLIGHT_DRIFT_20260903",
+        "A01_CURRENT_PRODUCTION_39_OF_48_GATE_20260903",
+        "API_STAGE5_001_DISPOSABLE_REHEARSAL_DRIFT_20260903"
+      ],
+      "cross_repo_handoffs": [],
+      "deferred_external_infra": [
+        "project-specific accessible managed backup/PITR restore receipt",
+        "named human database owner and approved managed migration window",
+        "exact candidate deployment and production observation",
+        "independent UI consumer evidence and D01 G1"
+      ],
+      "remaining_uncertainty": [
+        "Local and CI PostgreSQL plus synthetic HTTP evidence cannot establish managed database, deployed principal, pooler, environment or production behavior.",
+        "The local dump/restore proves logical reversibility only and is not managed backup/PITR or production rollback proof.",
+        "The standalone Stage-5 business rehearsal has a separately quarantined fixture/runtime-locking defect; A01 proves its relations' catalog/RLS/tenant posture only.",
+        "Production remains correctly fail closed at the controller-observed 39/48 and 69 violations."
+      ],
+      "next_proof_needed": [
+        "A named human database owner records one accessible project-specific managed backup/PITR restore receipt before any production migration window is considered."
+      ]
     }
   ]
 }
