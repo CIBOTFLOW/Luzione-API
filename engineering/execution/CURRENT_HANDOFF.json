@@ -2,47 +2,49 @@
   "schema_version": 2,
   "queue_id": "LUZIONE_API_SYSTEMS_ENGINEERING_V1",
   "repository": "CIBOTFLOW/Luzione-API",
-  "program_state": "CONNECTOR_REVOCATION_L1_CORRECTION_01_BOUNDED_PASS_LOCAL_PROVEN_SANDBOX_ONLY_EXACT_FINAL_CI_PENDING",
-  "current_project": "CONNECTOR-REVOCATION-L1-CORRECTION-01",
+  "program_state": "OPS_CONTRACTS_CORRECTION_02_BOUNDED_PASS_LOCAL_PROVEN_NO_EFFECT_ZERO_CREDIT_EXACT_FINAL_CI_PENDING",
+  "current_project": "OPS-CONTRACTS-CORRECTION-02",
   "next_projects": [],
-  "next_action": "Controller assigns an independent assurance review of the exact v2 implementation/final pair and its fail-closed owner-adapter boundary before L2 may pin it.",
+  "next_action": "L5 independently runs OPS-CONTRACTS-ASSURE-03 against the exact implementation/final pair while L2/L3 return exact canonical source pins or explicit ABSENT; no decision-bearing repin occurs before both pass.",
   "canonical_program": "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md",
   "failure_ledger": "engineering/execution/SYSTEMS_ENGINEERING_FAILURE_LEDGER.json",
   "proof_ledger": "engineering/execution/SYSTEMS_ENGINEERING_PROOF_LEDGER.json",
-  "handoff": "engineering/execution/handoffs/CONNECTOR_REVOCATION_L1_CORRECTION_01_G0_CONTROLLER_HANDOFF.json",
+  "handoff": "engineering/execution/handoffs/OPS_CONTRACTS_CORRECTION_02_G0_CONTROLLER_HANDOFF.json",
   "consumer_packets": [
-    "contracts/connector-revocation/v2/l2-consumer-packet.json"
+    "contracts/operations-evidence/consumer-mappings/l2-ops-ledger-v3.json",
+    "contracts/operations-evidence/consumer-mappings/l3-ops-ledger-v3.json"
   ],
-  "base_sha": "0c970c0b54f190ba0b2d97629311d2712f9518e2",
-  "implementation_shas": {"contract":"572d0f5e78558f8e6b8dcc2bf07210600edd20d0","test_integrated":"9edbedfa37020b3710090abe57a899cf0bc880eb"},
-  "evidence_head": "PEEL_DETACHED_ANNOTATED_TAG_CONNECTOR_REVOCATION_L1_CORRECTION_01_EXACT_FINAL",
-  "branch": "codex/connector-revocation-correction-01-g0-8dbcc9b",
+  "base_sha": "ef4d69145192da627184c73ac170a623ab6dc72e",
+  "implementation_shas": {"contracts_and_tests":"38fea3da919b7632607dbf2439696747cec5217b"},
+  "evidence_head": "PEEL_DETACHED_ANNOTATED_TAG_OPS_CONTRACTS_CORRECTION_02_EXACT_FINAL",
+  "branch": "codex/ops-contracts-correction-02-g0-65dcf04",
   "contract_versions": [
-    "ConnectorRevocationRequest/v2",
-    "ConnectorRevocationReceipt/v2",
-    "ConnectorCredentialHandle/v2",
-    "CanonicalConnectorBindingResolution/v1",
-    "CONNECTOR-REVOCATION-L1-CORRECTION-01/policy-v2"
+    "LuzioneOperationsEvidenceLedger/v3",
+    "HumanAuthoritySourceBinding/v1",
+    "G2EffectAuthorityGrant/v2",
+    "IncidentRecoverySourceBinding/v1",
+    "CapabilityEpochReset/v2"
   ],
   "engineering_state": "BOUNDED_PASS",
   "release_evidence": "LOCAL_PROVEN",
-  "effect_authority": "SANDBOX_ONLY",
+  "effect_authority": "NO_EFFECT",
   "finality": "BOUNDED_CLAIM",
-  "local_verification": "PASS_COMPLIANCE_7_OF_7_TYPECHECK_LINT_ZERO_WARNINGS_FOCUSED_16_OF_16_COMBINED_25_OF_25_TAXONOMY_4_OF_4_FULL_433_OF_433_NEXTJS_16_3_4_WEBPACK_BUILD_DISPOSABLE_REVERSE_0_REAPPLY_7",
+  "local_verification": "PASS_COMPLIANCE_7_OF_7_TYPECHECK_LINT_ZERO_WARNINGS_FOCUSED_13_OF_13_COMBINED_49_OF_49_TAXONOMY_4_OF_4_FULL_446_OF_446_NEXTJS_16_3_4_WEBPACK_BUILD",
   "reverse_proof": "PASS_GIT_REVERSE_APPLY_TO_EXACT_BASE_TREE",
   "runtime_activation": "NOT_IMPLEMENTED",
   "production_query_or_mutation": "NOT_PERFORMED",
+  "decision_credit": {"proof_days":0,"g2":0,"production":0},
   "exact_head_automation": "PENDING_FINAL_PUSH_AND_DRAFT_PR",
-  "preview": "PENDING_GIT_BOUND_STATUS_NO_APPLICATION_READBACK_CLAIM",
+  "preview": "NOT_APPLICABLE_NO_ROUTE_RUNTIME_OR_PERSISTENCE_ADDED",
   "writer_lock": "RELEASED_AFTER_FINAL_COMMIT_PUSH_TAG_AND_HANDOFF",
   "open_quarantines": [
-    "An admitted canonical connector-binding owner adapter and independent exact-pin L2 evidence are absent; the route fails closed.",
-    "Real credential resolution, hold, erasure and provider revocation remain prohibited and unexercised.",
+    "Canonical human membership, append-only G2 approval and incident-bound recovery sources are absent.",
+    "L2/L3 source packets are ABSENT and no independent assurance exists.",
     "A01/D01, authenticated exact-SHA readback and every G1/G2 production prerequisite remain unresolved."
   ],
-  "deferred_external_infra": ["exact-final CI", "independent assurance and L2 consumer", "owner adapter and authenticated hosted readback", "managed recovery and every production/G2 boundary"],
+  "deferred_external_infra": ["exact-final CI", "independent assurance and consumers", "canonical source-owner records", "every production/G2 boundary"],
   "remaining_uncertainty": [
-    "Producer-local evidence cannot independently clear the correction or prove the canonical owner integration.",
-    "No credential, hosted consumer, provider, managed migration or production boundary was exercised."
+    "Synthetic fixtures prove compatibility only and cannot mint authority or decision credit.",
+    "No hosted store, source owner, runtime, database or production boundary was exercised."
   ]
 }

@@ -1,0 +1,20 @@
+{
+  "fixtureSetVersion": "OPS-CONTRACTS-CORRECTION-02/adverse-fixtures-v1",
+  "assuranceFingerprintSha256": "b11f3cb5b9901a37a36c2543aba3542ef8e4b7349f62d14bac16e9813faa103f",
+  "sourceMapFingerprintSha256": "66ca2ccbaca70ef60b407be7ac9230184b55cdeccbd9c50fdc67566802d72959",
+  "effectAuthority": "NO_EFFECT",
+  "creditCeiling": { "proofDays": 0, "g2": 0, "production": 0 },
+  "fixtures": [
+    { "id": "B01_OWNER_STRING_RESEAL", "expectedError": "OPS_AUTHORITY_DENIED" },
+    { "id": "B02_FOUNDER_IREM_MALLORY_SUBSTITUTION", "expectedError": "OPS_AUTHORITY_DENIED" },
+    { "id": "B03_VALID_ENUM_ROLE_FUNCTION_RELABEL", "expectedError": "OPS_AUTHORITY_DENIED" },
+    { "id": "B04_AGENT_SERVICE_WORKLOAD_DEV_TEST_AS_HUMAN", "expectedError": "OPS_AUTHORITY_DENIED" },
+    { "id": "B05_CROSS_TENANT_MEMBERSHIP", "expectedError": "OPS_REFERENCE_MISMATCH" },
+    { "id": "B06_STALE_REVOKED_SUPERSEDED_MEMBERSHIP", "expectedError": "OPS_AUTHORITY_DENIED" },
+    { "id": "B07_BUNDLED_MISMATCHED_EXPIRED_GRANT", "expectedError": "OPS_AUTHORITY_DENIED" },
+    { "id": "B08_OPEN_UNVERIFIED_INCIDENT", "expectedError": "OPS_STATE_INVALID" },
+    { "id": "B09_ORPHAN_RECOVERY", "expectedError": "OPS_REFERENCE_MISMATCH" },
+    { "id": "B10_EPOCH_GAP_FORK_CYCLE_REUSED_SUCCESSOR", "expectedError": "OPS_REFERENCE_MISMATCH" },
+    { "id": "B11_SURPLUS_MISSING_WRONG_VERSION_AND_SOURCE_DRIFT", "expectedError": "OPS_FIELD_SET_MISMATCH" }
+  ]
+}

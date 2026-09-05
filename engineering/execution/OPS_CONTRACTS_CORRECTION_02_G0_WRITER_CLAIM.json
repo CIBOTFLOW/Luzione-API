@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "OperationsEvidenceWriterClaim/v1",
+  "projectId": "OPS-CONTRACTS-CORRECTION-02",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "branch": "codex/ops-contracts-correction-02-g0-65dcf04",
+  "baseSha": "ef4d69145192da627184c73ac170a623ab6dc72e",
+  "controllerAuthority": "65dcf041236133af9c3c3cdf2a7d27789b8ee9b2",
+  "assuranceFingerprintSha256": "b11f3cb5b9901a37a36c2543aba3542ef8e4b7349f62d14bac16e9813faa103f",
+  "sourceMapFingerprintSha256": "66ca2ccbaca70ef60b407be7ac9230184b55cdeccbd9c50fdc67566802d72959",
+  "effectAuthority": "NO_EFFECT",
+  "productionCredit": 0,
+  "writer": "L1",
+  "writerLock": "RELEASED",
+  "claimedAt": "2026-09-05T07:05:00.000Z",
+  "implementationSha": "38fea3da919b7632607dbf2439696747cec5217b",
+  "finalSha": "PEEL_DETACHED_ANNOTATED_TAG_OPS_CONTRACTS_CORRECTION_02_EXACT_FINAL",
+  "releasedAt": "2026-09-05T08:52:13.000Z"
+}

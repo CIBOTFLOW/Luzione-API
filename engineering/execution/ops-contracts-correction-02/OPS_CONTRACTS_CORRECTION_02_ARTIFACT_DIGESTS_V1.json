@@ -1,0 +1,66 @@
+{
+  "schemaVersion": "OPS-CONTRACTS-CORRECTION-02/Artifact-Digests/v1",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "branch": "codex/ops-contracts-correction-02-g0-65dcf04",
+  "baseSha": "ef4d69145192da627184c73ac170a623ab6dc72e",
+  "implementationSha": "38fea3da919b7632607dbf2439696747cec5217b",
+  "finalSha": "PEEL_DETACHED_ANNOTATED_TAG_OPS_CONTRACTS_CORRECTION_02_EXACT_FINAL",
+  "controllerAuthority": "65dcf041236133af9c3c3cdf2a7d27789b8ee9b2",
+  "assuranceFingerprintSha256": "b11f3cb5b9901a37a36c2543aba3542ef8e4b7349f62d14bac16e9813faa103f",
+  "sourceMapFingerprintSha256": "66ca2ccbaca70ef60b407be7ac9230184b55cdeccbd9c50fdc67566802d72959",
+  "versions": [
+    "LuzioneOperationsEvidenceLedger/v3",
+    "LuzioneOperationsEvidenceLedgerManifest/v3",
+    "HumanAuthoritySourceBinding/v1",
+    "G2EffectAuthorityGrant/v2",
+    "IncidentRecoverySourceBinding/v1",
+    "CapabilityEpochReset/v2",
+    "OperationsEvidenceAuthorityRecoverySourceSnapshot/v1"
+  ],
+  "rawSha256": {
+    "manifest": "cb2a11ca2230986a3c659443580c7a9958e175cea63767c1c4aa4a4b98430280",
+    "schema": "28da24cb3049ccd71db2c55be34ce4d226d486f8bc778b8a295651bc1e83188b",
+    "adverseFixtures": "9d7cd48b054bb8c6dfa40109e09b45af7e1e52bcdb70a1287880ff52a0a5641f",
+    "l2ConsumerPacket": "47f1a6e9d6e1eff7500b0416f8a7663cdb183a8b783673e615dec06c725ec2c5",
+    "l3ConsumerPacket": "d8f5d02f0a947968a98a2fb7d1f053f6daeebce7540dd9488ee86bcf5e204426",
+    "contracts": "6369e68e39ecd2da44d9228461e15646f3baf3055dd0194a7723c1266960982f",
+    "rules": "acb1dba66de24f59946d6916eb637514923c75aabdc9a7a2a38571e7882a2539",
+    "strictSdk": "de57f0f3ee0b26670819695739e2de00770f72630a4ba0e9354a9804a26a98e8",
+    "fixtures": "7787385ec65af5c2d3bf2faecc25df90da014688452dd19d574edebaf947f090",
+    "generatedSdk": "33fb7bca45b42898eef936d9e1af033b5c889dcc6b51ff53d1ffc23babb51ef3",
+    "moduleIndex": "c769fea0fb97dd94cabd78ea456f82ba65e05746c7f4fd44c9d47e8058ebea51",
+    "focusedSuite": "b619678dd7d87ab79cd08eb641824f96487c0635edc8212159e810896e410563",
+    "workingContract": "0a8bf35f6311cdb7a6d140df393e6ffdedab20a8bd13a865aea8b18b6139943d"
+  },
+  "frozenTrees": {
+    "coreSchema": "d57ccc4cccd97b37acd1a1575b1e07ede5787349",
+    "coreSdk": "d594fa014d7020fdf8386c7a6926ff9b573ac355",
+    "onboardingContracts": "b01a9e3bbb418440ef2550b1136f5fbc2278f37b",
+    "onboardingSdk": "1b95d20469236a3b31494d6013008d0cb4d4c9dd",
+    "effectAdmissionContracts": "ed1f28a742c5ea3e1bf20a95f11ea9e8dc5af29a",
+    "effectAdmissionSdk": "b14044b0da3d0eb7c1a2fa855ddf24da13797239",
+    "connectorRevocationContracts": "18c697f98b3171914fe5f7830c7159852712c673",
+    "connectorRevocationSdk": "1573bdadcadfd16b01beac46fea863abe571e29c",
+    "operationsV2Schema": "ae9d356484ced3f547059ae74a9ad92a8c00f6c3",
+    "operationsV2Sdk": "a503d433bcc2249924773b550622d9794d2969d5"
+  },
+  "treeProof": {
+    "baseTree": "9f4e5f6d3a60aaeeccb012093135dc7fa42f2cd1",
+    "implementationTree": "2c90b5810e5bf10e084a58c7c0eb9e6c85c7e6bc",
+    "reverseCheck": "PASS_GIT_REVERSE_APPLY_TO_EXACT_BASE_TREE"
+  },
+  "localVerification": {
+    "focusedV3": "PASS_13_OF_13",
+    "combinedV1V2V3": "PASS_49_OF_49",
+    "taxonomy": "PASS_4_OF_4",
+    "full": "PASS_446_OF_446",
+    "compliance": "PASS_7_OF_7",
+    "typecheck": "PASS",
+    "lint": "PASS_ZERO_WARNINGS",
+    "build": "PASS_NEXTJS_16_3_4_WEBPACK"
+  },
+  "credit": {"proofDays": 0, "g2": 0, "production": 0},
+  "effectAuthority": "NO_EFFECT",
+  "runtimeActivation": "NOT_IMPLEMENTED",
+  "productionReady": false
+}

@@ -1,0 +1,189 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/operations-evidence/v3/luzione-operations-evidence-ledger-v3.schema.json",
+  "title": "Luzione Operations Evidence Source-Bound Ledger v3",
+  "description": "Strict additive NO_EFFECT envelope over frozen v2. Cross-record source ownership, validity, recovery ordering and epoch lineage are enforced by the L1 SDK. V1/v2 remain prohibited for decision-bearing use.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "assessmentTime": { "$ref": "#/$defs/Timestamp" },
+    "baseLedger": { "$ref": "../v2/luzione-operations-evidence-ledger-v2.schema.json" },
+    "capabilityEpochResets": { "type": "array", "items": { "$ref": "#/$defs/CapabilityEpochReset" }, "uniqueItems": true },
+    "contractVersion": { "const": "LuzioneOperationsEvidenceLedger/v3" },
+    "creditCeiling": { "$ref": "#/$defs/CreditCeiling" },
+    "decisionPolicy": { "const": "ZERO_CREDIT_PENDING_ASSURANCE_03" },
+    "effectAuthority": { "const": "NO_EFFECT" },
+    "g2EffectAuthorityGrants": { "type": "array", "items": { "$ref": "#/$defs/G2EffectAuthorityGrant" }, "uniqueItems": true },
+    "humanAuthoritySourceBindings": { "type": "array", "items": { "$ref": "#/$defs/HumanAuthoritySourceBinding" }, "minItems": 1, "uniqueItems": true },
+    "incidentRecoverySourceBindings": { "type": "array", "items": { "$ref": "#/$defs/IncidentRecoverySourceBinding" }, "uniqueItems": true },
+    "ledgerDigest": { "$ref": "#/$defs/Sha256" },
+    "ledgerId": { "$ref": "#/$defs/Id" },
+    "sourcePackets": { "$ref": "#/$defs/SourcePackets" },
+    "tenantId": { "$ref": "#/$defs/Id" }
+  },
+  "required": ["assessmentTime", "baseLedger", "capabilityEpochResets", "contractVersion", "creditCeiling", "decisionPolicy", "effectAuthority", "g2EffectAuthorityGrants", "humanAuthoritySourceBindings", "incidentRecoverySourceBindings", "ledgerDigest", "ledgerId", "sourcePackets", "tenantId"],
+  "$defs": {
+    "Id": { "type": "string", "minLength": 3, "maxLength": 240, "pattern": "^\\S(?:.*\\S)?$" },
+    "Sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "Timestamp": { "type": "string", "format": "date-time", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$" },
+    "GenuineHumanId": { "type": "string", "minLength": 7, "maxLength": 240, "pattern": "^human:\\S(?:.*\\S)?$" },
+    "NullableTimestamp": { "oneOf": [{ "$ref": "#/$defs/Timestamp" }, { "type": "null" }] },
+    "ExactSourceReadback": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "objectHash": { "$ref": "#/$defs/Sha256" },
+        "objectId": { "$ref": "#/$defs/Id" },
+        "objectType": { "enum": ["G2_APPROVAL", "RECOVERY_RECEIPT", "PROOF_INCIDENT", "TENANT_MEMBERSHIP"] },
+        "objectVersion": { "$ref": "#/$defs/Id" },
+        "readbackAt": { "$ref": "#/$defs/Timestamp" },
+        "readbackHash": { "$ref": "#/$defs/Sha256" },
+        "readbackId": { "$ref": "#/$defs/Id" },
+        "readbackObjectId": { "$ref": "#/$defs/Id" },
+        "readbackObjectVersion": { "$ref": "#/$defs/Id" },
+        "sourceSystem": { "enum": ["LUZIONE_CORE", "LUZIONE_CRM_APP"] },
+        "tenantId": { "$ref": "#/$defs/Id" }
+      },
+      "required": ["objectHash", "objectId", "objectType", "objectVersion", "readbackAt", "readbackHash", "readbackId", "readbackObjectId", "readbackObjectVersion", "sourceSystem", "tenantId"]
+    },
+    "HumanAuthoritySourceBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "bindingDigest": { "$ref": "#/$defs/Sha256" },
+        "bindingId": { "$ref": "#/$defs/Id" },
+        "canonicalFunction": { "enum": ["FOUNDER", "PLATFORM_OPERATIONS", "SUPPORT_OPERATIONS"] },
+        "canonicalRole": { "enum": ["FOUNDER", "IREM"] },
+        "contractVersion": { "const": "HumanAuthoritySourceBinding/v1" },
+        "issuerSubjectId": { "$ref": "#/$defs/GenuineHumanId" },
+        "legacyAuthorityEvidenceRefId": { "$ref": "#/$defs/Id" },
+        "membershipSource": { "allOf": [{ "$ref": "#/$defs/ExactSourceReadback" }, { "properties": { "objectType": { "const": "TENANT_MEMBERSHIP" } } }] },
+        "membershipState": { "const": "ACTIVE" },
+        "principalType": { "const": "HUMAN" },
+        "revokedAt": { "type": "null" },
+        "supersededByBindingId": { "type": "null" },
+        "tenantId": { "$ref": "#/$defs/Id" },
+        "validFrom": { "$ref": "#/$defs/Timestamp" },
+        "validUntil": { "$ref": "#/$defs/Timestamp" }
+      },
+      "required": ["bindingDigest", "bindingId", "canonicalFunction", "canonicalRole", "contractVersion", "issuerSubjectId", "legacyAuthorityEvidenceRefId", "membershipSource", "membershipState", "principalType", "revokedAt", "supersededByBindingId", "tenantId", "validFrom", "validUntil"]
+    },
+    "G2EffectAuthorityGrant": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "actionId": { "enum": ["g2:activate-reads", "g2:activate-reversible-writes", "g2:activate-bounded-provider-actions", "g2:open-formal-proof"] },
+        "approvalAppendOnly": { "const": true },
+        "approvalSource": { "allOf": [{ "$ref": "#/$defs/ExactSourceReadback" }, { "properties": { "objectType": { "const": "G2_APPROVAL" } } }] },
+        "approvalState": { "const": "APPROVED" },
+        "contractVersion": { "const": "G2EffectAuthorityGrant/v2" },
+        "effect": { "enum": ["TENANT_LIVE_READ", "TENANT_REVERSIBLE_WRITE", "BOUNDED_PROVIDER_ACTION", "FORMAL_PROOF_OPEN"] },
+        "expiresAt": { "$ref": "#/$defs/Timestamp" },
+        "grantDigest": { "$ref": "#/$defs/Sha256" },
+        "grantId": { "$ref": "#/$defs/Id" },
+        "humanAuthorityBindingDigest": { "$ref": "#/$defs/Sha256" },
+        "humanAuthorityBindingId": { "$ref": "#/$defs/Id" },
+        "issuedAt": { "$ref": "#/$defs/Timestamp" },
+        "issuerSubjectId": { "$ref": "#/$defs/GenuineHumanId" },
+        "legacyAuthorityEvidenceRefId": { "$ref": "#/$defs/Id" },
+        "legacyGrantId": { "$ref": "#/$defs/Id" },
+        "requestedStage": { "enum": ["READS", "REVERSIBLE_WRITES", "BOUNDED_PROVIDER_ACTIONS", "FORMAL_PROOF"] },
+        "revokedAt": { "type": "null" },
+        "state": { "const": "GRANTED" },
+        "supersededByGrantId": { "type": "null" },
+        "tenantId": { "$ref": "#/$defs/Id" },
+        "validFrom": { "$ref": "#/$defs/Timestamp" }
+      },
+      "required": ["actionId", "approvalAppendOnly", "approvalSource", "approvalState", "contractVersion", "effect", "expiresAt", "grantDigest", "grantId", "humanAuthorityBindingDigest", "humanAuthorityBindingId", "issuedAt", "issuerSubjectId", "legacyAuthorityEvidenceRefId", "legacyGrantId", "requestedStage", "revokedAt", "state", "supersededByGrantId", "tenantId", "validFrom"]
+    },
+    "IncidentRecoverySourceBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "acknowledgedAt": { "$ref": "#/$defs/Timestamp" },
+        "bindingDigest": { "$ref": "#/$defs/Sha256" },
+        "bindingId": { "$ref": "#/$defs/Id" },
+        "capabilityId": { "$ref": "#/$defs/Id" },
+        "contractVersion": { "const": "IncidentRecoverySourceBinding/v1" },
+        "incidentRecordId": { "$ref": "#/$defs/Id" },
+        "incidentSource": { "allOf": [{ "$ref": "#/$defs/ExactSourceReadback" }, { "properties": { "objectType": { "const": "PROOF_INCIDENT" } } }] },
+        "incidentState": { "const": "RESOLVED_VERIFIED" },
+        "openedAt": { "$ref": "#/$defs/Timestamp" },
+        "recoveryCompletedAt": { "$ref": "#/$defs/Timestamp" },
+        "recoveryIncidentRecordId": { "$ref": "#/$defs/Id" },
+        "recoverySource": { "allOf": [{ "$ref": "#/$defs/ExactSourceReadback" }, { "properties": { "objectType": { "const": "RECOVERY_RECEIPT" } } }] },
+        "recoveryState": { "const": "VERIFIED" },
+        "resolvedAt": { "$ref": "#/$defs/Timestamp" },
+        "revokedAt": { "type": "null" },
+        "supersededByBindingId": { "type": "null" },
+        "tenantId": { "$ref": "#/$defs/Id" }
+      },
+      "required": ["acknowledgedAt", "bindingDigest", "bindingId", "capabilityId", "contractVersion", "incidentRecordId", "incidentSource", "incidentState", "openedAt", "recoveryCompletedAt", "recoveryIncidentRecordId", "recoverySource", "recoveryState", "resolvedAt", "revokedAt", "supersededByBindingId", "tenantId"]
+    },
+    "CapabilityEpochReset": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "capabilityId": { "$ref": "#/$defs/Id" },
+        "contractVersion": { "const": "CapabilityEpochReset/v2" },
+        "effectiveAt": { "$ref": "#/$defs/Timestamp" },
+        "incidentRecordId": { "$ref": "#/$defs/Id" },
+        "incidentRecoveryBindingDigest": { "$ref": "#/$defs/Sha256" },
+        "incidentRecoveryBindingId": { "$ref": "#/$defs/Id" },
+        "newEpochId": { "$ref": "#/$defs/Id" },
+        "newEpochSequence": { "type": "integer", "minimum": 1 },
+        "priorEpochId": { "$ref": "#/$defs/Id" },
+        "priorEpochSequence": { "type": "integer", "minimum": 0 },
+        "resetDigest": { "$ref": "#/$defs/Sha256" },
+        "resetId": { "$ref": "#/$defs/Id" },
+        "tenantId": { "$ref": "#/$defs/Id" }
+      },
+      "required": ["capabilityId", "contractVersion", "effectiveAt", "incidentRecordId", "incidentRecoveryBindingDigest", "incidentRecoveryBindingId", "newEpochId", "newEpochSequence", "priorEpochId", "priorEpochSequence", "resetDigest", "resetId", "tenantId"]
+    },
+    "CapabilityEpochAnchor": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "capabilityId": { "$ref": "#/$defs/Id" },
+        "epochId": { "$ref": "#/$defs/Id" },
+        "epochSequence": { "type": "integer", "minimum": 0 },
+        "tenantId": { "$ref": "#/$defs/Id" }
+      },
+      "required": ["capabilityId", "epochId", "epochSequence", "tenantId"]
+    },
+    "SourceSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contractVersion": { "const": "OperationsEvidenceAuthorityRecoverySourceSnapshot/v1" },
+        "g2EffectAuthorityGrants": { "type": "array", "items": { "$ref": "#/$defs/G2EffectAuthorityGrant" }, "uniqueItems": true },
+        "humanAuthoritySourceBindings": { "type": "array", "items": { "$ref": "#/$defs/HumanAuthoritySourceBinding" }, "minItems": 1, "uniqueItems": true },
+        "incidentRecoverySourceBindings": { "type": "array", "items": { "$ref": "#/$defs/IncidentRecoverySourceBinding" }, "uniqueItems": true },
+        "resolvedBy": { "enum": ["LUZIONE_CORE_SERVER", "SYNTHETIC_TEST_HARNESS"] },
+        "snapshotAt": { "$ref": "#/$defs/Timestamp" },
+        "tenantId": { "$ref": "#/$defs/Id" }
+      },
+      "required": ["contractVersion", "g2EffectAuthorityGrants", "humanAuthoritySourceBindings", "incidentRecoverySourceBindings", "resolvedBy", "snapshotAt", "tenantId"]
+    },
+    "CreditCeiling": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": { "g2": { "const": 0 }, "production": { "const": 0 }, "proofDays": { "const": 0 } },
+      "required": ["g2", "production", "proofDays"]
+    },
+    "SourcePackets": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": { "l2": { "const": "ABSENT" }, "l3": { "const": "ABSENT" } },
+      "required": ["l2", "l3"]
+    }
+  },
+  "x-luzione-semanticRules": {
+    "baseV1V2DecisionBearingUse": "PROHIBITED",
+    "capabilityEpochLineage": "SERVER_DERIVED_CONTINUOUS_SINGLE_SUCCESSOR",
+    "g2ScopeCardinality": 1,
+    "proofDayCreditCeiling": 0,
+    "schemaSdkParity": "BIDIRECTIONAL_FIXTURES_REQUIRED",
+    "sourceBindings": "SERVER_RESOLVED_EXACT_TENANT_SUBJECT_VERSION_HASH_READBACK"
+  }
+}

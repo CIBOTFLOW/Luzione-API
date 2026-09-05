@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "LuzioneOperationsEvidenceLedgerManifest/v3",
+  "ledgerVersion": "LuzioneOperationsEvidenceLedger/v3",
+  "baseLedgerVersion": "LuzioneOperationsEvidenceLedger/v2",
+  "candidateSha": "38fea3da919b7632607dbf2439696747cec5217b",
+  "controllerAuthority": "65dcf041236133af9c3c3cdf2a7d27789b8ee9b2",
+  "assuranceFingerprintSha256": "b11f3cb5b9901a37a36c2543aba3542ef8e4b7349f62d14bac16e9813faa103f",
+  "sourceMapFingerprintSha256": "66ca2ccbaca70ef60b407be7ac9230184b55cdeccbd9c50fdc67566802d72959",
+  "effectAuthority": "NO_EFFECT",
+  "runtimeActivation": "NOT_IMPLEMENTED",
+  "productionReady": false,
+  "sourceAvailability": {
+    "canonicalG2Approval": "ABSENT",
+    "canonicalHumanMembership": "ABSENT",
+    "incidentBoundRecovery": "ABSENT",
+    "resolvedVerifiedIncident": "ABSENT"
+  },
+  "artifacts": {
+    "l2SourcePacket": "contracts/operations-evidence/consumer-mappings/l2-ops-ledger-v3.json",
+    "l3SourcePacket": "contracts/operations-evidence/consumer-mappings/l3-ops-ledger-v3.json",
+    "ruleSource": "src/modules/operations-evidence-contracts/v3/rules.ts",
+    "schemaBundle": "contracts/operations-evidence/v3/luzione-operations-evidence-ledger-v3.schema.json",
+    "semanticFixtures": "src/modules/operations-evidence-contracts/v3/fixtures.ts",
+    "strictConsumerSdk": "src/modules/operations-evidence-contracts/v3/index.ts"
+  },
+  "compatibility": {
+    "decisionBearingV1UseProhibited": true,
+    "decisionBearingV2UseProhibited": true,
+    "exactFieldSets": true,
+    "sourceBindingsRequired": true,
+    "unknownVersionsRejected": true
+  }
+}

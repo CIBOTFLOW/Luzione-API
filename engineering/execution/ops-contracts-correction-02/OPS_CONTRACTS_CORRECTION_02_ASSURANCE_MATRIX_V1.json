@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "OPS-CONTRACTS-CORRECTION-02/Assurance-Matrix/v1",
+  "implementationSha": "38fea3da919b7632607dbf2439696747cec5217b",
+  "assuranceFingerprintSha256": "b11f3cb5b9901a37a36c2543aba3542ef8e4b7349f62d14bac16e9813faa103f",
+  "sourceMapFingerprintSha256": "66ca2ccbaca70ef60b407be7ac9230184b55cdeccbd9c50fdc67566802d72959",
+  "result": "PASS_11_OF_11_BOUNDED_LOCAL_NO_EFFECT_ZERO_CREDIT",
+  "probes": [
+    {"id":"B01_OWNER_STRING_RESEAL","result":"PASS_DENIED","claim":"owner strings cannot replace exact trusted membership source readback"},
+    {"id":"B02_FOUNDER_IREM_MALLORY_SUBSTITUTION","result":"PASS_DENIED","claim":"subject substitution cannot cross the exact trusted source set"},
+    {"id":"B03_VALID_ENUM_ROLE_FUNCTION_RELABEL","result":"PASS_DENIED","claim":"valid-enum relabeling cannot change canonical role/function source meaning"},
+    {"id":"B04_AGENT_SERVICE_WORKLOAD_DEV_TEST_AS_HUMAN","result":"PASS_DENIED","claim":"nonhuman and nonproduction subject namespaces cannot be relabeled HUMAN"},
+    {"id":"B05_CROSS_TENANT_MEMBERSHIP","result":"PASS_DENIED","claim":"membership source tenant must match the ledger tenant exactly"},
+    {"id":"B06_STALE_REVOKED_SUPERSEDED_MEMBERSHIP","result":"PASS_DENIED","claim":"only active in-window unsuperseded membership validates"},
+    {"id":"B07_BUNDLED_MISMATCHED_EXPIRED_GRANT","result":"PASS_DENIED","claim":"each append-only approval grants one exact action/stage/effect and cannot be reused"},
+    {"id":"B08_OPEN_UNVERIFIED_INCIDENT","result":"PASS_DENIED","claim":"epoch reset requires acknowledged RESOLVED_VERIFIED incident evidence"},
+    {"id":"B09_ORPHAN_RECOVERY","result":"PASS_DENIED","claim":"recovery must be verified and bound to the exact incident and source readback"},
+    {"id":"B10_EPOCH_GAP_FORK_CYCLE_REUSED_SUCCESSOR","result":"PASS_DENIED","claim":"server-derived epoch lineage is continuous and single-successor"},
+    {"id":"B11_SURPLUS_MISSING_WRONG_VERSION_AND_SOURCE_DRIFT","result":"PASS_DENIED","claim":"strict fields, versions, digests and trusted source sets fail closed"}
+  ],
+  "positiveStructuralEvidence": "PASS_SYNTHETIC_SOURCE_BOUND_G2_AND_RESOLVED_VERIFIED_RESET_WITH_ZERO_DECISION_CREDIT",
+  "schemaSdkParity": "PASS_BIDIRECTIONAL_REQUIRED_FIELD_SETS_AND_EXACT_VERSIONS",
+  "priorSemantics": "PASS_V2_STRUCTURAL_VALIDATION_ONLY_V1_V2_DECISION_USE_PROHIBITED",
+  "sourceAvailability": {"l2":"ABSENT","l3":"ABSENT","canonicalMembership":"ABSENT","canonicalG2Approval":"ABSENT","incidentRecovery":"ABSENT"},
+  "credit": {"proofDays":0,"g2":0,"production":0},
+  "liveEffects": 0
+}
