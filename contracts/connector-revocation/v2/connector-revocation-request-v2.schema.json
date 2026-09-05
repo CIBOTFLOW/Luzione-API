@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/connector-revocation/v2/connector-revocation-request-v2.schema.json",
+  "title": "ConnectorRevocationRequest/v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contractVersion", "expectedPriorReceiptId", "operation", "operationKey", "payloadDigest", "selector"],
+  "properties": {
+    "contractVersion": { "const": "ConnectorRevocationRequest/v2" },
+    "expectedPriorReceiptId": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/ReceiptRef" }] },
+    "operation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "scenario"],
+      "properties": {
+        "kind": { "enum": ["AUTHORIZE_FORWARD_RECOVERY_ERASURE", "REQUEST_REMOTE_REVOCATION"] },
+        "scenario": { "enum": ["ack_only", "ambiguous", "failed", "matched", "source_unavailable", "version_mismatch"] }
+      }
+    },
+    "operationKey": { "$ref": "#/$defs/StrictId" },
+    "payloadDigest": { "$ref": "#/$defs/Sha256" },
+    "selector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["bindingId", "expectedBindingVersion", "expectedCredentialGeneration", "expectedCredentialVersion", "expectedDestination", "expectedProvider", "expectedProviderAccountRef"],
+      "properties": {
+        "bindingId": { "type": "string", "format": "uuid" },
+        "expectedBindingVersion": { "$ref": "#/$defs/StrictId" },
+        "expectedCredentialGeneration": { "type": "integer", "minimum": 1, "maximum": 2147483647 },
+        "expectedCredentialVersion": { "$ref": "#/$defs/StrictId" },
+        "expectedDestination": { "$ref": "#/$defs/StrictId" },
+        "expectedProvider": { "enum": ["GOOGLE_WORKSPACE", "MICROSOFT_365", "QUICKBOOKS_ONLINE"] },
+        "expectedProviderAccountRef": { "$ref": "#/$defs/StrictId" }
+      }
+    }
+  },
+  "$defs": {
+    "ReceiptRef": { "type": "string", "pattern": "^connector-revocation-receipt:[a-f0-9]{64}$" },
+    "Sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "StrictId": { "type": "string", "minLength": 3, "maxLength": 190, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:@/-]{2,189}$" }
+  }
+}

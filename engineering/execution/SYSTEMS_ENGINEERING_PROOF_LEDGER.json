@@ -2596,6 +2596,58 @@
         "The v2 candidate is not integrated or production-ready."
       ],
       "next_proof_needed": ["L5 runs OPS-CONTRACTS-ASSURE-02 against the exact implementation/final pair before any decision-bearing L2/L3 repin."]
+    },
+    {
+      "proof_id": "CONNECTOR_REVOCATION_L1_CORRECTION_01_G0_20260905",
+      "project_id": "CONNECTOR-REVOCATION-L1-CORRECTION-01",
+      "recorded_at": "2026-09-05T08:13:49Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "9edbedfa37020b3710090abe57a899cf0bc880eb",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "SANDBOX_ONLY",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "CONNECTOR-REVOCATION-L1-CORRECTION-01 adds strict v2 request/receipt/standalone-handle contracts that accept selectors only, server-resolve and content-bind current same-tenant connector/account/opaque-handle owner truth, re-read containment and normal kill at each future sensitive phase, preserve P110 append-only finality, and remain fail-closed/emulator-only without credential or provider effects.",
+      "exercised_boundaries": [
+        "Exact raw UTF-8 request digest, canonical payload/handle/resolution/receipt digests and recursive no-normalization parsing rejected raw-canonical collisions.",
+        "Fabricated/stale BOUND content, foreign tenant, binding/provider/account/destination/version/generation drift, surplus owner fields and wrong schema versions failed closed.",
+        "The default canonical resolver returned CANONICAL_BINDING_SOURCE_UNAVAILABLE; only a bounded synthetic resolver supplied test owner truth and no duplicate owner store was created.",
+        "P110 reserved the server-resolved tuple; exact replay was stable while changed semantic content, raw bytes or owner resolution conflicted without a second canonical operation.",
+        "Containment and normal kill were independently re-read at acceptance, immediately before credential hold and immediately before execute/disposition; flips at every phase denied.",
+        "Only the sandbox v0.3 NO_EFFECT emulator executed. Source-confirmed remote finality required exact readback, provider acknowledgement could not grant erasure, and forward recovery preserved failed remote finality.",
+        "Disposable Postgres proved additive v1/v2 storage, forced RLS, append-only evidence, reverse 7-to-0 and reapply 0-to-7, reverse refusal after v2 evidence and automatic cleanup.",
+        "Focused v2 passed 16/16, combined v1/v2 25/25, taxonomy 4/4, compliance 7/7, typecheck, zero-warning lint, full 433/433 and Next.js 16.3.4 webpack build passed.",
+        "Frozen Core, effect-admission and OperationsEvidenceLedger/v2 tree IDs remained exact; Git reverse apply check passed."
+      ],
+      "untested_boundaries": [
+        "admitted canonical connector-binding owner adapter and independent L2 exact-SHA consumption",
+        "exact-final automated CI and authenticated Git-bound preview application readback",
+        "managed migration, backup/PITR, recovery and concurrency",
+        "real credential resolution/hold/erasure, provider call, hosted polling or production worker lifecycle",
+        "G1, G2, merge, default branch, deployment promotion, activation, production rollback or production readiness"
+      ],
+      "evidence_refs": [
+        "commit:572d0f5e78558f8e6b8dcc2bf07210600edd20d0",
+        "commit:9edbedfa37020b3710090abe57a899cf0bc880eb",
+        "contracts/connector-revocation/v2/connector-revocation-v2.manifest.json",
+        "contracts/connector-revocation/v2/l2-consumer-packet.json",
+        "engineering/execution/connector-revocation-l1-correction-01/CONNECTOR_REVOCATION_L1_CORRECTION_01_ARTIFACT_DIGESTS_V1.json",
+        "engineering/execution/handoffs/CONNECTOR_REVOCATION_L1_CORRECTION_01_G0_CONTROLLER_HANDOFF.json",
+        "supabase/migrations/20260905150000_connector_revocation_l1_correction.sql",
+        "scripts/validation/rollback-connector-revocation-l1-correction-01.sql"
+      ],
+      "failure_refs": ["CONNECTOR_REVOCATION_L1_CORRECTION_01_TAXONOMY_METADATA_20260905"],
+      "cross_repo_handoffs": [
+        "L2 may propose exact selectors and render API-issued v2 receipt/readback, but cannot supply or redefine binding, provider-account, destination, credential generation, kill, receipt, disposition or finality truth.",
+        "No consumer may treat the unavailable owner adapter, emulator acknowledgement or producer-local tests as integration or real revocation evidence."
+      ],
+      "deferred_external_infra": ["exact-head CI", "independent L5/L2 evidence", "canonical owner adapter", "managed recovery", "every credential/provider/production/G2 boundary"],
+      "remaining_uncertainty": [
+        "The repository has no admitted canonical binding-owner adapter; the route intentionally fails closed.",
+        "Synthetic and disposable evidence does not prove hosted or provider behavior, managed recovery or independent consumption.",
+        "This candidate is not integrated, G1 or production-ready."
+      ],
+      "next_proof_needed": ["L5 independently assures the exact v2 implementation/final pair and its fail-closed owner-adapter boundary before L2 may pin it."]
     }
   ]
 }

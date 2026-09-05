@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/connector-revocation/v2/connector-revocation-receipt-v2.schema.json",
+  "title": "ConnectorRevocationReceipt/v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["acknowledgement", "actor", "bindingResolution", "commandReceiptRef", "contractVersion", "killEvidence", "localCredentialDisposition", "operation", "priorReceiptId", "receiptDigest", "receiptId", "reconciliation", "recordedAt", "recoveryState", "remoteFinality", "tenantId", "zeroEffect"],
+  "properties": {
+    "acknowledgement": {
+      "type": "object", "additionalProperties": false,
+      "required": ["providerAcknowledgementRef", "sourceReadbackRef"],
+      "properties": { "providerAcknowledgementRef": { "$ref": "#/$defs/NullableId" }, "sourceReadbackRef": { "$ref": "#/$defs/NullableId" } }
+    },
+    "actor": {
+      "type": "object", "additionalProperties": false,
+      "required": ["humanActorId", "humanAuthenticationRef", "requestActorClass", "requestActorId"],
+      "properties": { "humanActorId": { "$ref": "#/$defs/StrictId" }, "humanAuthenticationRef": { "$ref": "#/$defs/StrictId" }, "requestActorClass": { "const": "service" }, "requestActorId": { "$ref": "#/$defs/StrictId" } }
+    },
+    "bindingResolution": { "$ref": "canonical-connector-binding-resolution-v1.schema.json" },
+    "commandReceiptRef": { "$ref": "#/$defs/StrictId" },
+    "contractVersion": { "const": "ConnectorRevocationReceipt/v2" },
+    "killEvidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["accepted", "beforeCredentialHold", "beforeExecuteOrDisposition"],
+      "properties": { "accepted": { "$ref": "#/$defs/KillPair" }, "beforeCredentialHold": { "$ref": "#/$defs/NullableKillPair" }, "beforeExecuteOrDisposition": { "$ref": "#/$defs/NullableKillPair" } }
+    },
+    "localCredentialDisposition": { "enum": ["ERASURE_AUTHORIZED_NO_EFFECT", "RETAINED"] },
+    "operation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["key", "kind", "payloadDigest", "selector"],
+      "properties": {
+        "key": { "$ref": "#/$defs/StrictId" },
+        "kind": { "enum": ["AUTHORIZE_FORWARD_RECOVERY_ERASURE", "REQUEST_REMOTE_REVOCATION"] },
+        "payloadDigest": { "$ref": "#/$defs/Sha256" },
+        "selector": { "$ref": "connector-revocation-request-v2.schema.json#/properties/selector" }
+      }
+    },
+    "priorReceiptId": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/ReceiptRef" }] },
+    "receiptDigest": { "$ref": "#/$defs/Sha256" },
+    "receiptId": { "$ref": "#/$defs/ReceiptRef" },
+    "reconciliation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["reconciliationRef", "result"],
+      "properties": { "reconciliationRef": { "$ref": "#/$defs/NullableId" }, "result": { "enum": ["AMBIGUOUS", "MATCHED", "NOT_ATTEMPTED", "NOT_FOUND", "PENDING", "SOURCE_UNAVAILABLE", "VERSION_MISMATCH"] } }
+    },
+    "recordedAt": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$" },
+    "recoveryState": { "enum": ["FORWARD_RECOVERY_AUTHORIZED_NO_EFFECT", "NORMAL"] },
+    "remoteFinality": { "enum": ["ACKNOWLEDGED", "AMBIGUITY_EXHAUSTED", "BLOCKED", "REMOTE_REVOKE_FAILED", "REQUESTED", "RECONCILING", "REVOKED", "SOURCE_UNAVAILABLE", "VERSION_MISMATCH"] },
+    "tenantId": { "$ref": "#/$defs/StrictId" },
+    "zeroEffect": { "const": true }
+  },
+  "$defs": {
+    "KillPair": { "type": "object", "additionalProperties": false, "required": ["containmentKillVersion", "normalKillVersion"], "properties": { "containmentKillVersion": { "$ref": "#/$defs/KillVersion" }, "normalKillVersion": { "$ref": "#/$defs/KillVersion" } } },
+    "KillVersion": { "type": "string", "pattern": "^kill:[a-f0-9]{64}$" },
+    "NullableId": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/StrictId" }] },
+    "NullableKillPair": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/KillPair" }] },
+    "ReceiptRef": { "type": "string", "pattern": "^connector-revocation-receipt:[a-f0-9]{64}$" },
+    "Sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "StrictId": { "type": "string", "minLength": 3, "maxLength": 190, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:@/-]{2,189}$" }
+  }
+}

@@ -2,9 +2,10 @@ import { apiResponse } from "@/lib/api/http";
 import type { RequestIdentityEnvelope } from "@/modules/platform-contracts/requestIdentity";
 import { IdempotencyConflictError } from "@/modules/platform-guarantees/commandKernel";
 import { ConnectorRevocationContractError } from "./contracts";
+import { ConnectorRevocationV2Error } from "./v2/contracts";
 
 export function connectorRevocationRouteFailure(error: unknown, identity: RequestIdentityEnvelope) {
-  if (error instanceof ConnectorRevocationContractError) {
+  if (error instanceof ConnectorRevocationContractError || error instanceof ConnectorRevocationV2Error) {
     return apiResponse({ ok: false, code: error.code, message: error.message }, { requestIdentity: identity, status: error.status });
   }
   if (error instanceof IdempotencyConflictError) {

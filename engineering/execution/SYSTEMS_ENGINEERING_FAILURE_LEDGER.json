@@ -1837,6 +1837,28 @@
       "resolution_ref": "commit:ff44ffa5f78abe20402a31bc34af8d178d20bf26",
       "remaining_uncertainty": [],
       "next_action": "Register future suites with the closed taxonomy enum before the first full build."
+    },
+    {
+      "failure_id": "CONNECTOR_REVOCATION_L1_CORRECTION_01_TAXONOMY_METADATA_20260905",
+      "project_id": "CONNECTOR-REVOCATION-L1-CORRECTION-01",
+      "observed_at": "2026-09-05T08:03:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "572d0f5e78558f8e6b8dcc2bf07210600edd20d0",
+      "environment": "local",
+      "layer": "test-taxonomy",
+      "symptom": "The first complete verification passed 432/433 and failed only because the new connector-revocation-v2 suite was absent from the exhaustive canonical taxonomy.",
+      "expected": "Every current TypeScript suite has exactly one supported primary taxonomy class before the release gate runs.",
+      "actual": "All v2 contract/runtime tests passed; the metadata completeness assertion correctly detected the unregistered suite. Build did not start on the failing run, and no external boundary was reached.",
+      "classification": {"domain":"PLATFORM","class":"INVALID","retry":"NEVER","severity":"INFO"},
+      "evidence_refs": ["src/modules/platform-testing/taxonomy.ts", "npm-test:PASS_432_OF_433"],
+      "repair_attempts": ["Registered the new suite with SECURITY primary and CONTRACT/INTEGRATION/RELIABILITY secondary classes.", "Reran taxonomy 4/4 and the complete gate: compliance 7/7, full suite 433/433 and build pass."],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "commit:9edbedfa37020b3710090abe57a899cf0bc880eb",
+      "remaining_uncertainty": [],
+      "next_action": "Register future suites in the closed taxonomy before the first complete gate."
     }
   ]
 }
