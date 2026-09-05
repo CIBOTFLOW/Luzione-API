@@ -1,5 +1,6 @@
 import { providerAdapterEnabled } from "@/lib/api/config";
 import {
+  assertEffectAdmissionDecisionForSubject,
   buildEffectExecutionEnvelope,
   EffectAdmissionError,
   parseEffectExecutionEnvelope,
@@ -136,6 +137,14 @@ export class ProviderWorkerRuntime {
           tenantId: input.tenantId,
           workerId: input.workerId,
         });
+        const postStarted = await this.admitDelivery({ adapter, checkpoint: "PROVIDER_PRE_EXECUTE", input, outboxMessageId, prior: credential.decision });
+        const postStartedEnvelope = buildEffectExecutionEnvelope(postStarted.subject, postStarted.decision);
+        if (postStarted.decision.decisionRef !== final.decision.decisionRef
+          || postStarted.decision.killVersion !== final.decision.killVersion
+          || postStarted.decision.executionIdentity !== final.decision.executionIdentity
+          || postStartedEnvelope.executionEnvelopeRef !== envelope.executionEnvelopeRef) {
+          throw new ProviderContractError("POST_STARTED_ADMISSION_CHANGED", "The fresh post-STARTED admission no longer matches the durably started execution envelope.");
+        }
         const execution = assertAdapterResult(await adapter.execute(context, released));
         if (execution.state === "ACKNOWLEDGED") {
           await this.store.recordProviderAcknowledgement({ outboxMessageId, providerAcknowledgementRef: execution.acknowledgementRef, tenantId: input.tenantId, workerId: input.workerId });
@@ -176,7 +185,8 @@ export class ProviderWorkerRuntime {
           || String(row.prepared_dispatch_digest) !== preparedProviderDispatchDigest(prepared)) {
           throw new ProviderContractError("ORIGINATING_EXECUTION_ENVELOPE_MISMATCH", "Reconciliation does not match the originating STARTED envelope.");
         }
-        const decision = await this.effectAdmission.decide(subjectFor(message, adapter, prepared, "PROVIDER_RECONCILE"), null);
+        const subject = subjectFor(message, adapter, prepared, "PROVIDER_RECONCILE");
+        const decision = assertEffectAdmissionDecisionForSubject(await this.effectAdmission.decide(subject, null), subject, null);
         if (!decision.admitted || decision.executionIdentity !== envelope.executionIdentity) {
           throw new ProviderContractError("EFFECT_RECONCILIATION_NOT_ADMITTED", "The originating execution identity is not admitted for read-only reconciliation.");
         }
@@ -210,7 +220,11 @@ export class ProviderWorkerRuntime {
     }
     const prepared = parsePreparedProviderDispatch(await input.adapter.prepare(message), message, input.adapter);
     const subject = subjectFor(message, input.adapter, prepared, input.checkpoint);
-    const decision = await this.effectAdmission.decide(subject, input.prior);
+    const decision = assertEffectAdmissionDecisionForSubject(
+      await this.effectAdmission.decide(subject, input.prior),
+      subject,
+      input.prior,
+    );
     if (!decision.admitted) throw new ProviderContractError(`EFFECT_${decision.denialCode}`, "The exact effect admission decision denied this checkpoint.");
     if (input.checkpoint === "PROVIDER_CREDENTIAL_RELEASE" && !decision.credentialReleaseAuthorized) {
       throw new ProviderContractError("EFFECT_CREDENTIAL_RELEASE_NOT_AUTHORIZED", "Credential release was not authorized.");

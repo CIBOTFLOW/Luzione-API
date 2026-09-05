@@ -264,6 +264,41 @@ export function parseEffectAdmissionDecision(value: unknown): EffectAdmissionDec
   return Object.freeze(candidate);
 }
 
+export function assertEffectAdmissionDecisionForSubject(
+  value: unknown,
+  subject: EffectAdmissionSubject,
+  priorValue: EffectAdmissionDecision | null = null,
+) {
+  validateSubject(subject);
+  const decision = parseEffectAdmissionDecision(value);
+  const prior = priorValue === null ? null : parseEffectAdmissionDecision(priorValue);
+  const subjectMatches = decision.actor.actorId === subject.actor.actorId
+    && decision.actor.actorType === subject.actor.actorType
+    && decision.authorityRef === subject.authorityRef
+    && decision.checkpoint === subject.checkpoint
+    && decision.credentialBindingId === subject.credentialBindingId
+    && decision.destination === subject.destination
+    && decision.effectClass === subject.effectClass
+    && decision.operationKey === subject.operationKey
+    && decision.originatingEnvelopeRef === subject.originatingEnvelopeRef
+    && decision.preparedDispatchDigest === subject.preparedDispatchDigest
+    && decision.provider === subject.provider
+    && decision.sourcePayloadHash === subject.sourcePayloadHash
+    && decision.tenantId === subject.tenantId
+    && decision.executionIdentity === effectExecutionIdentity(subject);
+  if (!subjectMatches) {
+    throw new EffectAdmissionError("EFFECT_ADMISSION_SUBJECT_MISMATCH", "The decision does not bind the exact requested effect subject.");
+  }
+  const required = requiredPrior(subject.checkpoint);
+  if (required !== null && (!prior || !prior.admitted || prior.checkpoint !== required || prior.executionIdentity !== decision.executionIdentity)) {
+    throw new EffectAdmissionError("EFFECT_ADMISSION_PRIOR_MISMATCH", "The decision does not continue the exact required prior admission.");
+  }
+  if (required === null && prior !== null && prior.executionIdentity !== decision.executionIdentity) {
+    throw new EffectAdmissionError("EFFECT_ADMISSION_PRIOR_MISMATCH", "The supplied prior decision has a foreign execution identity.");
+  }
+  return decision;
+}
+
 export function buildEffectExecutionEnvelope(subject: EffectAdmissionSubject, decision: EffectAdmissionDecision): EffectExecutionEnvelope {
   const parsed = parseEffectAdmissionDecision(decision);
   const expectedIdentity = effectExecutionIdentity(subject);
@@ -381,7 +416,7 @@ function validateSubject(subject: EffectAdmissionSubject) {
   })) {
     if (!TOKEN.test(value)) throw new EffectAdmissionError("EFFECT_ADMISSION_CONTRACT_INVALID", `${field} is invalid.`);
   }
-  if (!DESTINATION.test(subject.destination)) throw new EffectAdmissionError("EFFECT_ADMISSION_CONTRACT_INVALID", "destination is invalid.");
+  if (subject.destination.length > 190 || !DESTINATION.test(subject.destination)) throw new EffectAdmissionError("EFFECT_ADMISSION_CONTRACT_INVALID", "destination is invalid.");
   if (!DIGEST.test(subject.sourcePayloadHash)) throw new EffectAdmissionError("SOURCE_PAYLOAD_HASH_INVALID", "sourcePayloadHash must be an exact lowercase SHA-256 digest.");
   if (!DIGEST.test(subject.preparedDispatchDigest)) throw new EffectAdmissionError("PREPARED_DISPATCH_DIGEST_INVALID", "preparedDispatchDigest must be an exact lowercase SHA-256 digest.");
 }

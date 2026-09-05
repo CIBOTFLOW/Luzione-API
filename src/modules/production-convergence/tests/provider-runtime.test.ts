@@ -90,6 +90,8 @@ test("provider adapter contract validates durable payload identity and exact rea
   assert.throws(() => parsePreparedProviderDispatch(missing, message, adapter), /missing or surplus/);
   assert.throws(() => parsePreparedProviderDispatch({ ...prepared, contractVersion: "luzione-prepared-provider-dispatch/v2" }, message, adapter), /unsupported/);
   assert.throws(() => parsePreparedProviderDispatch({ ...prepared, payload: { scenario: "different" } }, message, adapter), /payload digest/);
+  assert.throws(() => parsePreparedProviderDispatch({ ...prepared, providerRequestRef: ` ${prepared.providerRequestRef}` }, message, adapter), /bounded non-empty/);
+  assert.throws(() => providerMessageFromRow({ ...row(), destination: `sandbox.${"a".repeat(190)}` }), /bounded non-empty/);
 });
 
 test("worker durably starts before acknowledgement and reconciles ambiguous outcomes", async () => {
@@ -125,6 +127,8 @@ test("P110 provider runtime adds restart-safe dispatch and reconciliation leases
   assert.match(storeSource, /claimDueReconciliations[\s\S]*for update skip locked/);
   assert.match(storeSource, /READBACK_VERSION_MISMATCH/);
   assert.match(storeSource, /state = 'SOURCE_CONFIRMED'/);
+  assert.match(storeSource, /attempt\.attempt_id=checkpoint\.originating_delivery_attempt_id/);
+  assert.doesNotMatch(storeSource, /attempt\.attempt_number=outbox\.attempt_count/);
   assert.doesNotMatch(migration, /drop table|truncate|delete from/);
 });
 

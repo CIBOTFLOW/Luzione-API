@@ -138,10 +138,10 @@ export class ProviderContractError extends Error {
 }
 
 function text(value: unknown, field: string, max = 500) {
-  if (typeof value !== "string" || !value.trim() || value.trim().length > max) {
+  if (typeof value !== "string" || value !== value.trim() || !value || value.length > max) {
     throw new ProviderContractError("PROVIDER_CONTRACT_INVALID", `${field} must be a bounded non-empty string.`);
   }
-  return value.trim();
+  return value;
 }
 
 function record(value: unknown, field: string): Record<string, unknown> {
@@ -209,9 +209,9 @@ export function parsePreparedProviderDispatch(value: unknown, message: ProviderM
     throw new ProviderContractError("PREPARED_PROVIDER_PAYLOAD_HASH_MISMATCH", "The prepared dispatch payload digest is invalid.");
   }
   record(row.payload, "preparedDispatch.payload");
+  text(row.destination, "preparedDispatch.destination", 190);
   for (const [field, fieldValue] of Object.entries({
     credentialBindingId: row.credentialBindingId,
-    destination: row.destination,
     idempotencyKey: row.idempotencyKey,
     objectRef: row.objectRef,
     originatingEnvelopeRef: row.originatingEnvelopeRef,

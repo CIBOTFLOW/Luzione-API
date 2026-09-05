@@ -9,7 +9,7 @@
     "adapterContractVersion": { "const": "luzione-provider-adapter/v0.3" },
     "contractVersion": { "const": "luzione-prepared-provider-dispatch/v1" },
     "credentialBindingId": { "$ref": "#/$defs/token" },
-    "destination": { "$ref": "#/$defs/token" },
+    "destination": { "type": "string", "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)+$", "maxLength": 190 },
     "effectClass": { "enum": ["EXTERNAL_EFFECT", "NO_EFFECT", "REVERSIBLE_INTERNAL"] },
     "idempotencyKey": { "$ref": "#/$defs/token" },
     "objectRef": { "$ref": "#/$defs/token" },

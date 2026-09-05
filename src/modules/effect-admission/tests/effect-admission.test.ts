@@ -20,6 +20,7 @@ import { sha256 } from "@/modules/platform-guarantees/eventContract";
 import {
   PREPARED_PROVIDER_DISPATCH_VERSION,
   PROVIDER_ADAPTER_CONTRACT_VERSION,
+  ProviderContractError,
   buildProviderCredentialRelease,
   parsePreparedProviderDispatch,
   parseProviderCredentialRelease,
@@ -243,7 +244,7 @@ test("kill inserted immediately before execute denies before STARTED and adapter
   assert.match(String(store.calls[0].input.errorCode), /ACTIVE_KILL_SWITCH/);
 });
 
-test("kill at credential release and live-adapter registration both fail before credential access", async () => {
+test("kill at credential release and LIVE adapter registration both fail before credential access", async () => {
   const active = killState([{ active: true, activatedAt: "2026-09-05T00:00:00Z", deactivatedAt: null, scopeRef: "provider.proof", scopeType: "DESTINATION", switchId: "kill-credential" }]);
   const adapter = new ProofAdapter();
   const store = new ProofStore();
@@ -254,13 +255,47 @@ test("kill at credential release and live-adapter registration both fail before 
   assert.equal(adapter.executes, 0);
 
   const live = new ProofAdapter("LIVE");
-  const liveStore = new ProofStore();
-  const blocked = await new ProviderWorkerRuntime(liveStore, new ProviderAdapterRegistry([live]), () => true, new SequenceGate([killState([])]))
-    .runDeliveryBatch({ tenantId: "tenant-proof", workerId: "worker-proof" });
-  assert.equal(blocked.outcomes[0].state, "DEAD_LETTERED");
+  assert.throws(() => new ProviderAdapterRegistry([live]), (error: unknown) => error instanceof ProviderContractError && error.code === "PROVIDER_ADAPTER_MODE_UNSUPPORTED");
+  const wrongVersion = Object.assign(new ProofAdapter(), { contractVersion: "luzione-provider-adapter/v0.2" });
+  assert.throws(() => new ProviderAdapterRegistry([wrongVersion as unknown as ProviderAdapter]), (error: unknown) => error instanceof ProviderContractError && error.code === "PROVIDER_ADAPTER_VERSION_UNSUPPORTED");
   assert.equal(live.credentialReleases, 0);
   assert.equal(live.executes, 0);
-  assert.equal(liveStore.calls[0].input.errorCode, "PROVIDER_EFFECT_MODE_UNSUPPORTED");
+});
+
+test("fresh post-STARTED kill blocks execute against the unchanged durable envelope", async () => {
+  const active = killState([{ active: true, activatedAt: "2026-09-05T00:00:00Z", deactivatedAt: null, scopeRef: "provider.proof", scopeType: "DESTINATION", switchId: "kill-post-started" }]);
+  const gate = new SequenceGate([killState([]), killState([]), killState([]), active]);
+  const adapter = new ProofAdapter();
+  const store = new ProofStore();
+  const outcome = await new ProviderWorkerRuntime(store, new ProviderAdapterRegistry([adapter]), () => true, gate)
+    .runDeliveryBatch({ tenantId: "tenant-proof", workerId: "worker-proof" });
+  assert.equal(outcome.outcomes[0].state, "DEAD_LETTERED");
+  assert.ok(store.started);
+  assert.equal(adapter.executes, 0);
+  assert.deepEqual(gate.calls.map((call) => call.checkpoint), ["PROVIDER_CLAIM", "PROVIDER_CREDENTIAL_RELEASE", "PROVIDER_PRE_EXECUTE", "PROVIDER_PRE_EXECUTE"]);
+  assert.match(String(store.calls.at(-1)?.input.errorCode), /ACTIVE_KILL_SWITCH/);
+});
+
+test("a foreign admitted decision is rejected before releaseCredential", async () => {
+  class ForeignCredentialGate implements EffectAdmissionGate {
+    calls = 0;
+    async decide(next: EffectAdmissionSubject, prior: EffectAdmissionDecision | null = null) {
+      this.calls += 1;
+      if (this.calls === 1) return decideEffectAdmission(next, killState([]), policyFor(next), prior);
+      const foreignClaimSubject = { ...next, checkpoint: "PROVIDER_CLAIM" as const, tenantId: "tenant-foreign" };
+      const foreignPolicy = policyFor(foreignClaimSubject);
+      const foreignClaim = decideEffectAdmission(foreignClaimSubject, killState([]), foreignPolicy);
+      return decideEffectAdmission({ ...foreignClaimSubject, checkpoint: "PROVIDER_CREDENTIAL_RELEASE" }, killState([]), foreignPolicy, foreignClaim);
+    }
+  }
+  const adapter = new ProofAdapter();
+  const store = new ProofStore();
+  const outcome = await new ProviderWorkerRuntime(store, new ProviderAdapterRegistry([adapter]), () => true, new ForeignCredentialGate())
+    .runDeliveryBatch({ tenantId: "tenant-proof", workerId: "worker-proof" });
+  assert.equal(outcome.outcomes[0].state, "DEAD_LETTERED");
+  assert.equal(adapter.credentialReleases, 0);
+  assert.equal(adapter.executes, 0);
+  assert.equal(store.calls[0].input.errorCode, "EFFECT_ADMISSION_SUBJECT_MISMATCH");
 });
 
 test("changed durable payload is blocked and ambiguous acknowledgement reconciles from the originating envelope without redispatch", async () => {
@@ -276,7 +311,7 @@ test("changed durable payload is blocked and ambiguous acknowledgement reconcile
   const changed = await new ProviderWorkerRuntime(changedStore, new ProviderAdapterRegistry([adapter]), () => true, new SequenceGate([killState([])])).runDeliveryBatch({ tenantId: "tenant-proof", workerId: "worker-proof" });
   assert.equal(changed.outcomes[0].state, "DEAD_LETTERED");
   assert.equal(adapter.executes, 0);
-  assert.match(String(changedStore.calls[0].input.errorCode), /BINDING_CHANGED/);
+  assert.match(String(changedStore.calls[0].input.errorCode), /PRIOR_MISMATCH/);
 
   const store = new ProofStore();
   const gate = new SequenceGate([killState([])]);
@@ -307,6 +342,7 @@ test("schema, persistence and rollback surfaces are mechanically aligned", () =>
   assert.equal(admissionSchema.additionalProperties, false);
   assert.equal(envelopeSchema.additionalProperties, false);
   assert.equal(preparedSchema.additionalProperties, false);
+  assert.equal(preparedSchema.properties.destination.maxLength, 190);
   assert.equal(releaseSchema.additionalProperties, false);
   const claim = decideEffectAdmission(subject, killState([]), policy);
   const credential = decideEffectAdmission({ ...subject, checkpoint: "PROVIDER_CREDENTIAL_RELEASE" }, killState([]), policy, claim);
@@ -315,10 +351,13 @@ test("schema, persistence and rollback surfaces are mechanically aligned", () =>
   assert.deepEqual([...admissionSchema.required].sort(), Object.keys(claim).sort());
   assert.deepEqual([...envelopeSchema.required].sort(), Object.keys(envelope).sort());
   const migration = readFileSync("supabase/migrations/20260905120000_effect_admission_l1_correction.sql", "utf8");
+  const correction02 = readFileSync("supabase/migrations/20260905131000_effect_admission_l1_correction_02.sql", "utf8");
   const rollback = readFileSync("scripts/validation/rollback-effect-admission-l1-correction.sql", "utf8");
   const gmail = readFileSync("src/modules/sultan-agent-gateway/gmailRfqCanaryAdapter.ts", "utf8");
   assert.match(migration, /effect_execution_envelope[\s\S]*originating_envelope_ref[\s\S]*prepared_dispatch_digest/);
   assert.match(migration, /provider_mode = 'SANDBOX'/);
+  assert.match(correction02, /originating_delivery_attempt_id/);
+  assert.match(correction02, /p110_reconciliation_originating_attempt_fk/);
   assert.match(rollback, /Rollback blocked: v2 provider execution-envelope evidence exists/);
   assert.doesNotMatch(gmail, /GMAIL_SULTAN_RFQ_ACCESS_TOKEN|process\.env|NEXT_PUBLIC_/);
   assert.match(gmail, /Historical v0\.2 canary adapter/);

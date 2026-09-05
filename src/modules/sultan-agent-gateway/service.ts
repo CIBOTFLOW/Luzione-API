@@ -17,6 +17,7 @@ import {
 import { sha256 } from "@/modules/platform-guarantees/eventContract";
 import { DefaultOffEffectAdmissionGate, type EffectAdmissionGate } from "@/modules/effect-admission/gate";
 import {
+  assertEffectAdmissionDecisionForSubject,
   buildEffectExecutionEnvelope,
   type EffectAdmissionDecision,
   type EffectExecutionEnvelope,
@@ -325,7 +326,8 @@ export class SultanAgentGatewayService {
     stage5ReceiptHash: string;
     toolId: string;
   }) {
-    const decision = await this.effectAdmission.decide(this.effectSubject(input));
+    const subject = this.effectSubject(input);
+    const decision = assertEffectAdmissionDecisionForSubject(await this.effectAdmission.decide(subject), subject);
     if (!decision.admitted) {
       throw new SultanAgentGatewayError(`EFFECT_${decision.denialCode}`, `Effect admission denied ${input.toolId} at ${input.checkpoint}.`, 403);
     }
