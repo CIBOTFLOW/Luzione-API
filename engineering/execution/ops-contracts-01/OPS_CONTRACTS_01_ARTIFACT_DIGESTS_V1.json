@@ -9,6 +9,14 @@
     "PROOF-OPS-01/v1": "b2c79f6a580267adfcac1745047518979070ee3f18d90df478dc4b6ec511cb8b",
     "CUSTOMER-ZERO-OPS-01/v1": "ae1c5225f8bb1c45420572433ac659ff054a1fd2bfad1cb2bf740e5ae008e57c"
   },
+  "coreCorrection": {
+    "controllerAuthority": "CIBOTFLOW/Luzione-platform-program@8543a3eab0a969f213bc192391bd7ca657bbf087",
+    "auditFingerprint": "3fdc9ddf470509ec9c115656a431f414b9796dda14ec0aaaf9133fbaab796968",
+    "implementationSha": "f5a62923e52510cdd40fbef41dc86266e33ab05e",
+    "operationsContractSemanticsChanged": false,
+    "ownerReturnDisposition": "ALL_UNSIGNED_ANSWERS_REMAIN_UNKNOWN",
+    "detachedFinalAttestationRequired": true
+  },
   "frozenCore": {
     "bundleVersion": "LuzioneCoreContracts/v1",
     "implementationSha": "828de754e4104cd860e3f47adbf2e84c576e5c10",
@@ -29,9 +37,16 @@
   },
   "recordContractCount": 17,
   "deterministicFormulaCount": 3,
+  "finalAttestation": {
+    "schemaVersion": "OPS-CONTRACTS-01/Detached-Final-Attestation/v1",
+    "state": "PUBLISHED_ONLY_AFTER_FINAL_COMMIT",
+    "mechanism": "CONTENT_ADDRESSED_ANNOTATED_GIT_TAG",
+    "sameCommitSelfHash": false
+  },
   "localVerification": {
     "focused": "PASS_19_OF_19",
-    "full": "PASS_362_OF_362",
+    "coreCorrectionFocused": "PASS_CORE02_7_OF_7_CATALOG_8_OF_8_TOPOLOGY_7_OF_7",
+    "full": "PASS_365_OF_365",
     "compliance": "PASS_7_OF_7",
     "typecheck": "PASS",
     "lint": "PASS_ZERO_WARNINGS",
@@ -41,4 +56,3 @@
   "runtimeActivation": "NOT_IMPLEMENTED",
   "productionReady": false
 }
-

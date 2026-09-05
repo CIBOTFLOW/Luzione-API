@@ -8,7 +8,9 @@
   "baseSha": "bb5eb395af0873f4483ba2dc10c76f9941051dde",
   "implementationSha": "2e62ceba046192769148017b4f624846b6fa71c4",
   "ciPortableEvidenceSha": "c9e11c4d2ceb062678b3146ba6e8601ba7846761",
+  "correctionImplementationSha": "f5a62923e52510cdd40fbef41dc86266e33ab05e",
   "generatedAt": "2026-09-05T01:58:29Z",
+  "correctedAt": "2026-09-05T02:45:00Z",
   "algorithm": "sha256",
   "artifacts": [
     {
@@ -57,11 +59,15 @@
     },
     {
       "path": "src/modules/core-02-inventory/tests/core-02-inventory.test.ts",
-      "digest": "1082f7a2658487c03301bd25dda8794c8b6cd7ab9276c62871dff6f7af63284c"
+      "digest": "fd9bf9353bdf0d82d28ebb8091f1f2d465870ffe6a16464a118347a3d9252b13"
     },
     {
       "path": "architecture/production-convergence/CORE_02_WORKING_CONTRACT.md",
       "digest": "3ef522e36356928c110d030ae685450ef464a775ea9dd7b26dc2f90145d47e15"
+    },
+    {
+      "path": "engineering/execution/LUZIONE_API_TOPOLOGY_INVENTORY_V1.json",
+      "digest": "b0fdcff8bd8beb5bd02b2dbed89ab3587a7e78ea1ee2431e4a848e8cddc49105"
     }
   ],
   "frozenTrees": {

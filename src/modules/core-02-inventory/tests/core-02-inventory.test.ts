@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import test from "node:test";
 
@@ -9,6 +10,7 @@ const manifestPath = `${root}/CORE_02_API_ACTIVATION_CONE_MANIFEST_V1.json`;
 const ledgerPath = `${root}/CORE_02_UNKNOWN_OWNER_LEDGER_V1.json`;
 const evidenceSetPath = `${root}/CORE_02_EVIDENCE_SET_V1.json`;
 const correctionPath = `${root}/CORE_CORRECTION_01_REMEDIATION_V1.json`;
+const artifactDigestPath = `${root}/CORE_02_ARTIFACT_DIGESTS_V1.json`;
 const packetDirectory = `${root}/owner-returns`;
 
 type Json = Record<string, unknown>;
@@ -194,6 +196,7 @@ const correction = parse(correctionPath) as {
   };
   ownerReturns: { answerCount: number; disposition: string; signedCount: number };
 };
+const artifactDigests = parse(artifactDigestPath) as { algorithm: string; artifacts: Array<{ digest: string; path: string }> };
 const packetPaths = readdirSync(packetDirectory).filter((name) => name.endsWith(".json")).sort();
 const packets = packetPaths.map((name) => parse(`${packetDirectory}/${name}`) as Packet);
 
@@ -258,6 +261,15 @@ test("final attestation is detached and can bind the exact final without self-ha
   assert.equal(correction.detachedFinalAttestation.sameCommitSelfHashProhibited, true);
   assert.equal(correction.detachedFinalAttestation.repositoryTrackedFinalShaPlaceholderProhibited, true);
   assert.equal(Object.hasOwn(correction.detachedFinalAttestation, "finalSha"), false);
+});
+
+test("every declared CORE-02 artifact digest matches the current correction tree", () => {
+  assert.equal(artifactDigests.algorithm, "sha256");
+  assert.equal(new Set(artifactDigests.artifacts.map((artifact) => artifact.path)).size, artifactDigests.artifacts.length);
+  for (const artifact of artifactDigests.artifacts) {
+    assert.ok(existsSync(artifact.path), artifact.path);
+    assert.equal(createHash("sha256").update(readFileSync(artifact.path)).digest("hex"), artifact.digest, artifact.path);
+  }
 });
 
 test("the complete declared CORE-02 evidence set contains no standard credential or token values", () => {
