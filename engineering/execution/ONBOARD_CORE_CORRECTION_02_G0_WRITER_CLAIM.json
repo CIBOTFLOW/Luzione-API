@@ -9,9 +9,9 @@
   "effectAuthority": "NO_EFFECT",
   "productionCredit": 0,
   "writer": "L1",
-  "writerLock": "ACQUIRED",
+  "writerLock": "RELEASED_AFTER_FINAL_COMMIT_PUSH_TAG_AND_HANDOFF",
   "claimedAt": "2026-09-05T09:10:16.000Z",
-  "implementationSha": null,
-  "finalSha": null,
-  "releasedAt": null
+  "implementationSha": "533c1f5bb287c03cb74e9e66c64808d4b1a8a8f0",
+  "finalSha": "PEEL_DETACHED_ANNOTATED_TAG_ONBOARD_CORE_CORRECTION_02_EXACT_FINAL",
+  "releasedAt": "2026-09-05T09:18:22.000Z"
 }

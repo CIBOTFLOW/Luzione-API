@@ -1,0 +1,73 @@
+{
+  "schemaVersion": "ONBOARD-CORE-CORRECTION-02/L2-Consumer-Packet/v1",
+  "producerRepository": "CIBOTFLOW/Luzione-API",
+  "producerBranch": "codex/onboard-core-correction-02-g0-4cd6e14",
+  "producerBaseSha": "221d2b96b970a8036923b28a1e3ebc7fe489db34",
+  "producerImplementationSha": "533c1f5bb287c03cb74e9e66c64808d4b1a8a8f0",
+  "repinRequired": true,
+  "contractIdentifiersChanged": false,
+  "correctedBoundaryVersions": [
+    "LuzioneOnboardCoreApi/v2",
+    "TenantBlueprintMap/v2",
+    "TenantPackSourceBinding/v1",
+    "LuzioneHumanApprovalSubject/v1",
+    "SetupMandateRevocation/v1",
+    "CRMImportDryRunMap/v2",
+    "ConnectorSyncValidation/v2",
+    "ConnectorValidationOutcome/v1"
+  ],
+  "frozenCoreVersions": [
+    "LuzioneTenantPackDraft/v1",
+    "TenantBlueprint/v1",
+    "SetupMandate/v1",
+    "ImportBatch/v1",
+    "ImportReceipt/v1",
+    "ConnectorBinding/v1",
+    "SyncReceipt/v1"
+  ],
+  "sourceSchemaPin": {
+    "contractVersion": "LuzioneTenantPackDraft/v1",
+    "path": "contracts/onboard-core/luzione-tenant-pack-draft-v1.schema.json",
+    "sha256": "c94dd71d93d72b048ceaa77b1ba08cb84e1f610393f139060f49ead684d28eb4",
+    "bytesChanged": false
+  },
+  "parserPin": {
+    "path": "src/modules/onboard-core/contracts.ts",
+    "sha256": "73e62060ea3cd287c1be0b78a242b4e908d7f4c4e0c278710bb3088fbe25f15c",
+    "rule": "Validate original boundedText code-point length and original stableId bytes before canonicalization."
+  },
+  "migrationPins": {
+    "forwardPath": "supabase/migrations/20260905050000_onboard_core_correction_01.sql",
+    "forwardSha256": "6b5e94bd5fa4b94e98055a3b7817b8296da68891e7751055b04b56c257096afd",
+    "forwardBytesChanged": false,
+    "reversePath": "scripts/validation/rollback-onboard-core-correction-01.sql",
+    "reverseSha256": "364f09b332ffddce42ad6e8ce9dcab8d56e6a7b62cba99f287efef64c20328b9",
+    "reverseAuthority": "EMPTY_PRE_ACTIVATION_DISPOSABLE_ONLY"
+  },
+  "endpointPins": [
+    "POST /api/v1/onboarding/tenant-blueprints",
+    "GET /api/v1/onboarding/tenant-blueprints",
+    "POST /api/v1/onboarding/tenant-blueprints/approvals",
+    "POST /api/v1/onboarding/setup-mandates",
+    "GET /api/v1/onboarding/setup-mandates",
+    "POST /api/v1/onboarding/setup-mandates/revocations",
+    "POST /api/v1/onboarding/imports/dry-runs",
+    "GET /api/v1/onboarding/imports/{batchId}",
+    "POST /api/v1/connectors/sync-validations"
+  ],
+  "packagePin": {"name":"luzione-api","version":"0.1.0","node":">=20","next":"16.3.4","pg":"8.20.0"},
+  "consumerRequirements": [
+    "Pin the exact producer implementation SHA; a moving branch or prior onboarding implementation is insufficient.",
+    "Send only Tenant Pack content that validates against the pinned schema in its original bytes; do not rely on API trimming to repair invalid identifiers or overlong text.",
+    "Keep the existing exact L2 mapper/evidence binding tuple. Default-empty bindings remain deny-all and no caller may mint source admission.",
+    "Treat reverse/reapply evidence as disposable pre-activation proof only; it grants no production migration or rollback authority."
+  ],
+  "runtimeTruth": {
+    "effectAuthority": "NO_EFFECT",
+    "sourceBindingsDefault": "EMPTY_DENY_ALL",
+    "sandboxAdapterOnly": "SandboxEchoProviderAdapter",
+    "productionQueryOrMutation": false,
+    "credentialOrProviderEffect": false
+  },
+  "strongestClaim": "BOUNDED_G0_PRODUCER_CORRECTION_NOT_INTEGRATED_NOT_PRODUCTION_READY"
+}

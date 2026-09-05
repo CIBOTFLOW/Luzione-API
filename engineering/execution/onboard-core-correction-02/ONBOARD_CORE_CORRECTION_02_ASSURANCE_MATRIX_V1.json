@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "ONBOARD-CORE-CORRECTION-02/Assurance-Matrix/v1",
+  "projectId": "ONBOARD-CORE-CORRECTION-02",
+  "controllerAuthority": "CIBOTFLOW/Luzione-platform-program@4cd6e143c05d9318006b033d5331bba9bb7d5e6a",
+  "assuranceFingerprintSha256": "9e1e2f515f8445e17a9168261676de4697182d903689e7c7e1f330c9cda54352",
+  "implementationSha": "533c1f5bb287c03cb74e9e66c64808d4b1a8a8f0",
+  "scopedFailures": [
+    {
+      "id": "RAW_SCHEMA_INVALID_NORMALIZATION_COLLISION",
+      "result": "BOUNDED_PASS",
+      "proof": [
+        "An exact 200-code-point Unicode boundedText parses, matching JSON Schema length semantics.",
+        "An exact 201-character raw boundedText that trims to admitted content is rejected before normalization.",
+        "A whitespace-padded stableId that trims to the same admitted identifier is rejected against the original bytes.",
+        "Raw and canonical packets have distinct SHA-256 values while only the schema-valid canonical packet parses."
+      ]
+    },
+    {
+      "id": "V2_PROVENANCE_REVERSE_DATA_LOSS",
+      "result": "BOUNDED_PASS",
+      "proof": [
+        "The reverse preflight is the first executable statement after BEGIN and checks every v2-only provenance surface before DDL.",
+        "The empty/pre-activation reverse removes the correction surface and the unchanged forward migration reapplies it.",
+        "A legacy SetupMandate/v1 row with one v2 append-only revocation raises ONBOARD_CORE_CORRECTION_REVERSE_BLOCKED_V2_PROVENANCE.",
+        "Post-refusal readback proves the revocation relation, revocation row, legacy mandate row, source-binding column and runtime column all remain present."
+      ]
+    }
+  ],
+  "preservedRegressionEvidence": {
+    "onboardCoreTests": "PASS_17_OF_17",
+    "blueprintMandateDisposable": "PASS_2_DRAFTS_2_APPROVALS_1_SUPERSESSION_1_MANDATE_5_RECEIPTS_EMPTY_REVERSE_REAPPLY",
+    "importDisposable": "PASS_1_BATCH_4_ROWS_1_IMPORT_RECEIPT_5_COMMAND_RECEIPTS_1_CONFLICT_EMPTY_REVERSE_REAPPLY",
+    "connectorDisposable": "PASS_3_NO_EFFECT_1_SOURCE_CONFIRMED_1_BLOCKED_ZERO_SCHEMA_DELTA",
+    "fullSuite": "PASS_447_OF_447",
+    "build": "PASS_NEXTJS_16_3_4_WEBPACK"
+  },
+  "notAssessed": [
+    "independent ONBOARD-CORE-CORRECTION-ASSURE-02",
+    "authenticated exact-final preview application readback",
+    "managed migration, backup/PITR or production recovery",
+    "production data, provider, credential, activation, merge, default-branch, G1 or G2"
+  ],
+  "verdict": "BOUNDED_LOCAL_PASS_FOR_THE_TWO_ASSIGNED_FAILURES_ONLY"
+}

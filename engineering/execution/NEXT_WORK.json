@@ -109,7 +109,7 @@
       "platform_project": "LUZIONE_CRM_OS_ONBOARDING_CORE_ASSURANCE",
       "title": "Raw Tenant Pack Validation and Fail-Closed Correction Reverse",
       "priority": 535,
-      "status": "IN_PROGRESS",
+      "status": "BOUNDED_PASS",
       "depends_on": ["ONBOARD-CORE-CORRECTION-01", "OPS-CONTRACTS-CORRECTION-02"],
       "starting_sha": "221d2b96b970a8036923b28a1e3ebc7fe489db34",
       "controller_authority": "CIBOTFLOW/Luzione-platform-program@4cd6e143c05d9318006b033d5331bba9bb7d5e6a",
@@ -119,10 +119,10 @@
       "published_artifacts": ["raw schema parity negatives", "v2 provenance reverse preflight", "isolated empty and populated reverse proof", "bounded exact-SHA evidence"],
       "required_evidence": ["201-plus and whitespace raw input denial", "raw-canonical collision denial", "legacy mandate plus v2 revocation reverse refusal", "pre-DDL schema/data preservation", "empty reverse/reapply", "full local and exact-SHA CI"],
       "irreversible_effects": [],
-      "completion_evidence_ref": null,
-      "release_evidence": "NOT_ASSESSED",
+      "completion_evidence_ref": "ONBOARD_CORE_CORRECTION_02_G0_20260905",
+      "release_evidence": "LOCAL_PROVEN",
       "effect_authority": "NO_EFFECT",
-      "finality": "NOT_FINAL"
+      "finality": "BOUNDED_CLAIM"
     },
     {
       "project_id": "OPS-CONTRACTS-CORRECTION-02",

@@ -2701,6 +2701,57 @@
         "The v3 candidate is not integrated, G1 or production-ready."
       ],
       "next_proof_needed": ["L5 runs OPS-CONTRACTS-ASSURE-03 against the exact implementation/final pair while L2/L3 return exact canonical source pins or explicit ABSENT; decision-bearing use remains prohibited until both pass."]
+    },
+    {
+      "proof_id": "ONBOARD_CORE_CORRECTION_02_G0_20260905",
+      "project_id": "ONBOARD-CORE-CORRECTION-02",
+      "recorded_at": "2026-09-05T09:18:22Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "533c1f5bb287c03cb74e9e66c64808d4b1a8a8f0",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "ONBOARD-CORE-CORRECTION-02 closes only the raw Tenant Pack normalization-collision and v2-provenance reverse-loss failures while preserving every existing contract identifier, forward migration and frozen tree.",
+      "exercised_boundaries": [
+        "Raw boundedText is measured in Unicode code points before normalization; the exact 200-code-point boundary passes and an exact 201-character raw value that trims to valid content fails.",
+        "Stable IDs are matched on original bytes; whitespace-padded IDs cannot normalize onto a distinct admitted packet.",
+        "The pinned Tenant Pack schema remained byte-exact at c94dd71d93d72b048ceaa77b1ba08cb84e1f610393f139060f49ead684d28eb4.",
+        "The correction reverse checks every v2-only provenance surface before DDL, permits empty pre-activation reverse/reapply, and refuses a legacy SetupMandate/v1 plus v2 append-only revocation.",
+        "Post-refusal readback retained the revocation relation/row, legacy mandate row, source-binding column and runtime column.",
+        "Onboarding focused passed 17/17; all Blueprint/Mandate, import and SandboxEcho connector disposable proofs passed; full suite passed 447/447.",
+        "Compliance 7/7, typecheck, zero-warning lint and Next.js 16.3.4 webpack build passed.",
+        "Frozen Core, effect-admission, connector-revocation and operations-v3 tree IDs matched the exact base."
+      ],
+      "untested_boundaries": [
+        "independent ONBOARD-CORE-CORRECTION assurance and exact L2 consumer repin",
+        "exact-final automated CI and authenticated Git-bound application readback",
+        "managed migration, backup/PITR, rollback/recovery or concurrency",
+        "production data, real credentials/providers, activation, merge/default branch, G1 or G2"
+      ],
+      "evidence_refs": [
+        "commit:533c1f5bb287c03cb74e9e66c64808d4b1a8a8f0",
+        "evidence/ONBOARD_CORE_CORRECTION_02_G0_20260905.md",
+        "engineering/execution/onboard-core-correction-02/ONBOARD_CORE_CORRECTION_02_ARTIFACT_DIGESTS_V1.json",
+        "engineering/execution/onboard-core-correction-02/ONBOARD_CORE_CORRECTION_02_ASSURANCE_MATRIX_V1.json",
+        "engineering/execution/onboard-core-correction-02/ONBOARD_CORE_CORRECTION_02_L2_CONSUMER_PACKET_V1.json",
+        "engineering/execution/handoffs/ONBOARD_CORE_CORRECTION_02_G0_CONTROLLER_HANDOFF.json"
+      ],
+      "failure_refs": [
+        "ONBOARD_CORE_CORRECTION_02_CONNECTOR_PROOF_SCHEMA_DRIFT_20260905",
+        "ONBOARD_CORE_CORRECTION_02_PARALLEL_NEXT_TYPES_RACE_20260905"
+      ],
+      "cross_repo_handoffs": [
+        "L2 must repin this exact implementation before claiming parser compatibility and must supply only raw schema-valid Tenant Pack bytes; it still cannot mint tenant, approval, mandate, receipt or finality truth.",
+        "No consumer may interpret empty reverse/reapply, SandboxEcho or producer-local tests as production migration, rollback or provider evidence."
+      ],
+      "deferred_external_infra": ["exact-final CI", "authenticated preview", "independent assurance and L2 repin", "managed recovery", "every provider/credential/production/G2 boundary"],
+      "remaining_uncertainty": [
+        "Producer-local evidence does not independently clear the two corrections.",
+        "No managed database or hosted application readback was exercised.",
+        "This candidate is not integrated, G1 or production-ready."
+      ],
+      "next_proof_needed": ["L5 independently reruns ONBOARD-CORE-CORRECTION assurance against the exact implementation/final pair and L2 returns one exact consumer repin; all G1/G2 holds remain."]
     }
   ]
 }
