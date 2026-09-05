@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "handoff_id": "SEED_PRODUCT_CONTRACT_SPINE_01_CONSUMER_HANDOFF",
+  "project_id": "SEED-PRODUCT-CONTRACT-SPINE-01",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_branch": "codex/seed-product-contract-spine-v1",
+  "base_sha": "e6dce8c92f8cee9102af341615c0fa31345ca77d",
+  "implementation_sha": "8073d526436c8d03248dcf497a4ec7d97987a062",
+  "correction_sha": "5ae17b4e9698831bb830e21a767ab0426357d105",
+  "exact_candidate_sha": "5ae17b4e9698831bb830e21a767ab0426357d105",
+  "engineering_state": "BOUNDED_PASS",
+  "release_evidence": "LOCAL_PROVEN",
+  "effect_authority": "NO_EFFECT",
+  "finality": "BOUNDED_CLAIM",
+  "bundle": {
+    "parent": "LuzioneCoreContracts/v1",
+    "seed_product": "LuzioneSeedProductContracts/v1",
+    "compatibility": "EXACT_VERSION",
+    "runtime_activation": "LIBRARY_ONLY_DARK"
+  },
+  "contracts": {
+    "ApprovalDecision/v1": "#/$defs/ApprovalDecision",
+    "AuthorityPolicy/v1": "#/$defs/AuthorityPolicy",
+    "BidComparison/v1": "#/$defs/BidComparison",
+    "EvidenceArtifact/v1": "#/$defs/EvidenceArtifact",
+    "FieldChangeProposal/v1": "#/$defs/FieldChangeProposal",
+    "InstallationRecord/v1": "#/$defs/InstallationRecord",
+    "OutcomeReceipt/v1": "#/$defs/OutcomeReceipt",
+    "Package/v1": "#/$defs/Package",
+    "ProductCandidate/v1": "#/$defs/ProductCandidate",
+    "ProductSource/v1": "#/$defs/ProductSource",
+    "Project/v1": "#/$defs/Project",
+    "ProjectPackage/v1": "#/$defs/ProjectPackage",
+    "ProposalLine/v1": "#/$defs/ProposalLine",
+    "ProposalTemplate/v1": "#/$defs/ProposalTemplate",
+    "ProposalVersion/v1": "#/$defs/ProposalVersion",
+    "PurchaseOrder/v1": "#/$defs/PurchaseOrder",
+    "PurchaseOrderAcknowledgement/v1": "#/$defs/PurchaseOrderAcknowledgement",
+    "ReceivingRecord/v1": "#/$defs/ReceivingRecord",
+    "RFQ/v1": "#/$defs/RFQ",
+    "Shipment/v1": "#/$defs/Shipment",
+    "Space/v1": "#/$defs/Space",
+    "Specification/v1": "#/$defs/Specification",
+    "SpecificationLine/v1": "#/$defs/SpecificationLine",
+    "SupplierQuote/v1": "#/$defs/SupplierQuote",
+    "SultanReviewItem/v1": "#/$defs/SultanReviewItem",
+    "TimelineEvent/v1": "#/$defs/TimelineEvent"
+  },
+  "artifacts": {
+    "manifest": "contracts/core/luzione-core-v1.manifest.json",
+    "schema": "contracts/core/v1/luzione-seed-product-contracts-v1.schema.json",
+    "types": "src/modules/luzione-core-contracts/seedProductContracts.ts",
+    "strict_sdk": "src/modules/luzione-core-contracts/seedProductConsumerSdk.ts",
+    "fixtures": "src/modules/luzione-core-contracts/seedProductFixtures.ts",
+    "compatibility_tests": "src/modules/luzione-core-contracts/tests/seed-product-contracts.test.ts"
+  },
+  "common_invariants": [
+    "Every document is tenant-bound and has stable resource identity, exact version, status and archival posture.",
+    "Every document preserves provenance source references with the same tenant.",
+    "Every mutation boundary carries expectedVersion, idempotencyKey and payloadHash.",
+    "Every document carries server-derived actor/authority evidence and a receipt/readback boundary.",
+    "A2 and A3 require named human approval; A4 is denied.",
+    "Provider acknowledgement is non-final and cannot masquerade as source readback.",
+    "Project Package publication is immutable; activated Specifications accept later Planner revisions only as proposed revisions.",
+    "Proposal approval pins an exact Proposal Version; supplier responses pin exact RFQ lines; PO release remains approval-gated."
+  ],
+  "consumer_actions": [
+    {
+      "repository": "CIBOTFLOW/Luzione-UI",
+      "action": "Pin the exact Core manifest and use API-owned resource/version/authority/receipt fields for Project, FF&E, CPQ, sourcing, procurement, fulfillment and Sultan review views; do not create a local mutation envelope."
+    },
+    {
+      "repository": "CIBOTFLOW/Sultan-OS",
+      "action": "Use EvidenceArtifact, FieldChangeProposal, SultanReviewItem, AuthorityPolicy and OutcomeReceipt as deterministic boundaries around existing reasoning; Sultan may recommend or prepare but cannot mint tenant, authority, approval, receipt or source finality."
+    },
+    {
+      "repository": "CIBOTFLOW/Luzione-Room-Planner-MVP",
+      "action": "Publish immutable ProjectPackage/v1 with tenant-bound Planner source refs; retain mutable draft ownership before publication and submit later active-procurement changes as Specification/v1 proposed revisions."
+    },
+    {
+      "repository": "CIBOTFLOW/Supplier-Designer-Portal",
+      "action": "Render API projections and submit SupplierQuote, PurchaseOrderAcknowledgement and external ApprovalDecision commands through the API; do not infer internal margin, tenant or source-finality fields."
+    }
+  ],
+  "local_verification": {
+    "typecheck": "PASS",
+    "lint": "PASS_ZERO_WARNINGS",
+    "focused_contract_tests": "PASS_165_OF_165",
+    "full_tests": "PASS_513_OF_513",
+    "compliance": "PASS_7_OF_7",
+    "production_build": "PASS_NEXTJS_16_3_4_WEBPACK_AFTER_EXISTING_GOOGLE_FONT_NETWORK_BOUNDARY"
+  },
+  "untested_boundaries": [
+    "Independent consumer parsing and exact-SHA compatibility in all four repositories",
+    "HTTP routes, persistence, migrations and canonical Postgres readback",
+    "Room Planner publication and revision runtime",
+    "Portal authentication, supplier quote and client approval runtime",
+    "Provider effects, managed recovery, preview, deployment and production observation"
+  ],
+  "next_proof_needed": [
+    "Each consumer returns independently authored exact-version positive and negative evidence.",
+    "A later API slice binds these contracts to additive RLS migrations and default-off commands through the existing P110 ledger.",
+    "Controller selects exact consumer SHAs before G1 and keeps all effects disabled until authoritative readback and recovery are proven."
+  ]
+}

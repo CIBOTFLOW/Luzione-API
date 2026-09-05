@@ -2,66 +2,61 @@
   "schema_version": 2,
   "queue_id": "LUZIONE_API_SYSTEMS_ENGINEERING_V1",
   "repository": "CIBOTFLOW/Luzione-API",
-  "program_state": "CONNECTOR_REVOCATION_L1_G0_AND_EFFECT_ADMISSION_CORRECTION_02_BOUNDED_PASS_LOCAL_PROVEN_SANDBOX_ONLY_EXACT_FINAL_CI_PENDING",
-  "current_project": "CONNECTOR-REVOCATION-L1-G0",
-  "absorbed_project": "EFFECT-ADMISSION-L1-CORRECTION-02",
-  "next_projects": ["OPS-CONTRACTS-CORRECTION-01"],
-  "next_action": "Validate the detached exact-final tag and exact-head CI, then authorize OPS-CONTRACTS-CORRECTION-01 from the peeled final on one fresh non-default branch without overlapping API writers.",
+  "program_state": "SEED_PRODUCT_CONTRACT_SPINE_01_BOUNDED_PASS_LOCAL_PROVEN_NO_EFFECT_INDEPENDENT_CONSUMERS_PENDING",
+  "current_project": "SEED-PRODUCT-CONTRACT-SPINE-01",
+  "next_projects": [
+    "SEED-PRODUCT-CONSUMER-UI-01",
+    "SEED-PRODUCT-CONSUMER-SULTAN-01",
+    "SEED-PRODUCT-CONSUMER-PLANNER-01",
+    "SEED-PRODUCT-CONSUMER-PORTAL-01",
+    "OPS-CONTRACTS-CORRECTION-01"
+  ],
+  "next_action": "Have Luzione UI, Sultan OS, Room Planner and Supplier/Designer Portal consume the exact seed-product v1 contracts independently and return positive, wrong-version, cross-tenant, stale-version, authority and false-finality evidence. Only then schedule additive persistence/default-off command slices through the existing P110 authority, command, receipt and readback substrate.",
   "canonical_program": "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md",
   "failure_ledger": "engineering/execution/SYSTEMS_ENGINEERING_FAILURE_LEDGER.json",
   "proof_ledger": "engineering/execution/SYSTEMS_ENGINEERING_PROOF_LEDGER.json",
-  "handoff": "engineering/execution/handoffs/CONNECTOR_REVOCATION_L1_G0_CONTROLLER_HANDOFF.json",
-  "consumer_packets": [
-    "engineering/execution/connector-revocation-l1-g0/CONNECTOR_REVOCATION_L1_G0_CONSUMER_PACKET_V1.json",
-    "engineering/execution/connector-revocation-l1-g0/EFFECT_ADMISSION_L1_CORRECTION_02_CONSUMER_PACKET_V1.json"
-  ],
-  "base_sha": "5786d9d6f1d38e730e404cade4dd466dbb709367",
-  "implementation_shas": {
-    "effect_admission_correction_02": "86809a9243c594a2898d31d14bbeda3324cacd7b",
-    "connector_revocation": "a1329b669262b2abbffc8e9ec501e866429c0d55"
-  },
-  "evidence_head": "PEEL_DETACHED_ANNOTATED_TAG_CONNECTOR_REVOCATION_L1_G0_EXACT_FINAL",
-  "branch": "codex/connector-revocation-l1-g0-6ea7045",
-  "contract_versions": [
-    "ConnectorRevocationRequest/v1",
-    "ConnectorRevocationReceipt/v1",
-    "ConnectorCredentialHandle/v1",
-    "CONNECTOR-REVOCATION-L1-G0/policy-v1",
-    "ConnectorBinding/v1",
-    "luzione-effect-admission/v2",
-    "luzione-effect-execution-envelope/v1",
-    "luzione-provider-adapter/v0.3",
-    "luzione-prepared-provider-dispatch/v1",
-    "luzione-provider-credential-release/v1"
-  ],
+  "handoff": "engineering/execution/handoffs/SEED_PRODUCT_CONTRACT_SPINE_01_CONSUMER_HANDOFF.json",
+  "base_sha": "e6dce8c92f8cee9102af341615c0fa31345ca77d",
+  "implementation_sha": "8073d526436c8d03248dcf497a4ec7d97987a062",
+  "correction_sha": "5ae17b4e9698831bb830e21a767ab0426357d105",
+  "exact_candidate_sha": "5ae17b4e9698831bb830e21a767ab0426357d105",
+  "branch": "codex/seed-product-contract-spine-v1",
+  "contract_bundle": "LuzioneSeedProductContracts/v1",
+  "contract_count": 26,
   "engineering_state": "BOUNDED_PASS",
   "release_evidence": "LOCAL_PROVEN",
-  "effect_authority": "SANDBOX_ONLY",
+  "effect_authority": "NO_EFFECT",
   "finality": "BOUNDED_CLAIM",
-  "local_verification": "PASS_COMPLIANCE_7_OF_7_TYPECHECK_LINT_ZERO_WARNINGS_FOCUSED_32_OF_32_FULL_400_OF_400_NEXTJS_16_3_4_WEBPACK_BUILD_DISPOSABLE_REVERSE_REAPPLY",
-  "database_reverse_proof": "PASS_FORCED_RLS_APPEND_ONLY_ORIGINATING_ATTEMPT_FK_REVERSE_TO_0_REAPPLY_TO_4_WITH_CLEANUP",
-  "runtime_activation": "NOT_PERFORMED_DEFAULT_OFF_SANDBOX_ONLY",
-  "credential_resolution_or_erasure": "NOT_PERFORMED",
+  "local_verification": "PASS_TYPECHECK_LINT_ZERO_WARNINGS_FOCUSED_165_OF_165_FULL_513_OF_513_COMPLIANCE_7_OF_7_NEXTJS_16_3_4_WEBPACK_BUILD",
+  "runtime_activation": "NOT_PERFORMED_LIBRARY_ONLY_DARK",
+  "database_change": "NONE",
   "provider_effects": "NOT_PERFORMED",
   "production_query_or_mutation": "NOT_PERFORMED",
-  "exact_head_automation": "PENDING_FINAL_PUSH_AND_DRAFT_PR",
+  "exact_head_automation": "PENDING_PUSH_PR_AND_INDEPENDENT_CONSUMER_EVIDENCE",
   "preview": "NOT_REQUESTED_NO_DEPLOYMENT_ACTION",
-  "writer_lock": "RELEASE_AFTER_FINAL_PUSH_TAG_CI_AND_CONTROLLER_HANDOFF",
+  "inherited_integration": {
+    "head": "e6dce8c92f8cee9102af341615c0fa31345ca77d",
+    "state": "CONNECTOR_REVOCATION_AND_EFFECT_ADMISSION_CORRECTIONS_INCLUDED",
+    "prior_handoff": "engineering/execution/handoffs/CONNECTOR_REVOCATION_L1_G0_CONTROLLER_HANDOFF.json",
+    "ops_contracts_correction": "PRESERVED_PENDING_CONTROLLER_DEPENDENCY"
+  },
   "open_quarantines": [
+    "Independent exact-version consumer evidence is absent for UI, Sultan, Room Planner and Portal.",
+    "No route, persistence, migration or deployed readback exists for the seed-product graph.",
     "A01/D01 G1 prerequisites, managed backup/PITR and production recovery remain unresolved.",
-    "Authenticated Git-bound exact-SHA application readback is absent.",
-    "Independent L2/L3 exact-pin consumer evidence is absent.",
-    "No current contract authorizes a real credential, live provider revocation, local erasure or production effect."
+    "No current contract authorizes a live provider, external communication, PO release, shipment booking, payment or other binding effect."
   ],
   "deferred_external_infra": [
-    "exact-final automated CI and protected preview",
-    "independent consumer evidence",
-    "managed migration/recovery",
+    "exact-head CI and protected preview",
+    "independent four-repository consumer evidence",
+    "managed migration and recovery",
     "every G1/G2, credential, live-provider, merge, default-branch and production action"
   ],
   "remaining_uncertainty": [
-    "Local synthetic and disposable evidence does not prove hosted, managed or provider behavior.",
-    "ERASURE_AUTHORIZED_NO_EFFECT is an evidence state only; no credential value was read, resolved or erased.",
-    "Controller and consumer acceptance are not inferred from producer evidence."
-  ]
+    "Strict local contracts do not prove canonical database ownership, runtime integration or user journeys.",
+    "The JSON Schema and TypeScript SDK are producer evidence only until each consumer pins and tests the exact implementation SHA.",
+    "Controller acceptance and release admission are not inferred."
+  ],
+  "stop_code": null,
+  "updated_at": "2026-09-05T07:59:24Z"
 }

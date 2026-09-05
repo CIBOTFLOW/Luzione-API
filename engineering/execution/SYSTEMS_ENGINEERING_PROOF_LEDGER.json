@@ -2546,6 +2546,70 @@
       "next_proof_needed": [
         "Push and tag the combined exact final, bind exact-head automated CI, then require controller acceptance before OPS-CONTRACTS-CORRECTION-01 starts on a fresh non-default branch."
       ]
+    },
+    {
+      "proof_id": "SEED_PRODUCT_CONTRACT_SPINE_01_LOCAL_PROOF_20260905",
+      "project_id": "SEED-PRODUCT-CONTRACT-SPINE-01",
+      "recorded_at": "2026-09-05T07:49:06Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "5ae17b4e9698831bb830e21a767ab0426357d105",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The exact API implementation extends LuzioneCoreContracts/v1 with 26 strict, tenant-bound seed-product contracts covering Project through fulfillment and service evidence, all carrying stable identity, source provenance, expected-version/idempotency, authority and receipt/readback semantics; no persistence, route, provider or live-effect surface was activated.",
+      "exercised_boundaries": [
+        "All 26 named contract versions have TypeScript types, strict parsers, deterministic positive fixtures, JSON Schema definitions and Core manifest entries.",
+        "A complete in-memory flagship graph parsed from Project and Space through Specification, Product, Proposal, RFQ, Supplier Quote, Bid Comparison, Purchase Order, Shipment, Receiving, Installation, Timeline, Sultan Review and Outcome Receipt.",
+        "Every v1 document rejected surplus, missing and wrong-version top-level fields; both the seed SDK and existing Core document dispatcher accepted exact fixtures.",
+        "Cross-tenant source provenance, project relationships and Planner publication references failed closed.",
+        "Exact idempotent replay passed while changed-payload replay and stale expectedVersion failed with stable error codes.",
+        "A2/A3 required named human approval and A4 failed closed.",
+        "Proposal decisions pinned exact Proposal Version; Supplier Quote lines pinned exact RFQ lines; Purchase Order acknowledgement pinned exact PO version.",
+        "Provider acknowledgement remained non-final and could not claim source readback; SOURCE_CONFIRMED required observed version, timestamp and source reference.",
+        "Receiving mismatches, missing applied Sultan outcome receipts and unquarantined prompt-injection evidence failed closed.",
+        "TypeScript, zero-warning lint, 165/165 focused Core tests, 513/513 full tests, 7/7 compliance controls and the Next.js 16.3.4 webpack production build passed."
+      ],
+      "untested_boundaries": [
+        "Independent exact-SHA consumption by Luzione UI, Sultan OS, Room Planner and Supplier/Designer Portal",
+        "HTTP routes, additive migrations, RLS, canonical Postgres persistence and authoritative database readback",
+        "Room Planner publication/revision and Portal supplier/client collaboration journeys",
+        "document ingestion/rendering, connector/provider behavior, managed recovery, preview and production deployment"
+      ],
+      "evidence_refs": [
+        "commit:8073d526436c8d03248dcf497a4ec7d97987a062",
+        "commit:5ae17b4e9698831bb830e21a767ab0426357d105",
+        "architecture/production-convergence/SEED_PRODUCT_CONTRACT_SPINE_01_WORKING_CONTRACT.md",
+        "contracts/core/v1/luzione-seed-product-contracts-v1.schema.json",
+        "contracts/core/luzione-core-v1.manifest.json",
+        "src/modules/luzione-core-contracts/seedProductContracts.ts",
+        "src/modules/luzione-core-contracts/seedProductConsumerSdk.ts",
+        "src/modules/luzione-core-contracts/tests/seed-product-contracts.test.ts",
+        "engineering/execution/handoffs/SEED_PRODUCT_CONTRACT_SPINE_01_CONSUMER_HANDOFF.json"
+      ],
+      "failure_refs": [
+        "SEED_PRODUCT_CONTRACT_SPINE_01_GOOGLE_FONT_NETWORK_20260905",
+        "SEED_PRODUCT_CONTRACT_SPINE_01_FROZEN_TREE_TEST_HEAD_BINDING_20260905"
+      ],
+      "cross_repo_handoffs": [
+        "Luzione UI consumes product graph read models and submits API-owned commands without a local authority or receipt fork.",
+        "Sultan OS consumes evidence/review/policy/outcome contracts around its existing reasoning runtime without minting authority or finality.",
+        "Room Planner publishes immutable ProjectPackage/v1 and proposes later active-procurement Specification revisions.",
+        "Supplier/Designer Portal renders bounded projections and submits supplier/client decisions through API commands."
+      ],
+      "deferred_external_infra": [
+        "exact-head CI and preview",
+        "independent four-repository consumers",
+        "managed migration/recovery and every live provider effect"
+      ],
+      "remaining_uncertainty": [
+        "Producer-local contract proof does not prove consumer integration or canonical runtime ownership.",
+        "No release or production readiness is inferred from library-only tests."
+      ],
+      "next_proof_needed": [
+        "Obtain independently authored exact-version consumer evidence from all four repositories.",
+        "Implement default-off vertical persistence slices through the existing P110 command/receipt/readback substrate after controller ownership acceptance."
+      ]
     }
   ]
 }

@@ -8,6 +8,12 @@
   "canonical_program": "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md",
   "program_extensions": [
     {
+      "extension_id": "LUZIONE_SEED_PRODUCT_CONVERGENCE_V1",
+      "source": "USER_AUTHORIZED_21_DAY_PRODUCT_CONVERGENCE_20260905",
+      "repository_program": "architecture/production-convergence/SEED_PRODUCT_CONTRACT_SPINE_01_WORKING_CONTRACT.md",
+      "admitted_at": "2026-09-05T07:49:06Z"
+    },
+    {
       "extension_id": "LUZIONE_CRM_OS_EFFECT_ADMISSION_L1_CORRECTION_01_G0",
       "source": "CIBOTFLOW/Luzione-platform-program@51253c275eb02ef821438a8b875af7e4928f59a1",
       "source_fingerprint": "a24eefb14a9681ad97a415b8d48c43a7d88900e8c86a8f489645f9354a1a62d9",
@@ -90,6 +96,27 @@
     "S4_QUEUE_EXHAUSTED": "Stop when every admitted project is complete, quarantined or removed and no dependency-ready work remains."
   },
   "queue": [
+    {
+      "project_id": "SEED-PRODUCT-CONTRACT-SPINE-01",
+      "platform_project": "LUZIONE_SEED_PRODUCT_CONVERGENCE_V1",
+      "title": "Seed Product Shared Contract Spine",
+      "priority": 550,
+      "status": "COMPLETE",
+      "depends_on": ["CORE-02", "EFFECT-ADMISSION-L1-CORRECTION-01"],
+      "starting_sha": "e6dce8c92f8cee9102af341615c0fa31345ca77d",
+      "implementation_sha": "8073d526436c8d03248dcf497a4ec7d97987a062",
+      "correction_sha": "5ae17b4e9698831bb830e21a767ab0426357d105",
+      "exact_candidate_sha": "5ae17b4e9698831bb830e21a767ab0426357d105",
+      "mutation_cone": ["contracts", "compatibility-sdk", "schema", "tests", "handoffs", "execution-metadata"],
+      "core_outcome": "Publish the exact-version, tenant-bound Project-to-Service seed graph inside the existing Core contract family, preserving expected-version, idempotency, authority, receipt and readback semantics without runtime activation.",
+      "published_artifacts": ["26 strict TypeScript contracts", "strict consumer parsers", "positive flagship graph fixtures", "JSON Schema bundle", "four-repository consumer handoff"],
+      "required_evidence": ["exact version and field-set rejection", "tenant and graph reference denial", "replay and stale-version denial", "A2/A3 human approval and A4 prohibition", "provider acknowledgement versus source readback separation", "full local gates"],
+      "irreversible_effects": [],
+      "completion_evidence_ref": "SEED_PRODUCT_CONTRACT_SPINE_01_LOCAL_PROOF_20260905",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM"
+    },
     {
       "project_id": "EFFECT-ADMISSION-L1",
       "platform_project": "LUZIONE_CRM_OS_EFFECT_ADMISSION",
