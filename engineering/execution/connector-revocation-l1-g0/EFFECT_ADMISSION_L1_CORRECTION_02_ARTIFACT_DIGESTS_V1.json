@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "EFFECT-ADMISSION-L1-CORRECTION-02-ARTIFACT-DIGESTS/v1",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "baseSha": "5786d9d6f1d38e730e404cade4dd466dbb709367",
+  "semanticPin": "86809a9243c594a2898d31d14bbeda3324cacd7b",
+  "controllerRelease": "055cf5a5d277bead4b02146a05869d91712e5c91",
+  "assuranceFingerprint": "f2e0de88dae65aad46ca5ec80872f523950289326275791e651e2d9ed0cb4548",
+  "contractVersions": [
+    "luzione-effect-admission/v2",
+    "luzione-effect-execution-envelope/v1",
+    "luzione-provider-adapter/v0.3",
+    "luzione-prepared-provider-dispatch/v1",
+    "luzione-provider-credential-release/v1"
+  ],
+  "artifacts": [
+    {"path":"contracts/effect-admission/luzione-prepared-provider-dispatch-v1.schema.json","sha256":"e954919de2b860cbfc0b8a6793e216bba5f7539ce1d21aaaf3a53635f667a9b0"},
+    {"path":"supabase/migrations/20260905131000_effect_admission_l1_correction_02.sql","sha256":"870ed8c95928aa30bc375c1a724f4438b983f72f9e289b8a2c6e042b3b43dfb5"},
+    {"path":"scripts/validation/rollback-effect-admission-l1-correction-02.sql","sha256":"9aec37ed9e65ed49c1902f9aa8e34094cfa634ff2bf2c30c0987f732457a4f75"},
+    {"path":"src/modules/effect-admission/contracts.ts","sha256":"5f0b2a9614b37c1600942691c9173c5df21121b5e7d1dec0173d125f7d40ee19"},
+    {"path":"src/modules/provider-runtime/contracts.ts","sha256":"f0172c36c1a224f67359c9459680b72008d2daffdd1176b7dd5d578bf2004538"},
+    {"path":"src/modules/provider-runtime/registry.ts","sha256":"bfeaaa0fd7d54f9ba040bad138367abecc887132a88b581c90036536970b1992"},
+    {"path":"src/modules/provider-runtime/runtime.ts","sha256":"c702059c9938cdf41880174c326bb2c17f151ec58dd067b2020800e0311adb29"},
+    {"path":"src/lib/platform-guarantees/postgresWorkflowDeliveryStore.ts","sha256":"a86b96098129e19a515fa3ce90770f8314b66c05165aaee78103e22f43a27dd8"}
+  ],
+  "frozenTrees": {
+    "contracts/core": "d57ccc4cccd97b37acd1a1575b1e07ede5787349",
+    "src/modules/luzione-core-contracts": "d594fa014d7020fdf8386c7a6926ff9b573ac355"
+  }
+}

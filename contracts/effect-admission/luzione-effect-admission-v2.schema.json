@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/effect-admission/luzione-effect-admission-v2.schema.json",
+  "title": "Luzione Effect Admission v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["actor", "admitted", "authorityRef", "bindingDigest", "checkpoint", "contractVersion", "credentialBindingId", "credentialReleaseAuthorized", "decisionRef", "denialCode", "destination", "effectAuthority", "effectClass", "executeAuthorized", "executionIdentity", "killVersion", "operationKey", "originatingEnvelopeRef", "preparedDispatchDigest", "provider", "sourcePayloadHash", "tenantId"],
+  "properties": {
+    "actor": { "$ref": "#/$defs/actor" },
+    "admitted": { "type": "boolean" },
+    "authorityRef": { "$ref": "#/$defs/token" },
+    "bindingDigest": { "$ref": "#/$defs/digest" },
+    "checkpoint": { "enum": ["SULTAN_PREPARE", "SULTAN_EXECUTE", "PROVIDER_CLAIM", "PROVIDER_CREDENTIAL_RELEASE", "PROVIDER_PRE_EXECUTE", "PROVIDER_RECONCILE"] },
+    "contractVersion": { "const": "luzione-effect-admission/v2" },
+    "credentialBindingId": { "$ref": "#/$defs/token" },
+    "credentialReleaseAuthorized": { "type": "boolean" },
+    "decisionRef": { "type": "string", "pattern": "^effect-admission:[a-f0-9]{64}$" },
+    "denialCode": { "type": ["string", "null"], "enum": [null, "ACTOR_NOT_AUTHORIZED", "ACTIVE_KILL_SWITCH", "ADMISSION_DISABLED", "AUTHORITY_REQUIRED", "BINDING_CHANGED", "CREDENTIAL_BINDING_NOT_ADMITTED", "KILL_STATE_UNAVAILABLE", "PRIOR_DECISION_REQUIRED", "SOURCE_PAYLOAD_HASH_INVALID", "PREPARED_DISPATCH_DIGEST_INVALID"] },
+    "destination": { "type": "string", "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)+$", "maxLength": 190 },
+    "effectAuthority": { "const": "SANDBOX_ONLY" },
+    "effectClass": { "enum": ["EXTERNAL_EFFECT", "NO_EFFECT", "REVERSIBLE_INTERNAL"] },
+    "executeAuthorized": { "type": "boolean" },
+    "executionIdentity": { "type": "string", "pattern": "^effect-execution:[a-f0-9]{64}$" },
+    "killVersion": { "type": "string", "pattern": "^kill:[a-f0-9]{64}$" },
+    "operationKey": { "$ref": "#/$defs/token" },
+    "originatingEnvelopeRef": { "$ref": "#/$defs/token" },
+    "preparedDispatchDigest": { "$ref": "#/$defs/digest" },
+    "provider": { "$ref": "#/$defs/token" },
+    "sourcePayloadHash": { "$ref": "#/$defs/digest" },
+    "tenantId": { "$ref": "#/$defs/token" }
+  },
+  "$defs": {
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actorId", "actorType"],
+      "properties": {
+        "actorId": { "$ref": "#/$defs/token" },
+        "actorType": { "enum": ["service", "system", "user", "agent"] }
+      }
+    },
+    "token": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:@/-]{1,511}$" },
+    "digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  }
+}

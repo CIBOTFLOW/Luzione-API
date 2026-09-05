@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/drafts/receipt-envelope-v0.2-draft.1.schema.json",
+  "title": "Luzione Receipt Envelope v0.2 draft 1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contractVersion", "receiptId", "commandId", "correlationId", "tenantId", "state", "effectAuthority", "idempotency", "object", "evidence"],
+  "properties": {
+    "contractVersion": { "const": "luzione-receipt-envelope/v0.2-draft.1" },
+    "receiptId": { "type": "string", "minLength": 2, "maxLength": 512 },
+    "commandId": { "type": "string", "minLength": 2, "maxLength": 512 },
+    "correlationId": { "type": "string", "minLength": 2, "maxLength": 512 },
+    "tenantId": { "type": "string", "minLength": 2, "maxLength": 512 },
+    "state": { "enum": ["DOMAIN_COMMITTED", "DISPATCH_PENDING"] },
+    "effectAuthority": { "const": "NOT_GRANTED_BY_CONTRACT" },
+    "idempotency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "payloadHash", "replay"],
+      "properties": {
+        "key": { "type": "string", "minLength": 2, "maxLength": 512 },
+        "payloadHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "replay": { "type": "boolean" }
+      }
+    },
+    "object": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ownerProject", "type", "id", "version"],
+      "properties": {
+        "ownerProject": { "type": "string", "minLength": 2, "maxLength": 512 },
+        "type": { "type": "string", "minLength": 2, "maxLength": 512 },
+        "id": { "type": "string", "minLength": 2, "maxLength": 512 },
+        "version": { "type": "string", "minLength": 2, "maxLength": 512 }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["eventId", "outboxMessageId"],
+      "properties": {
+        "eventId": { "type": "string", "minLength": 2, "maxLength": 512 },
+        "outboxMessageId": { "type": "string", "minLength": 2, "maxLength": 512 }
+      }
+    }
+  }
+}

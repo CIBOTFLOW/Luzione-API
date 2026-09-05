@@ -1,19 +1,33 @@
+import {
+  EFFECT_ADMISSION_CONTRACT_VERSION,
+  type EffectAdmissionDecision,
+  type EffectExecutionEnvelope,
+  parseEffectAdmissionDecision,
+  parseEffectExecutionEnvelope,
+} from "@/modules/effect-admission/contracts";
 import { sha256 } from "@/modules/platform-guarantees/eventContract";
 import type { FailureClass } from "@/modules/platform-guarantees/types";
 
-export const PROVIDER_ADAPTER_CONTRACT_VERSION = "luzione-provider-adapter/v0.1";
+export const LEGACY_PROVIDER_ADAPTER_CONTRACT_VERSION = "luzione-provider-adapter/v0.2" as const;
+export const PROVIDER_ADAPTER_CONTRACT_VERSION = "luzione-provider-adapter/v0.3" as const;
+export const PREPARED_PROVIDER_DISPATCH_VERSION = "luzione-prepared-provider-dispatch/v1" as const;
+export const PROVIDER_CREDENTIAL_RELEASE_VERSION = "luzione-provider-credential-release/v1" as const;
 
 export type ProviderMode = "LIVE" | "SANDBOX";
 export type ProviderEffectClass = "EXTERNAL_EFFECT" | "NO_EFFECT" | "REVERSIBLE_INTERNAL";
 
 export type ProviderMessage = {
+  actor: { actorId: string; actorType: "agent" | "service" | "system" | "user" };
   authorizationRef: string | null;
   destination: string;
+  /** Historical v0.2 input only. v0.3 durable rows never populate this field. */
+  effectAdmissionRef?: string | null;
   effectClass: ProviderEffectClass;
   expectedObjectVersion: string;
   idempotencyKey: string;
   objectId: string;
   objectType: string;
+  originatingEnvelopeRef: string;
   outboxMessageId: string;
   payload: Record<string, unknown>;
   payloadHash: string;
@@ -22,15 +36,53 @@ export type ProviderMessage = {
   tenantId: string;
 };
 
-export type PreparedProviderRequest = {
-  contractVersion: typeof PROVIDER_ADAPTER_CONTRACT_VERSION;
+export type PreparedProviderDispatch = {
+  adapterContractVersion: typeof PROVIDER_ADAPTER_CONTRACT_VERSION;
+  contractVersion: typeof PREPARED_PROVIDER_DISPATCH_VERSION;
+  credentialBindingId: string;
   destination: string;
+  effectClass: ProviderEffectClass;
+  idempotencyKey: string;
+  objectRef: string;
+  originatingEnvelopeRef: string;
+  payload: Record<string, unknown>;
+  payloadHash: string;
+  provider: string;
+  providerRequestRef: string;
+  resultingObjectVersion: string;
+  sourcePayloadHash: string;
+  tenantId: string;
+};
+
+/** @deprecated Historical live-adapter v0.2 shape; it cannot satisfy ProviderAdapter v0.3. */
+export type PreparedProviderRequest = {
+  contractVersion: typeof LEGACY_PROVIDER_ADAPTER_CONTRACT_VERSION;
+  credentialBindingId: string;
+  destination: string;
+  effectAdmissionRef: string;
   idempotencyKey: string;
   objectRef: string;
   payload: Record<string, unknown>;
   payloadHash: string;
+  provider: string;
   providerRequestRef: string;
   resultingObjectVersion: string;
+  tenantId: string;
+};
+
+export type ProviderCredentialRelease = {
+  contractVersion: typeof PROVIDER_CREDENTIAL_RELEASE_VERSION;
+  credentialBindingId: string;
+  effectAdmissionRef: string;
+  executionIdentity: string;
+  preparedDispatchDigest: string;
+  releaseRef: string;
+  state: "NO_CREDENTIAL_REQUIRED" | "RELEASED";
+};
+
+export type ProviderExecutionContext = {
+  executionEnvelope: EffectExecutionEnvelope;
+  preparedDispatch: PreparedProviderDispatch;
 };
 
 export type ProviderExecutionResult =
@@ -49,18 +101,34 @@ export type ProviderCompensationResult =
   | { reason: string; state: "NOT_SUPPORTED" };
 
 export type ProviderAdapter = {
+  readonly contractVersion: typeof PROVIDER_ADAPTER_CONTRACT_VERSION;
+  readonly credentialBindingId: string;
   readonly destination: string;
+  readonly effectClass: ProviderEffectClass;
   readonly mode: ProviderMode;
   readonly provider: string;
-  compensate(request: PreparedProviderRequest): Promise<ProviderCompensationResult>;
-  execute(request: PreparedProviderRequest): Promise<ProviderExecutionResult>;
-  observe(request: PreparedProviderRequest, acknowledgementRef: string): Promise<ProviderObservationResult>;
-  prepare(message: ProviderMessage): Promise<PreparedProviderRequest>;
-  reconcile(request: PreparedProviderRequest): Promise<ProviderObservationResult>;
+  compensate(context: ProviderExecutionContext): Promise<ProviderCompensationResult>;
+  execute(context: ProviderExecutionContext, release: ProviderCredentialRelease): Promise<ProviderExecutionResult>;
+  observe(context: ProviderExecutionContext, acknowledgementRef: string): Promise<ProviderObservationResult>;
+  /** Pure canonicalization only. No credential read and no provider contact are permitted. */
+  prepare(message: ProviderMessage): Promise<unknown>;
+  reconcile(context: ProviderExecutionContext): Promise<ProviderObservationResult>;
+  /** Invoked only after the credential-release admission checkpoint succeeds. */
+  releaseCredential(prepared: PreparedProviderDispatch, decision: EffectAdmissionDecision): Promise<unknown>;
 };
 
 const DESTINATION = /^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)+$/;
+const DIGEST = /^[a-f0-9]{64}$/;
 const FAILURE_CODE = /^[A-Z][A-Z0-9_]{2,63}$/;
+const PREPARED_KEYS = [
+  "adapterContractVersion", "contractVersion", "credentialBindingId", "destination", "effectClass",
+  "idempotencyKey", "objectRef", "originatingEnvelopeRef", "payload", "payloadHash", "provider",
+  "providerRequestRef", "resultingObjectVersion", "sourcePayloadHash", "tenantId",
+] as const;
+const RELEASE_KEYS = [
+  "contractVersion", "credentialBindingId", "effectAdmissionRef", "executionIdentity",
+  "preparedDispatchDigest", "releaseRef", "state",
+] as const;
 
 export class ProviderContractError extends Error {
   constructor(readonly code: string, message: string) {
@@ -70,10 +138,10 @@ export class ProviderContractError extends Error {
 }
 
 function text(value: unknown, field: string, max = 500) {
-  if (typeof value !== "string" || !value.trim() || value.trim().length > max) {
+  if (typeof value !== "string" || value !== value.trim() || !value || value.length > max) {
     throw new ProviderContractError("PROVIDER_CONTRACT_INVALID", `${field} must be a bounded non-empty string.`);
   }
-  return value.trim();
+  return value;
 }
 
 function record(value: unknown, field: string): Record<string, unknown> {
@@ -86,7 +154,7 @@ function record(value: unknown, field: string): Record<string, unknown> {
 export function providerMessageFromRow(row: Record<string, unknown>): ProviderMessage {
   const payload = record(row.payload, "payload");
   const payloadHash = text(row.payload_hash, "payloadHash", 64);
-  if (!/^[a-f0-9]{64}$/.test(payloadHash) || sha256(payload) !== payloadHash) {
+  if (!DIGEST.test(payloadHash) || sha256(payload) !== payloadHash) {
     throw new ProviderContractError("PROVIDER_PAYLOAD_HASH_MISMATCH", "The durable outbox payload does not match its canonical hash.");
   }
   const destination = text(row.destination, "destination", 190);
@@ -99,7 +167,8 @@ export function providerMessageFromRow(row: Record<string, unknown>): ProviderMe
   if (effectClass === "EXTERNAL_EFFECT" && !authorizationRef) {
     throw new ProviderContractError("PROVIDER_AUTHORITY_MISSING", "External effects require a durable authorization reference.");
   }
-  return {
+  const message = {
+    actor: { actorId: text(row.actor_id, "actorId", 512), actorType: actorType(row.actor_type) },
     authorizationRef,
     destination,
     effectClass: effectClass as ProviderEffectClass,
@@ -114,6 +183,127 @@ export function providerMessageFromRow(row: Record<string, unknown>): ProviderMe
     resultingObjectVersion: text(row.resulting_object_version, "resultingObjectVersion", 300),
     tenantId: text(row.tenant_id, "tenantId", 200),
   };
+  return Object.freeze({ ...message, originatingEnvelopeRef: providerOriginatingEnvelopeRef(message) });
+}
+
+export function providerOriginatingEnvelopeRef(message: Pick<ProviderMessage,
+  "idempotencyKey" | "outboxMessageId" | "payloadHash" | "receiptId" | "resultingObjectVersion" | "tenantId">) {
+  return `p110-origin:${sha256({
+    idempotencyKey: message.idempotencyKey,
+    outboxMessageId: message.outboxMessageId,
+    payloadHash: message.payloadHash,
+    receiptId: message.receiptId,
+    resultingObjectVersion: message.resultingObjectVersion,
+    tenantId: message.tenantId,
+  })}`;
+}
+
+export function parsePreparedProviderDispatch(value: unknown, message: ProviderMessage, adapter: ProviderAdapter): PreparedProviderDispatch {
+  const row = exactObject(value, PREPARED_KEYS, "PREPARED_PROVIDER_DISPATCH") as unknown as PreparedProviderDispatch;
+  if (adapter.contractVersion !== PROVIDER_ADAPTER_CONTRACT_VERSION
+    || row.adapterContractVersion !== PROVIDER_ADAPTER_CONTRACT_VERSION
+    || row.contractVersion !== PREPARED_PROVIDER_DISPATCH_VERSION) {
+    throw new ProviderContractError("PROVIDER_CONTRACT_VERSION_UNSUPPORTED", "The prepared dispatch contract version is unsupported.");
+  }
+  if (!DIGEST.test(row.payloadHash) || !DIGEST.test(row.sourcePayloadHash) || sha256(row.payload) !== row.payloadHash) {
+    throw new ProviderContractError("PREPARED_PROVIDER_PAYLOAD_HASH_MISMATCH", "The prepared dispatch payload digest is invalid.");
+  }
+  record(row.payload, "preparedDispatch.payload");
+  text(row.destination, "preparedDispatch.destination", 190);
+  for (const [field, fieldValue] of Object.entries({
+    credentialBindingId: row.credentialBindingId,
+    idempotencyKey: row.idempotencyKey,
+    objectRef: row.objectRef,
+    originatingEnvelopeRef: row.originatingEnvelopeRef,
+    provider: row.provider,
+    providerRequestRef: row.providerRequestRef,
+    resultingObjectVersion: row.resultingObjectVersion,
+    tenantId: row.tenantId,
+  })) text(fieldValue, `preparedDispatch.${field}`, 512);
+  if (!DESTINATION.test(row.destination)
+    || !["EXTERNAL_EFFECT", "NO_EFFECT", "REVERSIBLE_INTERNAL"].includes(row.effectClass)) {
+    throw new ProviderContractError("PREPARED_PROVIDER_DISPATCH_INVALID", "The prepared destination or effect class is invalid.");
+  }
+  if (adapter.credentialBindingId !== row.credentialBindingId
+    || adapter.destination !== row.destination
+    || adapter.effectClass !== row.effectClass
+    || adapter.provider !== row.provider
+    || message.destination !== row.destination
+    || message.effectClass !== row.effectClass
+    || message.idempotencyKey !== row.idempotencyKey
+    || `${message.objectType}:${message.objectId}` !== row.objectRef
+    || message.originatingEnvelopeRef !== row.originatingEnvelopeRef
+    || message.payloadHash !== row.sourcePayloadHash
+    || message.resultingObjectVersion !== row.resultingObjectVersion
+    || message.tenantId !== row.tenantId) {
+    throw new ProviderContractError("PREPARED_PROVIDER_BINDING_MISMATCH", "The prepared dispatch changed its canonical source binding.");
+  }
+  return Object.freeze(row);
+}
+
+export function preparedProviderDispatchDigest(prepared: PreparedProviderDispatch) {
+  return sha256(prepared);
+}
+
+export function buildProviderCredentialRelease(prepared: PreparedProviderDispatch, decisionValue: unknown, state: ProviderCredentialRelease["state"]): ProviderCredentialRelease {
+  const decision = parseEffectAdmissionDecision(decisionValue);
+  const digest = preparedProviderDispatchDigest(prepared);
+  if (!decision.admitted || !decision.credentialReleaseAuthorized
+    || decision.contractVersion !== EFFECT_ADMISSION_CONTRACT_VERSION
+    || decision.checkpoint !== "PROVIDER_CREDENTIAL_RELEASE"
+    || decision.credentialBindingId !== prepared.credentialBindingId
+    || decision.destination !== prepared.destination
+    || decision.originatingEnvelopeRef !== prepared.originatingEnvelopeRef
+    || decision.preparedDispatchDigest !== digest
+    || decision.provider !== prepared.provider
+    || decision.sourcePayloadHash !== prepared.sourcePayloadHash
+    || decision.tenantId !== prepared.tenantId) {
+    throw new ProviderContractError("PROVIDER_CREDENTIAL_RELEASE_NOT_ADMITTED", "Credential release lacks an exact admitted checkpoint.");
+  }
+  if (state !== "NO_CREDENTIAL_REQUIRED" && state !== "RELEASED") {
+    throw new ProviderContractError("PROVIDER_CREDENTIAL_RELEASE_INVALID", "Credential release state is invalid.");
+  }
+  const unsigned = {
+    contractVersion: PROVIDER_CREDENTIAL_RELEASE_VERSION,
+    credentialBindingId: prepared.credentialBindingId,
+    effectAdmissionRef: decision.decisionRef,
+    executionIdentity: decision.executionIdentity,
+    preparedDispatchDigest: digest,
+    state,
+  };
+  return Object.freeze({ ...unsigned, releaseRef: `credential-release:${sha256(unsigned)}` });
+}
+
+export function parseProviderCredentialRelease(value: unknown, prepared: PreparedProviderDispatch, decision: EffectAdmissionDecision): ProviderCredentialRelease {
+  const row = exactObject(value, RELEASE_KEYS, "PROVIDER_CREDENTIAL_RELEASE") as unknown as ProviderCredentialRelease;
+  const expected = buildProviderCredentialRelease(prepared, decision, row.state);
+  if (JSON.stringify(row) !== JSON.stringify(expected)) {
+    throw new ProviderContractError("PROVIDER_CREDENTIAL_RELEASE_INVALID", "Credential release content does not match the admitted checkpoint.");
+  }
+  return Object.freeze(row);
+}
+
+export function buildProviderExecutionContext(envelopeValue: unknown, prepared: PreparedProviderDispatch): ProviderExecutionContext {
+  const envelope = parseEffectExecutionEnvelope(envelopeValue);
+  if (envelope.admissionCheckpoint !== "PROVIDER_PRE_EXECUTE"
+    || envelope.credentialBindingId !== prepared.credentialBindingId
+    || envelope.destination !== prepared.destination
+    || envelope.originatingEnvelopeRef !== prepared.originatingEnvelopeRef
+    || envelope.preparedDispatchDigest !== preparedProviderDispatchDigest(prepared)
+    || envelope.provider !== prepared.provider
+    || envelope.sourcePayloadHash !== prepared.sourcePayloadHash
+    || envelope.tenantId !== prepared.tenantId) {
+    throw new ProviderContractError("PROVIDER_EXECUTION_CONTEXT_BINDING_MISMATCH", "Execution context does not bind the prepared dispatch.");
+  }
+  return Object.freeze({ executionEnvelope: envelope, preparedDispatch: prepared });
+}
+
+function actorType(value: unknown): ProviderMessage["actor"]["actorType"] {
+  const parsed = text(value, "actorType", 20);
+  if (!(["agent", "service", "system", "user"] as string[]).includes(parsed)) {
+    throw new ProviderContractError("PROVIDER_ACTOR_INVALID", "The durable receipt actor type is invalid.");
+  }
+  return parsed as ProviderMessage["actor"]["actorType"];
 }
 
 export function assertAdapterResult(result: ProviderExecutionResult) {
@@ -141,4 +331,15 @@ export function assertObservation(result: ProviderObservationResult, expectedVer
   if (result.observedObjectVersion && result.observedObjectVersion.length > 300) throw new ProviderContractError("PROVIDER_READBACK_INVALID", "observedObjectVersion is too long.");
   if (result.notes && result.notes.length > 1_000) throw new ProviderContractError("PROVIDER_READBACK_INVALID", "notes are too long.");
   return result;
+}
+
+function exactObject<const T extends readonly string[]>(value: unknown, keys: T, code: string): Record<T[number], unknown> {
+  if (!value || typeof value !== "object" || Array.isArray(value)) throw new ProviderContractError(`${code}_INVALID`, `${code} must be an object.`);
+  const row = value as Record<string, unknown>;
+  const actual = Object.keys(row).sort();
+  const expected = [...keys].sort();
+  if (actual.length !== expected.length || actual.some((key, index) => key !== expected[index])) {
+    throw new ProviderContractError(`${code}_FIELDS_INVALID`, `${code} has missing or surplus fields.`);
+  }
+  return row as Record<T[number], unknown>;
 }

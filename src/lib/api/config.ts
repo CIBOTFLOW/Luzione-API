@@ -4,13 +4,21 @@ export function runtimeConfig() {
   const serviceTokenConfigured = Boolean(process.env.LUZIONE_API_SERVICE_TOKEN?.trim());
   const continuationSecretConfigured = Boolean(process.env.PLATFORM_CONTINUATION_SECRET?.trim());
   const mutationsRequested = process.env.LUZIONE_API_MUTATIONS_ENABLED === "true";
-  const internalProjectionsRequested = process.env.LUZIONE_API_INTERNAL_PROJECTIONS_ENABLED !== "false";
+  const internalProjectionsRequested = process.env.LUZIONE_API_INTERNAL_PROJECTIONS_ENABLED === "true";
+  const internalProjectionAdmissionConfigured =
+    allowlist("LUZIONE_API_INTERNAL_PROJECTION_TENANTS").size > 0
+    && allowlist("LUZIONE_API_INTERNAL_PROJECTION_SOURCES").size > 0;
 
   return {
     continuationSecretConfigured,
     databaseConfigured,
     internalProjectionsEnabled:
-      internalProjectionsRequested && databaseConfigured && serviceTokenConfigured,
+      mutationsRequested
+      && internalProjectionsRequested
+      && internalProjectionAdmissionConfigured
+      && databaseConfigured
+      && serviceTokenConfigured,
+    internalProjectionAdmissionConfigured,
     internalProjectionsRequested,
     mutationsEnabled: mutationsRequested && databaseConfigured && serviceTokenConfigured,
     mutationsRequested,
@@ -39,6 +47,32 @@ function allowlist(name: string) {
       .map((value) => value.trim())
       .filter(Boolean),
   );
+}
+
+export function internalProjectionsEnabledFor(input: { source: string; tenantId: string }) {
+  return runtimeConfig().internalProjectionsEnabled
+    && allowlist("LUZIONE_API_INTERNAL_PROJECTION_TENANTS").has(input.tenantId)
+    && allowlist("LUZIONE_API_INTERNAL_PROJECTION_SOURCES").has(input.source);
+}
+
+export function onboardingCoreEnabledForTenant(tenantId: string) {
+  return runtimeConfig().mutationsEnabled
+    && process.env.LUZIONE_API_ONBOARDING_CORE_ENABLED === "true"
+    && allowlist("LUZIONE_API_ONBOARDING_CORE_TENANTS").has(tenantId);
+}
+
+export function connectorSyncValidationEnabledForTenant(tenantId: string) {
+  return runtimeConfig().mutationsEnabled
+    && process.env.LUZIONE_API_CONNECTOR_SYNC_VALIDATIONS_ENABLED === "true"
+    && allowlist("LUZIONE_API_CONNECTOR_SYNC_VALIDATION_TENANTS").has(tenantId)
+    && providerAdapterEnabled({ destination: "sandbox.echo", mode: "SANDBOX", tenantId });
+}
+
+export function connectorRevocationEnabledForTenant(tenantId: string) {
+  return runtimeConfig().mutationsEnabled
+    && process.env.LUZIONE_API_CONNECTOR_REVOCATIONS_ENABLED === "true"
+    && allowlist("LUZIONE_API_CONNECTOR_REVOCATION_TENANTS").has(tenantId)
+    && providerAdapterEnabled({ destination: "sandbox.connector-revocation", mode: "SANDBOX", tenantId });
 }
 
 export function providerAdapterEnabled(input: { destination: string; mode: "LIVE" | "SANDBOX"; tenantId: string }) {

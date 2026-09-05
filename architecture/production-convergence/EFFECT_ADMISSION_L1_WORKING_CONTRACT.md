@@ -1,0 +1,17 @@
+# EFFECT-ADMISSION-L1 Working Contract
+
+- Project: `EFFECT-ADMISSION-L1`; controller source `CIBOTFLOW/Luzione-platform-program@f7fd111e51fd686f9b9a8525775a6dd28aa7a5dd`; source fingerprint `b7a73c98c741f0d258bada5297b59092adb5ce3ae6fbdb8e01ed09758d3f155d`.
+- Outcome: one API-owned `LuzioneEffectAdmission/v1` decision guards Sultan consequential prepare/execute and provider-worker claim/dispatch/reconcile. It is default-off, tenant-scoped, exact-tuple allowlisted, kill-versioned, and content-bound.
+- Entrypoints: existing authenticated Sultan command routes and the existing P110 provider worker. No new HTTP route, provider, scheduler, or production process is introduced.
+- Authoritative truth: authenticated actor/tenant at the API boundary; P110 receipt/outbox identity and payload hash for provider work; P110 kill-switch state re-read by the API; opaque server-configured credential-binding identity. Luzione API is the only decision writer. Provider acknowledgement is not business finality.
+- Consumed contracts: P110 command/outbox/reconciliation state, Sultan command preparation/execution v1, provider adapter v0.1, existing API runtime mutation gate and exact tenant/destination allowlists.
+- Published contracts: `luzione-effect-admission/v1`; additive provider-adapter successor carrying the opaque binding and admission evidence; L2/L3 consumer pin packet.
+- Dependencies: exact ONBOARD-CORE-01 final `6a667b4f2d78cafd506929396d0042fafcbb9356`; existing P110 reservation/replay/finality; current Sultan gateway and provider registry. Frozen `LuzioneCoreContracts/v1` trees remain byte-identical.
+- Mutation cone: contracts, API-owned decision/evaluator, Sultan/provider enforcement, opaque credential resolver boundary, additive P110 attempt evidence, tests and execution metadata.
+- Reuse/convergence: extend the existing provider worker, P110 kill switches, dispatch-start record and Sultan routes. Retire raw `GMAIL_SULTAN_RFQ_ACCESS_TOKEN` as an authority path. Do not add a second queue, receipt, finality owner, provider route, or credential store.
+- Invariants: the global mutation gate and explicit effect-admission flag must both be exact `true`; tenant, actor, provider, destination and opaque credential binding must all be admitted; payload digest and operation key are immutable; active global/destination kill switches deny; a fresh decision is required immediately before credential resolution/dispatch; reconciliation observes only and never redispatches; secrets never enter decisions, receipts, logs, fixtures or evidence.
+- Non-scope: production data or migrations, live credentials, provider effects, worker activation, deployment/promotion, DNS, default branch, merges, G1/G2 claims, and changes to frozen Core semantics.
+- Acceptance proof: strict schema/parser parity; unset/false and tuple-mismatch denials; changed payload denial after claim; kill between claim and dispatch; ambiguous acknowledgement enters reconciliation; reconciliation performs no execute/redispatch; tenant and actor isolation; durable admission evidence on dispatch start; full compliance/typecheck/lint/test/build; isolated forward/reverse migration rehearsal; exact-SHA CI if available.
+- Irreversible effects: none. All tests use in-memory or deterministic sandbox adapters with `NO_EFFECT`; migration rehearsal is disposable. Reverse proof removes only additive attempt-evidence columns and restores the exact pre-cell tree.
+
+Strongest permitted claim: bounded G0 `NO_EFFECT`; never integrated, live-authorized, production-ready, or G1/G2.

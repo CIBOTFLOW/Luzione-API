@@ -1,0 +1,232 @@
+{
+  "schemaVersion": "CORE-02/Unknown-Owner-Ledger/v1",
+  "projectId": "CORE-02",
+  "controllerAuthority": "CIBOTFLOW/Luzione-platform-program@7713b02201e5abb84a92bb0d2af91514d33c84d5",
+  "correctionAuthority": "CIBOTFLOW/Luzione-platform-program@8543a3eab0a969f213bc192391bd7ca657bbf087",
+  "inventoryRef": "engineering/execution/core-02/CORE_02_API_ACTIVATION_CONE_MANIFEST_V1.json",
+  "policy": {
+    "unknownMeansApproved": false,
+    "ownerReturnMustBeSigned": true,
+    "immutableEvidenceRequired": true,
+    "secretValuesProhibited": true,
+    "productionMutationAuthorized": false
+  },
+  "unknowns": [
+    {
+      "unknownId": "CORE02-U001",
+      "journeys": ["GJ-1"],
+      "subject": "onboarding configuration canonical owner and lifecycle",
+      "observed": "Three tracked migration-owned configuration relations exist, use RLS, and grant service_role CRUD; CORE-01 onboarding contracts have no dedicated runtime binding.",
+      "inferred": "These relations may be reusable onboarding inputs, but reuse is not established.",
+      "unknown": "Whether they are current canonical TenantBlueprint/SetupMandate configuration stores, their mutation owner, retention, and readback path.",
+      "requiredHumanFunction": "CRM domain and onboarding owner",
+      "packetId": "CORE02-OWNER-CRM-ONBOARDING/v1",
+      "requiredReturnFields": ["canonicalStoreDecision", "mutationOwner", "readbackPath", "retentionRule", "legacyServiceRoleDisposition", "evidenceRefs"]
+    },
+    {
+      "unknownId": "CORE02-U002",
+      "journeys": ["GJ-1"],
+      "subject": "GJ-1 API activation path",
+      "observed": "TenantBlueprint, SetupMandate, ImportBatch/Receipt, ConnectorBinding, and SyncReceipt are frozen contracts; no dedicated API routes or jobs are tracked.",
+      "inferred": "A future canonical command/store path is required before onboarding can activate.",
+      "unknown": "Exact route, persistence, mutation, replay, readback, and rollback owners for GJ-1.",
+      "requiredHumanFunction": "CRM domain and onboarding owner",
+      "packetId": "CORE02-OWNER-CRM-ONBOARDING/v1",
+      "requiredReturnFields": ["routeOwner", "persistenceOwner", "mutationOwner", "replayBoundary", "readbackPath", "rollbackOwner", "evidenceRefs"]
+    },
+    {
+      "unknownId": "CORE02-U003",
+      "journeys": ["GJ-2"],
+      "subject": "GJ-2 dark-path canonical cutover",
+      "observed": "API-owned default-off routes and migration artifacts exist for Lead, CommercialCase, Quote, Proposal review, approval, Order, and FulfillmentIntent; prior evidence keeps Luzione UI as active writer for transferred domain rows.",
+      "inferred": "The API may become the target mutation owner only after explicit cutover evidence.",
+      "unknown": "Per-object current canonical mutation owner, selected cutover cohort, competing path retirement, and authoritative readback acceptance.",
+      "requiredHumanFunction": "CRM domain and onboarding owner",
+      "packetId": "CORE02-OWNER-CRM-ONBOARDING/v1",
+      "requiredReturnFields": ["objectOwnerMap", "cutoverCohort", "competingPathDisposition", "readbackAcceptance", "rollbackBoundary", "evidenceRefs"]
+    },
+    {
+      "unknownId": "CORE02-U004",
+      "journeys": ["GJ-3"],
+      "subject": "GJ-3 support persistence and canonical mutation path",
+      "observed": "SupportCase, SupportAction, and CustomerReply strict contracts exist; no support-specific API route, table, worker, or delivery path is tracked.",
+      "inferred": "Generic operation/workflow primitives could be reused but are not a support implementation.",
+      "unknown": "Canonical support record store, mutation owner, intake routes, SLA timer owner, communication ledger, reply delivery adapter, and verified closure readback.",
+      "requiredHumanFunction": "Support operations and CRM support owner",
+      "packetId": "CORE02-OWNER-SUPPORT/v1",
+      "requiredReturnFields": ["canonicalStore", "mutationOwner", "intakeRoutes", "slaTimerOwner", "communicationLedger", "replyDeliveryOwner", "closureReadback", "evidenceRefs"]
+    },
+    {
+      "unknownId": "CORE02-U005",
+      "journeys": ["GJ-1", "GJ-2", "GJ-3"],
+      "subject": "effective database relation and migration posture",
+      "observed": "The manifest lists tracked migration-owned and referenced relations without querying a database.",
+      "inferred": "Migration files do not prove effective production schema or migration history.",
+      "unknown": "Exact environment/project, relation existence, migration versions, physical owners, RLS state, policy state, and effective grants for every manifest relation group.",
+      "requiredHumanFunction": "Platform and database security steward",
+      "packetId": "CORE02-OWNER-DATABASE-SECURITY/v1",
+      "requiredReturnFields": ["environmentRef", "projectRef", "relationPostureByGroup", "migrationHistoryRefs", "physicalOwnerMap", "rlsPolicyEvidence", "grantEvidenceRefs"]
+    },
+    {
+      "unknownId": "CORE02-U006",
+      "journeys": ["GJ-1", "GJ-2", "GJ-3"],
+      "subject": "database credential-to-principal mapping",
+      "observed": "luzione_api_runtime and luzione_provider_worker are tracked NOLOGIN/nonowner/nobypassrls roles; connection references are opaque.",
+      "inferred": "Deployed logins should inherit only the intended group role, but no membership is repository truth.",
+      "unknown": "Opaque credential IDs, consuming services, effective login roles, group memberships, expiry/rotation ownership, and last verification evidence.",
+      "requiredHumanFunction": "Platform and database security steward",
+      "packetId": "CORE02-OWNER-DATABASE-SECURITY/v1",
+      "requiredReturnFields": ["credentialReferenceIds", "consumerServiceMap", "effectiveLoginMap", "groupMembershipMap", "rotationOwner", "lastVerifiedAt", "evidenceRefs"]
+    },
+    {
+      "unknownId": "CORE02-U007",
+      "journeys": ["GJ-1", "GJ-2", "GJ-3"],
+      "subject": "migration authority and physical ownership",
+      "observed": "Tracked migrations state that runtime roles must not own relations and production transfer is unauthorized.",
+      "inferred": "A release-authorized migration principal must own or control DDL application.",
+      "unknown": "Named human function, opaque migration principal reference, exact owned objects, approval chain, and migration receipt location.",
+      "requiredHumanFunction": "Platform and database security steward",
+      "packetId": "CORE02-OWNER-DATABASE-SECURITY/v1",
+      "requiredReturnFields": ["humanOwnerFunction", "migrationPrincipalReference", "physicalObjectOwnership", "approvalChain", "migrationReceiptRefs"]
+    },
+    {
+      "unknownId": "CORE02-U008",
+      "journeys": ["GJ-1", "GJ-2", "GJ-3"],
+      "subject": "service-token identity binding",
+      "observed": "The service-token adapter binds actor ID/type, tenant, and capabilities from environment references and rejects mismatched caller assertions.",
+      "inferred": "The token may have legacy consumers outside the hard-coded OIDC callers.",
+      "unknown": "Opaque credential ID, issuer/custodian, consuming services, exact subject/capability mapping, rotation date, and retirement plan.",
+      "requiredHumanFunction": "Identity and credential security steward",
+      "packetId": "CORE02-OWNER-IDENTITY-CREDENTIAL/v1",
+      "requiredReturnFields": ["credentialReferenceId", "issuerFunction", "custodianFunction", "consumerServices", "subjectCapabilityMap", "lastRotatedAt", "retirementPlan", "evidenceRefs"]
+    },
+    {
+      "unknownId": "CORE02-U009",
+      "journeys": ["GJ-1"],
+      "subject": "connector credential bindings",
+      "observed": "ConnectorBinding/v1 permits only a non-secret credentialReference; no runtime resolver is tracked.",
+      "inferred": "Customer-approved OAuth bindings require provider-side custody and revocation evidence.",
+      "unknown": "Per-provider opaque binding ID format, custodian, customer consent reference, scopes, expiry, revocation path, and tenant binding.",
+      "requiredHumanFunction": "Connector and provider integration owner",
+      "packetId": "CORE02-OWNER-CONNECTOR-RUNTIME/v1",
+      "requiredReturnFields": ["providerBindingMap", "custodianFunction", "consentReferenceFormat", "scopeMap", "expiryPolicy", "revocationPath", "tenantBindingEvidence"]
+    },
+    {
+      "unknownId": "CORE02-U010",
+      "journeys": ["GJ-1", "GJ-2", "GJ-3"],
+      "subject": "scheduled and dynamic job inventory",
+      "observed": "The repository contains a provider-worker command and timer-claim loop but no Vercel cron or worker deployment/scheduler configuration; no onboarding, connector, import, or support job is tracked.",
+      "inferred": "External schedulers or dynamic jobs may exist and cannot be inferred from source.",
+      "unknown": "Exact job IDs, deployment SHA, scheduler, cadence/trigger, service principal, tenant scope, effect class, kill switch, monitor, and last execution receipt.",
+      "requiredHumanFunction": "Connector and provider integration owner",
+      "packetId": "CORE02-OWNER-CONNECTOR-RUNTIME/v1",
+      "requiredReturnFields": ["jobInventory", "deploymentShaMap", "schedulerMap", "triggerOrCadence", "servicePrincipalMap", "tenantScope", "effectClass", "killSwitchMap", "monitorMap", "lastExecutionReceiptRefs"]
+    },
+    {
+      "unknownId": "CORE02-U011",
+      "journeys": ["GJ-1", "GJ-2", "GJ-3"],
+      "subject": "effective flags and CORE-01 flag binding",
+      "observed": "Runtime environment gates and an all-false LuzioneCoreFeatureFlags/v1 document exist separately; no binding between them is tracked.",
+      "inferred": "Treating either configuration source alone as activation authority would be unsafe.",
+      "unknown": "Effective non-secret flag states per environment, authority/custody, change audit references, exact mapping between contract and runtime gates, and fail-closed precedence.",
+      "requiredHumanFunction": "Release observability and recovery owner",
+      "packetId": "CORE02-OWNER-RELEASE-RECOVERY/v1",
+      "requiredReturnFields": ["environmentFlagStates", "authorityFunction", "changeAuditRefs", "contractToRuntimeMapping", "failClosedPrecedence", "evidenceRefs"]
+    },
+    {
+      "unknownId": "CORE02-U012",
+      "journeys": ["GJ-1", "GJ-2", "GJ-3"],
+      "subject": "deployed monitoring and alert routing",
+      "observed": "Three dashboards and seven alerts are defined with evidenceState DEFINED_NOT_DEPLOYED.",
+      "inferred": "Definitions do not prove telemetry export, deployment, paging, or response.",
+      "unknown": "Deployment IDs/URLs, data sources, environment and SHA binding, alert destinations, on-call owner, test signal receipts, and current coverage window.",
+      "requiredHumanFunction": "Release observability and recovery owner",
+      "packetId": "CORE02-OWNER-RELEASE-RECOVERY/v1",
+      "requiredReturnFields": ["monitorDeploymentRefs", "dataSourceMap", "environmentShaBinding", "alertDestinations", "onCallFunction", "testSignalReceipts", "coverageWindow"]
+    },
+    {
+      "unknownId": "CORE02-U013",
+      "journeys": ["GJ-1", "GJ-2", "GJ-3"],
+      "subject": "managed backup PITR and restore evidence",
+      "observed": "The repository declares canonical Postgres recovery objectives and a local disposable restore procedure only.",
+      "inferred": "Plan entitlement or a backup setting is not a recoverable receipt.",
+      "unknown": "Project-specific managed backup/PITR receipt, recovery window, retained restore point, isolated restore execution, integrity readback, measured RPO/RTO, and named restore owner.",
+      "requiredHumanFunction": "Release observability and recovery owner",
+      "packetId": "CORE02-OWNER-RELEASE-RECOVERY/v1",
+      "requiredReturnFields": ["projectRef", "backupOrPitrReceiptRef", "recoveryWindow", "restorePointRef", "restoreExecutionRef", "integrityReadbackRef", "measuredRpoMinutes", "measuredRtoMinutes", "restoreOwnerFunction"]
+    },
+    {
+      "unknownId": "CORE02-U014",
+      "journeys": ["GJ-1", "GJ-2", "GJ-3"],
+      "subject": "runtime and data rollback rehearsal",
+      "observed": "Local migration/recovery artifacts and rollback contracts exist; no exact CORE activation candidate preview or traffic rollback is proven.",
+      "inferred": "Application, worker, database, and provider rollback require distinct checkpoints and readbacks.",
+      "unknown": "Exact candidate/deployment, rollback trigger, prior release, traffic action, data action, worker action, provider reconciliation, test timestamp, and post-rollback readback.",
+      "requiredHumanFunction": "Release observability and recovery owner",
+      "packetId": "CORE02-OWNER-RELEASE-RECOVERY/v1",
+      "requiredReturnFields": ["candidateSha", "deploymentRef", "rollbackTrigger", "priorReleaseRef", "trafficRollback", "dataRollback", "workerRollback", "providerReconciliation", "rehearsedAt", "postRollbackReadbackRefs"]
+    },
+    {
+      "unknownId": "CORE02-U015",
+      "journeys": ["GJ-1", "GJ-2", "GJ-3"],
+      "subject": "kill-switch operation and authority",
+      "observed": "P110 kill switches and layered runtime/provider gates are tracked and default off, but deployed values and operators are unobserved.",
+      "inferred": "A source-level guard cannot prove an operator can stop a deployed effect safely.",
+      "unknown": "Per-switch owner, activation authority, change/audit path, propagation objective, last negative exercise, exact affected jobs/routes, and recovery/unfreeze authority.",
+      "requiredHumanFunction": "Release observability and recovery owner",
+      "packetId": "CORE02-OWNER-RELEASE-RECOVERY/v1",
+      "requiredReturnFields": ["switchOwnerMap", "activationAuthority", "auditPath", "propagationObjectiveSeconds", "lastNegativeExerciseRef", "affectedSurfaceMap", "recoveryAuthority"]
+    },
+    {
+      "unknownId": "CORE02-U016",
+      "journeys": ["GJ-2", "GJ-3"],
+      "subject": "Vercel workload identity current binding",
+      "observed": "The API contains exact Luzione UI and Sultan OS project/owner/environment claim allowlists and server-derived tenant/capability mappings.",
+      "inferred": "Hard-coded expected claims do not prove current issuer, project ownership, deployed token issuance, or exact consumer SHA.",
+      "unknown": "Current issuer/owner/project IDs, consuming deployment SHAs, token audience/subject confirmation, rotation/revocation owner, and successful negative/positive canary refs.",
+      "requiredHumanFunction": "Identity and credential security steward",
+      "packetId": "CORE02-OWNER-IDENTITY-CREDENTIAL/v1",
+      "requiredReturnFields": ["issuerRef", "ownerProjectMap", "consumerDeploymentShas", "audienceSubjectConfirmation", "rotationRevocationOwner", "positiveCanaryRef", "negativeCanaryRefs"]
+    },
+    {
+      "unknownId": "CORE02-U017",
+      "journeys": ["GJ-1", "GJ-2"],
+      "subject": "activation-cone provider adapters and source readback",
+      "observed": "Only a deterministic simulator, indirect Shopify projection, and a bounded Gmail RFQ canary adapter are tracked; CORE-01 lists Google Workspace, Microsoft 365, and QuickBooks connector contracts.",
+      "inferred": "Documented/provider contract names do not prove approved adapters or reachability.",
+      "unknown": "Exact admitted provider adapters, repository/deployment SHA, opaque credential binding, effect class, idempotency, acknowledgement/readback distinction, revocation, reconciliation, and owner.",
+      "requiredHumanFunction": "Connector and provider integration owner",
+      "packetId": "CORE02-OWNER-CONNECTOR-RUNTIME/v1",
+      "requiredReturnFields": ["admittedAdapterMap", "repositoryDeploymentShas", "opaqueCredentialBindings", "effectClasses", "idempotencyBoundary", "acknowledgementReadbackMap", "revocationPath", "reconciliationPath", "ownerFunctions"]
+    },
+    {
+      "unknownId": "CORE02-U018",
+      "journeys": ["GJ-2"],
+      "subject": "existing Sultan production effects preserve-or-rollback decision",
+      "observed": "Controller evidence preserves a Sultan production migration, credential, provider, replay, attribution, recovery, and preserve-or-rollback hold where it intersects the CRM cone.",
+      "inferred": "Source compatibility cannot resolve an external production decision.",
+      "unknown": "Verifiably signed single PRESERVE or ROLL BACK decision, affected API surface map, accountable owners, managed recovery evidence, and execution authority.",
+      "requiredHumanFunction": "Production change approver",
+      "packetId": "CORE02-OWNER-PRODUCTION-DECISION/v1",
+      "requiredReturnFields": ["decision", "affectedApiSurfaces", "accountableOwnerFunctions", "managedRecoveryRef", "executionAuthorityRef", "signedAt", "signatureRef"]
+    },
+    {
+      "unknownId": "CORE02-U019",
+      "journeys": ["GJ-1", "GJ-2", "GJ-3"],
+      "subject": "authenticated exact-SHA application composition readback",
+      "observed": "CORE-01 exact-head CI and Git-bound Vercel status passed, but application routes were SSO-protected; CORE-02 performs no deployment or readback polling.",
+      "inferred": "Build/deployment status alone cannot prove the journey boundary.",
+      "unknown": "Exact API/UI/Sultan SHAs, authenticated entrypoint, tenant and actor binding, exercised routes, receipt/finality/readback, negative paths, timestamps, and immutable evidence refs.",
+      "requiredHumanFunction": "Release observability and recovery owner",
+      "packetId": "CORE02-OWNER-RELEASE-RECOVERY/v1",
+      "requiredReturnFields": ["apiSha", "uiSha", "sultanSha", "authenticatedEntrypoint", "tenantActorBinding", "exercisedRoutes", "receiptFinalityReadback", "negativePaths", "observedAt", "evidenceRefs"]
+    }
+  ],
+  "summary": {
+    "unknownCount": 19,
+    "ownerPacketCount": 7,
+    "allUnknownsRequireHumanConfirmation": true,
+    "g1Satisfied": false,
+    "g2Authorized": false
+  }
+}

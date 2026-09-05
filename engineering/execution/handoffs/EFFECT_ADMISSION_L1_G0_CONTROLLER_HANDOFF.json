@@ -1,0 +1,51 @@
+{
+  "handoffSchema": "EFFECT-ADMISSION-L1/G0-Controller-Handoff/v1",
+  "projectId": "EFFECT-ADMISSION-L1",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "controllerAuthority": "CIBOTFLOW/Luzione-platform-program@e1b8bc54dfebbeca4a83987ec016d6fc41dad8a9",
+  "sourcePacket": "EFFECT-KILL-AUDIT-01/v1",
+  "sourceFingerprint": "b7a73c98c741f0d258bada5297b59092adb5ce3ae6fbdb8e01ed09758d3f155d",
+  "baseSha": "6a667b4f2d78cafd506929396d0042fafcbb9356",
+  "branch": "codex/effect-admission-l1-g0-f7fd111",
+  "implementationSha": "7d3a269b1ae64ff26974942eb85216f5d008758d",
+  "finalShaBinding": "COMMIT_CONTAINING_THIS_HANDOFF_RETURNED_AS_EXACT_PR_HEAD",
+  "contractVersions": ["luzione-effect-admission/v1", "luzione-provider-adapter/v0.2", "luzione-workflow-delivery/v0.1", "luzione-sultan-command-preparation/v1", "luzione-sultan-command-execution/v1"],
+  "migration": {
+    "forward": "supabase/migrations/20260905090000_effect_admission_evidence.sql",
+    "reverse": "scripts/validation/rollback-effect-admission-evidence.sql",
+    "scope": "five additive nullable attempt-evidence columns plus one NOT VALID new-row constraint",
+    "localProof": "PASS_5_COLUMNS_ROLLBACK_0_REAPPLY_5",
+    "managedOrProductionApplication": false
+  },
+  "verification": {
+    "compliance": "PASS_7_OF_7",
+    "typecheck": "PASS",
+    "lint": "PASS_ZERO_WARNINGS",
+    "focused": "PASS_19_OF_19",
+    "full": "PASS_391_OF_391",
+    "build": "PASS_NEXTJS_16_3_4_WEBPACK",
+    "sandboxConnector": "PASS_3_NO_EFFECT_RECEIPTS_1_CONFLICT_3_ATTEMPTS_3_RECONCILIATIONS_ZERO_SCHEMA_DELTA",
+    "gitReverseCheck": "PASS_AGAINST_6A667B4_TO_7D3A269"
+  },
+  "negativePaths": ["unset/false admission", "agent actor", "tenant/provider/destination/credential mismatch", "changed payload", "kill between checkpoints", "unavailable kill state", "ambiguous acknowledgement", "reconciliation without redispatch"],
+  "readback": {
+    "local": "PASS_STRICT_DECISION_ATTEMPT_EVIDENCE_AND_SANDBOX_RECEIPT_FINALITY",
+    "preview": "PENDING_EXACT_FINAL_PUSH",
+    "production": "NOT_QUERIED"
+  },
+  "runtimeTruth": {
+    "effectsEnabled": false,
+    "credentialResolutionPerformed": false,
+    "liveAdaptersRegistered": 0,
+    "providerEffectsPerformed": false,
+    "productionQueriedOrMutated": false
+  },
+  "risks": [
+    "EFFECT-KILL-AUDIT-01 remains NOT_CLEARED because L2 sink correction and an independent recheck are outstanding.",
+    "The exact-final CI and authenticated Git-bound application readback are not yet recorded in this tracked handoff.",
+    "The additive migration and provider-adapter v0.2 are locally synthetic only; managed recovery and deployed consumer evidence remain absent."
+  ],
+  "g1OrG2Claim": false,
+  "writerRelease": "AFTER_EXACT_FINAL_COMMIT_PUSH_AND_CONTROLLER_HANDOFF",
+  "oneNextAction": "Create one fresh non-default ONBOARD-CORE-CORRECTION-01 branch from the exact final, bind schema bytes/human approval/revocation/runtime limits/L2 mapper evidence, and keep OPS-CONTRACTS-CORRECTION-01 blocked until that cell closes."
+}

@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "EFFECT-ADMISSION-L1-CORRECTION-01-ASSURANCE/v1",
+  "implementationSha": "6bdc17b343a94b55de2b4cdd34c485ea06ab97a6",
+  "sourceFingerprint": "a24eefb14a9681ad97a415b8d48c43a7d88900e8c86a8f489645f9354a1a62d9",
+  "result": "BOUNDED_PASS",
+  "effectAuthority": "SANDBOX_ONLY",
+  "probes": [
+    {"id":"A01","claim":"unset or false global/admission gate denies","result":"PASS","evidence":"effect-admission.test.ts default-off"},
+    {"id":"A02","claim":"tenant, actor, authority, operation, provider, destination and opaque binding are indivisible","result":"PASS","evidence":"execution-identity variant matrix"},
+    {"id":"A03","claim":"source payload and strict prepared-dispatch digests are both bound","result":"PASS","evidence":"prepared parser and changed-payload probes"},
+    {"id":"A04","claim":"credential release requires exact prior claim and a fresh kill read","result":"PASS","evidence":"kill-at-credential-release probe; credential release count remains zero"},
+    {"id":"A05","claim":"execution requires exact credential-release lineage and an immediate second kill read","result":"PASS","evidence":"kill-before-execute probe; no STARTED row and no adapter execute"},
+    {"id":"A06","claim":"one typed execution envelope binds exact execution identity","result":"PASS","evidence":"v1 envelope strict parse/digest plus provider and Sultan execution tests"},
+    {"id":"A07","claim":"STARTED atomically records complete envelope and origin","result":"PASS","evidence":"Postgres store insert and migration constraint"},
+    {"id":"A08","claim":"ambiguous acknowledgement enters reconciliation without redispatch","result":"PASS","evidence":"execute=1/reconcile=1 adverse probe"},
+    {"id":"A09","claim":"reconciliation loads and matches the originating envelope","result":"PASS","evidence":"tampered stored envelope returns VERSION_MISMATCH"},
+    {"id":"A10","claim":"Sultan prepare persists exact Stage-5 receipt ID/hash and admission identity","result":"PASS","evidence":"service fixture and exact three-column foreign key"},
+    {"id":"A11","claim":"Sultan execute persists a human-authority-bound execution envelope","result":"PASS","evidence":"SULTAN_EXECUTE envelope assertions and internal-action constraint"},
+    {"id":"A12","claim":"agent identities cannot self-authorize effect admission","result":"PASS","evidence":"ACTOR_NOT_AUTHORIZED probe"},
+    {"id":"A13","claim":"surplus, missing, wrong-version and digest drift fail closed","result":"PASS","evidence":"decision/envelope/prepared/release parser matrix"},
+    {"id":"A14","claim":"live adapters cannot register with corrected worker","result":"PASS","evidence":"PROVIDER_EFFECT_MODE_UNSUPPORTED before credential release"},
+    {"id":"A15","claim":"v1 noEffectOnly live contradiction is not present in v2","result":"PASS","evidence":"effectAuthority=SANDBOX_ONLY; no noEffectOnly field; Gmail v0.2 retained as non-registerable history"},
+    {"id":"A16","claim":"migration reverses only before v2 evidence and reapplies exactly","result":"PASS","evidence":"disposable proof rollback_columns=0 reapplied_columns=13"}
+  ],
+  "negativePaths": [
+    "ADMISSION_DISABLED",
+    "ACTOR_NOT_AUTHORIZED",
+    "CREDENTIAL_BINDING_NOT_ADMITTED",
+    "PRIOR_DECISION_REQUIRED",
+    "BINDING_CHANGED",
+    "ACTIVE_KILL_SWITCH at credential release",
+    "ACTIVE_KILL_SWITCH immediately before execute",
+    "prepared payload hash mismatch",
+    "surplus and missing fields",
+    "wrong contract version",
+    "live adapter mode unsupported",
+    "originating envelope mismatch",
+    "reconciliation version mismatch without execute"
+  ],
+  "notProven": [
+    "managed migration or backup/PITR",
+    "hosted worker lifecycle or exact-SHA application readback",
+    "credential resolution",
+    "real provider acknowledgement or source readback",
+    "independent consumer integration",
+    "G1, G2, merge, production activation or production readiness"
+  ]
+}

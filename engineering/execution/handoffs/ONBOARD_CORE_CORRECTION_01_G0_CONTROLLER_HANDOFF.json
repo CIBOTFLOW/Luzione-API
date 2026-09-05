@@ -1,0 +1,89 @@
+{
+  "handoffSchema": "ONBOARD-CORE-CORRECTION-01/G0-Controller-Handoff/v1",
+  "projectId": "ONBOARD-CORE-CORRECTION-01",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "controllerAuthorities": ["d1bd12a", "dc3b9a2", "2ed64d7"],
+  "assurancePacket": "ONBOARD-CORE-FINAL-ASSURE-01",
+  "assuranceFingerprint": "8fd607d56a3a31a85ff3c750ec5864fc10d194f08a8d3a8be2ed79476364eaac",
+  "baseSha": "fb10837a92ca7aff5a247b0d863508ec66fdb69d",
+  "branch": "codex/onboard-core-correction-01-g0-e1b8bc5",
+  "implementationSha": "0b7f2a968065c34283805db44940b95e5319fb02",
+  "finalShaBinding": "DETACHED_ANNOTATED_TAG_CREATED_AFTER_FINAL_COMMIT_AND_EXACT_HEAD_CI",
+  "contractVersions": [
+    "LuzioneOnboardCoreApi/v2",
+    "TenantBlueprintMap/v2",
+    "TenantPackSourceBinding/v1",
+    "LuzioneHumanApprovalSubject/v1",
+    "SetupMandateRevocation/v1",
+    "CRMImportDryRunMap/v2",
+    "ConnectorSyncValidation/v2",
+    "ConnectorValidationOutcome/v1"
+  ],
+  "frozenContractVersions": ["LuzioneTenantPackDraft/v1", "TenantBlueprint/v1", "SetupMandate/v1", "ImportBatch/v1", "ImportReceipt/v1", "ConnectorBinding/v1", "SyncReceipt/v1"],
+  "sourceSchema": {
+    "path": "contracts/onboard-core/luzione-tenant-pack-draft-v1.schema.json",
+    "sha256": "c94dd71d93d72b048ceaa77b1ba08cb84e1f610393f139060f49ead684d28eb4"
+  },
+  "migration": {
+    "forward": "supabase/migrations/20260905050000_onboard_core_correction_01.sql",
+    "sha256": "6b5e94bd5fa4b94e98055a3b7817b8296da68891e7751055b04b56c257096afd",
+    "reverse": "scripts/validation/rollback-onboard-core-correction-01.sql",
+    "reverseSha256": "584b9e30b08c2d2b25efde263db2217cb44facb08e7c801c07429972eb4490fe",
+    "managedOrProductionApplication": false
+  },
+  "verification": {
+    "compliance": "PASS_7_OF_7",
+    "typecheck": "PASS",
+    "lint": "PASS_ZERO_WARNINGS",
+    "focused": "PASS_ONBOARD_CORE_16_OF_16",
+    "full": "PASS_387_OF_387",
+    "build": "PASS_NEXTJS_16_3_4_WEBPACK",
+    "blueprintMandateDisposable": "PASS_2_DRAFTS_2_APPROVALS_1_SUPERSESSION_1_MANDATE_5_RECEIPTS_CORRECTION_REVERSE_REAPPLY",
+    "importDisposable": "PASS_1_BATCH_4_SERVER_DERIVED_ROWS_1_IMPORT_RECEIPT_5_COMMAND_RECEIPTS_1_CHANGED_DIGEST_CONFLICT_RUNTIME_REVERSE_REAPPLY",
+    "connectorDisposable": "PASS_3_NO_EFFECT_OUTBOX_1_SOURCE_CONFIRMED_1_TYPED_BLOCKED_VERSION_MISMATCH_ZERO_CONNECTOR_SCHEMA_DELTA",
+    "gitReverseCheck": "PASS_FULL_CANDIDATE_REVERSE_APPLY_CHECK_AGAINST_FB10837"
+  },
+  "negativePaths": [
+    "surplus/missing/wrong-version and schema-byte drift",
+    "unadmitted/drifted L2 implementation, mapper or evidence binding",
+    "service-token actorType=user, invalid JWT, same proposer/approver, wrong tenant/capability",
+    "stale/superseded/expired/revoked/changed/cross-tenant Mandate",
+    "caller-declared import outcome and changed-digest replay",
+    "runtime overrun rollback",
+    "VERSION_MISMATCH, BLOCKED and ACK/no-readback",
+    "RECONCILING pending-only, exhausted ambiguity and terminal unavailable"
+  ],
+  "readback": {
+    "local": "PASS_CANONICAL_BLUEPRINT_MANDATE_REVOCATION_IMPORT_AND_CONNECTOR_READBACK",
+    "preview": "PENDING_EXACT_FINAL_PUSH",
+    "production": "NOT_QUERIED"
+  },
+  "rollbackProof": "PASS_DISPOSABLE_CORRECTION_REVERSE_BEFORE_V2_ROWS_AND_REAPPLY; REVERSE_FAILS_CLOSED_IF_V2_ROWS_EXIST",
+  "runtimeTruth": {
+    "effectsEnabled": false,
+    "sourceBindingsDefault": "EMPTY_DENY_ALL",
+    "credentialResolutionPerformed": false,
+    "liveAdaptersRegistered": 0,
+    "providerEffectsPerformed": false,
+    "productionQueriedOrMutated": false
+  },
+  "risks": [
+    "No signed L2 implementation/mapper/evidence tuple is admitted by default and independent consumer evidence is absent.",
+    "Exact-final CI and authenticated Git-bound application readback are not yet recorded in this tracked handoff.",
+    "The additive migration is disposable-local only; managed backup/PITR, migration and recovery evidence are absent.",
+    "Existing frozen Core documents limit representable finality; ConnectorValidationOutcome/v1 carries corrected typed success/non-success semantics without changing SyncReceipt/v1 bytes."
+  ],
+  "effectAuthority": "NO_EFFECT",
+  "g1OrG2Claim": false,
+  "writerRelease": "AFTER_EXACT_FINAL_PUSH_TAG_CI_AND_CONTROLLER_HANDOFF",
+  "queuedSuccessors": [
+    {
+      "projectId": "EFFECT-ADMISSION-L1-CORRECTION-01",
+      "assuranceFingerprint": "a24eefb14a9681ad97a415b8d48c43a7d88900e8c86a8f489645f9354a1a62d9",
+      "status": "NEXT_NO_OVERLAP"
+    },
+    {"projectId":"CONNECTOR-REVOCATION-L1-G0","status":"BLOCKED_ON_EFFECT_ADMISSION_CORRECTION"},
+    {"projectId":"OPS-CONTRACTS-CORRECTION-01","status":"QUEUED_AFTER_CONTROLLER_ORDERED_SUCCESSORS"}
+  ],
+  "oneNextAction": "After this exact final is sealed and the writer released, create one fresh non-default EFFECT-ADMISSION-L1-CORRECTION-01 branch from it and implement the versioned exact-execution-envelope correction under the recorded assurance fingerprint; do not overlap CONNECTOR-REVOCATION-L1-G0."
+}

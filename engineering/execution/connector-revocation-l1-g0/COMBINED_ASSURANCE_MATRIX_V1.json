@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "CONNECTOR-REVOCATION-EFFECT-CORRECTION-02-ASSURANCE/v1",
+  "effectAdmissionCorrection02Pin": "86809a9243c594a2898d31d14bbeda3324cacd7b",
+  "connectorRevocationPin": "a1329b669262b2abbffc8e9ec501e866429c0d55",
+  "probes": [
+    {"id":"E02-POST-STARTED-KILL","expected":"deny before execute","result":"PASS"},
+    {"id":"E02-FOREIGN-DECISION-BEFORE-CREDENTIAL","expected":"strict subject/prior mismatch","result":"PASS"},
+    {"id":"E02-ORIGINATING-ATTEMPT","expected":"tenant/outbox/attempt tuple FK rejects foreign attempt","result":"PASS"},
+    {"id":"E02-DESTINATION-WHITESPACE","expected":"parser and registry reject exact whitespace","result":"PASS"},
+    {"id":"E02-DESTINATION-OVER-190","expected":"parser and schema reject","result":"PASS"},
+    {"id":"E02-LIVE-REGISTRATION","expected":"v0.3 registry rejects non-SANDBOX","result":"PASS"},
+    {"id":"E02-WRONG-ADAPTER-VERSION","expected":"v0.3 registry rejects wrong version","result":"PASS"},
+    {"id":"R01-REPLAY-CHANGED-PAYLOAD","expected":"exact replay stable; changed digest conflicts","result":"PASS"},
+    {"id":"R01-TENANT-ACCOUNT-CREDENTIAL","expected":"cross-tenant/account/binding/credential-version drift denied","result":"PASS"},
+    {"id":"R01-KILL","expected":"unavailable or active normal/containment kill denies","result":"PASS"},
+    {"id":"R01-ACK-FINALITY","expected":"ACK never equals REVOKED or authorizes erasure","result":"PASS"},
+    {"id":"R01-RECONCILIATION-NON-SUCCESS","expected":"unavailable/ambiguous/exhausted/version-mismatch/failed remain typed non-success","result":"PASS"},
+    {"id":"R01-FORWARD-RECOVERY","expected":"genuine-human append may authorize local no-effect disposition without remote finality","result":"PASS"},
+    {"id":"R01-RLS-APPEND-ONLY","expected":"cross-tenant invisible; update/delete and invalid finality rejected","result":"PASS"},
+    {"id":"R01-ROLLBACK-REAPPLY","expected":"empty disposable shape reverses to zero and reapplies to four combined objects","result":"PASS"}
+  ],
+  "effectTruth": "ZERO_LIVE_EFFECTS_SANDBOX_EMULATOR_ONLY"
+}

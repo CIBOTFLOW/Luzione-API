@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "ONBOARD-CORE-01/Artifact-Digests/v1",
+  "projectId": "ONBOARD-CORE-01",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "branch": "codex/onboard-core-01-g0-47dbdf6",
+  "baseSha": "a21ec6e3f888dff5aef5d7612ed7b22ef44cbc80",
+  "semanticPins": {
+    "blueprintMandate": "27b50a89658fe1572bfefe6ef6e02d993deaceb7",
+    "importDryRun": "46a14c3a499d57c8699395d714bb44e9a4576ab6",
+    "connectorValidation": "7f937c515960cb522215ae7e928b3075049477fe",
+    "registryReconciliation": "cd5a9c091c61e1891112c94282c0f8882bf343ee"
+  },
+  "generatedAt": "2026-09-05T03:42:58Z",
+  "algorithm": "sha256",
+  "artifacts": [
+    {"path": "architecture/production-convergence/ONBOARD_CORE_01_WORKING_CONTRACT.md", "digest": "7587d0d815e94468f4723461b62e2cb594b8707b6fb9ef4d135f4a853a699c3c"},
+    {"path": "contracts/openapi/luzione-api-v0.1.yaml", "digest": "4dc0645525871a4c2f879dd794972a2843b00fefe515e792c1965e56782a4a64"},
+    {"path": "supabase/migrations/20260905040000_onboard_core_blueprints_mandates.sql", "digest": "5863953c6df67e4710572a5ff71e3a848a43527f0b56781ada300abfeea693ac"},
+    {"path": "supabase/migrations/20260905041000_onboard_core_import_dry_runs.sql", "digest": "d46b4c193110be71b1abfbd942b934dfc99ddb378978332a3b89b19e8c9458da"},
+    {"path": "scripts/validation/rollback-onboard-core-blueprints-mandates.sql", "digest": "b1d6cf4d6aaab949e05d0aa779e9f04b71b32f75a9b89fad5853566832add96d"},
+    {"path": "scripts/validation/rollback-onboard-core-import-dry-runs.sql", "digest": "5cc6b6575bf25e68d25d4466d2321a688f0f253112e2d6f64051beaf6fcea2b0"},
+    {"path": "scripts/validation/onboard-core-blueprint-mandate-proof.ts", "digest": "3dc9cb3fe40d1a8bda30e71a2eebd54367cdc02185c87fcc75b980bdfe3aa021"},
+    {"path": "scripts/validation/onboard-core-import-proof.ts", "digest": "f24c8d8e3af17ba91d5d39cdbf6177666b92e4586a8b70852f3d00a7ea67f743"},
+    {"path": "scripts/validation/onboard-core-connector-proof.ts", "digest": "9e49b1683855ee3043e2678a8fea0a95124a88df534ea25184dce1912f9c82ab"},
+    {"path": "src/modules/onboard-core/contracts.ts", "digest": "1ec7b38c5374d1c1b3d3025f38f454a1fd080318e6ed50a034b359e606446ef0"},
+    {"path": "src/modules/onboard-core/store.ts", "digest": "7b35d30700d0c579faef241d3ddf93bf6c61d9780716d5b5965c33adc31f4b8b"},
+    {"path": "src/modules/onboard-core/importContracts.ts", "digest": "de413ecf0ea59550465e37759d5bf0e08d0c161601ef5e995817af9d066f0662"},
+    {"path": "src/modules/onboard-core/importStore.ts", "digest": "62d6cba8120771b9bfd58324ce36ead19d85c07b2d26191ae9610974ce661bf4"},
+    {"path": "src/modules/onboard-core/connectorContracts.ts", "digest": "a84db02f763735614f385e4b9b6f7d23ffe7599fab614e4e07829309ca8fcfda"},
+    {"path": "src/modules/onboard-core/connectorService.ts", "digest": "508b52ecedeebd2af983eece20ae39691f06f7be885a2bb42987a3a4f5ed8f12"},
+    {"path": "src/modules/onboard-core/routeSupport.ts", "digest": "c7f9b4ea5b513aa5da0e53b6f0237e992fd931111ae316db2220298e7fe2999a"},
+    {"path": "src/modules/onboard-core/tests/blueprint-mandate.test.ts", "digest": "4c112584dd76a89dbcd298c062a11203d738cabfad7e7fd55d239b97846ce562"},
+    {"path": "src/modules/onboard-core/tests/import-dry-run.test.ts", "digest": "ad33b9bf17d18705cb0636bda01b709989b252e2ac1efb929f3f9667f501df95"},
+    {"path": "src/modules/onboard-core/tests/connector-validation.test.ts", "digest": "cde6e1e7c4e3ecef53b05953ae9008e301e965400098eb19cd48fd6837cf756e"}
+  ],
+  "frozenTrees": {
+    "contracts/core": "d57ccc4cccd97b37acd1a1575b1e07ede5787349",
+    "src/modules/luzione-core-contracts": "d594fa014d7020fdf8386c7a6926ff9b573ac355"
+  },
+  "strongestClaim": "Bounded local NO_EFFECT evidence for ONBOARD-CORE-01 only; no integration, deployment, production migration, activation, G1 or G2 is claimed."
+}

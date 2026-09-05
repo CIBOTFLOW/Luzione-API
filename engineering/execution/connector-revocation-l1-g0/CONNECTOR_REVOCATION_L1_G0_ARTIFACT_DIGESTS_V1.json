@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "CONNECTOR-REVOCATION-L1-G0-ARTIFACT-DIGESTS/v1",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "baseSha": "5786d9d6f1d38e730e404cade4dd466dbb709367",
+  "effectAdmissionCorrection02Pin": "86809a9243c594a2898d31d14bbeda3324cacd7b",
+  "connectorRevocationPin": "a1329b669262b2abbffc8e9ec501e866429c0d55",
+  "controllerReleases": [
+    "6ea70455e46b0f31b2b2ea94a42b3f51892d7ea9",
+    "055cf5a5d277bead4b02146a05869d91712e5c91"
+  ],
+  "contractVersions": [
+    "ConnectorRevocationRequest/v1",
+    "ConnectorRevocationReceipt/v1",
+    "ConnectorCredentialHandle/v1",
+    "CONNECTOR-REVOCATION-L1-G0/policy-v1",
+    "ConnectorBinding/v1"
+  ],
+  "runtimePins": {
+    "adapterContract": "luzione-provider-adapter/v0.3",
+    "adapter": "ConnectorRevocationEmulatorAdapter",
+    "adapterMode": "SANDBOX",
+    "destination": "sandbox.connector-revocation",
+    "credentialBinding": "credential-binding:none:connector-revocation-emulator/v1",
+    "effectClass": "NO_EFFECT"
+  },
+  "artifacts": [
+    {"path":"contracts/connector-revocation/connector-revocation-request-v1.schema.json","sha256":"0878e8b94a27e3b5d243cd500c8a5cf4aba71e82a0a6f3414e1a14cbe9f1c458"},
+    {"path":"contracts/connector-revocation/connector-revocation-receipt-v1.schema.json","sha256":"6e11538b9807d9b588e5ed5da81c85626fff099381857ea32ad663c8774541de"},
+    {"path":"supabase/migrations/20260905130000_connector_revocation_receipts.sql","sha256":"264ea955a3ce67ddd28899d1684ce0d0f41db8e039ec65630a03500d8709b498"},
+    {"path":"scripts/validation/rollback-connector-revocation-l1-g0.sql","sha256":"27e9d0ce7d6cd4d713010ef53017b1e012644b7bb57d0ae4f08f6cc53e8e86ff"},
+    {"path":"src/modules/connector-revocation/contracts.ts","sha256":"2f52b52cdef73976286e00288932bfd6eb1ddab8d762800cc1728bee5ecf178b"},
+    {"path":"src/modules/connector-revocation/service.ts","sha256":"3aff0cd5379ddc4063e1e3fe3c9ad415677e973efa241640bfd7357c41cb5f22"},
+    {"path":"src/modules/connector-revocation/emulatorAdapter.ts","sha256":"5d840d47f371ffc7fe7799b2a2f0150784fb9fab0f0c81a5d1e40da8b99bb5eb"}
+  ],
+  "frozenTrees": {
+    "contracts/core": "d57ccc4cccd97b37acd1a1575b1e07ede5787349",
+    "src/modules/luzione-core-contracts": "d594fa014d7020fdf8386c7a6926ff9b573ac355"
+  }
+}

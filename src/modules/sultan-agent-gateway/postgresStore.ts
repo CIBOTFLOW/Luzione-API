@@ -8,6 +8,7 @@ import { LeadCommercialCaseStore } from "@/modules/lead-commercial-case/store";
 import { OrderFulfillmentStore } from "@/modules/order-fulfillment/store";
 import { listP113CatalogProjections } from "@/modules/catalog-projection/store";
 import { sha256 } from "@/modules/platform-guarantees/eventContract";
+import { parseEffectExecutionEnvelope } from "@/modules/effect-admission/contracts";
 import {
   SULTAN_STAGE5_ADMISSION_CONTRACT_VERSION,
   canonicalClaimEvidenceBinding,
@@ -39,6 +40,7 @@ const INTERNAL_ACTION_SOURCE = "public.sultan_agent_internal_actions";
 
 type ReservationRow = {
   admission_receipt_id: string | null;
+  admission_receipt_hash: string | null;
   reservation_id: string;
   operation_id: string;
   run_id: string;
@@ -54,6 +56,9 @@ type ReservationRow = {
   approval_mode: "BLOCKED" | "PER_COMMAND_HUMAN" | "POLICY_ENVELOPE";
   arguments_hash: string;
   command_hash: string;
+  originating_envelope_ref: string | null;
+  prepare_effect_admission_ref: string | null;
+  prepare_execution_identity: string | null;
   state: "PREPARED" | "EXECUTED" | "CANCELLED" | "RECONCILIATION_REQUIRED";
   preview: Record<string, unknown>;
   receipt_id: string | null;
@@ -191,12 +196,15 @@ export class PostgresSultanAgentGatewayStore implements SultanAgentGatewayStore 
       }
       const inserted = await client.query<ReservationRow>(
         `insert into public.sultan_agent_command_reservations (
-           tenant_id,reservation_id,admission_receipt_id,operation_id,run_id,tool_call_id,tool_id,tool_version,
+           tenant_id,reservation_id,admission_receipt_id,admission_receipt_hash,originating_envelope_ref,
+           prepare_effect_admission_ref,prepare_execution_identity,operation_id,run_id,tool_call_id,tool_id,tool_version,
            agent_id,agent_version,case_id,case_type,expected_version,effect_class,approval_mode,
            arguments_hash,command_hash,state,preview,expires_at,created_at
-         ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,'PREPARED',$18::jsonb,$19,$20)
+         ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,'PREPARED',$22::jsonb,$23,$24)
          returning *`,
-        [input.actor.tenantId, reservationId, input.call.admissionReceiptId, input.call.operationId, input.call.runId, input.call.toolCallId,
+        [input.actor.tenantId, reservationId, input.call.admissionReceiptId, input.admissionReceiptHash,
+          input.originatingEnvelopeRef, input.prepareAdmission.decisionRef, input.prepareAdmission.executionIdentity,
+          input.call.operationId, input.call.runId, input.call.toolCallId,
           input.call.toolId, input.call.toolVersion, input.call.agent.agentId, input.call.agent.agentVersion,
           input.call.caseRef.caseId, input.call.caseRef.caseType, input.observedCase.objectVersion,
           input.effectClass, input.approvalMode, input.call.argumentsHash, input.commandHash,
@@ -204,6 +212,54 @@ export class PostgresSultanAgentGatewayStore implements SultanAgentGatewayStore 
       );
       await client.query("commit");
       return preparationFromRow(inserted.rows[0], false);
+    } catch (error) {
+      await client.query("rollback").catch(() => undefined);
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  async readCommandAdmissionLineage(actor: ApiActor, reservationId: string) {
+    const client = await this.pool.connect();
+    try {
+      await client.query("begin read only");
+      await client.query("select set_config('app.tenant_id',$1,true)", [actor.tenantId]);
+      const result = await client.query<ReservationRow & { admission: Stage5AdmissionReceipt; current_admission_receipt_hash: string }>(
+        `select reservation.*,admission.receipt admission,admission.receipt_hash current_admission_receipt_hash
+           from public.sultan_agent_command_reservations reservation
+           join public.sultan_api_admission_receipts admission
+             on admission.tenant_id=reservation.tenant_id
+            and admission.admission_receipt_id=reservation.admission_receipt_id
+            and admission.receipt_hash=reservation.admission_receipt_hash
+          where reservation.tenant_id=$1 and reservation.reservation_id=$2
+          limit 1`,
+        [actor.tenantId, reservationId],
+      );
+      await client.query("commit");
+      const row = result.rows[0];
+      if (!row || !row.admission_receipt_hash || !row.originating_envelope_ref
+        || !row.prepare_effect_admission_ref || !row.prepare_execution_identity) return null;
+      const unsigned = { ...row.admission } as Record<string, unknown>;
+      delete unsigned.idempotentReplay;
+      delete unsigned.receiptHash;
+      if (row.admission.credentialActor.tenantId !== actor.tenantId
+        || row.admission.admissionReceiptId !== row.admission_receipt_id
+        || row.admission.receiptHash !== row.admission_receipt_hash
+        || row.current_admission_receipt_hash !== row.admission_receipt_hash
+        || stage5AdmissionReceiptHash(unsigned as Omit<Stage5AdmissionReceipt, "idempotentReplay" | "receiptHash">) !== row.admission_receipt_hash) {
+        throw new SultanAgentGatewayError("STAGE5_ADMISSION_LINEAGE_MISMATCH", "The command reservation no longer matches its exact Stage 5 admission receipt.", 409);
+      }
+      return {
+        admission: row.admission,
+        commandHash: row.command_hash,
+        effectClass: row.effect_class,
+        operationId: row.operation_id,
+        originatingEnvelopeRef: row.originating_envelope_ref,
+        prepareAdmissionRef: row.prepare_effect_admission_ref,
+        prepareExecutionIdentity: row.prepare_execution_identity,
+        toolId: row.tool_id,
+      };
     } catch (error) {
       await client.query("rollback").catch(() => undefined);
       throw error;
@@ -223,6 +279,10 @@ export class PostgresSultanAgentGatewayStore implements SultanAgentGatewayStore 
       const reservation = result.rows[0];
       if (!reservation) throw new SultanAgentGatewayError("COMMAND_RESERVATION_NOT_FOUND", "The command reservation was not found.", 404);
       if (!reservation.admission_receipt_id) throw new SultanAgentGatewayError("STAGE5_ADMISSION_REQUIRED", "The reservation is not bound to a Stage 5 admission receipt.", 403);
+      if (!reservation.admission_receipt_hash || !reservation.originating_envelope_ref
+        || !reservation.prepare_effect_admission_ref || !reservation.prepare_execution_identity) {
+        throw new SultanAgentGatewayError("EFFECT_ADMISSION_LINEAGE_REQUIRED", "The reservation lacks exact prepare and Stage 5 admission lineage.", 403);
+      }
       if (reservation.command_hash !== input.commandHash) throw new SultanAgentGatewayError("COMMAND_HASH_MISMATCH", "Execution does not match the reserved command.", 409);
       if (reservation.effect_class !== "A1" || reservation.approval_mode !== "PER_COMMAND_HUMAN") throw new SultanAgentGatewayError("COMMAND_EXECUTION_BLOCKED", "Only approved A1 internal actions may execute in this pilot.", 403);
       if (Date.parse(String(reservation.expires_at)) <= Date.parse(input.now)) throw new SultanAgentGatewayError("COMMAND_RESERVATION_EXPIRED", "The command reservation expired before execution.", 409);
@@ -233,6 +293,21 @@ export class PostgresSultanAgentGatewayStore implements SultanAgentGatewayStore 
         return executionFromReadback(reservation, replay, true);
       }
       if (reservation.state !== "PREPARED") throw new SultanAgentGatewayError("COMMAND_STATE_INVALID", "The command reservation is not executable.", 409);
+      const executionEnvelope = parseEffectExecutionEnvelope(input.effectExecutionEnvelope);
+      if (executionEnvelope.admissionCheckpoint !== "SULTAN_EXECUTE"
+        || executionEnvelope.actor.actorId !== input.actor.actorId
+        || executionEnvelope.actor.actorType !== input.actor.actorType
+        || executionEnvelope.authorityRef !== `human-approval:${input.approvalAdmission.approvalId}`
+        || executionEnvelope.credentialBindingId !== "credential-binding:none:luzione-api-internal/v1"
+        || executionEnvelope.destination !== "postgres.sultan-internal-action"
+        || executionEnvelope.effectClass !== "REVERSIBLE_INTERNAL"
+        || executionEnvelope.operationKey !== reservation.operation_id
+        || executionEnvelope.originatingEnvelopeRef !== reservation.originating_envelope_ref
+        || executionEnvelope.provider !== "luzione-api"
+        || executionEnvelope.sourcePayloadHash !== reservation.command_hash
+        || executionEnvelope.tenantId !== input.actor.tenantId) {
+        throw new SultanAgentGatewayError("EFFECT_EXECUTION_ENVELOPE_MISMATCH", "The execution envelope does not match the exact reserved Sultan command lineage.", 409);
+      }
 
       const actionId = `sultan-action-${sha256([input.actor.tenantId, reservation.reservation_id]).slice(0, 32)}`;
       const receiptId = `sultan-receipt-${sha256([input.actor.tenantId, actionId]).slice(0, 32)}`;
@@ -240,13 +315,16 @@ export class PostgresSultanAgentGatewayStore implements SultanAgentGatewayStore 
         `insert into public.sultan_agent_internal_actions (
            tenant_id,action_id,receipt_id,reservation_id,operation_id,run_id,tool_call_id,tool_id,
            case_id,case_type,object_version,campaign_id,payload,state,approval_id,approved_by,
-           approved_at,external_effect_authorized,provider_dispatch_authorized,created_at
-         ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13::jsonb,'SOURCE_CONFIRMED',$14,$15,$16,false,false,$17)`,
+           approved_at,external_effect_authorized,provider_dispatch_authorized,created_at,
+           effect_execution_envelope,effect_execution_envelope_ref,effect_execution_identity,originating_envelope_ref
+         ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13::jsonb,'SOURCE_CONFIRMED',$14,$15,$16,false,false,$17,$18::jsonb,$19,$20,$21)`,
         [input.actor.tenantId, actionId, receiptId, reservation.reservation_id, reservation.operation_id,
           reservation.run_id, reservation.tool_call_id, reservation.tool_id, reservation.case_id,
           reservation.case_type, reservation.expected_version, String(reservation.preview.campaignId ?? ""),
           JSON.stringify(reservation.preview), input.approvalAdmission.approvalId,
-          input.approvalAdmission.operatorId, input.approvalAdmission.approvedAt, input.now],
+          input.approvalAdmission.operatorId, input.approvalAdmission.approvedAt, input.now,
+          JSON.stringify(executionEnvelope), executionEnvelope.executionEnvelopeRef,
+          executionEnvelope.executionIdentity, executionEnvelope.originatingEnvelopeRef],
       );
       await client.query(
         `update public.sultan_agent_command_reservations

@@ -1,0 +1,253 @@
+{
+  "schemaVersion": "CORE-02/API-Activation-Cone-Inventory/v1",
+  "projectId": "CORE-02",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "controllerAuthority": "CIBOTFLOW/Luzione-platform-program@7713b02201e5abb84a92bb0d2af91514d33c84d5",
+  "correctionAuthority": "CIBOTFLOW/Luzione-platform-program@8543a3eab0a969f213bc192391bd7ca657bbf087",
+  "correctionAuditFingerprint": "3fdc9ddf470509ec9c115656a431f414b9796dda14ec0aaaf9133fbaab796968",
+  "observedRepositorySha": "bb5eb395af0873f4483ba2dc10c76f9941051dde",
+  "observedAt": "2026-09-05T01:36:47Z",
+  "brand": {
+    "company": "Luzione AI",
+    "product": "Luzione CRM OS",
+    "embeddedOperator": "Sultan",
+    "contractIdentifiersChanged": false
+  },
+  "scope": {
+    "includedJourneys": ["GJ-1", "GJ-2", "GJ-3"],
+    "included": [
+      "tracked API-owned route and contract boundaries",
+      "tracked API-owned or API-referenced Postgres relation boundaries",
+      "tracked principals and opaque credential reference names",
+      "tracked jobs, flags, monitors, recovery, rollback, and kill switches"
+    ],
+    "excluded": [
+      "production/provider queries and observations",
+      "secret values and credential access",
+      "parked FEP, Rewards, Portal, Bravi, and Planner dependencies",
+      "payments, allocation, settlement, and money movement",
+      "non-API repository implementation"
+    ],
+    "effectAuthority": "NO_EFFECT"
+  },
+  "frozenInputs": {
+    "coreContractBundle": "LuzioneCoreContracts/v1",
+    "core01ImplementationSha": "828de754e4104cd860e3f47adbf2e84c576e5c10",
+    "core01FinalSha": "bb5eb395af0873f4483ba2dc10c76f9941051dde",
+    "contractsCoreTree": "d57ccc4cccd97b37acd1a1575b1e07ede5787349",
+    "sdkTree": "d594fa014d7020fdf8386c7a6926ff9b573ac355",
+    "a02ImplementationSha": "12685f46a60edea23aaa0a5403e300bf8858066b",
+    "a02FinalSha": "bc43d5db8fe58230d6c3d35e32a73e1e8618b71e"
+  },
+  "journeys": [
+    {
+      "journeyId": "GJ-1",
+      "name": "Tenant onboarding",
+      "contractObjects": ["TenantBlueprint/v1", "SetupMandate/v1", "ImportBatch/v1", "ImportReceipt/v1", "ConnectorBinding/v1", "SyncReceipt/v1"],
+      "routeIds": [
+        "release-read", "livez-read", "readyz-read", "healthz-read",
+        "rls-readiness-read", "platform-guarantees-read", "provider-operations-read",
+        "workflow-pack-catalog-read", "governance-evaluate",
+        "autonomy-constitution-read", "autonomy-evaluate"
+      ],
+      "relationGroupIds": [
+        "onboarding-configuration-artifacts", "shared-command-workflow-control-plane",
+        "authority-policy-referenced-runtime", "security-readiness-referenced-runtime"
+      ],
+      "jobIds": [],
+      "repositoryState": "CONTRACT_AND_LEGACY_CONFIGURATION_ARTIFACTS_ONLY",
+      "unknownRefs": ["CORE02-U001", "CORE02-U002", "CORE02-U005", "CORE02-U006", "CORE02-U007", "CORE02-U008", "CORE02-U009", "CORE02-U010", "CORE02-U011", "CORE02-U012", "CORE02-U013", "CORE02-U014", "CORE02-U015", "CORE02-U017", "CORE02-U019"]
+    },
+    {
+      "journeyId": "GJ-2",
+      "name": "Lead to procurement",
+      "contractObjects": ["SultanOperation/v1", "SultanReceipt/v1", "SultanReadback/v1"],
+      "routeIds": [
+        "release-read", "livez-read", "readyz-read", "healthz-read",
+        "rls-readiness-read", "platform-guarantees-read", "provider-operations-read",
+        "governance-evaluate", "autonomy-constitution-read", "autonomy-evaluate",
+        "lead-read", "lead-command", "commercial-case-read", "commercial-case-command",
+        "quote-read", "quote-command", "proposal-review-read", "proposal-review-command",
+        "quote-approval-read", "quote-approval-command", "order-read", "order-command",
+        "fulfillment-intent-read", "fulfillment-intent-command", "catalog-projection-read",
+        "catalog-projection-ingest", "sultan-agent-intent-evaluate", "sultan-tool-manifest-read",
+        "sultan-tool-invoke", "sultan-command-prepare", "sultan-command-execute",
+        "sultan-effect-readback", "sultan-admission", "sultan-canonical-readback",
+        "sultan-outcome-read", "sultan-outcome-record"
+      ],
+      "relationGroupIds": [
+        "shared-command-workflow-control-plane", "lead-commercial-dark-path",
+        "proposal-quote-approval-dark-path", "order-fulfillment-dark-path",
+        "sultan-policy-internal-actions", "sultan-stage5-evidence",
+        "catalog-projection-referenced-runtime", "authority-policy-referenced-runtime",
+        "security-readiness-referenced-runtime"
+      ],
+      "jobIds": ["provider-worker", "workflow-timer-claimer"],
+      "repositoryState": "DEFAULT_OFF_DARK_PATH_AND_READBACK_PRESENT_CANONICAL_TRANSFER_UNPROVEN",
+      "unknownRefs": ["CORE02-U003", "CORE02-U005", "CORE02-U006", "CORE02-U007", "CORE02-U008", "CORE02-U010", "CORE02-U011", "CORE02-U012", "CORE02-U013", "CORE02-U014", "CORE02-U015", "CORE02-U016", "CORE02-U017", "CORE02-U018", "CORE02-U019"]
+    },
+    {
+      "journeyId": "GJ-3",
+      "name": "Support to resolution",
+      "contractObjects": ["SupportCase/v1", "SupportAction/v1", "CustomerReply/v1", "SultanOperation/v1", "SultanReceipt/v1", "SultanReadback/v1"],
+      "routeIds": [
+        "release-read", "livez-read", "readyz-read", "healthz-read",
+        "rls-readiness-read", "platform-guarantees-read", "provider-operations-read",
+        "governance-evaluate", "autonomy-constitution-read", "autonomy-evaluate",
+        "sultan-agent-intent-evaluate", "sultan-tool-manifest-read", "sultan-tool-invoke",
+        "sultan-command-prepare", "sultan-effect-readback"
+      ],
+      "relationGroupIds": [
+        "shared-command-workflow-control-plane", "sultan-policy-internal-actions",
+        "authority-policy-referenced-runtime", "security-readiness-referenced-runtime"
+      ],
+      "jobIds": [],
+      "repositoryState": "STRICT_CONTRACTS_PRESENT_SUPPORT_SPECIFIC_ROUTE_STORE_AND_JOB_ABSENT",
+      "unknownRefs": ["CORE02-U004", "CORE02-U005", "CORE02-U006", "CORE02-U007", "CORE02-U008", "CORE02-U010", "CORE02-U011", "CORE02-U012", "CORE02-U013", "CORE02-U014", "CORE02-U015", "CORE02-U016", "CORE02-U019"]
+    }
+  ],
+  "routes": [
+    {"routeId":"release-read","method":"GET","path":"/api/v1/release","sourcePath":"src/app/api/v1/release/route.ts","journeys":["GJ-1","GJ-2","GJ-3"],"capability":"public release metadata","effect":"NO_EFFECT","readback":"runtime release identity"},
+    {"routeId":"livez-read","method":"GET","path":"/api/v1/livez","sourcePath":"src/app/api/v1/livez/route.ts","journeys":["GJ-1","GJ-2","GJ-3"],"capability":"public liveness","effect":"NO_EFFECT","readback":"running process and release environment"},
+    {"routeId":"readyz-read","method":"GET","path":"/api/v1/readyz","sourcePath":"src/app/api/v1/readyz/route.ts","journeys":["GJ-1","GJ-2","GJ-3"],"capability":"public dependency readiness","effect":"NO_EFFECT","readback":"database select-one plus configuration posture"},
+    {"routeId":"healthz-read","method":"GET","path":"/api/v1/healthz","sourcePath":"src/app/api/v1/healthz/route.ts","journeys":["GJ-1","GJ-2","GJ-3"],"capability":"public security readiness aggregate","effect":"NO_EFFECT","readback":"configuration plus Postgres RLS catalog posture"},
+    {"routeId":"rls-readiness-read","method":"GET","path":"/api/v1/security/rls-readiness","sourcePath":"src/app/api/v1/security/rls-readiness/route.ts","journeys":["GJ-1","GJ-2","GJ-3"],"capability":"security.rls.read","effect":"NO_EFFECT","readback":"relation role grant and RLS posture"},
+    {"routeId":"platform-guarantees-read","method":"GET","path":"/api/v1/platform-guarantees","sourcePath":"src/app/api/v1/platform-guarantees/route.ts","journeys":["GJ-1","GJ-2","GJ-3"],"capability":"platform.guarantees.read","effect":"NO_EFFECT","readback":"tenant-scoped P110/P111 aggregate"},
+    {"routeId":"provider-operations-read","method":"GET","path":"/api/v1/provider-operations","sourcePath":"src/app/api/v1/provider-operations/route.ts","journeys":["GJ-1","GJ-2","GJ-3"],"capability":"provider_operations.read","effect":"NO_EFFECT","readback":"outbox reconciliation dead-letter and kill-switch aggregate"},
+    {"routeId":"workflow-pack-catalog-read","method":"GET","path":"/api/v1/workflows","sourcePath":"src/app/api/v1/workflows/route.ts","journeys":["GJ-1"],"capability":"public workflow-pack catalog","effect":"NO_EFFECT","readback":"in-process workflow catalog; not TenantBlueprint application"},
+    {"routeId":"governance-evaluate","method":"POST","path":"/api/v1/governance/evaluate","sourcePath":"src/app/api/v1/governance/evaluate/route.ts","journeys":["GJ-1","GJ-2","GJ-3"],"capability":"governance.evaluate","effect":"NO_EFFECT","readback":"active tenant policy plus deterministic evaluation"},
+    {"routeId":"autonomy-constitution-read","method":"GET","path":"/api/v1/autonomy/constitution","sourcePath":"src/app/api/v1/autonomy/constitution/route.ts","journeys":["GJ-1","GJ-2","GJ-3"],"capability":"governance.constitution.read","effect":"NO_EFFECT","readback":"static versioned constitution"},
+    {"routeId":"autonomy-evaluate","method":"POST","path":"/api/v1/autonomy/evaluate","sourcePath":"src/app/api/v1/autonomy/evaluate/route.ts","journeys":["GJ-1","GJ-2","GJ-3"],"capability":"governance.evaluate","effect":"NO_EFFECT","readback":"deterministic effect policy evaluation"},
+    {"routeId":"lead-read","method":"GET","path":"/api/v1/commands/leads","sourcePath":"src/app/api/v1/commands/leads/route.ts","journeys":["GJ-2"],"capability":"lead.read","effect":"NO_EFFECT","readback":"tenant-scoped crm_leads"},
+    {"routeId":"lead-command","method":"POST","path":"/api/v1/commands/leads","sourcePath":"src/app/api/v1/commands/leads/route.ts","journeys":["GJ-2"],"capability":"lead.command","effect":"DEFAULT_OFF_INTERNAL_MUTATION","readback":"P110 receipt plus crm_leads"},
+    {"routeId":"commercial-case-read","method":"GET","path":"/api/v1/commands/commercial-cases","sourcePath":"src/app/api/v1/commands/commercial-cases/route.ts","journeys":["GJ-2"],"capability":"commercial_case.read","effect":"NO_EFFECT","readback":"tenant-scoped commercial_cases"},
+    {"routeId":"commercial-case-command","method":"POST","path":"/api/v1/commands/commercial-cases","sourcePath":"src/app/api/v1/commands/commercial-cases/route.ts","journeys":["GJ-2"],"capability":"commercial_case.command","effect":"DEFAULT_OFF_INTERNAL_MUTATION","readback":"P110 receipt plus commercial_cases"},
+    {"routeId":"quote-read","method":"GET","path":"/api/v1/commands/quotes","sourcePath":"src/app/api/v1/commands/quotes/route.ts","journeys":["GJ-2"],"capability":"quote.read","effect":"NO_EFFECT","readback":"tenant-scoped quote lines and economics"},
+    {"routeId":"quote-command","method":"POST","path":"/api/v1/commands/quotes","sourcePath":"src/app/api/v1/commands/quotes/route.ts","journeys":["GJ-2"],"capability":"quote.command","effect":"DEFAULT_OFF_INTERNAL_MUTATION","readback":"P110 receipt plus quote lines and economics"},
+    {"routeId":"proposal-review-read","method":"GET","path":"/api/v1/commands/proposal-reviews","sourcePath":"src/app/api/v1/commands/proposal-reviews/route.ts","journeys":["GJ-2"],"capability":"proposal.review.read","effect":"NO_EFFECT","readback":"tenant-scoped proposal review version"},
+    {"routeId":"proposal-review-command","method":"POST","path":"/api/v1/commands/proposal-reviews","sourcePath":"src/app/api/v1/commands/proposal-reviews/route.ts","journeys":["GJ-2"],"capability":"proposal.review.command","effect":"DEFAULT_OFF_HUMAN_DECISION_EVIDENCE","readback":"P110 receipt plus proposal review version"},
+    {"routeId":"quote-approval-read","method":"GET","path":"/api/v1/commands/quote-approvals","sourcePath":"src/app/api/v1/commands/quote-approvals/route.ts","journeys":["GJ-2"],"capability":"quote.approval.read","effect":"NO_EFFECT","readback":"tenant-scoped quote economics approval"},
+    {"routeId":"quote-approval-command","method":"POST","path":"/api/v1/commands/quote-approvals","sourcePath":"src/app/api/v1/commands/quote-approvals/route.ts","journeys":["GJ-2"],"capability":"quote.approval.command","effect":"DEFAULT_OFF_HUMAN_DECISION_EVIDENCE","readback":"P110 receipt plus approval record"},
+    {"routeId":"order-read","method":"GET","path":"/api/v1/commands/orders","sourcePath":"src/app/api/v1/commands/orders/route.ts","journeys":["GJ-2"],"capability":"order.read","effect":"NO_EFFECT","readback":"tenant-scoped order and lines"},
+    {"routeId":"order-command","method":"POST","path":"/api/v1/commands/orders","sourcePath":"src/app/api/v1/commands/orders/route.ts","journeys":["GJ-2"],"capability":"order.command","effect":"DEFAULT_OFF_INTERNAL_MUTATION","readback":"P110 receipt plus accepted quote-bound order"},
+    {"routeId":"fulfillment-intent-read","method":"GET","path":"/api/v1/commands/fulfillment-intents","sourcePath":"src/app/api/v1/commands/fulfillment-intents/route.ts","journeys":["GJ-2"],"capability":"fulfillment_intent.read","effect":"NO_EFFECT","readback":"tenant-scoped order_fulfillment_intents"},
+    {"routeId":"fulfillment-intent-command","method":"POST","path":"/api/v1/commands/fulfillment-intents","sourcePath":"src/app/api/v1/commands/fulfillment-intents/route.ts","journeys":["GJ-2"],"capability":"fulfillment_intent.command","effect":"DEFAULT_OFF_NO_EFFECT_INTENT","readback":"P110 receipt plus fulfillment intent"},
+    {"routeId":"catalog-projection-read","method":"GET","path":"/api/v1/catalog/shopify/projections","sourcePath":"src/app/api/v1/catalog/shopify/projections/route.ts","journeys":["GJ-2"],"capability":"catalog.projection.read","effect":"NO_EFFECT","readback":"tenant-scoped P113 projection"},
+    {"routeId":"catalog-projection-ingest","method":"POST","path":"/api/v1/catalog/shopify/projections","sourcePath":"src/app/api/v1/catalog/shopify/projections/route.ts","journeys":["GJ-2"],"capability":"catalog.projection.write","effect":"DEFAULT_OFF_BOUNDED_INTERNAL_PROJECTION","readback":"P113 completion receipt"},
+    {"routeId":"sultan-agent-intent-evaluate","method":"POST","path":"/api/v1/sultan/agent-intents/evaluate","sourcePath":"src/app/api/v1/sultan/agent-intents/evaluate/route.ts","journeys":["GJ-2","GJ-3"],"capability":"sultan.agent.intent.evaluate","effect":"NO_EFFECT","readback":"deterministic policy decision"},
+    {"routeId":"sultan-tool-manifest-read","method":"GET","path":"/api/v1/sultan/tools","sourcePath":"src/app/api/v1/sultan/tools/route.ts","journeys":["GJ-2","GJ-3"],"capability":"sultan.tool.manifest.read","effect":"NO_EFFECT","readback":"server-owned tool registry"},
+    {"routeId":"sultan-tool-invoke","method":"POST","path":"/api/v1/sultan/tool-invocations","sourcePath":"src/app/api/v1/sultan/tool-invocations/route.ts","journeys":["GJ-2","GJ-3"],"capability":"sultan.tool.invoke","effect":"NO_EFFECT","readback":"tenant-scoped authoritative read result"},
+    {"routeId":"sultan-command-prepare","method":"POST","path":"/api/v1/sultan/commands/prepare","sourcePath":"src/app/api/v1/sultan/commands/prepare/route.ts","journeys":["GJ-2","GJ-3"],"capability":"sultan.command.prepare","effect":"NO_EFFECT_COMMAND_RESERVATION","readback":"stable reservation and exact source version"},
+    {"routeId":"sultan-command-execute","method":"POST","path":"/api/v1/sultan/commands/execute","sourcePath":"src/app/api/v1/sultan/commands/execute/route.ts","journeys":["GJ-2"],"capability":"sultan.command.execute","effect":"DEFAULT_OFF_APPROVED_A1_INTERNAL_MUTATION","readback":"append-only internal action receipt"},
+    {"routeId":"sultan-effect-readback","method":"GET","path":"/api/v1/sultan/effects/{receiptId}/readback","sourcePath":"src/app/api/v1/sultan/effects/[receiptId]/readback/route.ts","journeys":["GJ-2","GJ-3"],"capability":"sultan.effect.read","effect":"NO_EFFECT","readback":"P110 receipt acknowledgement and reconciliation"},
+    {"routeId":"sultan-admission","method":"POST","path":"/api/v1/sultan/admissions","sourcePath":"src/app/api/v1/sultan/admissions/route.ts","journeys":["GJ-2"],"capability":"sultan.stage5.admission.request","effect":"NO_EFFECT_OR_SEPARATE_REVIEW_REQUIRED","readback":"immutable admission or denial receipt"},
+    {"routeId":"sultan-canonical-readback","method":"POST","path":"/api/v1/sultan/canonical-readbacks","sourcePath":"src/app/api/v1/sultan/canonical-readbacks/route.ts","journeys":["GJ-2"],"capability":"sultan.canonical.readback.read","effect":"NO_EFFECT","readback":"immutable canonical business readback receipt"},
+    {"routeId":"sultan-outcome-read","method":"GET","path":"/api/v1/sultan/outcome-observations","sourcePath":"src/app/api/v1/sultan/outcome-observations/route.ts","journeys":["GJ-2"],"capability":"sultan.outcome.observe","effect":"NO_EFFECT","readback":"revalidated outcome observation"},
+    {"routeId":"sultan-outcome-record","method":"POST","path":"/api/v1/sultan/outcome-observations","sourcePath":"src/app/api/v1/sultan/outcome-observations/route.ts","journeys":["GJ-2"],"capability":"sultan.outcome.observe","effect":"NO_EFFECT_NO_AUTOMATIC_LEARNING_PROMOTION","readback":"append-only outcome observation"}
+  ],
+  "canonicalObjects": [
+    {"objectId":"core-operation","identifiers":["SultanOperation/v1","SultanReceipt/v1","SultanReadback/v1"],"journeys":["GJ-1","GJ-2","GJ-3"],"owner":"CIBOTFLOW/Luzione-API","state":"FROZEN_CONTRACT_ONLY"},
+    {"objectId":"tenant-onboarding","identifiers":["TenantBlueprint/v1","SetupMandate/v1","ImportBatch/v1","ImportReceipt/v1","ConnectorBinding/v1","SyncReceipt/v1"],"journeys":["GJ-1"],"owner":"CIBOTFLOW/Luzione-API","state":"FROZEN_CONTRACT_ONLY_NO_DEDICATED_ROUTE_OR_STORE"},
+    {"objectId":"support","identifiers":["SupportCase/v1","SupportAction/v1","CustomerReply/v1"],"journeys":["GJ-3"],"owner":"CIBOTFLOW/Luzione-API","state":"FROZEN_CONTRACT_ONLY_NO_DEDICATED_ROUTE_OR_STORE"},
+    {"objectId":"command-workflow-control","identifiers":["CommandReceipt","EventEnvelope","IdempotencyConflict","OutboxMessage","InboxMessage","DeliveryAttempt","DeadLetter","ReconciliationCheckpoint","WorkflowInstance","WorkflowCheckpoint","StepAttempt","Timer","HumanTaskRef","CompensationIntent","RecoveryReceipt","KillSwitch"],"journeys":["GJ-1","GJ-2","GJ-3"],"owner":"CIBOTFLOW/Luzione-API","state":"TRACKED_MIGRATION_AND_RUNTIME_BOUNDARY"},
+    {"objectId":"gj2-dark-domain","identifiers":["Lead","CommercialCase","Quote","QuoteEconomicsVersion","QuoteMarginApproval","ProposalContextVersion","ProposalDocumentVersion","ProposalReviewVersion","Order","OrderLine","FulfillmentIntent"],"journeys":["GJ-2"],"owner":"TRANSFER_PENDING_TO_CIBOTFLOW/Luzione-API","state":"DEFAULT_OFF_DARK_PATH_CANONICAL_CUTOVER_UNPROVEN"},
+    {"objectId":"sultan-api-evidence","identifiers":["AgentPolicyEnvelope","AgentCommandReservation","AgentInternalAction","Stage5IdempotencyConflict","CanonicalReadbackReceipt","ApiAdmissionReceipt","ApiAdmissionEvidenceRef","OutcomeObservation"],"journeys":["GJ-2","GJ-3"],"owner":"CIBOTFLOW/Luzione-API","state":"TRACKED_API_BOUNDARY_PRODUCTION_HOLD_PRESERVED"},
+    {"objectId":"catalog-projection","identifiers":["CatalogSyncCursor","CatalogSyncRun","CatalogSearchProjection","CatalogReconciliationItem","CatalogCoverageObservation","ProductManufacturerMapping"],"journeys":["GJ-2"],"owner":"CIBOTFLOW/Luzione-API_PROJECTION_ONLY_SHOPIFY_SOURCE_AUTHORITATIVE","state":"REFERENCED_RUNTIME_RELATIONS_NOT_CREATED_BY_TRACKED_MIGRATIONS"}
+  ],
+  "relationGroups": [
+    {"relationGroupId":"onboarding-configuration-artifacts","journeys":["GJ-1"],"relations":["workflow_pack_registry","tenant_workflow_pack_settings","tenant_field_definitions"],"sourceKind":"API_MIGRATION_OWNED","sourcePath":"supabase/migrations/20260828210000_tenant_ai_governance_and_workflow_packs.sql","readPrincipals":["service_role"],"writePrincipals":["service_role"],"state":"RLS_ENABLED_LEGACY_SERVICE_ROLE_CRUD_NO_DEDICATED_CORE01_RUNTIME_BINDING"},
+    {"relationGroupId":"shared-command-workflow-control-plane","journeys":["GJ-1","GJ-2","GJ-3"],"relations":["p110_command_receipts","p110_event_envelopes","p110_idempotency_conflicts","p110_outbox_messages","p110_kill_switches","p110_inbox_messages","p110_delivery_attempts","p110_dead_letters","p110_reconciliation_checkpoints","p111_workflow_instances","p111_workflow_checkpoints","p111_step_attempts","p111_workflow_timers","p111_human_task_refs","p111_compensation_intents","p111_recovery_receipts"],"sourceKind":"API_MIGRATION_OWNED","sourcePath":"supabase/migrations/20260831022000_p110_command_ledger_baseline.sql","additionalSourcePaths":["supabase/migrations/20260831030000_p110_p111_workflow_delivery_baseline.sql","supabase/migrations/20260831090000_api_pc_013_least_privilege_roles_rls.sql"],"readPrincipals":["luzione_api_runtime","luzione_provider_worker_bounded_subset"],"writePrincipals":["luzione_api_runtime","luzione_provider_worker_bounded_subset"],"state":"FORCED_RLS_TRACKED_LOCAL_ONLY_PRODUCTION_APPLICATION_UNOBSERVED"},
+    {"relationGroupId":"lead-commercial-dark-path","journeys":["GJ-2"],"relations":["crm_leads","commercial_case_identities","commercial_cases"],"sourceKind":"API_MIGRATION_OWNED_TRANSFER_PENDING","sourcePath":"supabase/migrations/20260831050000_lead_commercial_case_dark_path.sql","additionalSourcePaths":["supabase/migrations/20260831090000_api_pc_013_least_privilege_roles_rls.sql"],"readPrincipals":["luzione_api_runtime"],"writePrincipals":["luzione_api_runtime"],"state":"DEFAULT_OFF_UI_ACTIVE_WRITER_AND_CUTOVER_UNPROVEN"},
+    {"relationGroupId":"proposal-quote-approval-dark-path","journeys":["GJ-2"],"relations":["commercial_policy_configurations","quotes","quote_lines","quote_economics_versions","quote_margin_approval_records","commercial_case_proposal_context_versions","commercial_case_proposal_document_versions","commercial_case_proposal_review_versions"],"sourceKind":"API_MIGRATION_OWNED_TRANSFER_PENDING","sourcePath":"supabase/migrations/20260831060000_proposal_quote_approval_dark_path.sql","additionalSourcePaths":["supabase/migrations/20260831090000_api_pc_013_least_privilege_roles_rls.sql"],"readPrincipals":["luzione_api_runtime"],"writePrincipals":["luzione_api_runtime_PRIVILEGE_VARIES_BY_RELATION"],"state":"DEFAULT_OFF_UI_ACTIVE_WRITER_AND_CUTOVER_UNPROVEN"},
+    {"relationGroupId":"order-fulfillment-dark-path","journeys":["GJ-2"],"relations":["orders","order_lines","order_fulfillment_intents"],"sourceKind":"API_MIGRATION_OWNED_TRANSFER_PENDING","sourcePath":"supabase/migrations/20260831070000_order_fulfillment_intent_dark_path.sql","additionalSourcePaths":["supabase/migrations/20260831090000_api_pc_013_least_privilege_roles_rls.sql"],"readPrincipals":["luzione_api_runtime"],"writePrincipals":["luzione_api_runtime_INSERT_ONLY_TRACKED"],"state":"DEFAULT_OFF_ORDER_TRANSFER_PENDING_FULFILLMENT_INTENT_NO_EFFECT"},
+    {"relationGroupId":"sultan-policy-internal-actions","journeys":["GJ-2","GJ-3"],"relations":["sultan_agent_policy_envelopes","sultan_agent_command_reservations","sultan_agent_internal_actions"],"sourceKind":"API_MIGRATION_OWNED","sourcePath":"supabase/migrations/20260901123000_sultan_agent_policy_envelopes.sql","additionalSourcePaths":["supabase/migrations/20260901130000_sultan_agent_internal_actions.sql"],"readPrincipals":["luzione_api_runtime"],"writePrincipals":["luzione_api_runtime_BOUNDED_APPEND_OR_STATE_UPDATE"],"state":"FORCED_RLS_TRACKED_PRODUCTION_ATTRIBUTION_HOLD"},
+    {"relationGroupId":"sultan-stage5-evidence","journeys":["GJ-2"],"relations":["sultan_stage5_idempotency_conflicts","sultan_canonical_readback_receipts","sultan_api_admission_receipts","sultan_outcome_observations","sultan_api_admission_evidence_refs"],"sourceKind":"API_MIGRATION_OWNED","sourcePath":"supabase/migrations/20260902010000_sultan_stage5_authority_outcomes.sql","additionalSourcePaths":["supabase/migrations/20260902010100_sultan_stage5_post_inference_receipt_constraints.sql"],"readPrincipals":["luzione_api_runtime"],"writePrincipals":["luzione_api_runtime_BOUNDED_APPEND"],"state":"FORCED_RLS_TRACKED_PRODUCTION_ATTRIBUTION_HOLD"},
+    {"relationGroupId":"catalog-projection-referenced-runtime","journeys":["GJ-2"],"relations":["p107_product_manufacturer_mappings","p113_catalog_sync_cursors","p113_catalog_sync_runs","p113_catalog_search_projections","p113_catalog_reconciliation_items","p113_catalog_coverage_observations"],"sourceKind":"REFERENCED_NOT_CREATED_BY_TRACKED_API_MIGRATIONS","sourcePath":"src/modules/catalog-projection/store.ts","readPrincipals":["DATABASE_URL_EFFECTIVE_LOGIN_UNKNOWN"],"writePrincipals":["DATABASE_URL_EFFECTIVE_LOGIN_UNKNOWN"],"state":"API_PROJECTION_CONTRACT_SHOPIFY_SOURCE_AUTHORITATIVE_PRODUCTION_BINDING_UNKNOWN"},
+    {"relationGroupId":"authority-policy-referenced-runtime","journeys":["GJ-1","GJ-2","GJ-3"],"relations":["tenant_accounts","policy_definitions","policy_evaluations"],"sourceKind":"REFERENCED_NOT_FULLY_CREATED_BY_TRACKED_API_MIGRATIONS","sourcePath":"src/lib/api/actor.ts","additionalSourcePaths":["src/modules/tenant-policy/evaluator.ts","supabase/migrations/20260901123000_sultan_agent_policy_envelopes.sql"],"readPrincipals":["DATABASE_URL_EFFECTIVE_LOGIN_UNKNOWN"],"writePrincipals":["luzione_api_runtime_POLICY_EVALUATIONS_APPEND_ONLY_WHERE_MIGRATED"],"state":"CANONICAL_AUTHORITY_DEPENDENCY_PRODUCTION_BINDING_UNKNOWN"},
+    {"relationGroupId":"security-readiness-referenced-runtime","journeys":["GJ-1","GJ-2","GJ-3"],"relations":["auth_users","connected_accounts","connected_assets","connector_sync_logs","manual_connector_credentials","migration_discipline_records","policy_constant_migrations","schema_migrations","secret_registry","service_auth_clients"],"sourceKind":"READINESS_REFERENCE_NOT_CREATED_BY_TRACKED_API_MIGRATIONS","sourcePath":"src/modules/security-posture/rlsPosture.ts","readPrincipals":["DATABASE_URL_EFFECTIVE_LOGIN_UNKNOWN"],"writePrincipals":[],"state":"SERVER_ONLY_POSTURE_EXPECTATION_PRODUCTION_RELATION_EXISTENCE_UNQUERIED"}
+  ],
+  "principals": [
+    {"principalId":"public-http","kind":"HTTP_PUBLIC","login":"NOT_APPLICABLE","scope":"release/liveness/readiness/health/workflow catalog aggregates","state":"OBSERVED_REPOSITORY"},
+    {"principalId":"service-token-actor","kind":"HTTP_CREDENTIAL_BOUND","login":"OPAQUE","scope":"environment-bound actor tenant and capabilities","sourcePath":"src/lib/api/actor.ts","state":"ACTIVE_BINDING_UNKNOWN"},
+    {"principalId":"vercel-oidc-luzione-ui","kind":"HTTP_WORKLOAD_IDENTITY","login":"NOT_APPLICABLE","scope":"hard-coded Luzione UI project/owner/environment claims and capability ceiling","sourcePath":"src/lib/api/actor.ts","state":"REPOSITORY_ALLOWLIST_OBSERVED_DEPLOYED_VALIDITY_UNKNOWN"},
+    {"principalId":"vercel-oidc-sultan-os","kind":"HTTP_WORKLOAD_IDENTITY","login":"NOT_APPLICABLE","scope":"hard-coded Sultan OS project/owner/environment claims and capability ceiling","sourcePath":"src/lib/api/actor.ts","state":"REPOSITORY_ALLOWLIST_OBSERVED_DEPLOYED_VALIDITY_UNKNOWN"},
+    {"principalId":"luzione_api_runtime","kind":"POSTGRES_GROUP_ROLE","login":false,"scope":"30 API-PC-013 relations with relation-specific SELECT/INSERT/UPDATE ceilings","sourcePath":"supabase/migrations/20260831090000_api_pc_013_least_privilege_roles_rls.sql","state":"NOLOGIN_NONOWNER_NOBYPASSRLS_TRACKED_PRODUCTION_MEMBERSHIP_UNKNOWN"},
+    {"principalId":"luzione_provider_worker","kind":"POSTGRES_GROUP_ROLE","login":false,"scope":"six delivery relations with relation-specific SELECT/INSERT/UPDATE ceilings","sourcePath":"supabase/migrations/20260831090000_api_pc_013_least_privilege_roles_rls.sql","state":"NOLOGIN_NONOWNER_NOBYPASSRLS_TRACKED_PRODUCTION_MEMBERSHIP_UNKNOWN"},
+    {"principalId":"service_role","kind":"POSTGRES_SUPABASE_ROLE","login":"PROVIDER_MANAGED","scope":"legacy CRUD grant on three onboarding configuration artifacts; revoked from API-PC-013 admitted relations","sourcePath":"supabase/migrations/20260828210000_tenant_ai_governance_and_workflow_packs.sql","state":"TRACKED_GRANT_PRODUCTION_EFFECTIVE_POSTURE_UNKNOWN"},
+    {"principalId":"database-migration-principal","kind":"POSTGRES_LOGIN_OR_ADMIN","login":"UNKNOWN","scope":"physical relation ownership and migration application","state":"UNKNOWN_REQUIRES_OWNER_RETURN"},
+    {"principalId":"database-url-effective-login","kind":"POSTGRES_LOGIN","login":"UNKNOWN","scope":"deployed API database sessions and group-role memberships","state":"UNKNOWN_REQUIRES_OWNER_RETURN"},
+    {"principalId":"provider-worker-effective-login","kind":"POSTGRES_LOGIN","login":"UNKNOWN","scope":"deployed worker database sessions and group-role memberships","state":"UNKNOWN_REQUIRES_OWNER_RETURN"}
+  ],
+  "credentialBindings": [
+    {"bindingId":"canonical-postgres-connection","opaqueReference":"DATABASE_URL","consumer":"Next.js API and provider worker","purpose":"Postgres connection","state":"REFERENCE_NAME_OBSERVED_EFFECTIVE_LOGIN_UNKNOWN"},
+    {"bindingId":"canonical-postgres-ca","opaqueReference":"DATABASE_CA_CERT","consumer":"Next.js API and provider worker","purpose":"explicit TLS trust","state":"REFERENCE_NAME_OBSERVED_VALUE_AND_DEPLOYMENT_UNKNOWN"},
+    {"bindingId":"api-service-token","opaqueReference":"LUZIONE_API_SERVICE_TOKEN","consumer":"non-OIDC service callers","purpose":"HTTP authentication","state":"REFERENCE_NAME_OBSERVED_ISSUER_ROTATION_AND_CONSUMER_UNKNOWN"},
+    {"bindingId":"api-service-subject","opaqueReference":"LUZIONE_API_SERVICE_ACTOR_ID|LUZIONE_API_SERVICE_ACTOR_TYPE|LUZIONE_API_SERVICE_TENANT_ID|LUZIONE_API_SERVICE_CAPABILITIES","consumer":"service-token adapter","purpose":"server-derived actor tenant and capability binding","state":"REFERENCE_NAMES_OBSERVED_EFFECTIVE_MAPPING_UNKNOWN"},
+    {"bindingId":"continuation-signing","opaqueReference":"PLATFORM_CONTINUATION_SECRET","consumer":"workflow continuation boundary","purpose":"continuation signature","state":"REFERENCE_NAME_OBSERVED_ROTATION_AND_DEPLOYMENT_UNKNOWN"},
+    {"bindingId":"sultan-human-approval","opaqueReference":"LUZIONE_SULTAN_APPROVAL_SECRET","consumer":"Sultan command execution boundary","purpose":"distinct-human approval verification","state":"REFERENCE_NAME_OBSERVED_ROTATION_AND_CUSTODY_UNKNOWN"},
+    {"bindingId":"vercel-workload-identity","opaqueReference":"Vercel OIDC JWKS plus hard-coded project claim allowlist","consumer":"Luzione UI and Sultan OS workloads","purpose":"signed workload authentication","state":"REPOSITORY_ALLOWLIST_OBSERVED_DEPLOYED_VALIDITY_UNKNOWN"},
+    {"bindingId":"rfq-canary-provider","opaqueReference":"GMAIL_SULTAN_RFQ_ACCESS_TOKEN|SULTAN_RFQ_CANARY_SENDER","consumer":"Gmail RFQ canary adapter","purpose":"bounded supplier communication canary","state":"REFERENCE_NAMES_OBSERVED_PRODUCTION_USE_UNAUTHORIZED_AND_UNKNOWN"},
+    {"bindingId":"core-connector-credential","opaqueReference":"ConnectorBinding/v1.credentialReference","consumer":"future connector adapter","purpose":"non-secret pointer to customer-approved OAuth binding","state":"CONTRACT_ONLY_NO_RUNTIME_RESOLVER_OBSERVED"}
+  ],
+  "jobs": [
+    {"jobId":"provider-worker","entrypoint":"scripts/run-provider-worker.ts","command":"npm run worker:providers","mode":"one-shot or continuous","journeys":["GJ-2"],"principal":"luzione_provider_worker intended; effective login unknown","scheduler":"NONE_IN_REPOSITORY","effectGate":"global mutations plus provider mode enabled plus tenant and destination allowlists","state":"IMPLEMENTED_NOT_DEPLOYED_SANDBOX_AND_LIVE_DEFAULT_OFF"},
+    {"jobId":"workflow-timer-claimer","entrypoint":"src/lib/platform-guarantees/postgresWorkflowDeliveryStore.ts","command":"claimed by provider-worker loop","mode":"due P111 timer claims","journeys":["GJ-2"],"principal":"luzione_provider_worker intended; effective login unknown","scheduler":"NONE_IN_REPOSITORY","effectGate":"P110 kill-switch checks and worker lifecycle","state":"IMPLEMENTED_RUNTIME_LOOP_NOT_DEPLOYED"}
+  ],
+  "flags": [
+    {"flagId":"runtime-mutations","reference":"LUZIONE_API_MUTATIONS_ENABLED","default":"DISABLED_UNLESS_EXACT_TRUE_AND_REQUIRED_CONFIG_PRESENT","journeys":["GJ-1","GJ-2","GJ-3"],"state":"OBSERVED_REPOSITORY"},
+    {"flagId":"domain-command-tenants","reference":"LUZIONE_API_DOMAIN_COMMAND_TENANTS","default":"EMPTY_ALLOWLIST","journeys":["GJ-2"],"state":"OBSERVED_REPOSITORY"},
+    {"flagId":"internal-projections","reference":"LUZIONE_API_INTERNAL_PROJECTIONS_ENABLED|LUZIONE_API_INTERNAL_PROJECTION_TENANTS|LUZIONE_API_INTERNAL_PROJECTION_SOURCES","default":"DISABLED_UNLESS_EXACT_TRUE_WITH_GLOBAL_MUTATION_GATE_AND_EXACT_TENANT_SOURCE_ALLOWLISTS","journeys":["GJ-2"],"state":"OBSERVED_REPOSITORY_FAIL_CLOSED"},
+    {"flagId":"provider-sandbox","reference":"LUZIONE_API_PROVIDER_SANDBOX_ENABLED|LUZIONE_API_PROVIDER_SANDBOX_TENANTS|LUZIONE_API_PROVIDER_SANDBOX_DESTINATIONS","default":"DISABLED_AND_EMPTY_ALLOWLISTS","journeys":["GJ-2"],"state":"OBSERVED_REPOSITORY"},
+    {"flagId":"provider-live","reference":"LUZIONE_API_PROVIDER_LIVE_ENABLED|LUZIONE_API_PROVIDER_LIVE_TENANTS|LUZIONE_API_PROVIDER_LIVE_DESTINATIONS","default":"DISABLED_AND_EMPTY_ALLOWLISTS","journeys":["GJ-2"],"state":"OBSERVED_REPOSITORY_G2_REQUIRED"},
+    {"flagId":"core01-dark-flags","reference":"LuzioneCoreFeatureFlags/v1","members":["onboardingApply","importCommit","connectorSync","operationEffects","providerDispatch","supportActionEffects","customerReplyDelivery"],"default":"ALL_FALSE","journeys":["GJ-1","GJ-2","GJ-3"],"state":"FROZEN_CONTRACT_NO_RUNTIME_BINDING_OBSERVED"}
+  ],
+  "monitors": {
+    "readbackRoutes": ["release-read","livez-read","readyz-read","healthz-read","rls-readiness-read","platform-guarantees-read","provider-operations-read"],
+    "dashboards": ["luzione-api-runtime","luzione-durable-delivery","luzione-release-security-recovery"],
+    "alerts": ["api-availability-budget-burn","api-p95-latency-breach","delivery-backlog-stalled","reconciliation-failure","database-pool-pressure","security-rls-readiness-failed","release-identity-drift"],
+    "sourcePath": "src/modules/platform-operations/registry.ts",
+    "state": "DEFINITIONS_TRACKED_NOT_DEPLOYED"
+  },
+  "recovery": [
+    {"recoveryId":"canonical-postgres","sourcePath":"src/modules/platform-recovery/registry.ts","objective":"RPO 1440 minutes; RTO 480 minutes","evidenceState":"DECLARED_UNVERIFIED","procedure":"docs/runbooks/POSTGRES_RESTORE_DRILL.md","state":"MANAGED_BACKUP_PITR_AND_PRODUCTION_RESTORE_UNKNOWN"},
+    {"recoveryId":"shopify-p113-projection","sourcePath":"src/modules/platform-recovery/registry.ts","objective":"RPO 2880 minutes; RTO 480 minutes","evidenceState":"DISPOSABLE_LOCAL_PROVEN","procedure":"docs/runbooks/P113_CATALOG_PROJECTION.md","state":"REBUILDABLE_PROJECTION_PROVIDER_SOURCE_AUTHORITATIVE"}
+  ],
+  "rollback": [
+    {"rollbackId":"core02-documentation","scope":"this CORE-02 successor only","proofMethod":"reverse apply implementation and final commits to exact base tree","state":"TO_BE_PROVEN_AT_FINAL_HEAD"},
+    {"rollbackId":"database-release","scope":"canonical Postgres and migrations","sourcePath":"docs/runbooks/POSTGRES_RESTORE_DRILL.md","state":"LOCAL_LOGICAL_ONLY_MANAGED_AND_PRODUCTION_UNPROVEN"},
+    {"rollbackId":"provider-projection","scope":"Shopify P113 projection","sourcePath":"docs/runbooks/P113_CATALOG_PROJECTION.md","state":"DISCARD_AND_REBUILD_PROJECTION_NEVER_OVERWRITE_PROVIDER"},
+    {"rollbackId":"runtime-release","scope":"Next.js API deployment and worker","sourcePath":"docs/platform-engineering/DEPLOYMENT_PROVENANCE_CANARY_ROLLBACK_V1.md","state":"EXACT_CANDIDATE_PREVIEW_AND_TRAFFIC_ROLLBACK_UNPROVEN"}
+  ],
+  "killSwitches": [
+    {"killSwitchId":"p110-durable-effect-switch","relation":"p110_kill_switches","scopes":["GLOBAL","DESTINATION","WORKFLOW_DEFINITION","WORKFLOW_INSTANCE","COMMAND_TYPE"],"enforcedBy":"src/lib/platform-guarantees/postgresWorkflowDeliveryStore.ts","journeys":["GJ-1","GJ-2","GJ-3"],"state":"TRACKED_FAIL_CLOSED_QUERY_DEPLOYED_OPERATIONAL_OWNERSHIP_UNKNOWN"},
+    {"killSwitchId":"runtime-global-mutation-gate","reference":"LUZIONE_API_MUTATIONS_ENABLED","journeys":["GJ-1","GJ-2","GJ-3"],"state":"DEFAULT_OFF"},
+    {"killSwitchId":"provider-mode-gates","reference":"LUZIONE_API_PROVIDER_SANDBOX_ENABLED|LUZIONE_API_PROVIDER_LIVE_ENABLED plus tenant/destination allowlists","journeys":["GJ-2"],"state":"DEFAULT_OFF"},
+    {"killSwitchId":"core01-dark-contract-gates","reference":"LuzioneCoreFeatureFlags/v1","journeys":["GJ-1","GJ-2","GJ-3"],"state":"ALL_FALSE_CONTRACT_ONLY"}
+  ],
+  "unknownLedgerRef": "engineering/execution/core-02/CORE_02_UNKNOWN_OWNER_LEDGER_V1.json",
+  "ownerPacketDirectory": "engineering/execution/core-02/owner-returns",
+  "inventoryCounts": {
+    "routes": 37,
+    "canonicalObjectGroups": 7,
+    "relationGroups": 10,
+    "uniqueRelations": 60,
+    "principals": 10,
+    "opaqueCredentialBindings": 9,
+    "jobs": 2,
+    "flags": 6,
+    "dashboards": 3,
+    "alerts": 7,
+    "recoveryEntries": 2,
+    "rollbackEntries": 4,
+    "killSwitches": 4,
+    "unknowns": 19,
+    "ownerReturnPackets": 7
+  },
+  "strongestClaim": {
+    "engineeringState": "BOUNDED_PASS",
+    "releaseEvidence": "LOCAL_PROVEN",
+    "effectAuthority": "NO_EFFECT",
+    "finality": "BOUNDED_CLAIM",
+    "statement": "Tracked repository dependencies reachable from the three CRM journeys are inventoried. Production existence, binding, deployment, ownership transfer, managed recovery, and authenticated application composition remain unknown until signed returns and external evidence exist."
+  }
+}

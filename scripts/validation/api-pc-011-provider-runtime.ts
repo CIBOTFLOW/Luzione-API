@@ -2,10 +2,19 @@ import assert from "node:assert/strict";
 import { Pool } from "pg";
 import { PostgresWorkflowDeliveryStore } from "@/lib/platform-guarantees/postgresWorkflowDeliveryStore";
 import { sha256 } from "@/modules/platform-guarantees/eventContract";
-import { assertObservation, providerMessageFromRow, PROVIDER_ADAPTER_CONTRACT_VERSION } from "@/modules/provider-runtime/contracts";
+import {
+  PROVIDER_ADAPTER_CONTRACT_VERSION,
+  assertObservation,
+  buildProviderExecutionContext,
+  parsePreparedProviderDispatch,
+  preparedProviderDispatchDigest,
+  providerMessageFromRow,
+} from "@/modules/provider-runtime/contracts";
 import { ProviderAdapterRegistry } from "@/modules/provider-runtime/registry";
 import { ProviderWorkerRuntime } from "@/modules/provider-runtime/runtime";
 import { SandboxEchoProviderAdapter } from "@/modules/provider-runtime/sandboxEchoAdapter";
+import { buildEffectExecutionEnvelope, configuredEffectAdmissionPolicy, effectBindingKey, parseEffectExecutionEnvelope, type EffectAdmissionCheckpoint } from "@/modules/effect-admission/contracts";
+import { ConfiguredEffectAdmissionGate, PostgresEffectKillStateReader } from "@/modules/effect-admission/gate";
 
 const connectionString = process.env.DATABASE_URL?.trim();
 if (!connectionString) throw new Error("DATABASE_URL is required.");
@@ -13,7 +22,13 @@ const tenantId = "api-pc-011-a";
 const pool = new Pool({ connectionString });
 const store = new PostgresWorkflowDeliveryStore(pool);
 const adapter = new SandboxEchoProviderAdapter();
-const runtime = new ProviderWorkerRuntime(store, new ProviderAdapterRegistry([adapter]));
+const effectPolicy = {
+  ...configuredEffectAdmissionPolicy(),
+  enabled: true,
+  admittedBindings: new Set([effectBindingKey({ actor: { actorId: "proof-service", actorType: "service" }, credentialBindingId: adapter.credentialBindingId, destination: adapter.destination, provider: adapter.provider, tenantId })]),
+};
+const admission = new ConfiguredEffectAdmissionGate(new PostgresEffectKillStateReader(pool), () => effectPolicy);
+const runtime = new ProviderWorkerRuntime(store, new ProviderAdapterRegistry([adapter]), () => true, admission);
 
 async function seed(label: string, scenario: string, destination = "sandbox.echo", payloadHashOverride?: string) {
   const payload = { scenario };
@@ -46,7 +61,7 @@ async function seed(label: string, scenario: string, destination = "sandbox.echo
     `insert into public.p110_outbox_messages (
        tenant_id,outbox_message_id,receipt_id,event_id,destination,effect_class,authorization_ref,
        idempotency_key,payload,payload_hash,state
-     ) values ($1,'outbox-'||$2,'receipt-'||$2,'event-'||$2,$3,'EXTERNAL_EFFECT',
+     ) values ($1,'outbox-'||$2,'receipt-'||$2,'event-'||$2,$3,'NO_EFFECT',
        'sandbox-authorization:'||$2,'idempotency-'||$2,$4::jsonb,$5,'PENDING')`,
     values,
   );
@@ -69,7 +84,11 @@ async function main() {
     assert.equal(competing[0].length + competing[1].length, 1);
     const claimed = (competing[0][0] ?? competing[1][0]) as Record<string, unknown>;
     const owner = competing[0].length ? "worker-reconcile-a" : "worker-reconcile-b";
-    const message = providerMessageFromRow(claimed); const prepared = await adapter.prepare(message); const observed = assertObservation(await adapter.observe(prepared, String(claimed.provider_acknowledgement_ref)), message.resultingObjectVersion);
+    const claimedForReadback = await store.readClaimedReconciliationForAdmission({ reconciliationId: String(claimed.reconciliation_id), tenantId, workerId: owner });
+    const message = providerMessageFromRow(claimedForReadback);
+    const prepared = parsePreparedProviderDispatch(await adapter.prepare(message), message, adapter);
+    const context = buildProviderExecutionContext(parseEffectExecutionEnvelope(claimedForReadback.effect_execution_envelope), prepared);
+    const observed = assertObservation(await adapter.observe(context, String(claimed.provider_acknowledgement_ref)), message.resultingObjectVersion);
     await store.completeClaimedReconciliation({ observedObjectVersion: observed.observedObjectVersion, reconciliationId: String(claimed.reconciliation_id), result: observed.result, sourceReadbackRef: observed.sourceReadbackRef, tenantId, workerId: owner });
 
     await seed("ambiguous", "ambiguous"); await seed("rate", "rate_limited"); await seed("permanent", "permanent");
@@ -81,9 +100,22 @@ async function main() {
     await runtime.runReconciliationBatch({ limit: 10, tenantId, workerId: "worker-reconcile" });
 
     await seed("crash", "matched");
-    const crashClaim = await store.claimDueOutbox({ limit: 1, tenantId, workerId: "worker-crashed" }); assert.equal(crashClaim.length, 1);
-    const crashMessage = providerMessageFromRow(crashClaim[0]); const crashPrepared = await adapter.prepare(crashMessage);
-    await store.recordDispatchStarted({ adapterContractVersion: PROVIDER_ADAPTER_CONTRACT_VERSION, outboxMessageId: crashMessage.outboxMessageId, providerMode: adapter.mode, providerRequestRef: crashPrepared.providerRequestRef, tenantId, workerId: "worker-crashed" });
+    const crashRows = await store.claimDueOutbox({ limit: 1, tenantId, workerId: "worker-crashed" }); assert.equal(crashRows.length, 1);
+    const crashMessage = providerMessageFromRow(crashRows[0]);
+    const crashPrepared = parsePreparedProviderDispatch(await adapter.prepare(crashMessage), crashMessage, adapter);
+    const crashSubject = (checkpoint: EffectAdmissionCheckpoint) => ({
+      actor: crashMessage.actor, authorityRef: crashMessage.authorizationRef!, checkpoint,
+      credentialBindingId: adapter.credentialBindingId, destination: adapter.destination,
+      effectClass: crashMessage.effectClass, operationKey: crashMessage.idempotencyKey,
+      originatingEnvelopeRef: crashMessage.originatingEnvelopeRef,
+      preparedDispatchDigest: preparedProviderDispatchDigest(crashPrepared), provider: adapter.provider,
+      sourcePayloadHash: crashMessage.payloadHash, tenantId,
+    });
+    const crashClaim = await admission.decide(crashSubject("PROVIDER_CLAIM"));
+    const crashCredential = await admission.decide(crashSubject("PROVIDER_CREDENTIAL_RELEASE"), crashClaim);
+    const crashAdmission = await admission.decide(crashSubject("PROVIDER_PRE_EXECUTE"), crashCredential);
+    const crashContext = buildProviderExecutionContext(buildEffectExecutionEnvelope(crashSubject("PROVIDER_PRE_EXECUTE"), crashAdmission), crashPrepared);
+    await store.recordDispatchStarted({ adapterContractVersion: PROVIDER_ADAPTER_CONTRACT_VERSION, effectExecutionContext: crashContext, outboxMessageId: crashMessage.outboxMessageId, providerMode: adapter.mode, providerRequestRef: crashPrepared.providerRequestRef, tenantId, workerId: "worker-crashed" });
     await pool.query(`update public.p110_outbox_messages set locked_at=now()-interval '2 minutes',heartbeat_at=now()-interval '90 seconds',request_deadline_at=now()-interval '70 seconds',lease_expires_at=now()-interval '60 seconds' where tenant_id=$1 and outbox_message_id=$2`, [tenantId, crashMessage.outboxMessageId]);
     await runtime.runDeliveryBatch({ limit: 10, tenantId, workerId: "worker-reclaimer" });
     const crashState = await pool.query(`select state,last_error_code from public.p110_outbox_messages where tenant_id=$1 and outbox_message_id=$2`, [tenantId, crashMessage.outboxMessageId]);

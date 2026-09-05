@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "CORE-02/Owner-Return/v1",
+  "packetId": "CORE02-OWNER-PRODUCTION-DECISION/v1",
+  "projectId": "CORE-02",
+  "controllerAuthority": "CIBOTFLOW/Luzione-platform-program@7713b02201e5abb84a92bb0d2af91514d33c84d5",
+  "inventoryRef": "engineering/execution/core-02/CORE_02_API_ACTIVATION_CONE_MANIFEST_V1.json",
+  "requiredHumanFunction": "Production change approver",
+  "unknownIds": ["CORE02-U018"],
+  "allowedDecisions": ["PRESERVE", "ROLL_BACK", "NOT_OWNER", "UNKNOWN"],
+  "answers": [
+    {"unknownId":"CORE02-U018","values":{"decision":null,"affectedApiSurfaces":null,"accountableOwnerFunctions":null,"managedRecoveryRef":null,"executionAuthorityRef":null,"signedAt":null,"signatureRef":null}}
+  ],
+  "return": {"decision":null,"observedAt":null,"environmentRef":null,"secretValuesIncluded":false,"productionMutationPerformed":false,"notes":null},
+  "signer": {"name":null,"function":"Production change approver","authorityRef":null,"signedAt":null,"signatureRef":null}
+}

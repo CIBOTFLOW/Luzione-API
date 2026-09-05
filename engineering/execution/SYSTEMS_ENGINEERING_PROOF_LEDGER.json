@@ -1939,6 +1939,613 @@
         "promote exact candidate 0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a and record production readbacks",
         "exercise the approved rollback path and submit the resulting evidence to the controller"
       ]
+    },
+    {
+      "proof_id": "CORE_01_G0_CONTRACT_SPINE_20260905",
+      "project_id": "CORE-01",
+      "recorded_at": "2026-09-05T01:24:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "828de754e4104cd860e3f47adbf2e84c576e5c10",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "CORE-01 publishes a strict dark-only v1 contract/SDK candidate for Core operation, receipt, readback, onboarding, import, connector and SUPPORT-01 interfaces, preserves the exact five A02 draft pins, and maps all six Sultan RUNTIME-01 CRM capabilities without granting runtime, provider or production authority.",
+      "exercised_boundaries": [
+        "Fourteen positive semantic fixtures passed through exact-field SDK parsers.",
+        "All fourteen document boundaries rejected surplus, missing and wrong-version inputs for 42 sensitivity checks.",
+        "Operation, owner receipt and source readback kept request-time, committed and observed versions distinct while preserving the A02 causal chain.",
+        "Onboarding/import/connector tests rejected expired mandates, missing prohibitions, over-limit imports, inconsistent counts, credential literals and false source finality.",
+        "SUPPORT-01 tests rejected revoked membership/entitlement, stale evidence/version, illegal SLA pause, unverified auto-close, changed-payload replay, unapproved severity decrease, ambiguous finality, missing readback, disallowed reply delivery and broken append-only audit links.",
+        "The data-only RUNTIME-01 map matched all six exact Sultan capability IDs at consumer final e2b95ab71e5a604dcdd8ff6ab75b50a32ba4d838 and referenced only API-owned v1 contracts.",
+        "Focused compatibility passed 52/52; full repository tests passed 337/337; compliance 7/7, TypeScript, ESLint with zero warnings and the Next.js 16.3.4 webpack production build passed.",
+        "No HTTP route, database object, migration, provider adapter, credential access or production/default-branch mutation was introduced."
+      ],
+      "untested_boundaries": [
+        "independent exact-SHA L2 and L3 consumption of the frozen SDK and fixture digests",
+        "authenticated Git-bound preview HTTP readback",
+        "managed database/provider activation inventory and recovery evidence",
+        "any production command, connector, import, onboarding, support or communication effect",
+        "controller acceptance or G1/G2 authorization"
+      ],
+      "evidence_refs": [
+        "commit:828de754e4104cd860e3f47adbf2e84c576e5c10",
+        "contracts/core/luzione-core-v1.manifest.json",
+        "contracts/core/v1/luzione-core-contracts-v1.schema.json",
+        "contracts/core/consumer-mappings/sultan-runtime-01-v1.json",
+        "src/modules/luzione-core-contracts/consumerSdk.ts",
+        "src/modules/luzione-core-contracts/fixtures.ts",
+        "src/modules/luzione-core-contracts/tests/core-contracts.test.ts",
+        "architecture/production-convergence/CORE_01_WORKING_CONTRACT.md",
+        "engineering/execution/handoffs/CORE_01_CRM_ACTIVATION_CONE_INVENTORY_REQUEST.json"
+      ],
+      "failure_refs": [],
+      "cross_repo_handoffs": [
+        "RUNTIME-01 six-capability mapping for CIBOTFLOW/Sultan-OS@e2b95ab71e5a604dcdd8ff6ab75b50a32ba4d838",
+        "CORE-01 CRM activation-cone inventory request for L2/L3/L4/L5 and named database/recovery functions"
+      ],
+      "deferred_external_infra": [
+        "exact-head GitHub Actions",
+        "Git-bound preview and authenticated readback",
+        "managed recovery and production activation authority"
+      ],
+      "remaining_uncertainty": [
+        "Local strict parsing and build evidence do not prove an independent consumer or deployed transport boundary.",
+        "The CRM activation cone is a request with unknown ownership and recovery fields until named humans return signed evidence.",
+        "All feature flags are false and this candidate is not integrated, G1, production-ready or authorized for effects."
+      ],
+      "next_proof_needed": [
+        "push the final evidence head and obtain exact-head automated CI",
+        "have L2 and L3 pin the immutable SDK implementation and return independent compatibility evidence",
+        "keep activation blocked until the inventory, managed recovery, authenticated preview and controller gates pass"
+      ]
+    },
+    {
+      "proof_id": "CORE_02_G0_API_ACTIVATION_CONE_20260905",
+      "project_id": "CORE-02",
+      "recorded_at": "2026-09-05T01:58:29Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "c9e11c4d2ceb062678b3146ba6e8601ba7846761",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "CORE-02 inventories the tracked API-owned activation cone reachable from GJ-1, GJ-2 and GJ-3, routes all 19 unresolved facts to seven unsigned exact-field human-return packets, and mechanically preserves the exact CORE-01 contract and SDK trees without activating any runtime, database, provider or production effect.",
+      "exercised_boundaries": [
+        "The manifest accounts for 37 tracked routes, seven canonical object groups, ten relation groups covering 60 unique relations, ten principals, nine opaque credential references, two jobs, six flags, three dashboards, seven alerts, two recovery controls, four rollback controls and four kill switches.",
+        "Every tracked route source exists and exports the recorded method; every migration-owned relation resolves to a tracked CREATE TABLE statement.",
+        "Every one of 19 unknowns maps exactly once to one of seven unsigned owner packets whose answer keys equal the ledger-required field names.",
+        "Credential references remained opaque; packet and manifest scanning rejected credential values, connection-string passwords, private keys and long bearer tokens.",
+        "Job scheduling remained absent from repository Vercel cron configuration, tracked runtime flags remained documentary/default-off and monitor definitions remained tracked rather than deployed claims.",
+        "The checked-out contracts/core and src/modules/luzione-core-contracts trees matched immutable CORE-01 release trees d57ccc4cccd97b37acd1a1575b1e07ede5787349 and d594fa014d7020fdf8386c7a6926ff9b573ac355.",
+        "Focused tests passed 6/6; the full repository suite passed 343/343; seven compliance documents, TypeScript, ESLint and the Next.js 16.3.4 webpack build passed.",
+        "GitHub Release gate 33937609720 and CodeQL 33937609688 passed at exact SHA c9e11c4d2ceb062678b3146ba6e8601ba7846761; artifact 9960705385 has digest sha256:89363e3df7cf48560bd5bde1c583b4b97e10fdd1bd65f74ba103dcbe4325e29d.",
+        "GitHub/Vercel recorded preview deployment 6275914948/status 17854257697 for the exact SHA; one /api/v1/release read returned 302 to Vercel SSO, so no application readback claim is made.",
+        "No runtime source, contract, SDK, migration, secret, credential, production data, provider configuration, default branch or production surface was mutated."
+      ],
+      "untested_boundaries": [
+        "signed human confirmation of all 19 exact ownership, credential-mapping, scheduler, flag, monitor, recovery and production-decision fields",
+        "independent consumer interpretation of the inventory",
+        "authenticated exact-SHA application preview readback",
+        "managed backup/PITR and restore evidence",
+        "any activation, integration, provider effect, migration or production observation",
+        "controller acceptance or G1/G2 authorization"
+      ],
+      "evidence_refs": [
+        "commit:2e62ceba046192769148017b4f624846b6fa71c4",
+        "commit:c9e11c4d2ceb062678b3146ba6e8601ba7846761",
+        "pull-request:CIBOTFLOW/Luzione-API#67",
+        "engineering/execution/core-02/CORE_02_API_ACTIVATION_CONE_MANIFEST_V1.json",
+        "engineering/execution/core-02/CORE_02_UNKNOWN_OWNER_LEDGER_V1.json",
+        "engineering/execution/core-02/CORE_02_ARTIFACT_DIGESTS_V1.json",
+        "engineering/execution/core-02/owner-returns",
+        "src/modules/core-02-inventory/tests/core-02-inventory.test.ts",
+        "github-actions:33937609720",
+        "github-actions:33937609688",
+        "github-actions-artifact:9960705385",
+        "github-deployment:6275914948",
+        "github-deployment-status:17854257697"
+      ],
+      "failure_refs": [
+        "CORE_02_SHALLOW_PR_BASE_OBJECT_20260905"
+      ],
+      "cross_repo_handoffs": [
+        "Seven exact-field human owner-return packets are ready for controller routing; they do not authorize cross-repository edits."
+      ],
+      "deferred_external_infra": [
+        "signed human owner returns",
+        "authenticated preview access",
+        "managed recovery evidence",
+        "independent consumers and all activation authority"
+      ],
+      "remaining_uncertainty": [
+        "GJ-1 has frozen onboarding/import/connector contracts and legacy configuration artifacts, but no dedicated API onboarding mutation/readback route or proven runtime owner.",
+        "GJ-2 exposes default-off dark paths, but current canonical writer transfer, deployed principal membership, worker scheduling and cutover ownership remain unsigned.",
+        "GJ-3 has strict support contracts, but no support-specific route, store or worker and no signed support operations owner.",
+        "Tracked definitions and local/CI proof do not establish deployment, production binding or business finality."
+      ],
+      "next_proof_needed": [
+        "The controller routes the seven unsigned exact-field packets to their named human functions and admits only signature-verifiable returns that preserve all NO_EFFECT holds."
+      ]
+    },
+    {
+      "proof_id": "OPS_CONTRACTS_01_G0_OPERATIONS_EVIDENCE_20260905",
+      "project_id": "OPS-CONTRACTS-01",
+      "recorded_at": "2026-09-05T02:31:34Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "cf9fee8fbefa1dbda013788795b068477fa8535b",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "OPS-CONTRACTS-01 publishes a separate strict v1 schema, parser, generated SDK and fixture bundle for PROOF-OPS-01 and CUSTOMER-ZERO-OPS-01 operations evidence, composes with byte-identical LuzioneCoreContracts/v1 trees, and authorizes no route, persistence, provider, deployment, proof-window, stage or production effect.",
+      "exercised_boundaries": [
+        "All seventeen EvidenceRef, MetricCatalog, proof-entry/daily/weekly/capability/completeness/exception/incident/exit and customer-zero cadence/handoff/training/feedback/freeze/capacity/stage fixtures passed the same generated SDK boundary.",
+        "Every document rejected surplus, missing and wrong-version fields through the discriminated strict parser.",
+        "Missing accountable owner, capability coverage and record evidence failed closed; agent/Sultan owner, signer, approver and trainee identities were denied.",
+        "Completeness, proof-day credit and capacity utilization formulas were deterministic and mismatch-sensitive; a telemetry gap, hard-zero breach or capacity overrun could not earn credit or admission.",
+        "Unaccepted handoff, stale training, false stage jump/advance and bundled G2 evidence failed closed under an explicit assessment clock.",
+        "Corrections used append-only supersession; self-supersession and overwrite fields failed, and secret/direct-PII keys or values were rejected before compatibility evaluation.",
+        "The manifest pinned PROOF-OPS-01/v1 fingerprint b2c79f6a580267adfcac1745047518979070ee3f18d90df478dc4b6ec511cb8b and CUSTOMER-ZERO-OPS-01/v1 fingerprint ae1c5225f8bb1c45420572433ac659ff054a1fd2bfad1cb2bf740e5ae008e57c; drift in either packet or Core composition failed.",
+        "The checked-out contracts/core and src/modules/luzione-core-contracts trees remained d57ccc4cccd97b37acd1a1575b1e07ede5787349 and d594fa014d7020fdf8386c7a6926ff9b573ac355.",
+        "Focused tests passed 19/19; full repository tests passed 362/362; seven compliance documents, TypeScript, ESLint with zero warnings and the Next.js 16.3.4 webpack build passed.",
+        "No route, database object, migration, credential, provider call, runtime flag, deployment, default branch, production query/mutation, activation or rollback was introduced or exercised."
+      ],
+      "untested_boundaries": [
+        "independent L2 and L3 exact-SHA consumption of the generated SDK and fixtures",
+        "authenticated Git-bound deployed readback or any persisted operations-evidence record",
+        "activation-cone clearance, proof-window entry, live proof days or customer-zero production operations",
+        "managed recovery, exact-action G2 authority, controller acceptance or G1",
+        "any runtime, provider, customer, database, migration or production effect"
+      ],
+      "evidence_refs": [
+        "commit:cf9fee8fbefa1dbda013788795b068477fa8535b",
+        "contracts/operations-evidence/luzione-operations-evidence-v1.manifest.json",
+        "contracts/operations-evidence/v1/luzione-operations-evidence-v1.schema.json",
+        "contracts/operations-evidence/consumer-mappings/l2-crm-app-v1.json",
+        "contracts/operations-evidence/consumer-mappings/l3-sultan-runtime-v1.json",
+        "src/modules/operations-evidence-contracts/generatedSdk.ts",
+        "src/modules/operations-evidence-contracts/tests/operations-evidence-contracts.test.ts",
+        "engineering/execution/ops-contracts-01/OPS_CONTRACTS_01_ARTIFACT_DIGESTS_V1.json"
+      ],
+      "failure_refs": [
+        "OPS_CONTRACTS_01_INITIAL_CLOCK_VALIDATION_20260905",
+        "OPS_CONTRACTS_01_LINT_UNUSED_INDEX_20260905"
+      ],
+      "cross_repo_handoffs": [
+        "L2 CRM App consumer packet pins the exact implementation and prohibits local evidence/finality/authority redefinition.",
+        "L3 Sultan Runtime consumer packet permits evidence preparation only and prohibits agent accountability, approval, stage and exit authority."
+      ],
+      "deferred_external_infra": [
+        "exact-head automated CI",
+        "independent exact-SHA L2/L3 consumption",
+        "authenticated deployed application readback",
+        "activation-cone, managed recovery and all G1/G2 authority"
+      ],
+      "remaining_uncertainty": [
+        "The SDK is proven only against synthetic local documents and does not establish a truth store or deployed transport boundary.",
+        "The source packets are specification-complete but no proof window or customer-zero production operation has started.",
+        "A parsed readiness or exit record is evidence only and cannot authorize or execute an operational transition."
+      ],
+      "next_proof_needed": [
+        "L2 and L3 independently pin cf9fee8fbefa1dbda013788795b068477fa8535b, execute the published positive/negative fixtures without semantic forks, and return immutable zero-effect consumer evidence."
+      ]
+    },
+    {
+      "proof_id": "OPS_CONTRACTS_01_CORE_CORRECTION_01_G0_20260905",
+      "project_id": "OPS-CONTRACTS-01+CORE-CORRECTION-01",
+      "recorded_at": "2026-09-05T02:45:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "f5a62923e52510cdd40fbef41dc86266e33ab05e",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The unchanged OPS-CONTRACTS-01 v1 semantics at cf9fee8fbefa1dbda013788795b068477fa8535b are composed with bounded CORE-CORRECTION-01 fail-closed projection admission, bidirectionally complete three-journey inventory mappings, complete-evidence standard secret scanning and a detached exact-final attestation protocol without changing frozen LuzioneCoreContracts/v1.",
+      "exercised_boundaries": [
+        "Internal projections require exact true, exact global mutation enablement, configured database and service authentication, a non-empty tenant/source admission policy, the authenticated tenant and fixed SHOPIFY source.",
+        "The environment example sets the projection flag false and both admission lists empty, so no correction path enables a runtime effect.",
+        "Every journey route, relation-group, job and unknown list equals its reverse edge set; GJ-1 includes service-token identity unknown CORE02-U008.",
+        "All fifteen dedicated CORE-02 evidence paths are scanned byte-for-byte for standard connection URL, private key, bearer, GitHub, Stripe, OpenAI, Slack, Google, AWS, Shopify, Supabase, JWT, Vercel, npm, SendGrid and assigned-secret value classes.",
+        "All seven owner-return packets remain unsigned, all nineteen answers remain UNKNOWN, and no production fact is inferred.",
+        "Detached final evidence is constrained to a content-addressed annotated Git tag created after final commit; same-commit self-hash and a tracked final-SHA placeholder are prohibited.",
+        "Focused CORE-02 7/7, OPS-CONTRACTS-01 19/19, catalog projection 8/8 and topology 7/7 passed; full tests passed 364/364; compliance 7/7, TypeScript, zero-warning ESLint and Next.js 16.3.4 webpack build passed.",
+        "The frozen contracts/core and src/modules/luzione-core-contracts trees remain d57ccc4cccd97b37acd1a1575b1e07ede5787349 and d594fa014d7020fdf8386c7a6926ff9b573ac355."
+      ],
+      "untested_boundaries": [
+        "independent exact-SHA L2/L3 operations-evidence consumption",
+        "authenticated Git-bound application readback",
+        "signed human resolution of any CORE-02 owner unknown",
+        "managed recovery, deployment, activation, proof days, customer-zero operations, G1 or G2",
+        "any production database, provider, credential, migration or customer effect"
+      ],
+      "evidence_refs": [
+        "commit:cf9fee8fbefa1dbda013788795b068477fa8535b",
+        "commit:6873eedce7070064a624f6838edbea610e3143ae",
+        "commit:f5a62923e52510cdd40fbef41dc86266e33ab05e",
+        "pull-request:CIBOTFLOW/Luzione-API#68",
+        "engineering/execution/core-02/CORE_CORRECTION_01_REMEDIATION_V1.json",
+        "engineering/execution/core-02/CORE_02_EVIDENCE_SET_V1.json",
+        "src/lib/api/config.ts",
+        "src/app/api/v1/catalog/shopify/projections/route.ts",
+        "src/modules/core-02-inventory/tests/core-02-inventory.test.ts",
+        "src/modules/catalog-projection/tests/p113-catalog-projection.test.ts"
+      ],
+      "failure_refs": [
+        "CORE_CORRECTION_01_ASSURANCE_GAPS_20260905",
+        "CORE_CORRECTION_01_TOPOLOGY_ENV_INVENTORY_20260905"
+      ],
+      "cross_repo_handoffs": [
+        "L2 and L3 continue to pin operations implementation cf9fee8fbefa1dbda013788795b068477fa8535b because CORE-CORRECTION-01 does not change LuzioneOperationsEvidence/v1 semantics."
+      ],
+      "deferred_external_infra": [
+        "exact-final automated CI and detached attestation",
+        "independent consumers",
+        "authenticated deployed readback",
+        "signed ownership and managed recovery evidence"
+      ],
+      "remaining_uncertainty": [
+        "The controller audit remains NOT_CLEARED beyond the bounded repository defects; partial and unknown rows requiring external evidence are not promoted.",
+        "A parsed operations record is evidence only and the corrected projection path remains default-off."
+      ],
+      "next_proof_needed": [
+        "Publish and verify exact-final CI plus the detached content-addressed attestation, then release the API writer for ONBOARD-SPINE-L1-G0/v1 without starting it in this branch."
+      ]
+    },
+    {
+      "proof_id": "ONBOARD_CORE_01_G0_20260905",
+      "project_id": "ONBOARD-CORE-01",
+      "recorded_at": "2026-09-05T03:42:58Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "7f937c515960cb522215ae7e928b3075049477fe",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "ONBOARD-CORE-01 implements separately pinned API-owned Blueprint/Mandate, no-effect dry-run import and sandbox connector-validation slices behind exact default-off gates, with tenant-scoped append-only storage, P110 reservation/finality and reversible isolated migration proof while preserving frozen LuzioneCoreContracts/v1.",
+      "exercised_boundaries": [
+        "L2 DRAFT input mapped deterministically into L1-issued TenantBlueprint/v1 identity, canonical references and a stable tenant/sourcePackId/sourcePackVersion/sourceDigest/mappingVersion reservation.",
+        "Credential-bound human approval/supersession was append-only; client authority, stale object versions, cross-tenant reads, superseded Blueprints and expired/revoked Mandates failed closed.",
+        "Import dry-run required a current same-tenant SetupMandate allowing DRY_RUN_IMPORT, recomputed the exact source digest, enforced mandate counts and produced closed ImportBatch/v1 and ImportReceipt/v1 no-effect status/finality pairs.",
+        "Rejected/conflicted rows retained durable exception and reconciliation references; exact replay returned original P110 evidence and changed digest conflicted without a second mutation.",
+        "Connector validation admitted only an exact service actor, DRAFT same-tenant ConnectorBinding/v1, approved provider, opaque secret-ref identifier and sandbox.echo destination behind global, endpoint, tenant and provider-sandbox gates.",
+        "Matched, exact replay, changed-payload conflict, tenant/actor denial, ambiguous acknowledgement and source-unavailable reconciliation paths were exercised; ambiguity reconciled with one dispatch and L1 alone issued SyncReceipt/v1 finality.",
+        "Disposable Blueprint/Mandate proof produced 2 drafts, 2 approvals, 1 supersession, 1 mandate and 5 receipts; rollback removed 3 new relations while preserving P110 and reapply restored 3.",
+        "Disposable import proof produced 1 batch, 3 rows, 1 import receipt, 4 command receipts and 1 conflict; rollback removed only the 3 import relations, preserved SetupMandate and reapply restored 3.",
+        "Disposable connector proof produced 3 receipts, 1 conflict, 3 outbox rows, 3 delivery attempts, 3 reconciliations and 3 NO_EFFECT outcomes with zero schema delta.",
+        "Focused onboarding/provider suites passed 25/25; registry reconciliation passed 15/15; full compliance, typecheck, zero-warning lint, all 385 tests and Next.js 16.3.4 webpack build passed.",
+        "Frozen contracts/core and src/modules/luzione-core-contracts tree IDs remained d57ccc4cccd97b37acd1a1575b1e07ede5787349 and d594fa014d7020fdf8386c7a6926ff9b573ac355."
+      ],
+      "untested_boundaries": [
+        "exact-final automated CI and CodeQL",
+        "independent L2 exact-pin consumer compatibility",
+        "authenticated Git-bound application preview/readback",
+        "managed migration, backup/PITR and recovery",
+        "any production adapter, credential resolution, provider/customer effect, scheduler or hosted activation",
+        "G1, G2, merge, default-branch or production readiness"
+      ],
+      "evidence_refs": [
+        "commit:27b50a89658fe1572bfefe6ef6e02d993deaceb7",
+        "commit:46a14c3a499d57c8699395d714bb44e9a4576ab6",
+        "commit:7f937c515960cb522215ae7e928b3075049477fe",
+        "commit:cd5a9c091c61e1891112c94282c0f8882bf343ee",
+        "pull-request:CIBOTFLOW/Luzione-API#69",
+        "architecture/production-convergence/ONBOARD_CORE_01_WORKING_CONTRACT.md",
+        "engineering/execution/onboard-core-01/ONBOARD_CORE_01_ARTIFACT_DIGESTS_V1.json",
+        "engineering/execution/onboard-core-01/ONBOARD_CORE_01_L2_CONSUMER_PACKET_V1.json"
+      ],
+      "failure_refs": [
+        "ONBOARD_CORE_01_FULL_SUITE_INVENTORY_DRIFT_20260905",
+        "ONBOARD_CORE_01_DOCKER_SOCKET_SANDBOX_20260905"
+      ],
+      "cross_repo_handoffs": [
+        "L2 must pin the smallest exact semantic commit, keep Tenant Pack proposal-only and return independent strict fixture/HTTP consumer evidence without redefining L1-owned identity, approval, reservation, receipt or finality.",
+        "Sultan and provider workers may not consume this onboarding branch as general effect authority; the next EFFECT-ADMISSION-L1 cell owns that shared decision separately."
+      ],
+      "deferred_external_infra": [
+        "exact-final automated CI and protected preview",
+        "independent L2 consumption",
+        "authenticated deployed readback",
+        "managed recovery and every G1/G2 action"
+      ],
+      "remaining_uncertainty": [
+        "Local disposable Postgres evidence does not prove managed migration or hosted runtime behavior.",
+        "The sandbox echo adapter proves deterministic acknowledgement/reconciliation semantics only and does not prove any real provider integration.",
+        "No consumer, controller or production acceptance is inferred from producer evidence."
+      ],
+      "next_proof_needed": [
+        "Run exact-final automated CI on draft PR #69, record any protected Git-bound preview truthfully, then dispatch EFFECT-ADMISSION-L1 from the exact ONBOARD final on a fresh non-default branch."
+      ]
+    },
+    {
+      "proof_id": "EFFECT_ADMISSION_L1_G0_20260905",
+      "project_id": "EFFECT-ADMISSION-L1",
+      "recorded_at": "2026-09-05T04:17:01Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "7d3a269b1ae64ff26974942eb85216f5d008758d",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "EFFECT-ADMISSION-L1 publishes and applies one strict default-off luzione-effect-admission/v1 decision to Sultan prepare/execute and provider claim/pre-credential/pre-dispatch/reconcile boundaries, replaces raw Gmail-token authority with an opaque resolver boundary, records additive attempt evidence and preserves reservation/finality without activating any effect.",
+      "exercised_boundaries": [
+        "The decision binds tenant, service actor, authority evidence, stable operation key, recomputed payload hash, provider, destination, opaque credential-binding ID and a digest-derived kill version.",
+        "Unset/false admission, agent actor, tenant/provider/destination/credential mismatch, changed payload and unavailable kill state failed closed.",
+        "Provider work reread the durable claimed payload and kill state at claim/pre-credential and again immediately before dispatch; a kill change between checkpoints denied dispatch.",
+        "Ambiguous acknowledgement entered reconciliation; reconciliation invoked only source observation and did not redispatch.",
+        "The worker registers only sandbox.echo; the Gmail adapter requires an injected opaque resolver and no raw Gmail access-token environment authority remains in executable source.",
+        "The additive migration stored contract, decision reference/digest, kill version and opaque binding on new STARTED attempts; disposable proof observed five columns, reverse proof returned to zero and reapply returned to five.",
+        "The existing sandbox connector proof produced three NO_EFFECT receipts, one deterministic conflict, three attempts and three reconciliations with zero connector schema delta.",
+        "Focused effect/provider/Sultan tests passed 19/19; compliance passed 7/7; TypeScript, zero-warning ESLint, all 391 tests and the Next.js 16.3.4 webpack build passed.",
+        "Frozen LuzioneCoreContracts/v1 contract and SDK trees remained d57ccc4cccd97b37acd1a1575b1e07ede5787349 and d594fa014d7020fdf8386c7a6926ff9b573ac355."
+      ],
+      "untested_boundaries": [
+        "exact-final automated CI, CodeQL and authenticated Git-bound preview readback",
+        "independent L2/L3 exact-SHA consumption and the controller EFFECT-KILL recheck",
+        "managed migration, backup/PITR or deployed worker lifecycle",
+        "credential resolution, live provider acknowledgement, customer effect, production dispatch or recovery",
+        "G1, G2, merge, default-branch action or production readiness"
+      ],
+      "evidence_refs": [
+        "commit:7d3a269b1ae64ff26974942eb85216f5d008758d",
+        "architecture/production-convergence/EFFECT_ADMISSION_L1_WORKING_CONTRACT.md",
+        "contracts/effect-admission/luzione-effect-admission-v1.schema.json",
+        "engineering/execution/effect-admission-l1/EFFECT_ADMISSION_L1_ARTIFACT_DIGESTS_V1.json",
+        "engineering/execution/effect-admission-l1/EFFECT_ADMISSION_L1_API_SINK_INVENTORY_V1.json",
+        "engineering/execution/effect-admission-l1/EFFECT_ADMISSION_L1_CONSUMER_PACKET_V1.json",
+        "src/modules/effect-admission/tests/effect-admission.test.ts",
+        "supabase/migrations/20260905090000_effect_admission_evidence.sql"
+      ],
+      "failure_refs": ["EFFECT_ADMISSION_L1_TAXONOMY_REGISTRATION_20260905", "EFFECT_ADMISSION_L1_DISPOSABLE_PROOF_HARNESS_20260905"],
+      "cross_repo_handoffs": [
+        "L2 may preserve operation keys and return API-issued decisions/receipts but may not select identity, credential binding, kill version or finality; its separate sink correction remains required.",
+        "L3 must pin the exact API implementation and provider-adapter v0.2, preserve logical-agent versus service-actor separation and must not implement a local admission, credential, receipt or finality authority."
+      ],
+      "deferred_external_infra": ["exact-head automated CI", "authenticated preview access", "independent consumers", "managed recovery and every live effect authority"],
+      "remaining_uncertainty": [
+        "The controller audit remains NOT_CLEARED across its 38-route cross-repository census because the published source provides aggregate counts rather than a complete identifier list and L2 correction is outstanding.",
+        "The v0.2 provider boundary is a deliberate successor pin and is not evidence that any deployed worker consumes it.",
+        "Synthetic local evidence does not prove production credentials, providers, kill-state freshness or recovery."
+      ],
+      "next_proof_needed": [
+        "Run exact-final automated CI and record protected preview truth, then dispatch ONBOARD-CORE-CORRECTION-01 from that immutable final on a fresh non-default branch before OPS-CONTRACTS-CORRECTION-01."
+      ]
+    },
+    {
+      "proof_id": "ONBOARD_CORE_CORRECTION_01_G0_20260905",
+      "project_id": "ONBOARD-CORE-CORRECTION-01",
+      "recorded_at": "2026-09-05T04:59:03Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "0b7f2a968065c34283805db44940b95e5319fb02",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "ONBOARD-CORE-CORRECTION-01 publishes strict v2 onboarding boundaries that content-bind exact Tenant Pack schema and L2 mapper/evidence bytes, require a separately verified human subject, derive active Mandate state from append-only revocation, enforce runtime authority, derive import truth server-side and close connector success/finality around matching source readback without changing frozen Core semantics or enabling effects.",
+      "exercised_boundaries": [
+        "TenantBlueprintMap/v2 reservation and identity bind tenant, source pack ID/version/digest, exact admitted schema path/digest, mapping version and canonical L2 implementation/mapper/evidence binding digest; unknown bindings default to denied.",
+        "Approval and revocation require a separate signed non-anonymous Supabase user JWT with issuer, signature, lifetime, audience, role, session, tenant and capability validation; authority derives only from signed app_metadata and service-token actorType=user is insufficient.",
+        "SetupMandate revocation is an append-only tenant-scoped event; canonical readback derives active=false and preserves revocation evidence without overwriting the Mandate.",
+        "Import v2 accepts only immutable row digests, derives accepted/duplicate/conflict/rejected outcomes server-side, binds the exact Mandate sourceBindingDigest, enforces record limits and persists monotonic runtime measurement under a transaction-local deadline.",
+        "Connector validation requires the exact active same-tenant unexpired, unrevoked and unsuperseded Mandate allowing VALIDATE_CONNECTOR_READBACK, rechecks it on replay, and enforces one server deadline across reservation, sandbox dispatch and readback.",
+        "ConnectorValidationOutcome/v1 permits success only for SOURCE_CONFIRMED with MATCHED readback; ACKNOWLEDGED and RECONCILING remain non-success, while VERSION_MISMATCH, BLOCKED, AMBIGUITY_EXHAUSTED and TERMINAL_UNAVAILABLE expose no success receipt.",
+        "Exact VERSION_MISMATCH, effect-admission BLOCKED and acknowledgement-without-readback adverse probes passed alongside surplus/missing/wrong-version, cross-tenant, stale, revoked, changed-digest and zero-effect negatives.",
+        "Disposable Blueprint/Mandate proof produced 2 drafts, 2 approvals, 1 supersession, 1 Mandate and 5 receipts; correction reverse returned revocation relation/binding columns to the prior shape before v2 rows and reapply restored them.",
+        "Disposable import proof produced 1 batch, 4 server-derived rows, 1 import receipt, 5 command receipts and 1 changed-digest conflict; runtime columns reversed and reapplied in isolation.",
+        "Disposable connector proof produced three NO_EFFECT outbox records, one SOURCE_CONFIRMED outcome and one typed blocked/version mismatch path with zero connector schema delta.",
+        "Focused onboarding tests passed 16/16; compliance passed 7/7; TypeScript, zero-warning ESLint, all 387 tests and the Next.js 16.3.4 webpack build passed.",
+        "Frozen contracts/core, src/modules/luzione-core-contracts and src/modules/effect-admission tree IDs remained d57ccc4cccd97b37acd1a1575b1e07ede5787349, d594fa014d7020fdf8386c7a6926ff9b573ac355 and 5a0fe4010280d93d7250c8c66bc6ca4e6540e609."
+      ],
+      "untested_boundaries": [
+        "exact-final automated CI, CodeQL and authenticated Git-bound preview application readback",
+        "independent L2 exact-SHA mapper/evidence return and compatibility journey",
+        "managed migration, backup/PITR, rollback or deployed human-authentication key discovery",
+        "credential resolution, scheduler, live provider/customer effect or hosted activation",
+        "G1, G2, merge, default-branch action or production readiness"
+      ],
+      "evidence_refs": [
+        "commit:0b7f2a968065c34283805db44940b95e5319fb02",
+        "architecture/production-convergence/ONBOARD_CORE_CORRECTION_01_WORKING_CONTRACT.md",
+        "engineering/execution/onboard-core-correction-01/ONBOARD_CORE_CORRECTION_01_ARTIFACT_DIGESTS_V1.json",
+        "engineering/execution/onboard-core-correction-01/ONBOARD_CORE_CORRECTION_01_L2_CONSUMER_PACKET_V1.json",
+        "engineering/execution/handoffs/ONBOARD_CORE_CORRECTION_01_G0_CONTROLLER_HANDOFF.json",
+        "contracts/onboard-core/luzione-tenant-pack-draft-v1.schema.json",
+        "supabase/migrations/20260905050000_onboard_core_correction_01.sql",
+        "scripts/validation/rollback-onboard-core-correction-01.sql"
+      ],
+      "failure_refs": [
+        "ONBOARD_CORE_CORRECTION_01_SUPABASE_CLI_UNAVAILABLE_20260905",
+        "ONBOARD_CORE_CORRECTION_01_DOCKER_SOCKET_SANDBOX_20260905",
+        "ONBOARD_CORE_CORRECTION_01_REVERSE_ORDERING_20260905",
+        "ONBOARD_CORE_CORRECTION_01_REPLAY_DEADLINE_20260905",
+        "ONBOARD_CORE_CORRECTION_01_INVENTORY_DIGEST_20260905"
+      ],
+      "cross_repo_handoffs": [
+        "L2 must return the exact signed implementation SHA plus mapper/evidence paths and byte digests for admission; it remains proposal-only and may not define identity, authority, import outcome, receipt or finality.",
+        "L3 must not treat this connector-validation boundary as effect authority; the exact execution-envelope correction remains a separate next writer cell."
+      ],
+      "deferred_external_infra": ["exact-head CI", "authenticated preview access", "independent L2 consumer", "managed recovery and every live effect authority"],
+      "remaining_uncertainty": [
+        "No L2 mapper/evidence tuple is admitted by default, so every hosted proposal remains denied until an exact owner return exists.",
+        "The local Supabase JWT verifier proof uses generated signing keys and does not prove deployed JWKS availability or human session policy.",
+        "Local disposable Postgres and SandboxEcho evidence do not prove managed migration, provider behavior or production recovery."
+      ],
+      "next_proof_needed": [
+        "Seal and push the exact final, bind exact-head CI and detached tag evidence, then create a fresh non-default EFFECT-ADMISSION-L1-CORRECTION-01 branch under fingerprint a24eefb14a9681ad97a415b8d48c43a7d88900e8c86a8f489645f9354a1a62d9."
+      ]
+    },
+    {
+      "proof_id": "EFFECT_ADMISSION_L1_CORRECTION_01_G0_20260905",
+      "project_id": "EFFECT-ADMISSION-L1-CORRECTION-01",
+      "recorded_at": "2026-09-05T05:42:28Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "6bdc17b343a94b55de2b4cdd34c485ea06ab97a6",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "SANDBOX_ONLY",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "EFFECT-ADMISSION-L1-CORRECTION-01 versions the insufficient v1 boundary into a strict v2 admission plus one content-bound execution envelope, rereads kill state before credential release and immediately before execute, atomically records the final envelope at STARTED, reconciles only from that origin without redispatch, and persists linked Sultan Stage-5 prepare/execute lineage while authorizing no live effect.",
+      "exercised_boundaries": [
+        "Effect admission v2 binds source payload, canonical prepared-dispatch digest, tenant, authenticated actor, authority, operation key, provider, destination, opaque credential-binding ID and originating envelope into one deterministic execution identity.",
+        "Provider v0.3 preparation is strict and effect/credential-free; credential release requires exact claim lineage; a final pre-execute decision rereads kill state and alone produces the typed execution envelope.",
+        "Unset/false admission, agent actor, tenant/actor/authority/provider/destination/binding drift, changed source/prepared digest, missing prior decision, kill at credential release, kill before execute, live adapter mode, surplus/missing/wrong-version and stored-envelope tampering failed closed.",
+        "The final provider execution envelope is inserted atomically with STARTED and constrained to SANDBOX mode, exact admission, execution identity, origin, prepared digest, opaque binding and kill version.",
+        "Ambiguous acknowledgement produced one execute and one reconciliation; reconciliation loaded and matched the originating stored envelope, and tampering produced VERSION_MISMATCH without a second execute.",
+        "Sultan prepare stores exact Stage-5 admission receipt ID/hash, origin, prepare admission reference and execution identity under a three-column content-hash foreign key.",
+        "Sultan execute rereads the reservation/admission join, verifies the signed human authority and persists an exact SULTAN_EXECUTE envelope on the append-only internal action.",
+        "The historical Gmail v0.2 adapter remains only for compatibility tests and is structurally incompatible with the current v0.3 sandbox-only registry; no credential resolver or provider call was run.",
+        "Disposable Postgres observed 13 correction columns and 4 constraints, proved cross-tenant kill isolation and kill-version changes, reversed to 0 correction columns, reapplied to 13 and cleaned up.",
+        "Focused suites passed 21/21; compliance passed 7/7; TypeScript, zero-warning ESLint, all 389 tests and Next.js 16.3.4 webpack build passed.",
+        "Frozen contracts/core and src/modules/luzione-core-contracts tree IDs remained d57ccc4cccd97b37acd1a1575b1e07ede5787349 and d594fa014d7020fdf8386c7a6926ff9b573ac355."
+      ],
+      "untested_boundaries": [
+        "exact-final automated CI, CodeQL and authenticated Git-bound preview application readback",
+        "independent L2/L3 exact-SHA consumer compatibility",
+        "managed migration, backup/PITR and recovery",
+        "credential resolution, live provider acknowledgement/readback, production worker lifecycle or any customer effect",
+        "G1, G2, merge, default-branch action, activation, production rollback or production readiness"
+      ],
+      "evidence_refs": [
+        "commit:6bdc17b343a94b55de2b4cdd34c485ea06ab97a6",
+        "architecture/production-convergence/EFFECT_ADMISSION_L1_CORRECTION_01_WORKING_CONTRACT.md",
+        "engineering/execution/effect-admission-l1-correction-01/EFFECT_ADMISSION_L1_CORRECTION_01_ARTIFACT_DIGESTS_V1.json",
+        "engineering/execution/effect-admission-l1-correction-01/EFFECT_ADMISSION_L1_CORRECTION_01_ASSURANCE_MATRIX_V1.json",
+        "engineering/execution/effect-admission-l1-correction-01/EFFECT_ADMISSION_L1_CORRECTION_01_CONSUMER_PACKET_V1.json",
+        "engineering/execution/handoffs/EFFECT_ADMISSION_L1_CORRECTION_01_G0_CONTROLLER_HANDOFF.json",
+        "supabase/migrations/20260905120000_effect_admission_l1_correction.sql",
+        "scripts/validation/rollback-effect-admission-l1-correction.sql"
+      ],
+      "failure_refs": [
+        "EFFECT_ADMISSION_L1_CORRECTION_01_PGCRYPTO_HARNESS_20260905",
+        "EFFECT_ADMISSION_L1_CORRECTION_01_INFO_SCHEMA_VISIBILITY_20260905"
+      ],
+      "cross_repo_handoffs": [
+        "L2 may consume only opaque API-issued decisions/references and exact pins; it cannot select or redefine identity, authority, binding, kill version, receipt or finality.",
+        "L3 must call the API prepare/execute boundary and preserve logical-agent versus authenticated-service identity; it cannot build a Sultan-local admission, credential or execution-envelope authority."
+      ],
+      "deferred_external_infra": [
+        "exact-head CI and protected preview",
+        "independent consumers",
+        "managed recovery and every live effect authority"
+      ],
+      "remaining_uncertainty": [
+        "Local synthetic evidence does not prove hosted worker, managed database or provider behavior.",
+        "No exact v2 consumer return exists.",
+        "No live adapter contract is admitted by v0.3."
+      ],
+      "next_proof_needed": [
+        "Push the exact final, bind automated CI and detached tag evidence, then wait for controller acceptance before the fresh CONNECTOR-REVOCATION-L1-G0 successor."
+      ]
+    },
+    {
+      "proof_id": "EFFECT_ADMISSION_L1_CORRECTION_02_G0_20260905",
+      "project_id": "EFFECT-ADMISSION-L1-CORRECTION-02",
+      "recorded_at": "2026-09-05T06:32:09Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "86809a9243c594a2898d31d14bbeda3324cacd7b",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "SANDBOX_ONLY",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "EFFECT-ADMISSION-L1-CORRECTION-02 strict-parses and binds every gate decision to its exact subject/prior, adds a fresh unchanged post-STARTED pre-execute decision, binds reconciliation to an immutable tenant/outbox/delivery-attempt tuple, enforces exact destination grammar and rejects live or wrong-version v0.3 registrations without authorizing a live effect.",
+      "exercised_boundaries": [
+        "Foreign and malformed admitted decisions failed before credential release; each decision matched the exact tenant, actor, authority, operation, source/prepared payload, provider, destination, opaque binding, origin and required prior.",
+        "A kill introduced after STARTED denied the fresh immediately-pre-execute decision; no adapter execute call occurred.",
+        "The post-STARTED decision had to preserve decision reference, kill version, execution identity and execution-envelope identity from the durable STARTED record.",
+        "P110 reconciliation checkpoint insertion and subsequent admission/completion joined the immutable tenant, outbox message, delivery-attempt ID and attempt number; a foreign attempt ID failed the composite foreign key.",
+        "Whitespace and over-190 destinations failed exact parser/schema checks; non-SANDBOX and wrong-version adapters failed during v0.3 registry construction.",
+        "Focused effect/provider/Sultan tests passed 23/23; the combined disposable proof reversed both additive correction columns and connector objects to zero, reapplied to four and cleaned up.",
+        "Frozen contracts/core and src/modules/luzione-core-contracts tree IDs remained d57ccc4cccd97b37acd1a1575b1e07ede5787349 and d594fa014d7020fdf8386c7a6926ff9b573ac355."
+      ],
+      "untested_boundaries": [
+        "exact-final automated CI, CodeQL and authenticated Git-bound application readback",
+        "independent L2/L3/provider-worker exact-SHA compatibility",
+        "managed migration, backup/PITR and recovery",
+        "credential release against a real resolver, live provider execution or hosted worker lifecycle",
+        "G1, G2, merge, default-branch, deployment, activation, rollback or production readiness"
+      ],
+      "evidence_refs": [
+        "commit:86809a9243c594a2898d31d14bbeda3324cacd7b",
+        "architecture/production-convergence/EFFECT_ADMISSION_L1_CORRECTION_02_WORKING_CONTRACT.md",
+        "engineering/execution/connector-revocation-l1-g0/EFFECT_ADMISSION_L1_CORRECTION_02_ARTIFACT_DIGESTS_V1.json",
+        "engineering/execution/connector-revocation-l1-g0/EFFECT_ADMISSION_L1_CORRECTION_02_CONSUMER_PACKET_V1.json",
+        "supabase/migrations/20260905131000_effect_admission_l1_correction_02.sql",
+        "scripts/validation/rollback-effect-admission-l1-correction-02.sql"
+      ],
+      "failure_refs": [
+        "CONNECTOR_REVOCATION_L1_G0_SUPABASE_CLI_UNAVAILABLE_20260905",
+        "CONNECTOR_REVOCATION_L1_G0_EXHAUSTIVE_METADATA_20260905"
+      ],
+      "cross_repo_handoffs": [
+        "L2/L3 may preserve API-issued decision and attempt references but may not mint, repair or select effect authority, kill versions, execution envelopes, credentials, receipts or finality.",
+        "Any provider worker consumer must pin v0.3, register only SANDBOX adapters and reconcile from the immutable originating-attempt tuple."
+      ],
+      "deferred_external_infra": ["exact-head CI", "authenticated preview readback", "independent consumers", "managed recovery and every live-effect authority"],
+      "remaining_uncertainty": [
+        "Synthetic tests and disposable Postgres do not prove hosted concurrency, managed migration or provider behavior.",
+        "No live adapter or credential resolver is admitted by this candidate."
+      ],
+      "next_proof_needed": [
+        "Bind the combined exact final to automated CI and an immutable tag, then obtain independent exact-pin consumer evidence before any integration claim."
+      ]
+    },
+    {
+      "proof_id": "CONNECTOR_REVOCATION_L1_G0_20260905",
+      "project_id": "CONNECTOR-REVOCATION-L1-G0",
+      "recorded_at": "2026-09-05T06:32:09Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "a1329b669262b2abbffc8e9ec501e866429c0d55",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "SANDBOX_ONLY",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "CONNECTOR-REVOCATION-L1-G0 publishes a strict default-off service-plus-human POST and same-tenant GET around append-only ConnectorRevocationReceipt/v1 evidence, P110 reservation/reconciliation and one credential-free NO_EFFECT emulator while keeping remote finality, local credential disposition and recovery authority independent.",
+      "exercised_boundaries": [
+        "ConnectorRevocationRequest/v1 recomputed the exact digest and bound a BOUND ConnectorBinding/v1, same tenant, provider account, versioned opaque credential reference, operation and deterministic scenario.",
+        "A distinct signed human capability was required in addition to the service transport; client authority, cross-tenant binding, provider account, binding ID and credential-version drift failed closed.",
+        "P110 reserved by tenant plus operation key; exact replay returned the original receipt and changed payload recorded a conflict without a second accepted operation.",
+        "REVOKED required MATCHED source readback. ACK, pending, source unavailable, ambiguity exhaustion, version mismatch and failed remote revoke remained typed non-success and retained the local credential.",
+        "A genuine-human forward-recovery append could record ERASURE_AUTHORIZED_NO_EFFECT while preserving the prior terminal non-success remote finality; no credential was resolved or erased.",
+        "Only ConnectorRevocationEmulatorAdapter v0.3/SANDBOX/NO_EFFECT was registered; three disposable P110 outboxes were NO_EFFECT and addressed only sandbox.connector-revocation.",
+        "Disposable Postgres proved forced RLS, cross-tenant invisibility, append-only update/delete denial, impossible-finality denial, active-kill denial and rollback/reapply from zero to four combined objects with cleanup.",
+        "Focused revocation tests passed 9/9; combined focused tests passed 32/32; compliance passed 7/7; TypeScript, zero-warning lint, all 400 repository tests and the Next.js 16.3.4 webpack build passed.",
+        "Frozen ConnectorBinding/v1 meaning and Core tree IDs d57ccc4cccd97b37acd1a1575b1e07ede5787349 and d594fa014d7020fdf8386c7a6926ff9b573ac355 remained unchanged."
+      ],
+      "untested_boundaries": [
+        "exact-final automated CI, CodeQL and authenticated Git-bound application readback",
+        "independent L2/L3 exact-SHA consumption",
+        "managed migration, backup/PITR, rollback and recovery",
+        "real provider revocation, credential lookup/erasure, hosted polling or production worker lifecycle",
+        "G1, G2, merge, default-branch, deployment, activation, production rollback or production readiness"
+      ],
+      "evidence_refs": [
+        "commit:a1329b669262b2abbffc8e9ec501e866429c0d55",
+        "architecture/production-convergence/CONNECTOR_REVOCATION_L1_G0_WORKING_CONTRACT.md",
+        "engineering/execution/connector-revocation-l1-g0/CONNECTOR_REVOCATION_L1_G0_ARTIFACT_DIGESTS_V1.json",
+        "engineering/execution/connector-revocation-l1-g0/CONNECTOR_REVOCATION_L1_G0_CONSUMER_PACKET_V1.json",
+        "engineering/execution/connector-revocation-l1-g0/COMBINED_ASSURANCE_MATRIX_V1.json",
+        "engineering/execution/handoffs/CONNECTOR_REVOCATION_L1_G0_CONTROLLER_HANDOFF.json",
+        "supabase/migrations/20260905130000_connector_revocation_receipts.sql",
+        "scripts/validation/rollback-connector-revocation-l1-g0.sql"
+      ],
+      "failure_refs": [
+        "CONNECTOR_REVOCATION_L1_G0_SUPABASE_CLI_UNAVAILABLE_20260905",
+        "CONNECTOR_REVOCATION_L1_G0_PRIOR_READ_LOCK_20260905",
+        "CONNECTOR_REVOCATION_L1_G0_EXHAUSTIVE_METADATA_20260905"
+      ],
+      "cross_repo_handoffs": [
+        "L2 may render exact API-owned receipt/readback outcomes but cannot supply identity, tenant, human authority, kill versions, credential disposition or finality.",
+        "L3 may call the API as service transport after distinct human approval but cannot become the revocation, credential, receipt or remote-finality writer."
+      ],
+      "deferred_external_infra": ["exact-head CI", "authenticated preview access", "independent consumers", "managed recovery and every real credential/provider action"],
+      "remaining_uncertainty": [
+        "The emulator proves deterministic state separation only and is not evidence of provider revocation.",
+        "The append-only local disposition is evidence only; no system that performs credential erasure was introduced or exercised.",
+        "Controller and consumer acceptance are not inferred."
+      ],
+      "next_proof_needed": [
+        "Push and tag the combined exact final, bind exact-head automated CI, then require controller acceptance before OPS-CONTRACTS-CORRECTION-01 starts on a fresh non-default branch."
+      ]
     }
   ]
 }

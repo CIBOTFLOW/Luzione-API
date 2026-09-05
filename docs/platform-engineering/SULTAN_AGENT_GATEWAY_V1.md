@@ -1,6 +1,6 @@
 # Luzione Sultan Agent Gateway v1
 
-Status: implemented and default-off for external effects. The repository contains no active RFQ policy envelope and local tests do not send email.
+Status: implemented and default-off for external effects. The repository contains no active RFQ policy envelope and local tests do not send email. The corrected provider worker accepts only `luzione-provider-adapter/v0.3` sandbox adapters and `luzione-effect-admission/v2` with `effectAuthority=SANDBOX_ONLY`.
 
 ## Boundary
 
@@ -35,13 +35,13 @@ The durable outbox permits one provider attempt. A transport or acknowledgement 
 Activation is an external, reviewed operational decision—not part of schema deployment. It requires all of these independent conditions:
 
 1. Deploy the API migration and provider worker candidate.
-2. Configure `SULTAN_RFQ_CANARY_SENDER` and API/worker-owned `GMAIL_SULTAN_RFQ_ACCESS_TOKEN` outside Sultan and UI.
+2. Publish and separately review a future live-adapter contract that preserves the v2 execution-envelope and double kill-read semantics. The retained Gmail v0.2 canary adapter is historical test compatibility only and cannot register with the v0.3 sandbox worker.
 3. Enable the existing live-provider controls only for tenant `luzione` and destination `gmail.sultan-rfq-canary`.
 4. Create one reviewed `public.sultan_agent_policy_envelopes` record bound to the exact synthetic case, steward/tool versions, sender, recipient, prefix, activation time, expiry, and daily maximum.
 5. Enable Sultan's separate fixed-case canary gate.
 6. Observe the P110 receipt and Gmail readback after each run. Do not infer delivery.
 
-No migration seeds an envelope. General supplier or customer outreach remains blocked.
+No migration seeds an envelope. No current v2 contract authorizes live execution, no credential resolver is registered, and general supplier or customer outreach remains blocked.
 
 ## Containment
 

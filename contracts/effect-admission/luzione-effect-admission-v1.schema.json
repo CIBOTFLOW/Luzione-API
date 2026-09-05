@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/effect-admission/luzione-effect-admission-v1.schema.json",
+  "title": "Luzione Effect Admission v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contractVersion", "decisionRef", "admitted", "denialCode", "checkpoint", "tenantId", "actor", "authorityRef", "operationKey", "payloadHash", "provider", "destination", "credentialBindingId", "killVersion", "bindingDigest", "credentialResolutionAuthorized", "dispatchAuthorized", "noEffectOnly", "effectClass"],
+  "properties": {
+    "contractVersion": { "const": "luzione-effect-admission/v1" },
+    "decisionRef": { "type": "string", "pattern": "^effect-admission:[a-f0-9]{64}$" },
+    "admitted": { "type": "boolean" },
+    "denialCode": { "type": ["string", "null"], "enum": [null, "ACTOR_NOT_AUTHORIZED", "ACTIVE_KILL_SWITCH", "ADMISSION_DISABLED", "AUTHORITY_REQUIRED", "BINDING_CHANGED", "CREDENTIAL_BINDING_NOT_ADMITTED", "KILL_STATE_UNAVAILABLE", "PAYLOAD_HASH_INVALID"] },
+    "checkpoint": { "enum": ["SULTAN_PREPARE", "SULTAN_EXECUTE", "PROVIDER_CLAIM", "PROVIDER_PRE_CREDENTIAL", "PROVIDER_PRE_DISPATCH", "PROVIDER_RECONCILE"] },
+    "tenantId": { "$ref": "#/$defs/token" },
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actorId", "actorType"],
+      "properties": {
+        "actorId": { "$ref": "#/$defs/token" },
+        "actorType": { "enum": ["service", "system", "user", "agent"] }
+      }
+    },
+    "authorityRef": { "$ref": "#/$defs/token" },
+    "operationKey": { "$ref": "#/$defs/token" },
+    "payloadHash": { "$ref": "#/$defs/digest" },
+    "provider": { "$ref": "#/$defs/token" },
+    "destination": { "type": "string", "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)+$", "maxLength": 190 },
+    "credentialBindingId": { "$ref": "#/$defs/token" },
+    "killVersion": { "type": "string", "pattern": "^kill:[a-f0-9]{64}$" },
+    "bindingDigest": { "$ref": "#/$defs/digest" },
+    "credentialResolutionAuthorized": { "type": "boolean" },
+    "dispatchAuthorized": { "type": "boolean" },
+    "noEffectOnly": { "const": true },
+    "effectClass": { "enum": ["EXTERNAL_EFFECT", "NO_EFFECT", "REVERSIBLE_INTERNAL"] }
+  },
+  "$defs": {
+    "token": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:@/-]{1,511}$" },
+    "digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "schemaVersion": "EFFECT-ADMISSION-L1/API-Sink-Inventory/v1",
+  "projectId": "EFFECT-ADMISSION-L1",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "branch": "codex/effect-admission-l1-g0-f7fd111",
+  "baseSha": "6a667b4f2d78cafd506929396d0042fafcbb9356",
+  "implementationSha": "7d3a269b1ae64ff26974942eb85216f5d008758d",
+  "controllerAudit": {
+    "packet": "EFFECT-KILL-AUDIT-01/v1",
+    "fingerprint": "b7a73c98c741f0d258bada5297b59092adb5ce3ae6fbdb8e01ed09758d3f155d",
+    "decision": "NOT_CLEARED",
+    "crossRepositoryCounts": {"total":38,"guarded":2,"partial":11,"failOpen":19,"excluded":6},
+    "scopeStatement": "The controller source publishes counts and material findings, not a 38-row identifier list. This inventory therefore enumerates the exact API correction cone only and does not invent UI sink rows or claim that the cross-repository audit is cleared."
+  },
+  "apiCorrectionSurfaces": [
+    {
+      "surfaceId": "EA-API-001",
+      "entrypoint": "POST /api/v1/sultan/tool-invocations for consequential tools",
+      "sourcePaths": ["src/app/api/v1/sultan/tool-invocations/route.ts", "src/modules/sultan-agent-gateway/service.ts"],
+      "checkpoint": "SULTAN_PREPARE",
+      "effect": "P110-adjacent command reservation only",
+      "status": "GUARDED_DEFAULT_OFF"
+    },
+    {
+      "surfaceId": "EA-API-002",
+      "entrypoint": "POST /api/v1/sultan/commands/prepare",
+      "sourcePaths": ["src/app/api/v1/sultan/commands/prepare/route.ts", "src/modules/sultan-agent-gateway/service.ts"],
+      "checkpoint": "SULTAN_PREPARE",
+      "effect": "tenant-scoped command reservation only",
+      "status": "GUARDED_DEFAULT_OFF"
+    },
+    {
+      "surfaceId": "EA-API-003",
+      "entrypoint": "POST /api/v1/sultan/commands/execute",
+      "sourcePaths": ["src/app/api/v1/sultan/commands/execute/route.ts", "src/modules/sultan-agent-gateway/service.ts", "src/modules/sultan-agent-gateway/postgresStore.ts"],
+      "checkpoint": "SULTAN_EXECUTE",
+      "effect": "reversible internal Sultan action after distinct signed approval",
+      "status": "GUARDED_DEFAULT_OFF"
+    },
+    {
+      "surfaceId": "EA-API-004",
+      "entrypoint": "provider worker delivery claim and preparation",
+      "sourcePaths": ["src/modules/provider-runtime/runtime.ts", "src/lib/platform-guarantees/postgresWorkflowDeliveryStore.ts"],
+      "checkpoint": "PROVIDER_CLAIM|PROVIDER_PRE_CREDENTIAL",
+      "effect": "lease plus typed request preparation",
+      "status": "GUARDED_DEFAULT_OFF_AND_FRESH_ROW_REREAD"
+    },
+    {
+      "surfaceId": "EA-API-005",
+      "entrypoint": "provider worker dispatch",
+      "sourcePaths": ["src/modules/provider-runtime/runtime.ts", "src/lib/platform-guarantees/postgresWorkflowDeliveryStore.ts"],
+      "checkpoint": "PROVIDER_PRE_DISPATCH",
+      "effect": "durable dispatch-start followed by adapter execute",
+      "status": "GUARDED_DEFAULT_OFF_FRESH_KILL_AND_PAYLOAD_REREAD"
+    },
+    {
+      "surfaceId": "EA-API-006",
+      "entrypoint": "provider worker reconciliation",
+      "sourcePaths": ["src/modules/provider-runtime/runtime.ts", "src/lib/platform-guarantees/postgresWorkflowDeliveryStore.ts"],
+      "checkpoint": "PROVIDER_RECONCILE",
+      "effect": "source observation only",
+      "status": "GUARDED_DEFAULT_OFF_NO_EXECUTE_OR_REDISPATCH"
+    },
+    {
+      "surfaceId": "EA-API-007",
+      "entrypoint": "Gmail RFQ canary adapter credential resolution/send/readback",
+      "sourcePaths": ["src/modules/sultan-agent-gateway/gmailRfqCanaryAdapter.ts", "scripts/run-provider-worker.ts"],
+      "checkpoint": "PROVIDER_PRE_CREDENTIAL|PROVIDER_PRE_DISPATCH|PROVIDER_RECONCILE",
+      "effect": "potential external email",
+      "status": "OPAQUE_RESOLVER_REQUIRED_AND_NOT_REGISTERED_BY_WORKER"
+    },
+    {
+      "surfaceId": "EA-API-008",
+      "entrypoint": "POST /api/v1/connectors/sync-validations via sandbox.echo",
+      "sourcePaths": ["src/modules/onboard-core/connectorService.ts", "src/modules/provider-runtime/sandboxEchoAdapter.ts"],
+      "checkpoint": "PROVIDER_CLAIM|PROVIDER_PRE_CREDENTIAL|PROVIDER_PRE_DISPATCH|PROVIDER_RECONCILE",
+      "effect": "deterministic sandbox acknowledgement/readback",
+      "status": "GUARDED_DEFAULT_OFF_NO_EFFECT"
+    }
+  ],
+  "preservedOutsideCorrectionCone": [
+    "Six canonical domain command families retain their existing global mutation gate, tenant admission, reservation/replay/version, receipt and readback controls.",
+    "Internal Shopify projections retain the accepted exact-true global-plus-tenant-plus-source admission correction.",
+    "UI-owned effect sinks remain L2 correction responsibility and are not claimed, wrapped or cleared here."
+  ],
+  "runtimeTruth": {
+    "effectAdmissionEnabledDefault": false,
+    "effectAdmissionBindingsDefault": [],
+    "registeredWorkerAdapters": ["sandbox.echo"],
+    "registeredLiveAdapters": [],
+    "credentialValuesReadOrStored": false,
+    "providerCallsExecutedInEvidence": false,
+    "productionQueriedOrChanged": false
+  },
+  "strongestClaim": "Exact API correction cone inventoried and locally guarded as bounded G0 NO_EFFECT; EFFECT-KILL-AUDIT-01 remains NOT_CLEARED pending L2 correction and independent recheck."
+}

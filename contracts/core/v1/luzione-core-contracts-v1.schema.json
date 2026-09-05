@@ -1,0 +1,342 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/core/v1/luzione-core-contracts-v1.schema.json",
+  "title": "Luzione Core contracts v1",
+  "oneOf": [
+    { "$ref": "#/$defs/SultanOperation" },
+    { "$ref": "#/$defs/SultanReceipt" },
+    { "$ref": "#/$defs/SultanReadback" },
+    { "$ref": "#/$defs/TenantBlueprint" },
+    { "$ref": "#/$defs/SetupMandate" },
+    { "$ref": "#/$defs/ImportBatch" },
+    { "$ref": "#/$defs/ImportReceipt" },
+    { "$ref": "#/$defs/ConnectorBinding" },
+    { "$ref": "#/$defs/SyncReceipt" },
+    { "$ref": "#/$defs/SupportCase" },
+    { "$ref": "#/$defs/SupportAction" },
+    { "$ref": "#/$defs/CustomerReply" },
+    { "$ref": "#/$defs/FeatureFlags" },
+    { "$ref": "#/$defs/ReleaseManifest" }
+  ],
+  "$defs": {
+    "Id": { "type": "string", "minLength": 2, "maxLength": 512 },
+    "Uuid": { "type": "string", "format": "uuid" },
+    "Sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "GitSha": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+    "Timestamp": { "type": "string", "format": "date-time" },
+    "EffectMode": {
+      "enum": ["NO_EFFECT", "SANDBOX_ONLY", "REVERSIBLE_TENANT_CONFIGURATION", "BOUNDED_PROVIDER_EFFECT"]
+    },
+    "A02Pins": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["bundle", "command", "identityTenant", "readback", "receipt"],
+      "properties": {
+        "bundle": { "const": "luzione-shared-contracts/v0.2-draft.1" },
+        "command": { "const": "luzione-command-envelope/v0.2-draft.1" },
+        "identityTenant": { "const": "luzione-identity-tenant/v0.2-draft.1" },
+        "readback": { "const": "luzione-readback-envelope/v0.2-draft.1" },
+        "receipt": { "const": "luzione-receipt-envelope/v0.2-draft.1" }
+      }
+    },
+    "SupportActor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["logicalActorId", "membershipState", "serverDerivedIdentityRef"],
+      "properties": {
+        "logicalActorId": { "$ref": "#/$defs/Id" },
+        "membershipState": { "enum": ["ACTIVE", "REVOKED"] },
+        "serverDerivedIdentityRef": { "$ref": "#/$defs/Id" }
+      }
+    },
+    "SupportAuditHead": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["entryDigest", "entryId", "previousEntryDigest", "sequence"],
+      "properties": {
+        "entryDigest": { "$ref": "#/$defs/Sha256" },
+        "entryId": { "$ref": "#/$defs/Uuid" },
+        "previousEntryDigest": { "oneOf": [{ "$ref": "#/$defs/Sha256" }, { "type": "null" }] },
+        "sequence": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "SupportPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["approvalRef", "decision", "evaluatedAt", "policyVersion", "reasonCodes"],
+      "properties": {
+        "approvalRef": { "oneOf": [{ "$ref": "#/$defs/Id" }, { "type": "null" }] },
+        "decision": { "enum": ["ALLOW", "DENY", "REQUIRE_HUMAN"] },
+        "evaluatedAt": { "$ref": "#/$defs/Timestamp" },
+        "policyVersion": { "$ref": "#/$defs/Id" },
+        "reasonCodes": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/Id" } }
+      }
+    },
+    "Replay": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["idempotencyKey", "payloadHash", "replayOfId"],
+      "properties": {
+        "idempotencyKey": { "$ref": "#/$defs/Id" },
+        "payloadHash": { "$ref": "#/$defs/Sha256" },
+        "replayOfId": { "oneOf": [{ "$ref": "#/$defs/Uuid" }, { "type": "null" }] }
+      }
+    },
+    "Reservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["receiptRef", "state"],
+      "properties": {
+        "receiptRef": { "oneOf": [{ "$ref": "#/$defs/Id" }, { "type": "null" }] },
+        "state": { "enum": ["CONFLICT", "INDETERMINATE", "NOT_RESERVED_G0", "RESERVED"] }
+      }
+    },
+    "SultanOperation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["a02Command", "a02Pins", "causation", "contractVersion", "deadline", "effectMode", "operationId", "reservation", "versionIntent"],
+      "properties": {
+        "a02Command": { "$ref": "../../drafts/command-envelope-v0.2-draft.1.schema.json" },
+        "a02Pins": { "$ref": "#/$defs/A02Pins" },
+        "causation": {
+          "type": "object", "additionalProperties": false,
+          "required": ["correlationId", "requestId", "traceId"],
+          "properties": { "correlationId": { "$ref": "#/$defs/Id" }, "requestId": { "$ref": "#/$defs/Id" }, "traceId": { "$ref": "#/$defs/Id" } }
+        },
+        "contractVersion": { "const": "SultanOperation/v1" },
+        "deadline": { "$ref": "#/$defs/Timestamp" },
+        "effectMode": { "$ref": "#/$defs/EffectMode" },
+        "operationId": { "$ref": "#/$defs/Uuid" },
+        "reservation": {
+          "type": "object", "additionalProperties": false,
+          "required": ["reservedAt", "reservationReceiptRef", "state"],
+          "properties": {
+            "reservedAt": { "oneOf": [{ "$ref": "#/$defs/Timestamp" }, { "type": "null" }] },
+            "reservationReceiptRef": { "oneOf": [{ "$ref": "#/$defs/Id" }, { "type": "null" }] },
+            "state": { "enum": ["NOT_RESERVED_G0", "RESERVED", "CONFLICT", "INDETERMINATE"] }
+          }
+        },
+        "versionIntent": {
+          "type": "object", "additionalProperties": false,
+          "required": ["preconditionVersion", "targetVersionAtRequest"],
+          "properties": { "preconditionVersion": { "$ref": "#/$defs/Id" }, "targetVersionAtRequest": { "$ref": "#/$defs/Id" } }
+        }
+      }
+    },
+    "SultanReceipt": {
+      "type": "object", "additionalProperties": false,
+      "required": ["a02Receipt", "contractVersion", "effect", "finality", "issuedAt", "issuedBy", "operationRef", "versions"],
+      "properties": {
+        "a02Receipt": { "$ref": "../../drafts/receipt-envelope-v0.2-draft.1.schema.json" },
+        "contractVersion": { "const": "SultanReceipt/v1" },
+        "effect": {
+          "type": "object", "additionalProperties": false, "required": ["actual", "providerAcknowledgementRef"],
+          "properties": { "actual": { "$ref": "#/$defs/EffectMode" }, "providerAcknowledgementRef": { "oneOf": [{ "$ref": "#/$defs/Id" }, { "type": "null" }] } }
+        },
+        "finality": { "enum": ["DOMAIN_COMMITTED", "DISPATCH_PENDING"] },
+        "issuedAt": { "$ref": "#/$defs/Timestamp" },
+        "issuedBy": { "$ref": "#/$defs/Id" },
+        "operationRef": {
+          "type": "object", "additionalProperties": false, "required": ["operationId", "payloadHash"],
+          "properties": { "operationId": { "$ref": "#/$defs/Uuid" }, "payloadHash": { "$ref": "#/$defs/Sha256" } }
+        },
+        "versions": {
+          "type": "object", "additionalProperties": false,
+          "required": ["committedVersion", "preconditionVersion", "targetVersionAtRequest"],
+          "properties": { "committedVersion": { "$ref": "#/$defs/Id" }, "preconditionVersion": { "$ref": "#/$defs/Id" }, "targetVersionAtRequest": { "$ref": "#/$defs/Id" } }
+        }
+      }
+    },
+    "SultanReadback": {
+      "type": "object", "additionalProperties": false,
+      "required": ["a02Readback", "contractVersion", "operationId", "receiptId", "verification", "versions"],
+      "properties": {
+        "a02Readback": { "$ref": "../../drafts/readback-envelope-v0.2-draft.1.schema.json" },
+        "contractVersion": { "const": "SultanReadback/v1" },
+        "operationId": { "$ref": "#/$defs/Uuid" },
+        "receiptId": { "$ref": "#/$defs/Id" },
+        "verification": {
+          "type": "object", "additionalProperties": false,
+          "required": ["businessFinal", "finality", "freshUntil", "observedAt", "sourceReadbackRef"],
+          "properties": {
+            "businessFinal": { "type": "boolean" },
+            "finality": { "enum": ["DOMAIN_COMMITTED", "MISSING", "PROVIDER_ACKNOWLEDGED", "RECONCILING", "SOURCE_CONFIRMED"] },
+            "freshUntil": { "oneOf": [{ "$ref": "#/$defs/Timestamp" }, { "type": "null" }] },
+            "observedAt": { "oneOf": [{ "$ref": "#/$defs/Timestamp" }, { "type": "null" }] },
+            "sourceReadbackRef": { "oneOf": [{ "$ref": "#/$defs/Id" }, { "type": "null" }] }
+          }
+        },
+        "versions": {
+          "type": "object", "additionalProperties": false, "required": ["committedVersion", "observedVersion"],
+          "properties": { "committedVersion": { "$ref": "#/$defs/Id" }, "observedVersion": { "oneOf": [{ "$ref": "#/$defs/Id" }, { "type": "null" }] } }
+        }
+      }
+    },
+    "TenantBlueprint": {
+      "type": "object", "additionalProperties": false,
+      "required": ["approval", "blueprintId", "contractVersion", "sections", "tenantId", "version"],
+      "properties": {
+        "approval": {
+          "type": "object", "additionalProperties": false, "required": ["approvedAt", "approvalRef", "state"],
+          "properties": {
+            "approvedAt": { "oneOf": [{ "$ref": "#/$defs/Timestamp" }, { "type": "null" }] },
+            "approvalRef": { "oneOf": [{ "$ref": "#/$defs/Id" }, { "type": "null" }] },
+            "state": { "enum": ["DRAFT", "APPROVED", "SUPERSEDED"] }
+          }
+        },
+        "blueprintId": { "$ref": "#/$defs/Uuid" },
+        "contractVersion": { "const": "TenantBlueprint/v1" },
+        "sections": {
+          "type": "object", "additionalProperties": false,
+          "required": ["aiPolicies", "approvals", "connectors", "fields", "icp", "retention", "roles", "stages", "terminology", "workflows"],
+          "properties": {
+            "aiPolicies": { "$ref": "#/$defs/IdList" }, "approvals": { "$ref": "#/$defs/IdList" },
+            "connectors": { "$ref": "#/$defs/IdList" }, "fields": { "$ref": "#/$defs/IdList" },
+            "icp": { "$ref": "#/$defs/IdList" }, "retention": { "$ref": "#/$defs/IdList" },
+            "roles": { "$ref": "#/$defs/IdList" }, "stages": { "$ref": "#/$defs/IdList" },
+            "terminology": { "type": "object", "minProperties": 1, "additionalProperties": { "$ref": "#/$defs/Id" } },
+            "workflows": { "$ref": "#/$defs/IdList" }
+          }
+        },
+        "tenantId": { "$ref": "#/$defs/Id" },
+        "version": { "$ref": "#/$defs/Id" }
+      }
+    },
+    "IdList": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/Id" } },
+    "SetupMandate": {
+      "type": "object", "additionalProperties": false,
+      "required": ["active", "allowedActions", "approvalRef", "blueprintRef", "contractVersion", "effectCeiling", "expiresAt", "limits", "mandateId", "prohibitedActions", "rollbackPlanRef", "tenantId"],
+      "properties": {
+        "active": { "type": "boolean" },
+        "allowedActions": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["APPLY_TENANT_CONFIGURATION", "DRY_RUN_IMPORT", "RECONCILE_IMPORT", "VALIDATE_CONNECTOR_READBACK"] } },
+        "approvalRef": { "$ref": "#/$defs/Id" },
+        "blueprintRef": { "type": "object", "additionalProperties": false, "required": ["blueprintId", "version"], "properties": { "blueprintId": { "$ref": "#/$defs/Uuid" }, "version": { "$ref": "#/$defs/Id" } } },
+        "contractVersion": { "const": "SetupMandate/v1" },
+        "effectCeiling": { "enum": ["NO_EFFECT", "SANDBOX_ONLY", "REVERSIBLE_TENANT_CONFIGURATION"] },
+        "expiresAt": { "$ref": "#/$defs/Timestamp" },
+        "limits": { "type": "object", "additionalProperties": false, "required": ["maxImportRecords", "maxRuntimeMinutes"], "properties": { "maxImportRecords": { "type": "integer", "minimum": 1 }, "maxRuntimeMinutes": { "type": "integer", "minimum": 1 } } },
+        "mandateId": { "$ref": "#/$defs/Uuid" },
+        "prohibitedActions": { "$ref": "#/$defs/IdList" },
+        "rollbackPlanRef": { "$ref": "#/$defs/Id" },
+        "tenantId": { "$ref": "#/$defs/Id" }
+      }
+    },
+    "ImportBatch": {
+      "type": "object", "additionalProperties": false,
+      "required": ["batchId", "contractVersion", "dedupeKey", "effectMode", "mandateRef", "mappingVersion", "source", "stagedCounts", "status", "tenantId"],
+      "properties": {
+        "batchId": { "$ref": "#/$defs/Uuid" }, "contractVersion": { "const": "ImportBatch/v1" },
+        "dedupeKey": { "$ref": "#/$defs/Id" }, "effectMode": { "enum": ["NO_EFFECT", "SANDBOX_ONLY"] },
+        "mandateRef": { "$ref": "#/$defs/Id" }, "mappingVersion": { "$ref": "#/$defs/Id" },
+        "source": { "type": "object", "additionalProperties": false, "required": ["consentRef", "digest", "kind", "provenanceRef"], "properties": { "consentRef": { "$ref": "#/$defs/Id" }, "digest": { "$ref": "#/$defs/Sha256" }, "kind": { "enum": ["CSV", "DOCUMENT", "XLSX"] }, "provenanceRef": { "$ref": "#/$defs/Id" } } },
+        "stagedCounts": { "type": "object", "additionalProperties": false, "required": ["records", "rejected"], "properties": { "records": { "type": "integer", "minimum": 0 }, "rejected": { "type": "integer", "minimum": 0 } } },
+        "status": { "enum": ["STAGED", "VALIDATED", "RECONCILIATION_REQUIRED"] }, "tenantId": { "$ref": "#/$defs/Id" }
+      }
+    },
+    "ImportReceipt": {
+      "type": "object", "additionalProperties": false,
+      "required": ["batchId", "contractVersion", "counts", "effectMode", "exceptionRefs", "finality", "reconciliationRef", "rollbackRef", "tenantId"],
+      "properties": {
+        "batchId": { "$ref": "#/$defs/Uuid" }, "contractVersion": { "const": "ImportReceipt/v1" },
+        "counts": { "type": "object", "additionalProperties": false, "required": ["accepted", "duplicates", "rejected", "total"], "properties": { "accepted": { "type": "integer", "minimum": 0 }, "duplicates": { "type": "integer", "minimum": 0 }, "rejected": { "type": "integer", "minimum": 0 }, "total": { "type": "integer", "minimum": 0 } } },
+        "effectMode": { "enum": ["NO_EFFECT", "SANDBOX_ONLY"] }, "exceptionRefs": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/Id" } },
+        "finality": { "enum": ["VALIDATED_NO_EFFECT", "STAGED", "RECONCILIATION_REQUIRED"] },
+        "reconciliationRef": { "oneOf": [{ "$ref": "#/$defs/Id" }, { "type": "null" }] },
+        "rollbackRef": { "$ref": "#/$defs/Id" }, "tenantId": { "$ref": "#/$defs/Id" }
+      }
+    },
+    "ConnectorBinding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["bindingId", "consentRef", "contractVersion", "credentialReference", "cursor", "provider", "revocation", "scopes", "status", "tenantId"],
+      "properties": {
+        "bindingId": { "$ref": "#/$defs/Uuid" }, "consentRef": { "$ref": "#/$defs/Id" },
+        "contractVersion": { "const": "ConnectorBinding/v1" }, "credentialReference": { "type": "string", "pattern": "^secret-ref:" },
+        "cursor": { "oneOf": [{ "$ref": "#/$defs/Id" }, { "type": "null" }] },
+        "provider": { "enum": ["GOOGLE_WORKSPACE", "MICROSOFT_365", "QUICKBOOKS_ONLINE"] },
+        "revocation": { "type": "object", "additionalProperties": false, "required": ["revocationRef", "revokedAt"], "properties": { "revocationRef": { "oneOf": [{ "$ref": "#/$defs/Id" }, { "type": "null" }] }, "revokedAt": { "oneOf": [{ "$ref": "#/$defs/Timestamp" }, { "type": "null" }] } } },
+        "scopes": { "$ref": "#/$defs/IdList" }, "status": { "enum": ["CONSENT_REQUIRED", "DRAFT", "BOUND", "REVOKED"] },
+        "tenantId": { "$ref": "#/$defs/Id" }
+      }
+    },
+    "SyncReceipt": {
+      "type": "object", "additionalProperties": false,
+      "required": ["bindingId", "changes", "contractVersion", "cursor", "finality", "providerAcknowledgementRef", "reconciliationRef", "sourceReadbackRef", "tenantId"],
+      "properties": {
+        "bindingId": { "$ref": "#/$defs/Uuid" },
+        "changes": { "type": "object", "additionalProperties": false, "required": ["created", "duplicates", "failed", "updated"], "properties": { "created": { "type": "integer", "minimum": 0 }, "duplicates": { "type": "integer", "minimum": 0 }, "failed": { "type": "integer", "minimum": 0 }, "updated": { "type": "integer", "minimum": 0 } } },
+        "contractVersion": { "const": "SyncReceipt/v1" },
+        "cursor": { "type": "object", "additionalProperties": false, "required": ["after", "before"], "properties": { "after": { "oneOf": [{ "$ref": "#/$defs/Id" }, { "type": "null" }] }, "before": { "oneOf": [{ "$ref": "#/$defs/Id" }, { "type": "null" }] } } },
+        "finality": { "enum": ["ACKNOWLEDGED", "RECONCILING", "SOURCE_CONFIRMED"] },
+        "providerAcknowledgementRef": { "oneOf": [{ "$ref": "#/$defs/Id" }, { "type": "null" }] },
+        "reconciliationRef": { "oneOf": [{ "$ref": "#/$defs/Id" }, { "type": "null" }] },
+        "sourceReadbackRef": { "oneOf": [{ "$ref": "#/$defs/Id" }, { "type": "null" }] },
+        "tenantId": { "$ref": "#/$defs/Id" }
+      }
+    },
+    "SupportCase": {
+      "type": "object", "additionalProperties": false,
+      "required": ["actor", "auditHead", "caseId", "contractVersion", "entitlement", "evidenceRefs", "objectVersion", "ownerRole", "severity", "sla", "source", "staleAfter", "status", "tenantId"],
+      "properties": {
+        "actor": { "$ref": "#/$defs/SupportActor" }, "auditHead": { "$ref": "#/$defs/SupportAuditHead" },
+        "caseId": { "$ref": "#/$defs/Uuid" }, "contractVersion": { "const": "SupportCase/v1" },
+        "entitlement": { "type": "object", "additionalProperties": false, "required": ["entitlementRef", "policyVersion", "state", "verifiedAt"], "properties": { "entitlementRef": { "$ref": "#/$defs/Id" }, "policyVersion": { "$ref": "#/$defs/Id" }, "state": { "enum": ["ACTIVE", "REVOKED", "UNVERIFIED"] }, "verifiedAt": { "$ref": "#/$defs/Timestamp" } } },
+        "evidenceRefs": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/Id" } },
+        "objectVersion": { "$ref": "#/$defs/Id" }, "ownerRole": { "$ref": "#/$defs/Id" },
+        "severity": { "enum": ["P0", "P1", "P2", "P3"] },
+        "sla": { "type": "object", "additionalProperties": false, "required": ["dueAt", "pauseReason", "pausedAt", "policyVersion", "startedAt", "state"], "properties": { "dueAt": { "$ref": "#/$defs/Timestamp" }, "pauseReason": { "enum": ["APPROVED_EXCEPTION", "CUSTOMER_WAITING", "NONE"] }, "pausedAt": { "oneOf": [{ "$ref": "#/$defs/Timestamp" }, { "type": "null" }] }, "policyVersion": { "$ref": "#/$defs/Id" }, "startedAt": { "$ref": "#/$defs/Timestamp" }, "state": { "enum": ["CLOCK_STOPPED", "PAUSED", "RUNNING"] } } },
+        "source": { "enum": ["CHAT", "EMAIL", "FORM", "IN_APP"] }, "staleAfter": { "$ref": "#/$defs/Timestamp" },
+        "status": { "enum": ["CLOSED_VERIFIED", "INVESTIGATING", "OPEN", "PENDING_CUSTOMER", "PENDING_HUMAN"] },
+        "tenantId": { "$ref": "#/$defs/Id" }
+      }
+    },
+    "SupportAction": {
+      "type": "object", "additionalProperties": false,
+      "required": ["actionId", "actionType", "actor", "ambiguity", "auditHead", "caseId", "caseVersion", "contractVersion", "effectMode", "evidenceRefs", "finality", "operation", "policy", "replay", "reservation", "resultReadbackRef", "severityChange", "status", "tenantId"],
+      "properties": {
+        "actionId": { "$ref": "#/$defs/Uuid" }, "actionType": { "enum": ["CONFIGURATION", "DIAGNOSTIC", "ESCALATION", "REPLY_DRAFT", "SYNC_RETRY"] },
+        "actor": { "$ref": "#/$defs/SupportActor" }, "ambiguity": { "enum": ["CLEAR", "INDETERMINATE"] }, "auditHead": { "$ref": "#/$defs/SupportAuditHead" },
+        "caseId": { "$ref": "#/$defs/Uuid" }, "caseVersion": { "type": "object", "additionalProperties": false, "required": ["expected", "observed"], "properties": { "expected": { "$ref": "#/$defs/Id" }, "observed": { "$ref": "#/$defs/Id" } } },
+        "contractVersion": { "const": "SupportAction/v1" }, "effectMode": { "$ref": "#/$defs/EffectMode" },
+        "evidenceRefs": { "$ref": "#/$defs/IdList" }, "finality": { "enum": ["NOT_FINAL", "OWNER_COMMITTED", "SOURCE_CONFIRMED"] },
+        "operation": { "$ref": "#/$defs/SultanOperation" }, "policy": { "$ref": "#/$defs/SupportPolicy" },
+        "replay": { "$ref": "#/$defs/Replay" }, "reservation": { "$ref": "#/$defs/Reservation" },
+        "resultReadbackRef": { "oneOf": [{ "$ref": "#/$defs/Id" }, { "type": "null" }] },
+        "severityChange": { "oneOf": [{ "type": "null" }, { "type": "object", "additionalProperties": false, "required": ["approvalRef", "from", "to"], "properties": { "approvalRef": { "oneOf": [{ "$ref": "#/$defs/Id" }, { "type": "null" }] }, "from": { "enum": ["P0", "P1", "P2", "P3"] }, "to": { "enum": ["P0", "P1", "P2", "P3"] } } }] },
+        "status": { "enum": ["APPROVED", "COMPLETED_VERIFIED", "PROPOSED", "REJECTED"] }, "tenantId": { "$ref": "#/$defs/Id" }
+      }
+    },
+    "CustomerReply": {
+      "type": "object", "additionalProperties": false,
+      "required": ["actionId", "actor", "approval", "auditHead", "caseId", "caseVersion", "contentDigest", "contractVersion", "delivery", "finality", "followUpAt", "replay", "reservation", "replyId", "tenantId", "truthSourceRefs"],
+      "properties": {
+        "actionId": { "$ref": "#/$defs/Uuid" }, "actor": { "$ref": "#/$defs/SupportActor" }, "approval": { "$ref": "#/$defs/SupportPolicy" }, "auditHead": { "$ref": "#/$defs/SupportAuditHead" },
+        "caseId": { "$ref": "#/$defs/Uuid" }, "caseVersion": { "$ref": "#/$defs/Id" }, "contentDigest": { "$ref": "#/$defs/Sha256" },
+        "contractVersion": { "const": "CustomerReply/v1" },
+        "delivery": { "type": "object", "additionalProperties": false, "required": ["deliveredAt", "providerReceiptRef", "readbackRef", "state"], "properties": { "deliveredAt": { "oneOf": [{ "$ref": "#/$defs/Timestamp" }, { "type": "null" }] }, "providerReceiptRef": { "oneOf": [{ "$ref": "#/$defs/Id" }, { "type": "null" }] }, "readbackRef": { "oneOf": [{ "$ref": "#/$defs/Id" }, { "type": "null" }] }, "state": { "enum": ["DRAFT", "FAILED", "SENT_VERIFIED"] } } },
+        "finality": { "enum": ["NOT_FINAL", "SOURCE_CONFIRMED"] }, "followUpAt": { "oneOf": [{ "$ref": "#/$defs/Timestamp" }, { "type": "null" }] },
+        "replay": { "$ref": "#/$defs/Replay" }, "reservation": { "$ref": "#/$defs/Reservation" }, "replyId": { "$ref": "#/$defs/Uuid" },
+        "tenantId": { "$ref": "#/$defs/Id" }, "truthSourceRefs": { "$ref": "#/$defs/IdList" }
+      }
+    },
+    "FeatureFlags": {
+      "type": "object", "additionalProperties": false,
+      "required": ["contractVersion", "defaultState", "flags", "overrideAuthority"],
+      "properties": {
+        "contractVersion": { "const": "LuzioneCoreFeatureFlags/v1" }, "defaultState": { "const": "DISABLED" },
+        "flags": { "type": "object", "additionalProperties": false, "required": ["connectorSync", "customerReplyDelivery", "importCommit", "onboardingApply", "operationEffects", "providerDispatch", "supportActionEffects"], "properties": { "connectorSync": { "const": false }, "customerReplyDelivery": { "const": false }, "importCommit": { "const": false }, "onboardingApply": { "const": false }, "operationEffects": { "const": false }, "providerDispatch": { "const": false }, "supportActionEffects": { "const": false } } },
+        "overrideAuthority": { "const": "G2_HUMAN_GO_REQUIRED" }
+      }
+    },
+    "ReleaseManifest": {
+      "type": "object", "additionalProperties": false,
+      "required": ["a02Pins", "candidateSha", "contractBundleVersion", "contractVersion", "contractVersions", "controllerAuthority", "effectAuthority", "featureFlagsVersion", "fepDependency", "productionReady", "runtimeActivation"],
+      "properties": {
+        "a02Pins": { "$ref": "#/$defs/A02Pins" }, "candidateSha": { "oneOf": [{ "const": "UNBOUND_G0" }, { "$ref": "#/$defs/GitSha" }] },
+        "contractBundleVersion": { "const": "LuzioneCoreContracts/v1" }, "contractVersion": { "const": "LuzioneCoreReleaseManifest/v1" },
+        "contractVersions": { "type": "object" }, "controllerAuthority": { "$ref": "#/$defs/Id" },
+        "effectAuthority": { "const": "NO_EFFECT" }, "featureFlagsVersion": { "const": "LuzioneCoreFeatureFlags/v1" },
+        "fepDependency": { "const": false }, "productionReady": { "const": false }, "runtimeActivation": { "const": "DARK_ONLY" }
+      }
+    }
+  }
+}

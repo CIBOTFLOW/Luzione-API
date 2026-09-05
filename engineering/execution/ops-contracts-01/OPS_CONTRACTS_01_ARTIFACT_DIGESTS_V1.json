@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "OPS-CONTRACTS-01/Artifact-Digests/v1",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "baseSha": "c981a13cbef1cf41fac4cd07a5d9992d61fd3288",
+  "implementationSha": "cf9fee8fbefa1dbda013788795b068477fa8535b",
+  "branch": "codex/ops-contracts-01-g0-6a6d710",
+  "bundleVersion": "LuzioneOperationsEvidence/v1",
+  "sourcePackets": {
+    "PROOF-OPS-01/v1": "b2c79f6a580267adfcac1745047518979070ee3f18d90df478dc4b6ec511cb8b",
+    "CUSTOMER-ZERO-OPS-01/v1": "ae1c5225f8bb1c45420572433ac659ff054a1fd2bfad1cb2bf740e5ae008e57c"
+  },
+  "coreCorrection": {
+    "controllerAuthority": "CIBOTFLOW/Luzione-platform-program@8543a3eab0a969f213bc192391bd7ca657bbf087",
+    "auditFingerprint": "3fdc9ddf470509ec9c115656a431f414b9796dda14ec0aaaf9133fbaab796968",
+    "implementationSha": "f5a62923e52510cdd40fbef41dc86266e33ab05e",
+    "operationsContractSemanticsChanged": false,
+    "ownerReturnDisposition": "ALL_UNSIGNED_ANSWERS_REMAIN_UNKNOWN",
+    "detachedFinalAttestationRequired": true
+  },
+  "frozenCore": {
+    "bundleVersion": "LuzioneCoreContracts/v1",
+    "implementationSha": "828de754e4104cd860e3f47adbf2e84c576e5c10",
+    "finalSha": "bb5eb395af0873f4483ba2dc10c76f9941051dde",
+    "schemaTree": "d57ccc4cccd97b37acd1a1575b1e07ede5787349",
+    "sdkTree": "d594fa014d7020fdf8386c7a6926ff9b573ac355"
+  },
+  "rawSha256": {
+    "manifest": "9700a7c8a10eee54562b2c33f25a060f04d9673551f45d4d340348a180d2dd0c",
+    "schema": "028278fab59d0ce7a73d057ba89bc2bf013c48e17a60cf0a3a08c57e2cfa1153",
+    "l2ConsumerPacket": "c2f19cd32ef28605bb8fdbbe943f7a594e15fb29b9509436e2a2b6c93622b1a1",
+    "l3ConsumerPacket": "c290baf21a08624e85ef68b86d15ce6df8c2be018025fd7d702d7ee45b4bea7e",
+    "contracts": "3474e50370003b1ca39bc5571e9d631f115f11503a41e985a5f7e74d471a7ce6",
+    "strictParser": "4995ecb49e5f0cef8e64dcc97650ad8d39527859f4d4875cd58bb9d6dc63a3f9",
+    "generatedSdk": "9ab5c21a62320102b2fd9cc4c6ff4527e7b56886a12eff6e79189fbadfdb6e3c",
+    "fixtures": "be124eef0c6f65364d84d97ff2f287ff85e348e789a00b141d4eb5e706e149bb",
+    "focusedSuite": "50b648e06ec03e8969720b371200d7c1612764edb7b3631aa223427c14e30e74"
+  },
+  "recordContractCount": 17,
+  "deterministicFormulaCount": 3,
+  "finalAttestation": {
+    "schemaVersion": "OPS-CONTRACTS-01/Detached-Final-Attestation/v1",
+    "state": "PUBLISHED_ONLY_AFTER_FINAL_COMMIT",
+    "mechanism": "CONTENT_ADDRESSED_ANNOTATED_GIT_TAG",
+    "sameCommitSelfHash": false
+  },
+  "localVerification": {
+    "focused": "PASS_19_OF_19",
+    "coreCorrectionFocused": "PASS_CORE02_7_OF_7_CATALOG_8_OF_8_TOPOLOGY_7_OF_7",
+    "full": "PASS_365_OF_365",
+    "compliance": "PASS_7_OF_7",
+    "typecheck": "PASS",
+    "lint": "PASS_ZERO_WARNINGS",
+    "build": "PASS_NEXTJS_16_3_4_WEBPACK"
+  },
+  "effectAuthority": "NO_EFFECT",
+  "runtimeActivation": "NOT_IMPLEMENTED",
+  "productionReady": false
+}

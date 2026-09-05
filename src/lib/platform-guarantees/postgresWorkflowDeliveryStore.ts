@@ -4,6 +4,7 @@ import type { Pool, PoolClient } from "pg";
 import { decideRetry } from "@/modules/platform-guarantees/retryPolicy";
 import { nextWorkflowState } from "@/modules/platform-guarantees/stateMachine";
 import type { FailureClass, FlowCommandType, WorkflowState } from "@/modules/platform-guarantees/types";
+import type { ProviderExecutionContext } from "@/modules/provider-runtime/contracts";
 
 export const WORKFLOW_DELIVERY_CONTRACT_VERSION = "luzione-workflow-delivery/v0.1";
 export const WORKER_LEASE_MS = 60_000;
@@ -48,26 +49,27 @@ export class PostgresWorkflowDeliveryStore {
     }
   }
 
-  async claimDueOutbox(input: { limit?: number; tenantId: string; workerId: string }) {
+  async claimDueOutbox(input: { limit?: number; outboxMessageId?: string; tenantId: string; workerId: string }) {
     const workerId = validatedWorkerId(input.workerId);
     return this.transaction(input.tenantId, async (client) => {
       const expired = await client.query(
         `select outbox.*, receipt.correlation_id, receipt.committed_object_version as resulting_object_version,
                 receipt.target_object_type, receipt.target_object_id,
-                exists (
-                  select 1 from public.p110_delivery_attempts attempt
-                   where attempt.tenant_id = outbox.tenant_id
-                     and attempt.outbox_message_id = outbox.outbox_message_id
-                     and attempt.attempt_number = outbox.attempt_count
-                     and attempt.result = 'STARTED'
-                ) as dispatch_started
+                attempt.attempt_id as originating_delivery_attempt_id,
+                attempt.attempt_number as originating_delivery_attempt_number,
+                (attempt.result = 'STARTED') as dispatch_started
            from public.p110_outbox_messages outbox
            join public.p110_command_receipts receipt
              on receipt.tenant_id = outbox.tenant_id and receipt.receipt_id = outbox.receipt_id
+           left join public.p110_delivery_attempts attempt
+             on attempt.tenant_id = outbox.tenant_id
+            and attempt.outbox_message_id = outbox.outbox_message_id
+            and attempt.attempt_number = outbox.attempt_count
           where outbox.tenant_id = $1 and outbox.state = 'CLAIMED'
+            and ($2::text is null or outbox.outbox_message_id = $2)
             and outbox.lease_expires_at <= now()
           for update of outbox skip locked`,
-        [input.tenantId],
+        [input.tenantId, input.outboxMessageId ?? null],
       );
       for (const row of expired.rows) {
         if (row.dispatch_started) {
@@ -82,11 +84,13 @@ export class PostgresWorkflowDeliveryStore {
           );
           await client.query(
             `insert into public.p110_reconciliation_checkpoints
-              (tenant_id, reconciliation_id, receipt_id, outbox_message_id, source_system,
-               source_object_ref, expected_object_version, result, checked_at, checked_by, notes)
-             values ($1,$2,$3,$4,$5,$6,$7,'PENDING',now(),$8,$9)
+              (tenant_id, reconciliation_id, receipt_id, outbox_message_id,
+               originating_delivery_attempt_id, originating_delivery_attempt_number,
+               source_system, source_object_ref, expected_object_version, result, checked_at, checked_by, notes)
+             values ($1,$2,$3,$4,$5,$6,$7,$8,$9,'PENDING',now(),$10,$11)
              on conflict (tenant_id, reconciliation_id) do nothing`,
             [input.tenantId, reconciliationId, row.receipt_id, row.outbox_message_id,
+              row.originating_delivery_attempt_id, row.originating_delivery_attempt_number,
               row.destination, `${row.target_object_type}:${row.target_object_id}`,
               row.resulting_object_version, workerId,
               "A worker disappeared after durable dispatch start; reconcile source state before any retry."],
@@ -132,6 +136,7 @@ export class PostgresWorkflowDeliveryStore {
            select outbox.outbox_message_id
              from public.p110_outbox_messages outbox
             where outbox.tenant_id = $1
+              and ($4::text is null or outbox.outbox_message_id = $4)
               and outbox.state in ('PENDING','RETRY_SCHEDULED')
               and outbox.not_before <= now()
               and outbox.attempt_count < outbox.max_attempts
@@ -156,11 +161,12 @@ export class PostgresWorkflowDeliveryStore {
          )
          select claimed.*, receipt.target_object_type, receipt.target_object_id,
                 receipt.expected_object_version,
-                receipt.committed_object_version as resulting_object_version
+                receipt.committed_object_version as resulting_object_version,
+                receipt.actor_id, receipt.actor_type
            from claimed
            join public.p110_command_receipts receipt
              on receipt.tenant_id = claimed.tenant_id and receipt.receipt_id = claimed.receipt_id`,
-        [input.tenantId, boundedLimit(input.limit), workerId],
+        [input.tenantId, boundedLimit(input.limit), workerId, input.outboxMessageId ?? null],
       );
       return claimed.rows;
     });
@@ -181,8 +187,13 @@ export class PostgresWorkflowDeliveryStore {
     });
   }
 
+  async readClaimedOutboxForAdmission(input: { outboxMessageId: string; tenantId: string; workerId: string }) {
+    return this.transaction(input.tenantId, async (client) => this.lockOwnedOutbox(client, input));
+  }
+
   async recordDispatchStarted(input: {
     adapterContractVersion: string;
+    effectExecutionContext: ProviderExecutionContext;
     outboxMessageId: string;
     providerMode: "LIVE" | "SANDBOX";
     providerRequestRef: string;
@@ -194,10 +205,23 @@ export class PostgresWorkflowDeliveryStore {
       await client.query(
         `insert into public.p110_delivery_attempts
           (tenant_id, attempt_id, outbox_message_id, attempt_number, result, started_at,
-           adapter_contract_version, provider_mode, provider_request_ref)
-         values ($1,$2,$3,$4,'STARTED',now(),$5,$6,$7)`,
+           adapter_contract_version, provider_mode, provider_request_ref,
+           effect_admission_contract_version,effect_admission_ref,effect_admission_digest,
+           effect_admission_kill_version,credential_binding_id,effect_execution_envelope,
+           effect_execution_envelope_ref,effect_execution_identity,originating_envelope_ref,
+           prepared_dispatch_digest)
+         values ($1,$2,$3,$4,'STARTED',now(),$5,$6,$7,'luzione-effect-admission/v2',$8,$9,$10,$11,$12::jsonb,$13,$14,$15,$16)`,
         [input.tenantId, `attempt_${crypto.randomUUID()}`, input.outboxMessageId,
-          row.attempt_count, input.adapterContractVersion, input.providerMode, input.providerRequestRef],
+          row.attempt_count, input.adapterContractVersion, input.providerMode, input.providerRequestRef,
+          input.effectExecutionContext.executionEnvelope.effectAdmissionRef,
+          input.effectExecutionContext.executionEnvelope.executionIdentity.slice("effect-execution:".length),
+          input.effectExecutionContext.executionEnvelope.killVersion,
+          input.effectExecutionContext.executionEnvelope.credentialBindingId,
+          JSON.stringify(input.effectExecutionContext.executionEnvelope),
+          input.effectExecutionContext.executionEnvelope.executionEnvelopeRef,
+          input.effectExecutionContext.executionEnvelope.executionIdentity,
+          input.effectExecutionContext.executionEnvelope.originatingEnvelopeRef,
+          input.effectExecutionContext.executionEnvelope.preparedDispatchDigest],
       );
       await client.query(
         `update public.p110_outbox_messages
@@ -213,7 +237,8 @@ export class PostgresWorkflowDeliveryStore {
     const result = await client.query(
       `select outbox.*, receipt.correlation_id, receipt.expected_object_version,
               receipt.committed_object_version as resulting_object_version,
-              receipt.target_object_type, receipt.target_object_id
+              receipt.target_object_type, receipt.target_object_id,
+              receipt.actor_id, receipt.actor_type
          from public.p110_outbox_messages outbox
          join public.p110_command_receipts receipt
            on receipt.tenant_id = outbox.tenant_id and receipt.receipt_id = outbox.receipt_id
@@ -240,18 +265,20 @@ export class PostgresWorkflowDeliveryStore {
         `update public.p110_delivery_attempts
             set result = 'SUCCEEDED', finished_at = now(), provider_acknowledgement_ref = $4
           where tenant_id = $1 and outbox_message_id = $2 and attempt_number = $3 and result = 'STARTED'
-          returning attempt_id`,
+          returning attempt_id,attempt_number`,
         [input.tenantId, input.outboxMessageId, row.attempt_count, input.providerAcknowledgementRef],
       );
       if (attempt.rows.length !== 1) throw new WorkflowDeliveryStoreError("DISPATCH_START_MISSING", "Provider acknowledgement requires a durable dispatch-start attempt.");
       const reconciliationId = `reconcile_${input.outboxMessageId}_${row.attempt_count}`;
       await client.query(
         `insert into public.p110_reconciliation_checkpoints
-          (tenant_id, reconciliation_id, receipt_id, outbox_message_id, source_system,
-           source_object_ref, expected_object_version, result, checked_at, checked_by, notes)
-         values ($1,$2,$3,$4,$5,$6,$7,'PENDING',now(),$8,$9)
+          (tenant_id, reconciliation_id, receipt_id, outbox_message_id,
+           originating_delivery_attempt_id, originating_delivery_attempt_number,
+           source_system, source_object_ref, expected_object_version, result, checked_at, checked_by, notes)
+         values ($1,$2,$3,$4,$5,$6,$7,$8,$9,'PENDING',now(),$10,$11)
          on conflict (tenant_id, reconciliation_id) do nothing`,
         [input.tenantId, reconciliationId, row.receipt_id, input.outboxMessageId,
+          attempt.rows[0].attempt_id, attempt.rows[0].attempt_number,
           row.destination, `${row.target_object_type}:${row.target_object_id}`,
           row.resulting_object_version, input.workerId,
           "Provider acknowledgement recorded; authoritative source readback remains required."],
@@ -303,7 +330,7 @@ export class PostgresWorkflowDeliveryStore {
           : decision.action === "BLOCK"
             ? "BLOCKED"
             : "FAILED";
-      await client.query(
+      const attempt = await client.query(
         `insert into public.p110_delivery_attempts
           (tenant_id, attempt_id, outbox_message_id, attempt_number, failure_class,
            result, started_at, finished_at, retry_at, error_code, error_summary)
@@ -311,7 +338,8 @@ export class PostgresWorkflowDeliveryStore {
          on conflict (tenant_id, outbox_message_id, attempt_number) do update
            set failure_class = excluded.failure_class, result = excluded.result,
                finished_at = excluded.finished_at, retry_at = excluded.retry_at,
-               error_code = excluded.error_code, error_summary = excluded.error_summary`,
+               error_code = excluded.error_code, error_summary = excluded.error_summary
+         returning attempt_id,attempt_number`,
         [input.tenantId, `attempt_${crypto.randomUUID()}`, input.outboxMessageId,
           row.attempt_count, input.failureClass, attemptResult, row.locked_at,
           decision.retryAt, input.errorCode, input.errorSummary],
@@ -330,13 +358,14 @@ export class PostgresWorkflowDeliveryStore {
         const reconciliationId = `reconcile_${input.outboxMessageId}_${row.attempt_count}`;
         await client.query(
           `insert into public.p110_reconciliation_checkpoints
-            (tenant_id, reconciliation_id, receipt_id, outbox_message_id, source_system,
-             source_object_ref, expected_object_version, result, checked_at, checked_by, notes)
-           values ($1,$2,$3,$4,$5,$6,$7,'PENDING',now(),$8,$9)
+            (tenant_id, reconciliation_id, receipt_id, outbox_message_id,
+             originating_delivery_attempt_id, originating_delivery_attempt_number,
+             source_system, source_object_ref, expected_object_version, result, checked_at, checked_by, notes)
+           values ($1,$2,$3,$4,$5,$6,$7,$8,$9,'PENDING',now(),$10,$11)
            on conflict (tenant_id, reconciliation_id) do nothing`,
           [input.tenantId, reconciliationId, row.receipt_id,
-            input.outboxMessageId, row.destination,
-            `${row.target_object_type}:${row.target_object_id}`, row.resulting_object_version,
+            input.outboxMessageId, attempt.rows[0].attempt_id, attempt.rows[0].attempt_number,
+            row.destination, `${row.target_object_type}:${row.target_object_id}`, row.resulting_object_version,
             input.workerId, "Ambiguous provider acknowledgement requires source readback before retry."],
         );
       }
@@ -405,7 +434,7 @@ export class PostgresWorkflowDeliveryStore {
     });
   }
 
-  async claimDueReconciliations(input: { limit?: number; tenantId: string; workerId: string }) {
+  async claimDueReconciliations(input: { limit?: number; outboxMessageId?: string; tenantId: string; workerId: string }) {
     const workerId = validatedWorkerId(input.workerId);
     return this.transaction(input.tenantId, async (client) => {
       await client.query(
@@ -413,14 +442,16 @@ export class PostgresWorkflowDeliveryStore {
             set lease_owner = null, lease_started_at = null, heartbeat_at = null,
                 lease_expires_at = null, next_check_at = now(),
                 notes = 'The prior reconciliation lease expired and was safely released.'
-          where tenant_id = $1 and result = 'PENDING' and lease_expires_at <= now()`,
-        [input.tenantId],
+          where tenant_id = $1 and result = 'PENDING' and lease_expires_at <= now()
+            and ($2::text is null or outbox_message_id = $2)`,
+        [input.tenantId, input.outboxMessageId ?? null],
       );
       const claimed = await client.query(
         `with candidates as (
            select reconciliation_id
              from public.p110_reconciliation_checkpoints
             where tenant_id = $1 and result = 'PENDING' and next_check_at <= now()
+              and ($4::text is null or outbox_message_id = $4)
               and attempt_count < max_attempts and lease_owner is null
             order by next_check_at, checked_at
             for update skip locked
@@ -437,15 +468,45 @@ export class PostgresWorkflowDeliveryStore {
          select claimed.*, outbox.destination, outbox.effect_class, outbox.authorization_ref,
                 outbox.idempotency_key, outbox.payload, outbox.payload_hash, outbox.attempt_count as delivery_attempt_count,
                 outbox.provider_acknowledgement_ref, receipt.target_object_type, receipt.target_object_id,
-                receipt.expected_object_version, receipt.committed_object_version as resulting_object_version
+                receipt.expected_object_version, receipt.committed_object_version as resulting_object_version,
+                receipt.actor_id, receipt.actor_type
            from claimed
            join public.p110_outbox_messages outbox
              on outbox.tenant_id = claimed.tenant_id and outbox.outbox_message_id = claimed.outbox_message_id
            join public.p110_command_receipts receipt
              on receipt.tenant_id = claimed.tenant_id and receipt.receipt_id = claimed.receipt_id`,
-        [input.tenantId, boundedLimit(input.limit), workerId],
+        [input.tenantId, boundedLimit(input.limit), workerId, input.outboxMessageId ?? null],
       );
       return claimed.rows;
+    });
+  }
+
+  async readClaimedReconciliationForAdmission(input: { reconciliationId: string; tenantId: string; workerId: string }) {
+    return this.transaction(input.tenantId, async (client) => {
+      const result = await client.query(
+        `select checkpoint.reconciliation_id,outbox.*,receipt.target_object_type,receipt.target_object_id,
+                receipt.expected_object_version,receipt.committed_object_version as resulting_object_version,
+                receipt.actor_id,receipt.actor_type,
+                attempt.effect_execution_envelope,attempt.effect_execution_envelope_ref,
+                attempt.effect_execution_identity,attempt.originating_envelope_ref,
+                attempt.prepared_dispatch_digest
+           from public.p110_reconciliation_checkpoints checkpoint
+           join public.p110_outbox_messages outbox
+             on outbox.tenant_id=checkpoint.tenant_id and outbox.outbox_message_id=checkpoint.outbox_message_id
+           join public.p110_command_receipts receipt
+             on receipt.tenant_id=checkpoint.tenant_id and receipt.receipt_id=checkpoint.receipt_id
+           join public.p110_delivery_attempts attempt
+             on attempt.tenant_id=checkpoint.tenant_id
+            and attempt.attempt_id=checkpoint.originating_delivery_attempt_id
+            and attempt.outbox_message_id=checkpoint.outbox_message_id
+            and attempt.attempt_number=checkpoint.originating_delivery_attempt_number
+          where checkpoint.tenant_id=$1 and checkpoint.reconciliation_id=$2 and checkpoint.result='PENDING'
+            and checkpoint.lease_owner=$3 and checkpoint.lease_expires_at>now()
+          for update of checkpoint`,
+        [input.tenantId, input.reconciliationId, validatedWorkerId(input.workerId)],
+      );
+      if (result.rows.length !== 1) throw new WorkflowDeliveryStoreError("RECONCILIATION_LEASE_NOT_OWNED", "The reconciliation lease is absent, expired or owned by another worker.");
+      return result.rows[0] as Record<string, unknown>;
     });
   }
 
@@ -463,7 +524,7 @@ export class PostgresWorkflowDeliveryStore {
     }
     return this.transaction(input.tenantId, async (client) => {
       const checkpoint = await client.query(
-        `select checkpoint.*, outbox.attempt_count as delivery_attempt_count,
+        `select checkpoint.*, checkpoint.originating_delivery_attempt_number as delivery_attempt_count,
                 outbox.max_attempts as delivery_max_attempts, outbox.idempotency_key,
                 outbox.payload_hash, receipt.correlation_id
            from public.p110_reconciliation_checkpoints checkpoint
@@ -471,6 +532,11 @@ export class PostgresWorkflowDeliveryStore {
              on outbox.tenant_id = checkpoint.tenant_id and outbox.outbox_message_id = checkpoint.outbox_message_id
            join public.p110_command_receipts receipt
              on receipt.tenant_id = checkpoint.tenant_id and receipt.receipt_id = checkpoint.receipt_id
+           join public.p110_delivery_attempts attempt
+             on attempt.tenant_id=checkpoint.tenant_id
+            and attempt.attempt_id=checkpoint.originating_delivery_attempt_id
+            and attempt.outbox_message_id=checkpoint.outbox_message_id
+            and attempt.attempt_number=checkpoint.originating_delivery_attempt_number
           where checkpoint.tenant_id = $1 and checkpoint.reconciliation_id = $2
             and checkpoint.result = 'PENDING' and checkpoint.lease_owner = $3
             and checkpoint.lease_expires_at > now()

@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "CONNECTOR-REVOCATION-L1-G0-CONSUMER-PACKET/v1",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "branch": "codex/connector-revocation-l1-g0-6ea7045",
+  "baseSha": "5786d9d6f1d38e730e404cade4dd466dbb709367",
+  "semanticPin": "a1329b669262b2abbffc8e9ec501e866429c0d55",
+  "pins": {
+    "request": "ConnectorRevocationRequest/v1",
+    "receipt": "ConnectorRevocationReceipt/v1",
+    "credentialHandle": "ConnectorCredentialHandle/v1",
+    "existingConnectorBinding": "ConnectorBinding/v1",
+    "policy": "CONNECTOR-REVOCATION-L1-G0/policy-v1",
+    "migration": "supabase/migrations/20260905130000_connector_revocation_receipts.sql",
+    "post": "POST /api/v1/connectors/revocations",
+    "get": "GET /api/v1/connectors/revocations/{receiptId}"
+  },
+  "l2": {
+    "mayConsume": [
+      "strict request/schema fields as an operator proposal after obtaining server-owned ConnectorBinding/v1 readback",
+      "typed non-success, remote finality, local disposition and recovery state for presentation",
+      "exact same-tenant GET readback and immutable receipt lineage"
+    ],
+    "mustNot": [
+      "supply tenant, service identity, human authority, kill versions, receipt fields or finality",
+      "treat provider acknowledgement as REVOKED",
+      "perform credential erasure from ERASURE_AUTHORIZED_NO_EFFECT",
+      "treat this default-off emulator as a live connector or provider"
+    ]
+  },
+  "l3": {
+    "mayConsume": [
+      "the exact API boundary as a service transport after distinct human approval",
+      "P110 replay/conflict and typed receipt/readback outcomes"
+    ],
+    "mustNot": [
+      "become receipt, revocation, credential-disposition or remote-finality writer",
+      "substitute a Sultan-local provider call, credential operation or kill decision",
+      "claim remote revocation without exact API source-confirmed readback"
+    ]
+  },
+  "activation": "DEFAULT_OFF_SANDBOX_NO_EFFECT",
+  "requiredReturn": "Independent consumer evidence pinned to a1329b669262b2abbffc8e9ec501e866429c0d55 and exact contract versions; hosted or live effects remain prohibited."
+}

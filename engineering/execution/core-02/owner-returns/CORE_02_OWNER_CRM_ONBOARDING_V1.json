@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "CORE-02/Owner-Return/v1",
+  "packetId": "CORE02-OWNER-CRM-ONBOARDING/v1",
+  "projectId": "CORE-02",
+  "controllerAuthority": "CIBOTFLOW/Luzione-platform-program@7713b02201e5abb84a92bb0d2af91514d33c84d5",
+  "inventoryRef": "engineering/execution/core-02/CORE_02_API_ACTIVATION_CONE_MANIFEST_V1.json",
+  "requiredHumanFunction": "CRM domain and onboarding owner",
+  "unknownIds": ["CORE02-U001", "CORE02-U002", "CORE02-U003"],
+  "allowedDecisions": ["CONFIRM", "CORRECT", "NOT_OWNER", "UNKNOWN"],
+  "answers": [
+    {"unknownId":"CORE02-U001","values":{"canonicalStoreDecision":null,"mutationOwner":null,"readbackPath":null,"retentionRule":null,"legacyServiceRoleDisposition":null,"evidenceRefs":[]}},
+    {"unknownId":"CORE02-U002","values":{"routeOwner":null,"persistenceOwner":null,"mutationOwner":null,"replayBoundary":null,"readbackPath":null,"rollbackOwner":null,"evidenceRefs":[]}},
+    {"unknownId":"CORE02-U003","values":{"objectOwnerMap":null,"cutoverCohort":null,"competingPathDisposition":null,"readbackAcceptance":null,"rollbackBoundary":null,"evidenceRefs":[]}}
+  ],
+  "return": {"decision":null,"observedAt":null,"environmentRef":null,"secretValuesIncluded":false,"productionMutationPerformed":false,"notes":null},
+  "signer": {"name":null,"function":"CRM domain and onboarding owner","authorityRef":null,"signedAt":null,"signatureRef":null}
+}

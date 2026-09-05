@@ -1,0 +1,47 @@
+{
+  "schema_version": "CORE-01-CRM-ACTIVATION-CONE-INVENTORY-REQUEST/v1",
+  "controller_authority": "b19a4d858c0c90dba8600facbf329b7de7c322ad",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "state": "REQUEST_ONLY_NO_EFFECT",
+  "purpose": "Identify every current owner, credential reference, migration, job, route, readback and recovery dependency reachable by the three admitted Luzione CRM OS golden journeys before any activation decision.",
+  "scope": [
+    { "journey_id": "GJ-1", "name": "tenant onboarding", "contracts": ["TenantBlueprint/v1", "SetupMandate/v1", "ImportBatch/v1", "ImportReceipt/v1", "ConnectorBinding/v1", "SyncReceipt/v1"] },
+    { "journey_id": "GJ-2", "name": "lead to procurement", "contracts": ["SultanOperation/v1", "SultanReceipt/v1", "SultanReadback/v1"] },
+    { "journey_id": "GJ-3", "name": "support", "contracts": ["SultanOperation/v1", "SultanReceipt/v1", "SultanReadback/v1", "SupportCase/v1", "SupportAction/v1", "CustomerReply/v1"] }
+  ],
+  "requested_from": [
+    "L2 CRM domain and UI owner",
+    "L3 Sultan runtime owner",
+    "L4 release and provider owner",
+    "L5 support workflow owner",
+    "Platform/Database Security Steward",
+    "Managed Recovery Owner"
+  ],
+  "one_row_per_reachable_component": {
+    "required_fields": [
+      "journey_id", "component_id", "component_kind", "repository", "exact_sha", "canonical_owner",
+      "authoritative_store_or_provider", "read_principal", "write_principal", "credential_reference_not_value",
+      "external_or_dynamic_jobs", "migration_paths_and_digests", "http_or_worker_entrypoints", "readback_path",
+      "contract_pins", "feature_flag_and_default", "monitoring_and_runbook", "backup_or_pitr_receipt",
+      "rollback_or_forward_recovery_proof", "negative_evidence", "confirmed_by", "confirmed_at", "signature"
+    ],
+    "allowed_component_kinds": ["API_ROUTE", "DATABASE_OBJECT", "DYNAMIC_JOB", "MIGRATION", "PROVIDER", "QUEUE_OR_WORKER", "RUNTIME_CAPABILITY", "UI_ROUTE"],
+    "unknown_value": "UNKNOWN_REQUIRES_NAMED_HUMAN_CONFIRMATION",
+    "credential_rule": "Record only a secret manager or workload-identity reference and principal/service mapping; never include a secret value."
+  },
+  "required_negative_and_readback_evidence": [
+    "missing, revoked, expired and wrong-tenant identity denial",
+    "surplus, missing and wrong contract version denial",
+    "same-key exact replay and changed-payload conflict",
+    "stale source version and ambiguous provider result",
+    "no credential value or PII egress",
+    "provider acknowledgement distinguished from source-confirmed finality",
+    "zero effects while feature flags are disabled",
+    "recovery proof bound to exact migrations and candidate SHA"
+  ],
+  "explicit_exclusions": [
+    "FEP or economic journal dependency", "money movement", "payments", "rewards", "public promotion",
+    "production migration", "credential change", "OAuth completion", "provider dispatch", "default-branch mutation"
+  ],
+  "acceptance_rule": "No omission or UNKNOWN authorizes activation. Inventory returns are evidence inputs only and require controller review plus the applicable G1/G2 gates."
+}

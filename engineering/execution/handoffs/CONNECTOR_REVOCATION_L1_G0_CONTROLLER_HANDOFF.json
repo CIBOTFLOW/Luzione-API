@@ -1,0 +1,81 @@
+{
+  "schemaVersion": "CONNECTOR-REVOCATION-L1-G0-HANDOFF/v1",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "branch": "codex/connector-revocation-l1-g0-6ea7045",
+  "baseSha": "5786d9d6f1d38e730e404cade4dd466dbb709367",
+  "semanticPins": {
+    "effectAdmissionCorrection02": "86809a9243c594a2898d31d14bbeda3324cacd7b",
+    "connectorRevocation": "a1329b669262b2abbffc8e9ec501e866429c0d55"
+  },
+  "finalShaBinding": "PEEL_DETACHED_ANNOTATED_TAG_CONNECTOR_REVOCATION_L1_G0_EXACT_FINAL",
+  "controllerReleases": [
+    "6ea70455e46b0f31b2b2ea94a42b3f51892d7ea9",
+    "055cf5a5d277bead4b02146a05869d91712e5c91"
+  ],
+  "assuranceFingerprint": "f2e0de88dae65aad46ca5ec80872f523950289326275791e651e2d9ed0cb4548",
+  "engineeringState": "BOUNDED_PASS",
+  "releaseEvidence": "LOCAL_PROVEN",
+  "effectAuthority": "SANDBOX_ONLY",
+  "finality": "BOUNDED_CLAIM",
+  "contractVersions": [
+    "ConnectorRevocationRequest/v1",
+    "ConnectorRevocationReceipt/v1",
+    "ConnectorCredentialHandle/v1",
+    "CONNECTOR-REVOCATION-L1-G0/policy-v1",
+    "ConnectorBinding/v1",
+    "luzione-effect-admission/v2",
+    "luzione-effect-execution-envelope/v1",
+    "luzione-provider-adapter/v0.3",
+    "luzione-prepared-provider-dispatch/v1",
+    "luzione-provider-credential-release/v1"
+  ],
+  "routes": [
+    "POST /api/v1/connectors/revocations",
+    "GET /api/v1/connectors/revocations/{receiptId}"
+  ],
+  "migrations": [
+    "supabase/migrations/20260905130000_connector_revocation_receipts.sql",
+    "supabase/migrations/20260905131000_effect_admission_l1_correction_02.sql"
+  ],
+  "localVerification": {
+    "compliance": "7/7",
+    "focused": "32/32",
+    "full": "400/400",
+    "typecheck": "PASS",
+    "lint": "PASS_ZERO_WARNINGS",
+    "build": "PASS_NEXTJS_16.3.4_WEBPACK",
+    "disposableMigration": "PASS_FORCED_RLS_APPEND_ONLY_CROSS_TENANT_ORIGINATING_ATTEMPT_REVERSE_0_REAPPLY_4_CLEANUP"
+  },
+  "rollbackProof": {
+    "connectorPath": "scripts/validation/rollback-connector-revocation-l1-g0.sql",
+    "effectCorrection02Path": "scripts/validation/rollback-effect-admission-l1-correction-02.sql",
+    "safeScope": "empty/pre-activation disposable shape only",
+    "guards": [
+      "connector reverse rejects any append-only receipt evidence",
+      "effect correction reverse rejects any originating-attempt checkpoint evidence"
+    ],
+    "productionRollback": "NOT_AUTHORIZED_NOT_RUN"
+  },
+  "runtimeTruth": {
+    "registeredAdapter": "ConnectorRevocationEmulatorAdapter",
+    "adapterContract": "luzione-provider-adapter/v0.3",
+    "providerMode": "SANDBOX_ONLY",
+    "effectClass": "NO_EFFECT",
+    "credentialResolutionOrErasure": "NOT_RUN",
+    "providerEffect": "NOT_RUN",
+    "productionQueryOrMutation": "NOT_RUN",
+    "deployment": "NOT_RUN"
+  },
+  "exactHeadAutomation": "PENDING_FINAL_PUSH_AND_DRAFT_PR",
+  "preview": "NOT_REQUESTED_NO_DEPLOYMENT_ACTION",
+  "deferred": [
+    "exact-final automated CI and CodeQL",
+    "authenticated Git-bound application readback",
+    "independent L2/L3 exact-pin consumer evidence",
+    "managed migration, backup/PITR and recovery",
+    "real credential/provider revocation and local credential disposition",
+    "all G1/G2, live-effect, merge, default-branch and production actions"
+  ],
+  "writerLock": "RELEASE_AFTER_FINAL_PUSH_TAG_CI_AND_CONTROLLER_HANDOFF",
+  "oneNextAction": "Controller validates the detached exact-final tag and exact-head CI, then authorizes OPS-CONTRACTS-CORRECTION-01 from that peeled final on one fresh non-default branch; do not overlap API writers."
+}

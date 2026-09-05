@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/connector-revocation/connector-revocation-request-v1.schema.json",
+  "title": "ConnectorRevocationRequest/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["binding", "contractVersion", "credentialHandle", "expectedPriorReceiptId", "operation", "operationKey", "payloadDigest", "providerAccountRef"],
+  "properties": {
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["bindingId", "consentRef", "contractVersion", "credentialReference", "cursor", "provider", "revocation", "scopes", "status", "tenantId"],
+      "properties": {
+        "bindingId": { "type": "string", "format": "uuid" },
+        "consentRef": { "type": "string" },
+        "contractVersion": { "const": "ConnectorBinding/v1" },
+        "credentialReference": { "type": "string", "pattern": "^secret-ref:" },
+        "cursor": { "type": ["string", "null"] },
+        "provider": { "enum": ["GOOGLE_WORKSPACE", "MICROSOFT_365", "QUICKBOOKS_ONLINE"] },
+        "revocation": {
+          "type": "object", "additionalProperties": false,
+          "required": ["revocationRef", "revokedAt"],
+          "properties": { "revocationRef": { "type": ["string", "null"] }, "revokedAt": { "type": ["string", "null"], "format": "date-time" } }
+        },
+        "scopes": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "status": { "const": "BOUND" },
+        "tenantId": { "type": "string" }
+      }
+    },
+    "contractVersion": { "const": "ConnectorRevocationRequest/v1" },
+    "credentialHandle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contractVersion", "reference", "version"],
+      "properties": {
+        "contractVersion": { "const": "ConnectorCredentialHandle/v1" },
+        "reference": { "type": "string", "pattern": "^secret-ref:[A-Za-z0-9][A-Za-z0-9._:@/-]{2,190}$" },
+        "version": { "type": "string", "minLength": 3, "maxLength": 200 }
+      }
+    },
+    "expectedPriorReceiptId": { "type": ["string", "null"], "pattern": "^connector-revocation-receipt:[a-f0-9]{64}$" },
+    "operation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "scenario"],
+      "properties": {
+        "kind": { "enum": ["AUTHORIZE_FORWARD_RECOVERY_ERASURE", "REQUEST_REMOTE_REVOCATION"] },
+        "scenario": { "enum": ["ack_only", "ambiguous", "failed", "matched", "source_unavailable", "version_mismatch"] }
+      }
+    },
+    "operationKey": { "type": "string", "minLength": 3, "maxLength": 512 },
+    "payloadDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "providerAccountRef": { "type": "string", "minLength": 3, "maxLength": 512 }
+  }
+}

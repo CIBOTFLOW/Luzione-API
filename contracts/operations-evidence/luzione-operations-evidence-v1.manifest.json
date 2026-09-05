@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "LuzioneOperationsEvidenceManifest/v1",
+  "bundleVersion": "LuzioneOperationsEvidence/v1",
+  "candidateSha": "cf9fee8fbefa1dbda013788795b068477fa8535b",
+  "controllerAuthority": "6a6d710a1e35774ef544bf0c770a92481fb09dcb",
+  "effectAuthority": "NO_EFFECT",
+  "runtimeActivation": "NOT_IMPLEMENTED",
+  "productionReady": false,
+  "coreComposition": {
+    "bundleVersion": "LuzioneCoreContracts/v1",
+    "finalSha": "bb5eb395af0873f4483ba2dc10c76f9941051dde",
+    "implementationSha": "828de754e4104cd860e3f47adbf2e84c576e5c10",
+    "schemaTree": "d57ccc4cccd97b37acd1a1575b1e07ede5787349",
+    "sdkTree": "d594fa014d7020fdf8386c7a6926ff9b573ac355"
+  },
+  "sourcePackets": {
+    "customerZero": {
+      "fingerprintSha256": "ae1c5225f8bb1c45420572433ac659ff054a1fd2bfad1cb2bf740e5ae008e57c",
+      "packetId": "CUSTOMER-ZERO-OPS-01/v1"
+    },
+    "proof": {
+      "fingerprintSha256": "b2c79f6a580267adfcac1745047518979070ee3f18d90df478dc4b6ec511cb8b",
+      "packetId": "PROOF-OPS-01/v1"
+    }
+  },
+  "artifacts": {
+    "generatedSdk": "src/modules/operations-evidence-contracts/generatedSdk.ts",
+    "l2ConsumerPacket": "contracts/operations-evidence/consumer-mappings/l2-crm-app-v1.json",
+    "l3ConsumerPacket": "contracts/operations-evidence/consumer-mappings/l3-sultan-runtime-v1.json",
+    "schemaBundle": "contracts/operations-evidence/v1/luzione-operations-evidence-v1.schema.json",
+    "semanticFixtures": "src/modules/operations-evidence-contracts/fixtures.ts",
+    "strictConsumerSdk": "src/modules/operations-evidence-contracts/index.ts"
+  },
+  "contracts": {
+    "CapabilityWindowLedger/v1": "#/$defs/CapabilityWindowLedger",
+    "CapacityObservation/v1": "#/$defs/CapacityObservation",
+    "CaseHandoff/v1": "#/$defs/CaseHandoff",
+    "ChangeFreeze/v1": "#/$defs/ChangeFreeze",
+    "CustomerZeroCadence/v1": "#/$defs/CustomerZeroCadence",
+    "EvidenceCompletenessReport/v1": "#/$defs/EvidenceCompletenessReport",
+    "EvidenceRef/v1": "#/$defs/EvidenceRef",
+    "FeedbackRecord/v1": "#/$defs/FeedbackRecord",
+    "MetricCatalog/v1": "#/$defs/MetricCatalog",
+    "ProofDailyRecord/v1": "#/$defs/ProofDailyRecord",
+    "ProofException/v1": "#/$defs/ProofException",
+    "ProofExitDecision/v1": "#/$defs/ProofExitDecision",
+    "ProofIncident/v1": "#/$defs/ProofIncident",
+    "ProofWeeklySignoff/v1": "#/$defs/ProofWeeklySignoff",
+    "ProofWindowEntry/v1": "#/$defs/ProofWindowEntry",
+    "StageReadiness/v1": "#/$defs/StageReadiness",
+    "TrainingAttestation/v1": "#/$defs/TrainingAttestation"
+  },
+  "compatibility": {
+    "additiveEvolutionRequiresNewVersion": true,
+    "exactFieldSets": true,
+    "unknownVersionsRejected": true
+  }
+}
