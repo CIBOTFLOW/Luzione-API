@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "OPS-CONTRACTS-CORRECTION-01/Assurance-Matrix/v1",
+  "implementationSha": "ff44ffa5f78abe20402a31bc34af8d178d20bf26",
+  "sourceFingerprintSha256": "80ae6a53c8ff28259389b1175f7029bf920013e03c7e5419b145c9c2a569decf",
+  "probeSourceSha256": "6d370c6ca70405f93bf91b1fa24c53a4d4d73e0936bbb85cd6bb66ab8c0f56ad",
+  "result": "PASS_11_OF_11_BOUNDED_LOCAL_NO_EFFECT",
+  "probes": [
+    {"id":"A01","result":"PASS_DENIED","claim":"changed identity, nonexistent prior, cycle and fork reject; valid same-tenant/same-contract append retains the exact prior set"},
+    {"id":"A02","result":"PASS_DENIED","claim":"unresolved or foreign capability evidence cannot earn credit"},
+    {"id":"A03","result":"PASS_DENIED","claim":"invalid and future service dates cannot count"},
+    {"id":"A04","result":"PASS_DENIED","claim":"weekly and capability references resolve only to supplied typed daily records"},
+    {"id":"A05","result":"PASS_DENIED","claim":"exit state derives from ledgers/hard zeros and exact RECOVERY evidence; self-assertion and orphan recovery reject"},
+    {"id":"A06","result":"PASS_DENIED","claim":"READY requires four distinct canonical per-effect G2 grants and exact AUTHORITY evidence"},
+    {"id":"A07","result":"PASS_DENIED","claim":"arbitrary or bundled stage approval cannot advance"},
+    {"id":"A08","result":"PASS_DENIED","claim":"owners resolve from exact active canonical human contexts; agents and payload-only humans reject"},
+    {"id":"A09","result":"PASS_DENIED","claim":"P0/P1 auto-close is required as the eighth unwaivable hard zero"},
+    {"id":"A10","result":"PASS_DENIED","claim":"daily credit consumes the exact completeness report, metric catalog and typed METRIC evidence"},
+    {"id":"A11","result":"PASS_DENIED","claim":"zero denominator and more than 30 daily identities reject identically across schema and SDK"}
+  ],
+  "positiveRecovery": "PASS_TYPED_RESOLVED_INCIDENT_CAPABILITY_EPOCH_RESET",
+  "schemaSdkParity": "PASS_BIDIRECTIONAL_REQUIRED_KEYS_ENUMS_AND_LIMITS",
+  "liveEffects": 0
+}

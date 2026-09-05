@@ -2546,6 +2546,56 @@
       "next_proof_needed": [
         "Push and tag the combined exact final, bind exact-head automated CI, then require controller acceptance before OPS-CONTRACTS-CORRECTION-01 starts on a fresh non-default branch."
       ]
+    },
+    {
+      "proof_id": "OPS_CONTRACTS_CORRECTION_01_G0_20260905",
+      "project_id": "OPS-CONTRACTS-CORRECTION-01",
+      "recorded_at": "2026-09-05T07:16:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "ff44ffa5f78abe20402a31bc34af8d178d20bf26",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "OPS-CONTRACTS-CORRECTION-01 adds a content-addressed LuzioneOperationsEvidenceLedger/v2 around frozen v1 records and derives supersession, typed references, proof days/epochs/resets, completeness/hard zeros, canonical human ownership, exact per-effect G2 authority, stage and exit state without runtime effects.",
+      "exercised_boundaries": [
+        "Every entry and complete ledger has a deterministic canonical SHA-256; an exact prior set cannot be removed or overwritten.",
+        "Supersession requires unique same-tenant/same-contract identity and rejects nonexistent targets, self-link, cycle and fork.",
+        "Daily, weekly, capability and exit state resolve supplied typed records/evidence, unique real calendar dates, exact completeness/catalog bindings and capability reset evidence.",
+        "P0/P1 auto-close is the eighth hard zero; zero completeness denominator and more than 30 daily record identities fail in both schema and SDK.",
+        "Every accountable owner resolves from one active canonical HUMAN context; agent and payload-only identities fail.",
+        "READY requires the complete four-effect distinct G2 set; each grant binds tenant, founder signer, exact action/stage/effect and typed AUTHORITY evidence.",
+        "All eleven assurance probes denied; typed resolved incident/reset positive passed; schema/SDK bidirectional parity passed.",
+        "Focused v2 passed 17/17, v1+v2 36/36, taxonomy 4/4, full suite 417/417, compliance 7/7, typecheck, zero-warning lint and Next.js build passed.",
+        "Frozen Core, onboarding, effect-admission correction-02 and connector-revocation tree IDs remained exact."
+      ],
+      "untested_boundaries": [
+        "independent OPS-CONTRACTS-ASSURE-02 and exact L2/L3 consumer repins",
+        "exact-final automated CI and any authenticated Git-bound application readback",
+        "hosted persistence, proof instrumentation, production monitoring or a proof window",
+        "G1, G2, merge, default-branch, deployment, activation, migration or production readiness"
+      ],
+      "evidence_refs": [
+        "commit:ff44ffa5f78abe20402a31bc34af8d178d20bf26",
+        "architecture/production-convergence/OPS_CONTRACTS_CORRECTION_01_WORKING_CONTRACT.md",
+        "engineering/execution/ops-contracts-correction-01/OPS_CONTRACTS_CORRECTION_01_ARTIFACT_DIGESTS_V1.json",
+        "engineering/execution/ops-contracts-correction-01/OPS_CONTRACTS_CORRECTION_01_ASSURANCE_MATRIX_V1.json",
+        "contracts/operations-evidence/luzione-operations-evidence-ledger-v2.manifest.json",
+        "contracts/operations-evidence/consumer-mappings/l2-ops-ledger-v2.json",
+        "contracts/operations-evidence/consumer-mappings/l3-ops-ledger-v2.json"
+      ],
+      "failure_refs": ["OPS_CONTRACTS_CORRECTION_01_TAXONOMY_METADATA_20260905"],
+      "cross_repo_handoffs": [
+        "L2 may pin and structurally adapt v2 but must not mint or reinterpret API-owned records, identities, owners, evidence, proof credit, stage or authority.",
+        "L3 may consume SDK-derived bounded state for synthetic evaluation only; Sultan and agents cannot own, sign, approve or create decision-bearing evidence."
+      ],
+      "deferred_external_infra": ["exact-head CI", "independent L5 assurance", "independent L2/L3 consumers", "every production and G2 boundary"],
+      "remaining_uncertainty": [
+        "Producer-local tests do not independently clear the decision semantics.",
+        "No hosted store or authenticated preview consumes the v2 ledger.",
+        "The v2 candidate is not integrated or production-ready."
+      ],
+      "next_proof_needed": ["L5 runs OPS-CONTRACTS-ASSURE-02 against the exact implementation/final pair before any decision-bearing L2/L3 repin."]
     }
   ]
 }

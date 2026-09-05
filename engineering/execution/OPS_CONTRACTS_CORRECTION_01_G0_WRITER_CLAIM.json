@@ -10,8 +10,8 @@
     "lane": "L1",
     "threadId": "01a063d3-a21c-7e60-a257-9ef6d89cad4c",
     "claimedAt": "2026-09-05T06:51:29Z",
-    "releasedAt": null,
-    "state": "ACTIVE_SINGLE_WRITER"
+    "releasedAt": "2026-09-05T07:16:40Z",
+    "state": "RELEASED_AFTER_FINAL_COMMIT_PUSH_TAG_AND_HANDOFF"
   },
   "scope": "Versioned operations-evidence append ledger, strict SDK/schema parity fixtures, eleven assurance negatives, and immutable G0 evidence only",
   "effectAuthority": "NO_EFFECT",

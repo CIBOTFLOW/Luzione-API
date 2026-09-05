@@ -2,7 +2,7 @@
   "schemaVersion": "L2OperationsEvidenceLedgerConsumerPacket/v2",
   "producerRepository": "CIBOTFLOW/Luzione-API",
   "producerBaseSha": "e6dce8c92f8cee9102af341615c0fa31345ca77d",
-  "producerImplementationSha": "PENDING_IMPLEMENTATION_COMMIT",
+  "producerImplementationSha": "ff44ffa5f78abe20402a31bc34af8d178d20bf26",
   "ledgerVersion": "LuzioneOperationsEvidenceLedger/v2",
   "baseRecordBundleVersion": "LuzioneOperationsEvidence/v1",
   "assuranceFingerprintSha256": "80ae6a53c8ff28259389b1175f7029bf920013e03c7e5419b145c9c2a569decf",
