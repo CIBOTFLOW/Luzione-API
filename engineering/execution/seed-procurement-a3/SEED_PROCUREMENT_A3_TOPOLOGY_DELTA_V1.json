@@ -7,7 +7,7 @@
   "base_proof_sha": "70828af4c10cd180d332c4b1e5771d719d1ab579",
   "seed_product_contract_producer_sha": "e14b405d58a293c002f5676984a95e55372b3bd2",
   "schedule_contract_producer_sha": "265724e528502b44a1250efea551539d74cb0bbd",
-  "procurement_contract_producer_sha": "c7f28cc068c45997c620747768fba3fc7e7dddc2",
+  "procurement_contract_producer_sha": "777e0d471d2ecf02294fffb7562761d6f8a36dbd",
   "effect_authority": "NO_EFFECT",
   "http_surfaces": [
     {
