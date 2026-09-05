@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "CORE-02/Owner-Return/v1",
+  "packetId": "CORE02-OWNER-DATABASE-SECURITY/v1",
+  "projectId": "CORE-02",
+  "controllerAuthority": "CIBOTFLOW/Luzione-platform-program@7713b02201e5abb84a92bb0d2af91514d33c84d5",
+  "inventoryRef": "engineering/execution/core-02/CORE_02_API_ACTIVATION_CONE_MANIFEST_V1.json",
+  "requiredHumanFunction": "Platform and database security steward",
+  "unknownIds": ["CORE02-U005", "CORE02-U006", "CORE02-U007"],
+  "allowedDecisions": ["CONFIRM", "CORRECT", "NOT_OWNER", "UNKNOWN"],
+  "answers": [
+    {"unknownId":"CORE02-U005","values":{"environmentRef":null,"projectRef":null,"relationPostureByGroup":null,"migrationHistoryRefs":[],"physicalOwnerMap":null,"rlsPolicyEvidence":null,"grantEvidenceRefs":[]}},
+    {"unknownId":"CORE02-U006","values":{"credentialReferenceIds":[],"consumerServiceMap":null,"effectiveLoginMap":null,"groupMembershipMap":null,"rotationOwner":null,"lastVerifiedAt":null,"evidenceRefs":[]}},
+    {"unknownId":"CORE02-U007","values":{"humanOwnerFunction":null,"migrationPrincipalReference":null,"physicalObjectOwnership":null,"approvalChain":null,"migrationReceiptRefs":[]}}
+  ],
+  "return": {"decision":null,"observedAt":null,"environmentRef":null,"secretValuesIncluded":false,"productionMutationPerformed":false,"notes":null},
+  "signer": {"name":null,"function":"Platform and database security steward","authorityRef":null,"signedAt":null,"signatureRef":null}
+}

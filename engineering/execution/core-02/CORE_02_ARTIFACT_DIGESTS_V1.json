@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "CORE-02/Artifact-Digests/v1",
+  "projectId": "CORE-02",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "controllerAuthority": "CIBOTFLOW/Luzione-platform-program@7713b02201e5abb84a92bb0d2af91514d33c84d5",
+  "baseSha": "bb5eb395af0873f4483ba2dc10c76f9941051dde",
+  "implementationSha": "2e62ceba046192769148017b4f624846b6fa71c4",
+  "ciPortableEvidenceSha": "c9e11c4d2ceb062678b3146ba6e8601ba7846761",
+  "generatedAt": "2026-09-05T01:58:29Z",
+  "algorithm": "sha256",
+  "artifacts": [
+    {
+      "path": "engineering/execution/core-02/CORE_02_API_ACTIVATION_CONE_MANIFEST_V1.json",
+      "digest": "9f5c35947b6b427394b24568376bedf70b13a442a068187a9979d3c6af69556e"
+    },
+    {
+      "path": "engineering/execution/core-02/CORE_02_UNKNOWN_OWNER_LEDGER_V1.json",
+      "digest": "64f8bee4e3413f90164a645466430d86d8f6dc278cd0668053446a6a055e6d13"
+    },
+    {
+      "path": "engineering/execution/core-02/owner-returns/CORE_02_OWNER_CONNECTOR_RUNTIME_V1.json",
+      "digest": "91dc769b4054febd291ad088e89f6938341a5e2802232438870e69a15bc271d0"
+    },
+    {
+      "path": "engineering/execution/core-02/owner-returns/CORE_02_OWNER_CRM_ONBOARDING_V1.json",
+      "digest": "9d80174d6284423554f041c935bbfc6652b41a689dcf1b9c7047889cf7956ca0"
+    },
+    {
+      "path": "engineering/execution/core-02/owner-returns/CORE_02_OWNER_DATABASE_SECURITY_V1.json",
+      "digest": "845f462bd73365da903fab3d190c1ce987b64fda4187629da02b0dc87d429f66"
+    },
+    {
+      "path": "engineering/execution/core-02/owner-returns/CORE_02_OWNER_IDENTITY_CREDENTIAL_V1.json",
+      "digest": "6ff84a797049d98fc4eec077620831fc035e9a6c150deacd06e2b4aa862cb54b"
+    },
+    {
+      "path": "engineering/execution/core-02/owner-returns/CORE_02_OWNER_PRODUCTION_DECISION_V1.json",
+      "digest": "0d7dfbe96696c1dbe6ba07efd309d5740faad70cea5afe8dcdbbd5d29c338dd0"
+    },
+    {
+      "path": "engineering/execution/core-02/owner-returns/CORE_02_OWNER_RELEASE_RECOVERY_V1.json",
+      "digest": "79288a4176b1d169b7e514047bba1223ca0ee6f84805db58fcd898573a8580b6"
+    },
+    {
+      "path": "engineering/execution/core-02/owner-returns/CORE_02_OWNER_SUPPORT_V1.json",
+      "digest": "188a6d9347ebd2734b22535011ace8b47e687e811ceb3907e77c7726d05f2b6f"
+    },
+    {
+      "path": "src/modules/core-02-inventory/tests/core-02-inventory.test.ts",
+      "digest": "9d2bc802d84e3519a2feaf5f061500378c550fe246c012b8937705c651fc230b"
+    },
+    {
+      "path": "architecture/production-convergence/CORE_02_WORKING_CONTRACT.md",
+      "digest": "f2c44e2225e5880e48f638d361d069624c4869e946f046083825bdd3a49765ba"
+    }
+  ],
+  "frozenTrees": {
+    "contracts/core": "d57ccc4cccd97b37acd1a1575b1e07ede5787349",
+    "src/modules/luzione-core-contracts": "d594fa014d7020fdf8386c7a6926ff9b573ac355"
+  },
+  "strongestClaim": "The listed artifacts are immutable inputs to a bounded, local and CI-proven NO_EFFECT inventory; they do not prove activation, integration, production readiness, deployed application readback or owner confirmation."
+}

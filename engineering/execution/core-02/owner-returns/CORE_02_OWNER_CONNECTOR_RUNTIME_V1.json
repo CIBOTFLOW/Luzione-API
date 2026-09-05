@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "CORE-02/Owner-Return/v1",
+  "packetId": "CORE02-OWNER-CONNECTOR-RUNTIME/v1",
+  "projectId": "CORE-02",
+  "controllerAuthority": "CIBOTFLOW/Luzione-platform-program@7713b02201e5abb84a92bb0d2af91514d33c84d5",
+  "inventoryRef": "engineering/execution/core-02/CORE_02_API_ACTIVATION_CONE_MANIFEST_V1.json",
+  "requiredHumanFunction": "Connector and provider integration owner",
+  "unknownIds": ["CORE02-U009", "CORE02-U010", "CORE02-U017"],
+  "allowedDecisions": ["CONFIRM", "CORRECT", "NOT_OWNER", "UNKNOWN"],
+  "answers": [
+    {"unknownId":"CORE02-U009","values":{"providerBindingMap":null,"custodianFunction":null,"consentReferenceFormat":null,"scopeMap":null,"expiryPolicy":null,"revocationPath":null,"tenantBindingEvidence":null}},
+    {"unknownId":"CORE02-U010","values":{"jobInventory":null,"deploymentShaMap":null,"schedulerMap":null,"triggerOrCadence":null,"servicePrincipalMap":null,"tenantScope":null,"effectClass":null,"killSwitchMap":null,"monitorMap":null,"lastExecutionReceiptRefs":[]}},
+    {"unknownId":"CORE02-U017","values":{"admittedAdapterMap":null,"repositoryDeploymentShas":null,"opaqueCredentialBindings":null,"effectClasses":null,"idempotencyBoundary":null,"acknowledgementReadbackMap":null,"revocationPath":null,"reconciliationPath":null,"ownerFunctions":null}}
+  ],
+  "return": {"decision":null,"observedAt":null,"environmentRef":null,"secretValuesIncluded":false,"productionMutationPerformed":false,"notes":null},
+  "signer": {"name":null,"function":"Connector and provider integration owner","authorityRef":null,"signedAt":null,"signatureRef":null}
+}

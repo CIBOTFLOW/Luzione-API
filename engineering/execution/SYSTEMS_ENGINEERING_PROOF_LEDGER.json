@@ -1999,6 +1999,74 @@
         "have L2 and L3 pin the immutable SDK implementation and return independent compatibility evidence",
         "keep activation blocked until the inventory, managed recovery, authenticated preview and controller gates pass"
       ]
+    },
+    {
+      "proof_id": "CORE_02_G0_API_ACTIVATION_CONE_20260905",
+      "project_id": "CORE-02",
+      "recorded_at": "2026-09-05T01:58:29Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "c9e11c4d2ceb062678b3146ba6e8601ba7846761",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "CORE-02 inventories the tracked API-owned activation cone reachable from GJ-1, GJ-2 and GJ-3, routes all 19 unresolved facts to seven unsigned exact-field human-return packets, and mechanically preserves the exact CORE-01 contract and SDK trees without activating any runtime, database, provider or production effect.",
+      "exercised_boundaries": [
+        "The manifest accounts for 37 tracked routes, seven canonical object groups, ten relation groups covering 60 unique relations, ten principals, nine opaque credential references, two jobs, six flags, three dashboards, seven alerts, two recovery controls, four rollback controls and four kill switches.",
+        "Every tracked route source exists and exports the recorded method; every migration-owned relation resolves to a tracked CREATE TABLE statement.",
+        "Every one of 19 unknowns maps exactly once to one of seven unsigned owner packets whose answer keys equal the ledger-required field names.",
+        "Credential references remained opaque; packet and manifest scanning rejected credential values, connection-string passwords, private keys and long bearer tokens.",
+        "Job scheduling remained absent from repository Vercel cron configuration, tracked runtime flags remained documentary/default-off and monitor definitions remained tracked rather than deployed claims.",
+        "The checked-out contracts/core and src/modules/luzione-core-contracts trees matched immutable CORE-01 release trees d57ccc4cccd97b37acd1a1575b1e07ede5787349 and d594fa014d7020fdf8386c7a6926ff9b573ac355.",
+        "Focused tests passed 6/6; the full repository suite passed 343/343; seven compliance documents, TypeScript, ESLint and the Next.js 16.3.4 webpack build passed.",
+        "GitHub Release gate 33937609720 and CodeQL 33937609688 passed at exact SHA c9e11c4d2ceb062678b3146ba6e8601ba7846761; artifact 9960705385 has digest sha256:89363e3df7cf48560bd5bde1c583b4b97e10fdd1bd65f74ba103dcbe4325e29d.",
+        "GitHub/Vercel recorded preview deployment 6275914948/status 17854257697 for the exact SHA; one /api/v1/release read returned 302 to Vercel SSO, so no application readback claim is made.",
+        "No runtime source, contract, SDK, migration, secret, credential, production data, provider configuration, default branch or production surface was mutated."
+      ],
+      "untested_boundaries": [
+        "signed human confirmation of all 19 exact ownership, credential-mapping, scheduler, flag, monitor, recovery and production-decision fields",
+        "independent consumer interpretation of the inventory",
+        "authenticated exact-SHA application preview readback",
+        "managed backup/PITR and restore evidence",
+        "any activation, integration, provider effect, migration or production observation",
+        "controller acceptance or G1/G2 authorization"
+      ],
+      "evidence_refs": [
+        "commit:2e62ceba046192769148017b4f624846b6fa71c4",
+        "commit:c9e11c4d2ceb062678b3146ba6e8601ba7846761",
+        "pull-request:CIBOTFLOW/Luzione-API#67",
+        "engineering/execution/core-02/CORE_02_API_ACTIVATION_CONE_MANIFEST_V1.json",
+        "engineering/execution/core-02/CORE_02_UNKNOWN_OWNER_LEDGER_V1.json",
+        "engineering/execution/core-02/CORE_02_ARTIFACT_DIGESTS_V1.json",
+        "engineering/execution/core-02/owner-returns",
+        "src/modules/core-02-inventory/tests/core-02-inventory.test.ts",
+        "github-actions:33937609720",
+        "github-actions:33937609688",
+        "github-actions-artifact:9960705385",
+        "github-deployment:6275914948",
+        "github-deployment-status:17854257697"
+      ],
+      "failure_refs": [
+        "CORE_02_SHALLOW_PR_BASE_OBJECT_20260905"
+      ],
+      "cross_repo_handoffs": [
+        "Seven exact-field human owner-return packets are ready for controller routing; they do not authorize cross-repository edits."
+      ],
+      "deferred_external_infra": [
+        "signed human owner returns",
+        "authenticated preview access",
+        "managed recovery evidence",
+        "independent consumers and all activation authority"
+      ],
+      "remaining_uncertainty": [
+        "GJ-1 has frozen onboarding/import/connector contracts and legacy configuration artifacts, but no dedicated API onboarding mutation/readback route or proven runtime owner.",
+        "GJ-2 exposes default-off dark paths, but current canonical writer transfer, deployed principal membership, worker scheduling and cutover ownership remain unsigned.",
+        "GJ-3 has strict support contracts, but no support-specific route, store or worker and no signed support operations owner.",
+        "Tracked definitions and local/CI proof do not establish deployment, production binding or business finality."
+      ],
+      "next_proof_needed": [
+        "The controller routes the seven unsigned exact-field packets to their named human functions and admits only signature-verifiable returns that preserve all NO_EFFECT holds."
+      ]
     }
   ]
 }
