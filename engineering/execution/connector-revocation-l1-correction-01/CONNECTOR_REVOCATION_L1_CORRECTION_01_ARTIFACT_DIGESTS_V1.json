@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "CONNECTOR-REVOCATION-L1-CORRECTION-01/Artifact-Digests/v1",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "branch": "codex/connector-revocation-correction-01-g0-8dbcc9b",
+  "baseSha": "0c970c0b54f190ba0b2d97629311d2712f9518e2",
+  "contractImplementationSha": "572d0f5e78558f8e6b8dcc2bf07210600edd20d0",
+  "testIntegratedImplementationSha": "9edbedfa37020b3710090abe57a899cf0bc880eb",
+  "finalSha": "PEEL_DETACHED_ANNOTATED_TAG_CONNECTOR_REVOCATION_L1_CORRECTION_01_EXACT_FINAL",
+  "controllerAuthority": "8dbcc9b9b7429d00831aeb16139bd06644ea36bf",
+  "assuranceFingerprintSha256": "b2e1923f459266b87ba54d77e189655e226eaacf566447a0107ecde1dbde51f3",
+  "versions": [
+    "ConnectorRevocationRequest/v2",
+    "ConnectorRevocationReceipt/v2",
+    "ConnectorCredentialHandle/v2",
+    "CanonicalConnectorBindingResolution/v1",
+    "CONNECTOR-REVOCATION-L1-CORRECTION-01/policy-v2"
+  ],
+  "rawSha256": {
+    "bindingResolutionSchema": "23a82ac30d15fc8fe9f53f64546af0c0c6eb861222556c5dc1f1b8235db05447",
+    "credentialHandleSchema": "9857f0c883f13e712cc9bccd7961eafb4630e777c6c5277d0828f2bc4b11ab0e",
+    "receiptSchema": "c8504ac581a15f13af0f6df78af58feb8daf73aabc009a8405d04145213fb6c2",
+    "requestSchema": "c920d28618061f119e5f2e365dd910ecf62ef0c7d4c9e3c14f6f338138ab52b5",
+    "manifest": "662fcac4b135f50b8a65f499049fa5c29c9e6a32c7dccac77b846ae77be43e56",
+    "l2ConsumerPacket": "1fefcaf44d1c734442ed03404dfb3f7333a6f7ff91242818f675c04bfd3c5055",
+    "parser": "e61af584049a2507eab0c9e5c5f4f339c554b271d9abb8f10fd55425f33a7139",
+    "service": "d6dc0cb8921a7b981b5368c8e23cf84220de721110acbe580c0ba10f0401268f",
+    "emulator": "3899d967847bcb70ff1ce3ccea50f1fa3c6abf564b34bb6cb9cd1372fd811982",
+    "resolver": "0c066940bea3477d097a5b24a6d96f8b5330d30180565fa98b8f6fb207148e66",
+    "killGuard": "a2ac35b648fd8405b5602f798b0d7f0973c25ed4690948e17f856a5065c2dcc6",
+    "focusedSuite": "4d7f1745c086d6ce2ecaca83ce64ec6828403d1e257639ac11c4ba444457aef0",
+    "migration": "0b5ac8f955078c5b6eea30695d4531900e49ec2214b80794756fae111924aefd",
+    "reverse": "905bfb655b4a53503ec6ab5a30202fe0a5ca3cbb0b0fc3edd33e1abb819dc550",
+    "postgresProof": "53ef6680e523eb5d25821595a1bf1355c598db873a60d2aa5480e8f99c55abcd",
+    "proofRunner": "a41da03f031c94c23279ea58bbe90c368cd4287608480547794738fbb3a0fc19"
+  },
+  "frozenTrees": {
+    "contractsCore": "d57ccc4cccd97b37acd1a1575b1e07ede5787349",
+    "coreSdk": "d594fa014d7020fdf8386c7a6926ff9b573ac355",
+    "effectAdmission": "b14044b0da3d0eb7c1a2fa855ddf24da13797239",
+    "operationsEvidenceContracts": "122e314c653565f04024ef8cc6fbfebe0eaa9198",
+    "operationsEvidenceSdk": "0b040983c3f0d94724e57da2464afc074ef39025"
+  },
+  "treeProof": {
+    "baseTree": "9262dcfb6b743f14a3e4f8abad6f766be4ebc0ef",
+    "testIntegratedTree": "d004b35d71bfcac2ba11a05883d510f87a2344b5",
+    "reverseCheck": "PASS_GIT_REVERSE_APPLY_CHECK",
+    "frozenTreeDiff": "EMPTY"
+  },
+  "localVerification": {
+    "focusedV2": "PASS_16_OF_16",
+    "combinedV1V2": "PASS_25_OF_25",
+    "taxonomy": "PASS_4_OF_4",
+    "full": "PASS_433_OF_433",
+    "compliance": "PASS_7_OF_7",
+    "typecheck": "PASS",
+    "lint": "PASS_ZERO_WARNINGS",
+    "build": "PASS_NEXTJS_16_3_4_WEBPACK",
+    "disposablePostgres": "PASS_REVERSE_0_REAPPLY_7_APPEND_ONLY_RLS_P110_OWNER_BINDING_RAW_COLLISION_RECOVERY_CLEANUP"
+  },
+  "effectAuthority": "SANDBOX_ONLY_NO_EFFECT",
+  "productionReady": false
+}

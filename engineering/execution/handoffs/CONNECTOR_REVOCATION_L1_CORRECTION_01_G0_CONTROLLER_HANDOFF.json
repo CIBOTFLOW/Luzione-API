@@ -1,0 +1,92 @@
+{
+  "schemaVersion": "CONNECTOR-REVOCATION-L1-CORRECTION-01-HANDOFF/v1",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "branch": "codex/connector-revocation-correction-01-g0-8dbcc9b",
+  "baseSha": "0c970c0b54f190ba0b2d97629311d2712f9518e2",
+  "contractImplementationSha": "572d0f5e78558f8e6b8dcc2bf07210600edd20d0",
+  "implementationSha": "9edbedfa37020b3710090abe57a899cf0bc880eb",
+  "finalShaBinding": "PEEL_DETACHED_ANNOTATED_TAG_CONNECTOR_REVOCATION_L1_CORRECTION_01_EXACT_FINAL",
+  "controllerAuthority": "8dbcc9b9b7429d00831aeb16139bd06644ea36bf",
+  "assuranceFingerprint": "b2e1923f459266b87ba54d77e189655e226eaacf566447a0107ecde1dbde51f3",
+  "engineeringState": "BOUNDED_PASS",
+  "releaseEvidence": "LOCAL_PROVEN",
+  "effectAuthority": "SANDBOX_ONLY",
+  "finality": "BOUNDED_CLAIM",
+  "versions": [
+    "ConnectorRevocationRequest/v2",
+    "ConnectorRevocationReceipt/v2",
+    "ConnectorCredentialHandle/v2",
+    "CanonicalConnectorBindingResolution/v1",
+    "CONNECTOR-REVOCATION-L1-CORRECTION-01/policy-v2"
+  ],
+  "routes": [
+    "POST /api/v1/connectors/revocations",
+    "GET /api/v1/connectors/revocations/{receiptId}"
+  ],
+  "changedPathGroups": {
+    "contracts": ["contracts/connector-revocation/v2"],
+    "runtime": ["src/modules/connector-revocation/v2", "src/app/api/v1/connectors/revocations", "src/modules/connector-revocation/routeSupport.ts"],
+    "persistence": ["supabase/migrations/20260905150000_connector_revocation_l1_correction.sql"],
+    "testsAndProof": ["src/modules/connector-revocation/tests/connector-revocation-v2.test.ts", "scripts/validation/connector-revocation-v2-postgres-proof.ts", "scripts/validation/run-connector-revocation-l1-correction-01-proof.sh", "scripts/validation/rollback-connector-revocation-l1-correction-01.sql", "src/modules/platform-testing/taxonomy.ts", "package.json"],
+    "evidence": ["architecture/production-convergence/CONNECTOR_REVOCATION_L1_CORRECTION_01_WORKING_CONTRACT.md", "engineering/execution/connector-revocation-l1-correction-01", "engineering/execution/handoffs/CONNECTOR_REVOCATION_L1_CORRECTION_01_G0_CONTROLLER_HANDOFF.json"]
+  },
+  "ownerTruth": {
+    "requestAuthority": "selectors only",
+    "serverResolved": ["current same-tenant ConnectorBinding/v1", "binding version", "provider account", "destination", "standalone opaque credential handle generation/version"],
+    "defaultAdapter": "UNAVAILABLE_FAIL_CLOSED",
+    "duplicateOwnerStoreCreated": false,
+    "credentialMaterialResolved": false
+  },
+  "digestMeaning": {
+    "rawRequestBody": "SHA-256 exact UTF-8 bytes before JSON parse",
+    "requestPayload": "canonical SHA-256 of exact strict parsed field set without payloadDigest",
+    "credentialHandle": "canonical SHA-256 of exact strict standalone handle without handleDigest",
+    "bindingResolution": "canonical SHA-256 of exact server-owned tuple without resolutionDigest",
+    "receipt": "canonical SHA-256 of exact strict receipt without receiptId/receiptDigest"
+  },
+  "localVerification": {
+    "focusedV2": "16/16",
+    "combinedV1V2": "25/25",
+    "taxonomy": "4/4",
+    "full": "433/433",
+    "compliance": "7/7",
+    "typecheck": "PASS",
+    "lint": "PASS_ZERO_WARNINGS",
+    "build": "PASS_NEXTJS_16.3.4_WEBPACK",
+    "disposableMigration": "PASS_REVERSE_0_OF_7_REAPPLY_7_OF_7_APPEND_ONLY_RLS_P110_REPLAY_RAW_COLLISION_OWNER_BINDING_FORWARD_RECOVERY_CLEANUP"
+  },
+  "negativeEvidence": [
+    "fabricated or stale BOUND binding and foreign tenant owner truth denied",
+    "provider, provider-account, destination, binding-version, credential-generation and credential-version drift denied",
+    "surplus owner fields, missing/wrong fields, whitespace normalization and raw-canonical collisions denied",
+    "same-key changed semantic payload, raw bytes or current resolution conflicts through P110",
+    "containment and normal kill flips deny at acceptance, immediately before credential hold, and immediately before execute/disposition",
+    "provider acknowledgement cannot claim REVOKED or authorize credential erasure",
+    "reverse refuses to discard any immutable v2 receipt"
+  ],
+  "rollbackProof": {
+    "migrationReversePath": "scripts/validation/rollback-connector-revocation-l1-correction-01.sql",
+    "emptyShape": "PASS_7_COLUMNS_TO_0_AND_REAPPLY_TO_7",
+    "evidenceGuard": "PASS_REVERSE_BLOCKED_AFTER_V2_RECEIPT",
+    "gitReverse": "PASS_EXACT_BASE_TO_IMPLEMENTATION_REVERSE_APPLY_CHECK",
+    "productionRollback": "NOT_AUTHORIZED_NOT_RUN"
+  },
+  "runtimeTruth": {
+    "adapter": "ConnectorRevocationV2EmulatorAdapter",
+    "destination": "sandbox.connector-revocation",
+    "effectClass": "NO_EFFECT",
+    "credentialResolutionHoldErasure": "NOT_RUN",
+    "providerCall": "NOT_RUN",
+    "productionDatabaseQueryOrMigration": "NOT_RUN",
+    "deploymentOrPromotion": "NOT_RUN"
+  },
+  "exactHeadAutomation": "PENDING_FINAL_PUSH_AND_DRAFT_PR",
+  "preview": "PENDING_GIT_BOUND_STATUS_IF_REPOSITORY_INTEGRATION_PROVIDES_ONE_NO_APPLICATION_READBACK_CLAIM",
+  "unresolvedRisks": [
+    "No admitted canonical connector-binding owner adapter exists in this repository; the default route therefore fails closed with CANONICAL_BINDING_SOURCE_UNAVAILABLE.",
+    "Producer-local synthetic and disposable evidence does not prove an independent L2 consumer, hosted concurrency, managed migration, provider behavior or credential lifecycle.",
+    "A01/D01, managed recovery, authenticated exact-SHA application readback and every G1/G2 prerequisite remain unresolved."
+  ],
+  "writerLock": "RELEASE_AFTER_FINAL_PUSH_TAG_CI_AND_CONTROLLER_HANDOFF",
+  "oneNextAction": "L5 independently assures the exact v2 implementation/final pair and its fail-closed owner-adapter boundary before L2 may pin it."
+}

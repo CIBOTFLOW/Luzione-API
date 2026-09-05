@@ -6,7 +6,10 @@
   "controllerAuthority": "CIBOTFLOW/Luzione-platform-program@8dbcc9b9b7429d00831aeb16139bd06644ea36bf",
   "assuranceFingerprintSha256": "b2e1923f459266b87ba54d77e189655e226eaacf566447a0107ecde1dbde51f3",
   "claimedAt": "2026-09-05T07:36:12Z",
-  "state": "ACTIVE_SOLE_API_WRITER",
+  "state": "RELEASED_AFTER_LOCAL_PROOF_FINAL_COMMIT_PENDING_PUSH",
+  "releasedAt": "2026-09-05T08:13:49Z",
+  "implementationSha": "9edbedfa37020b3710090abe57a899cf0bc880eb",
+  "finalShaBinding": "PEEL_DETACHED_ANNOTATED_TAG_CONNECTOR_REVOCATION_L1_CORRECTION_01_EXACT_FINAL",
   "effectAuthority": "NO_EFFECT",
   "productionMutationAuthorized": false
 }
