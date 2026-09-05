@@ -40,6 +40,31 @@ test("strict v2 connector request binds exact Mandate, L2 evidence and canonical
   expectCode(() => parseConnectorSyncValidationRequest({ ...request(), payloadDigest: sha256({ forged: true }) }), "PAYLOAD_DIGEST_MISMATCH");
 });
 
+test("connector stable identifiers reject original-byte overflow, Unicode, whitespace and raw/canonical collisions", () => {
+  for (const operationKey of ["o".repeat(201), "connector-é", " customer-zero-connector-check-1", "customer-zero-connector-check-1 "]) {
+    expectCode(() => parseConnectorSyncValidationRequest(request({ operationKey })), "INVALID_REQUEST");
+  }
+  for (const expectedMandateObjectVersion of ["v".repeat(201), "setup-mandate:é@v2", " setup-mandate:proof@v2"]) {
+    expectCode(() => parseConnectorSyncValidationRequest(request({ expectedMandateObjectVersion })), "INVALID_REQUEST");
+  }
+  const bindingCases = [
+    { ...binding, tenantId: " tenant-luzione" },
+    { ...binding, consentRef: "c".repeat(201) },
+    { ...binding, credentialReference: "secret-ref:connector-é" },
+    { ...binding, cursor: " cursor:after" },
+    { ...binding, revocation: { revokedAt: "2026-09-05T00:00:00.000Z", revocationRef: " revocation:proof" }, status: "REVOKED" as const },
+    { ...binding, scopes: ["contacts.réadonly"] },
+  ];
+  for (const invalidBinding of bindingCases) {
+    expectCode(() => parseConnectorSyncValidationRequest(request({ binding: invalidBinding })), "INVALID_REQUEST");
+  }
+  expectCode(() => parseConnectorSyncValidationRequest(request({ validation: { ...validation, cursorAfter: " cursor:after" } })), "INVALID_REQUEST");
+  expectCode(() => parseConnectorSyncValidationRequest(request({ sourceBindingDigest: ` ${requestBase.sourceBindingDigest}` })), "INVALID_REQUEST");
+  const raw = " customer-zero-connector-check-1";
+  assert.notEqual(sha256({ operationKey: raw }), sha256({ operationKey: raw.trim() }));
+  expectCode(() => parseConnectorSyncValidationRequest(request({ operationKey: raw })), "INVALID_REQUEST");
+});
+
 test("SOURCE_CONFIRMED requires matching readback and is the only successful outcome", () => {
   const matched = classify();
   assert.equal(matched.contractVersion, CONNECTOR_VALIDATION_OUTCOME_VERSION);

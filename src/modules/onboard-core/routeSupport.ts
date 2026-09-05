@@ -8,9 +8,10 @@ import { OnboardCoreDomainError } from "./store";
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 
 export function routeUuid(value: string | null, field: string) {
-  const normalized = value?.trim() ?? "";
-  if (!UUID.test(normalized)) throw new OnboardCoreContractError("INVALID_QUERY", `${field} must be a UUID.`);
-  return normalized;
+  if (typeof value !== "string" || !UUID.test(value)) {
+    throw new OnboardCoreContractError("INVALID_QUERY", `${field} must be an exact UUID.`);
+  }
+  return value;
 }
 
 export function onboardRouteFailure(error: unknown, identity: RequestIdentityEnvelope) {

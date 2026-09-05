@@ -1,7 +1,7 @@
 import { requireServiceActor } from "@/lib/api/actor";
 import { apiResponse, createRequestIdentity } from "@/lib/api/http";
 import { ONBOARD_CORE_API_VERSION } from "@/modules/onboard-core/contracts";
-import { ONBOARD_IMPORT_MAPPING_VERSION } from "@/modules/onboard-core/importContracts";
+import { ONBOARD_IMPORT_MAPPING_VERSION_V2 } from "@/modules/onboard-core/importContracts";
 import { OnboardImportStore } from "@/modules/onboard-core/importStore";
 import { onboardRouteFailure, routeUuid } from "@/modules/onboard-core/routeSupport";
 import { bindAuthenticatedRequestIdentity } from "@/modules/platform-contracts/requestIdentity";
@@ -17,7 +17,7 @@ export async function GET(request: Request, context: { params: Promise<{ batchId
       authorityClass: "A0",
       capability: "onboarding.import.read",
       purpose: "read-canonical-import-dry-run-receipt",
-      sourceVersionRefs: [ONBOARD_CORE_API_VERSION, ONBOARD_IMPORT_MAPPING_VERSION],
+      sourceVersionRefs: [ONBOARD_CORE_API_VERSION, ONBOARD_IMPORT_MAPPING_VERSION_V2],
     });
     const batchId = routeUuid((await context.params).batchId, "batchId");
     const result = await new OnboardImportStore().readDryRun(actor, batchId);
