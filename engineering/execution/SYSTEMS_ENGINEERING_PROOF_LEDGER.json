@@ -2310,6 +2310,69 @@
       "next_proof_needed": [
         "Run exact-final automated CI and record protected preview truth, then dispatch ONBOARD-CORE-CORRECTION-01 from that immutable final on a fresh non-default branch before OPS-CONTRACTS-CORRECTION-01."
       ]
+    },
+    {
+      "proof_id": "ONBOARD_CORE_CORRECTION_01_G0_20260905",
+      "project_id": "ONBOARD-CORE-CORRECTION-01",
+      "recorded_at": "2026-09-05T04:59:03Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "0b7f2a968065c34283805db44940b95e5319fb02",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "ONBOARD-CORE-CORRECTION-01 publishes strict v2 onboarding boundaries that content-bind exact Tenant Pack schema and L2 mapper/evidence bytes, require a separately verified human subject, derive active Mandate state from append-only revocation, enforce runtime authority, derive import truth server-side and close connector success/finality around matching source readback without changing frozen Core semantics or enabling effects.",
+      "exercised_boundaries": [
+        "TenantBlueprintMap/v2 reservation and identity bind tenant, source pack ID/version/digest, exact admitted schema path/digest, mapping version and canonical L2 implementation/mapper/evidence binding digest; unknown bindings default to denied.",
+        "Approval and revocation require a separate signed non-anonymous Supabase user JWT with issuer, signature, lifetime, audience, role, session, tenant and capability validation; authority derives only from signed app_metadata and service-token actorType=user is insufficient.",
+        "SetupMandate revocation is an append-only tenant-scoped event; canonical readback derives active=false and preserves revocation evidence without overwriting the Mandate.",
+        "Import v2 accepts only immutable row digests, derives accepted/duplicate/conflict/rejected outcomes server-side, binds the exact Mandate sourceBindingDigest, enforces record limits and persists monotonic runtime measurement under a transaction-local deadline.",
+        "Connector validation requires the exact active same-tenant unexpired, unrevoked and unsuperseded Mandate allowing VALIDATE_CONNECTOR_READBACK, rechecks it on replay, and enforces one server deadline across reservation, sandbox dispatch and readback.",
+        "ConnectorValidationOutcome/v1 permits success only for SOURCE_CONFIRMED with MATCHED readback; ACKNOWLEDGED and RECONCILING remain non-success, while VERSION_MISMATCH, BLOCKED, AMBIGUITY_EXHAUSTED and TERMINAL_UNAVAILABLE expose no success receipt.",
+        "Exact VERSION_MISMATCH, effect-admission BLOCKED and acknowledgement-without-readback adverse probes passed alongside surplus/missing/wrong-version, cross-tenant, stale, revoked, changed-digest and zero-effect negatives.",
+        "Disposable Blueprint/Mandate proof produced 2 drafts, 2 approvals, 1 supersession, 1 Mandate and 5 receipts; correction reverse returned revocation relation/binding columns to the prior shape before v2 rows and reapply restored them.",
+        "Disposable import proof produced 1 batch, 4 server-derived rows, 1 import receipt, 5 command receipts and 1 changed-digest conflict; runtime columns reversed and reapplied in isolation.",
+        "Disposable connector proof produced three NO_EFFECT outbox records, one SOURCE_CONFIRMED outcome and one typed blocked/version mismatch path with zero connector schema delta.",
+        "Focused onboarding tests passed 16/16; compliance passed 7/7; TypeScript, zero-warning ESLint, all 387 tests and the Next.js 16.3.4 webpack build passed.",
+        "Frozen contracts/core, src/modules/luzione-core-contracts and src/modules/effect-admission tree IDs remained d57ccc4cccd97b37acd1a1575b1e07ede5787349, d594fa014d7020fdf8386c7a6926ff9b573ac355 and 5a0fe4010280d93d7250c8c66bc6ca4e6540e609."
+      ],
+      "untested_boundaries": [
+        "exact-final automated CI, CodeQL and authenticated Git-bound preview application readback",
+        "independent L2 exact-SHA mapper/evidence return and compatibility journey",
+        "managed migration, backup/PITR, rollback or deployed human-authentication key discovery",
+        "credential resolution, scheduler, live provider/customer effect or hosted activation",
+        "G1, G2, merge, default-branch action or production readiness"
+      ],
+      "evidence_refs": [
+        "commit:0b7f2a968065c34283805db44940b95e5319fb02",
+        "architecture/production-convergence/ONBOARD_CORE_CORRECTION_01_WORKING_CONTRACT.md",
+        "engineering/execution/onboard-core-correction-01/ONBOARD_CORE_CORRECTION_01_ARTIFACT_DIGESTS_V1.json",
+        "engineering/execution/onboard-core-correction-01/ONBOARD_CORE_CORRECTION_01_L2_CONSUMER_PACKET_V1.json",
+        "engineering/execution/handoffs/ONBOARD_CORE_CORRECTION_01_G0_CONTROLLER_HANDOFF.json",
+        "contracts/onboard-core/luzione-tenant-pack-draft-v1.schema.json",
+        "supabase/migrations/20260905050000_onboard_core_correction_01.sql",
+        "scripts/validation/rollback-onboard-core-correction-01.sql"
+      ],
+      "failure_refs": [
+        "ONBOARD_CORE_CORRECTION_01_SUPABASE_CLI_UNAVAILABLE_20260905",
+        "ONBOARD_CORE_CORRECTION_01_DOCKER_SOCKET_SANDBOX_20260905",
+        "ONBOARD_CORE_CORRECTION_01_REVERSE_ORDERING_20260905",
+        "ONBOARD_CORE_CORRECTION_01_REPLAY_DEADLINE_20260905",
+        "ONBOARD_CORE_CORRECTION_01_INVENTORY_DIGEST_20260905"
+      ],
+      "cross_repo_handoffs": [
+        "L2 must return the exact signed implementation SHA plus mapper/evidence paths and byte digests for admission; it remains proposal-only and may not define identity, authority, import outcome, receipt or finality.",
+        "L3 must not treat this connector-validation boundary as effect authority; the exact execution-envelope correction remains a separate next writer cell."
+      ],
+      "deferred_external_infra": ["exact-head CI", "authenticated preview access", "independent L2 consumer", "managed recovery and every live effect authority"],
+      "remaining_uncertainty": [
+        "No L2 mapper/evidence tuple is admitted by default, so every hosted proposal remains denied until an exact owner return exists.",
+        "The local Supabase JWT verifier proof uses generated signing keys and does not prove deployed JWKS availability or human session policy.",
+        "Local disposable Postgres and SandboxEcho evidence do not prove managed migration, provider behavior or production recovery."
+      ],
+      "next_proof_needed": [
+        "Seal and push the exact final, bind exact-head CI and detached tag evidence, then create a fresh non-default EFFECT-ADMISSION-L1-CORRECTION-01 branch under fingerprint a24eefb14a9681ad97a415b8d48c43a7d88900e8c86a8f489645f9354a1a62d9."
+      ]
     }
   ]
 }
