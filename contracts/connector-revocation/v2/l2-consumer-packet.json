@@ -1,0 +1,41 @@
+{
+  "consumer": "Luzione-UI/L2",
+  "effectAuthority": "NO_EFFECT",
+  "forbiddenRequestFields": [
+    "binding",
+    "credentialHandle",
+    "credentialReference",
+    "providerAccountOwnerTruth"
+  ],
+  "method": "POST",
+  "owner": "CIBOTFLOW/Luzione-API",
+  "path": "/api/v1/connectors/revocations",
+  "pinRule": "Pin the exact implementation commit supplied in the detached L1 handoff together with every listed schema digest; never pin a branch or final evidence commit as the semantic source.",
+  "readback": {
+    "method": "GET",
+    "path": "/api/v1/connectors/revocations/{receiptId}",
+    "tenantScope": "server-authenticated same tenant"
+  },
+  "requestAuthority": "Selectors are proposals only. Luzione API resolves and binds the current same-tenant ConnectorBinding, provider account, destination and standalone credential handle generation/version.",
+  "requiredRequestFields": [
+    "contractVersion",
+    "expectedPriorReceiptId",
+    "operation",
+    "operationKey",
+    "payloadDigest",
+    "selector"
+  ],
+  "schemaDigests": {
+    "CanonicalConnectorBindingResolution/v1": "23a82ac30d15fc8fe9f53f64546af0c0c6eb861222556c5dc1f1b8235db05447",
+    "ConnectorCredentialHandle/v2": "9857f0c883f13e712cc9bccd7961eafb4630e777c6c5277d0828f2bc4b11ab0e",
+    "ConnectorRevocationReceipt/v2": "c8504ac581a15f13af0f6df78af58feb8daf73aabc009a8405d04145213fb6c2",
+    "ConnectorRevocationRequest/v2": "c920d28618061f119e5f2e365dd910ecf62ef0c7d4c9e3c14f6f338138ab52b5"
+  },
+  "status": "G0_CANDIDATE_NOT_INTEGRATED",
+  "versions": [
+    "ConnectorRevocationRequest/v2",
+    "ConnectorRevocationReceipt/v2",
+    "ConnectorCredentialHandle/v2",
+    "CanonicalConnectorBindingResolution/v1"
+  ]
+}

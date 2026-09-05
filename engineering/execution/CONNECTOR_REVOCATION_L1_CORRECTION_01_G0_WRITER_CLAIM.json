@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "ConnectorRevocationL1Correction01WriterClaim/v1",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "branch": "codex/connector-revocation-correction-01-g0-8dbcc9b",
+  "baseSha": "0c970c0b54f190ba0b2d97629311d2712f9518e2",
+  "controllerAuthority": "CIBOTFLOW/Luzione-platform-program@8dbcc9b9b7429d00831aeb16139bd06644ea36bf",
+  "assuranceFingerprintSha256": "b2e1923f459266b87ba54d77e189655e226eaacf566447a0107ecde1dbde51f3",
+  "claimedAt": "2026-09-05T07:36:12Z",
+  "state": "ACTIVE_SOLE_API_WRITER",
+  "effectAuthority": "NO_EFFECT",
+  "productionMutationAuthorized": false
+}

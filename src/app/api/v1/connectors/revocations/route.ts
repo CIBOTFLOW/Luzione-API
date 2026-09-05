@@ -1,14 +1,15 @@
 import { requireServiceActor } from "@/lib/api/actor";
 import { connectorRevocationEnabledForTenant } from "@/lib/api/config";
 import { apiResponse, createRequestIdentity } from "@/lib/api/http";
-import {
-  CONNECTOR_REVOCATION_RECEIPT_VERSION,
-  CONNECTOR_REVOCATION_REQUEST_VERSION,
-  parseConnectorRevocationRequest,
-  revocationReservation,
-} from "@/modules/connector-revocation/contracts";
 import { connectorRevocationRouteFailure } from "@/modules/connector-revocation/routeSupport";
-import { ConnectorRevocationService } from "@/modules/connector-revocation/service";
+import {
+  CONNECTOR_REVOCATION_RECEIPT_V2,
+  CONNECTOR_REVOCATION_REQUEST_V2,
+  CONNECTOR_CREDENTIAL_HANDLE_V2,
+  CANONICAL_CONNECTOR_BINDING_RESOLUTION_V1,
+  parseConnectorRevocationRawBodyV2,
+} from "@/modules/connector-revocation/v2/contracts";
+import { ConnectorRevocationServiceV2 } from "@/modules/connector-revocation/v2/service";
 import { HUMAN_APPROVAL_SUBJECT_VERSION, requireHumanApprovalSubject } from "@/modules/onboard-core/humanApproval";
 import { bindAuthenticatedRequestIdentity } from "@/modules/platform-contracts/requestIdentity";
 
@@ -22,17 +23,17 @@ export async function POST(request: Request) {
     if (!connectorRevocationEnabledForTenant(actor.tenantId)) {
       return apiResponse({ ok: false, code: "CONNECTOR_REVOCATION_DISABLED", message: "Connector revocation remains default-off for this tenant and emulator destination." }, { requestIdentity: identity, status: 503 });
     }
-    const revocation = parseConnectorRevocationRequest(await request.json());
+    const parsed = parseConnectorRevocationRawBodyV2(await request.text());
+    const revocation = parsed.request;
     const human = await requireHumanApprovalSubject(request.headers, revocation.operation.kind === "AUTHORIZE_FORWARD_RECOVERY_ERASURE" ? "connector.revocation.forward_recovery" : "connector.revocation.request");
-    const reservation = revocationReservation(actor.tenantId, revocation);
     identity = bindAuthenticatedRequestIdentity(identity, actor, {
       authorityClass: "A1_HUMAN_APPROVAL",
       capability: "connector.revocation.request",
-      idempotencyKey: reservation.idempotencyKey,
+      idempotencyKey: `connector-revocation-v2-route:${actor.tenantId}:${revocation.operationKey}`,
       purpose: "append-emulator-only-connector-revocation-receipt",
-      sourceVersionRefs: [CONNECTOR_REVOCATION_REQUEST_VERSION, CONNECTOR_REVOCATION_RECEIPT_VERSION, revocation.binding.contractVersion, HUMAN_APPROVAL_SUBJECT_VERSION],
+      sourceVersionRefs: [CONNECTOR_REVOCATION_REQUEST_V2, CONNECTOR_REVOCATION_RECEIPT_V2, CONNECTOR_CREDENTIAL_HANDLE_V2, CANONICAL_CONNECTOR_BINDING_RESOLUTION_V1, HUMAN_APPROVAL_SUBJECT_VERSION],
     });
-    const result = await new ConnectorRevocationService().execute({ actor, correlationId: identity.correlationId, human, request: revocation, requestedAt: identity.requestedAt });
+    const result = await new ConnectorRevocationServiceV2().execute({ actor, correlationId: identity.correlationId, human, rawBodyDigest: parsed.rawBodyDigest, request: revocation, requestedAt: identity.requestedAt });
     const status = result.receipt.remoteFinality === "RECONCILING" || result.receipt.remoteFinality === "ACKNOWLEDGED" ? 202
       : result.receipt.remoteFinality === "REVOKED" || result.receipt.recoveryState === "FORWARD_RECOVERY_AUTHORIZED_NO_EFFECT" ? (result.commandReceipt.idempotentReplay ? 200 : 201)
         : 409;

@@ -1,0 +1,55 @@
+{
+  "assuranceFingerprint": "b2e1923f459266b87ba54d77e189655e226eaacf566447a0107ecde1dbde51f3",
+  "authority": "CIBOTFLOW/Luzione-platform-program@8dbcc9b9b7429d00831aeb16139bd06644ea36bf",
+  "baseSha": "0c970c0b54f190ba0b2d97629311d2712f9518e2",
+  "contracts": {
+    "bindingResolution": {
+      "schemaDigest": "23a82ac30d15fc8fe9f53f64546af0c0c6eb861222556c5dc1f1b8235db05447",
+      "sourcePath": "contracts/connector-revocation/v2/canonical-connector-binding-resolution-v1.schema.json",
+      "version": "CanonicalConnectorBindingResolution/v1"
+    },
+    "credentialHandle": {
+      "schemaDigest": "9857f0c883f13e712cc9bccd7961eafb4630e777c6c5277d0828f2bc4b11ab0e",
+      "sourcePath": "contracts/connector-revocation/v2/connector-credential-handle-v2.schema.json",
+      "version": "ConnectorCredentialHandle/v2"
+    },
+    "receipt": {
+      "schemaDigest": "c8504ac581a15f13af0f6df78af58feb8daf73aabc009a8405d04145213fb6c2",
+      "sourcePath": "contracts/connector-revocation/v2/connector-revocation-receipt-v2.schema.json",
+      "version": "ConnectorRevocationReceipt/v2"
+    },
+    "request": {
+      "schemaDigest": "c920d28618061f119e5f2e365dd910ecf62ef0c7d4c9e3c14f6f338138ab52b5",
+      "sourcePath": "contracts/connector-revocation/v2/connector-revocation-request-v2.schema.json",
+      "version": "ConnectorRevocationRequest/v2"
+    }
+  },
+  "effectAuthority": "NO_EFFECT",
+  "migration": {
+    "digest": "0b5ac8f955078c5b6eea30695d4531900e49ec2214b80794756fae111924aefd",
+    "path": "supabase/migrations/20260905150000_connector_revocation_l1_correction.sql",
+    "productionApplied": false,
+    "reversePath": "scripts/validation/rollback-connector-revocation-l1-correction-01.sql"
+  },
+  "parser": {
+    "digest": "e61af584049a2507eab0c9e5c5f4f339c554b271d9abb8f10fd55425f33a7139",
+    "path": "src/modules/connector-revocation/v2/contracts.ts",
+    "rawBodyDigest": "SHA-256 over exact UTF-8 bytes before JSON parsing",
+    "stringMeaning": "no normalization; leading or trailing whitespace is rejected recursively"
+  },
+  "policyVersion": "CONNECTOR-REVOCATION-L1-CORRECTION-01/policy-v2",
+  "preserved": [
+    "ConnectorBinding/v1",
+    "P110 receipt/finality authority",
+    "luzione-effect-admission/v0.3",
+    "OperationsEvidenceLedger/v2",
+    "LuzioneCoreContracts/v1"
+  ],
+  "runtime": {
+    "canonicalOwnerAdapter": "UNAVAILABLE_FAIL_CLOSED",
+    "credentialResolution": false,
+    "credentialRetention": true,
+    "destination": "sandbox.connector-revocation",
+    "providerAdapter": "SandboxEcho-compatible connector revocation emulator only"
+  }
+}
