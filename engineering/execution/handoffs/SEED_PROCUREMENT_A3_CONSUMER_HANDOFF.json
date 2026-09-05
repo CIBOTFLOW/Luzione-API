@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "project_id": "SEED-PROCUREMENT-A3",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "producer_branch": "codex/seed-procurement-a3",
+  "base_sha": "70828af4c10cd180d332c4b1e5771d719d1ab579",
+  "initial_implementation_sha": "d6d1c98e42ddc168e3b2eac629e74214f3102ba0",
+  "first_correction_sha": "c7f28cc068c45997c620747768fba3fc7e7dddc2",
+  "implementation_sha": "777e0d471d2ecf02294fffb7562761d6f8a36dbd",
+  "provenance_sha": "f33b44f80e489105c804fd261784f3dbeaacfa4a",
+  "exact_candidate_sha": "f33b44f80e489105c804fd261784f3dbeaacfa4a",
+  "seed_product_contract_producer_sha": "e14b405d58a293c002f5676984a95e55372b3bd2",
+  "schedule_contract_producer_sha": "265724e528502b44a1250efea551539d74cb0bbd",
+  "procurement_contract_producer_sha": "777e0d471d2ecf02294fffb7562761d6f8a36dbd",
+  "contracts": {
+    "command": "SeedProcurementCommand/v1",
+    "read_model": "SeedProcurementReadModel/v1",
+    "selection_fact": "ProcurementSelectionDecision/v1",
+    "response_envelope": "api-http-response/1.0"
+  },
+  "routes": [
+    {"method":"POST","path":"/api/v1/procurement/commands","result":"P110 receipt and authoritative owner readback for admitted evidence/source/candidate commands; explicit error before owner write for dependency-held downstream commands"},
+    {"method":"GET","path":"/api/v1/projects/:projectId/procurement","result":"SeedProcurementReadModel/v1 inside apiResponse({ok,result,...})"}
+  ],
+  "runtime_gate": {
+    "writes": {
+      "global": "LUZIONE_API_MUTATIONS_ENABLED",
+      "feature": "LUZIONE_API_SEED_PROCUREMENT_ENABLED",
+      "tenant_allowlist": "LUZIONE_API_SEED_PROCUREMENT_TENANTS",
+      "default": "OFF"
+    },
+    "reads": {
+      "authentication": "procurement.read capability and server-derived tenant",
+      "feature_flag": "NONE",
+      "posture": "NO_EFFECT canonical read, available only when the A3 migration exists; no deployment or managed migration is claimed"
+    }
+  },
+  "admitted_local_behavior": [
+    "EvidenceArtifact/v1 fixture metadata persistence with quarantine/review status derived by the server",
+    "ProductSource/v1 immutable observation persistence for URL, PDF, CSV/XLSX, manual, Shopify and Room Planner artifact inputs without fetching or storage effects; evidence scope/status/digest are inherited and cannot be promoted",
+    "ProductCandidate/v1 immutable persistence with disclosed finite six-component score inputs and weights, exact source lineage and duplicate review posture",
+    "claimed vendor IDs require same-tenant canonical Account readback and remain REVIEW_REQUIRED because Account has no supplier eligibility fact",
+    "every successful owner write is atomic with one P110 receipt, event and NO_EFFECT outbox row plus fresh-instance readback and TimelineEvent/v1",
+    "single-object and Project-graph readback reconstruct exact relational evidence/source lineage, status and nullable Project scope; corrupted rows fail closed"
+  ],
+  "dependency_held_behavior": [
+    {"commands":["rfq.create_draft","supplier_quote.normalize","bid_comparison.create","procurement_selection.record"],"code":"SUPPLIER_ELIGIBILITY_UNVERIFIED","dependency":"A2S API-owned SupplierProfile/v1","guarantee":"application and database both reject before canonical owner write"},
+    {"commands":["purchase_order.create_draft"],"code":"PROPOSAL_CANONICAL_READER_UNAVAILABLE","dependency":"SEED-PROPOSAL-OWNER-A2P API-owned ProposalVersion/v1 persistence/readback","guarantee":"opaque proposal IDs never produce a PO"},
+    {"commands":["purchase_order_acknowledgement.record"],"code":"PURCHASE_ORDER_NOT_AVAILABLE","dependency":"exact canonical PurchaseOrder/v1 draft","guarantee":"provider acknowledgement cannot manufacture source finality"}
+  ],
+  "consumer_files": {
+    "commands": "src/modules/seed-procurement/contracts.ts",
+    "read_model_parser": "src/modules/seed-procurement/readModel.ts",
+    "positive_fixtures": "src/modules/seed-procurement/fixtures.ts",
+    "topology_delta": "engineering/execution/seed-procurement-a3/SEED_PROCUREMENT_A3_TOPOLOGY_DELTA_V1.json",
+    "artifact_digests": "engineering/execution/seed-procurement-a3/SEED_PROCUREMENT_A3_ARTIFACT_DIGESTS_V1.json",
+    "disposable_proof": "scripts/validation/run-seed-procurement-a3-proof.sh"
+  },
+  "consumer_rules": [
+    "Do not implement local canonical Product Source, Candidate, RFQ, Quote, Bid, Selection or PO writers.",
+    "Treat blockedDependencies and command failure codes as product-visible review blockers, not as completed procurement state.",
+    "Do not display a recommendation as a human selection or provider acknowledgement as source-confirmed completion.",
+    "Treat evidenceArtifacts, productSources and productCandidates as project-scoped wrappers and validate their exact evidence→source→candidate lineage.",
+    "Validate A1 resource producer, A2 schedule producer, A3 procurement producer and runtime release SHA independently.",
+    "No client may enable RFQ send, PO release, product-page fetching, email/provider ingestion or Portal mutation from this G0 handoff.",
+    "The authenticated GET read is not controlled by the mutation feature flags; consumers must still wait for managed migration and controller admission."
+  ],
+  "release_state": "LOCAL_PROVEN_DEFAULT_OFF_NO_EFFECT_PARTIAL_BOUNDARY",
+  "deployment_sha": null,
+  "managed_migration": "NOT_RUN",
+  "push_or_merge": "NOT_PERFORMED"
+}
