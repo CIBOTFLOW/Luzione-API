@@ -3,9 +3,9 @@
   "inventory_id": "luzione-api-topology/v1",
   "project_id": "API_SE_001",
   "repository": "CIBOTFLOW/Luzione-API",
-  "observed_ref": "codex/onboard-core-01-g0-47dbdf6",
-  "observed_sha": "7f937c515960cb522215ae7e928b3075049477fe",
-  "observed_at": "2026-09-05T03:38:16Z",
+  "observed_ref": "codex/onboard-core-correction-01-g0-e1b8bc5",
+  "observed_sha": "0b7f2a968065c34283805db44940b95e5319fb02",
+  "observed_at": "2026-09-05T04:54:13Z",
   "scope": {
     "included": [
       "tracked ONBOARD-CORE-01 candidate runtime, routes, migrations, tests, deployment configuration and published architecture",
@@ -341,6 +341,16 @@
       "authentication": "credential-bound same-tenant human authority over an approved blueprint plus exact default-off tenant admission",
       "canonical_readback": "canonical expiring SetupMandate/v1 plus P110 receipt",
       "effect": "DEFAULT_OFF_INTERNAL_ONBOARDING_MUTATION",
+      "external_effect_authorized": false
+    },
+    {
+      "route_id": "setup-mandate-revoke",
+      "method": "POST",
+      "path": "/api/v1/onboarding/setup-mandates/revocations",
+      "source_path": "src/app/api/v1/onboarding/setup-mandates/revocations/route.ts",
+      "authentication": "service transport plus independently signed same-tenant non-anonymous Supabase human subject and exact default-off tenant admission",
+      "canonical_readback": "append-only mandate revocation event plus P110 receipt and derived inactive SetupMandate/v1 readback",
+      "effect": "DEFAULT_OFF_HUMAN_DECISION_EVIDENCE",
       "external_effect_authorized": false
     },
     {
@@ -720,7 +730,9 @@
     "LUZIONE_BUILD_TIME",
     "LUZIONE_API_MUTATIONS_ENABLED",
     "LUZIONE_API_ONBOARDING_CORE_ENABLED",
+    "LUZIONE_API_ONBOARDING_L2_BINDINGS",
     "LUZIONE_API_ONBOARDING_CORE_TENANTS",
+    "LUZIONE_API_HUMAN_APPROVALS_ENABLED",
     "LUZIONE_API_PROVIDER_LIVE_DESTINATIONS",
     "LUZIONE_API_PROVIDER_LIVE_ENABLED",
     "LUZIONE_API_PROVIDER_LIVE_TENANTS",
@@ -740,6 +752,7 @@
     "SULTAN_STAGE5_DEPLOYMENT_SHA",
     "SULTAN_STAGE5_MAX_EVIDENCE_AGE_MS",
     "SULTAN_STAGE5_PARTICIPATION_CONTRACT_SHA",
+    "SUPABASE_URL",
     "NEXT_RUNTIME",
     "NODE_ENV",
     "PLATFORM_CONTINUATION_SECRET",
