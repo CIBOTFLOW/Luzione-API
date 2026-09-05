@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/onboard-core/luzione-tenant-pack-draft-v1.schema.json",
+  "title": "LuzioneTenantPackDraft/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contractVersion", "sections", "sourcePackId", "sourcePackVersion", "tenantSlug"],
+  "properties": {
+    "contractVersion": { "const": "LuzioneTenantPackDraft/v1" },
+    "sections": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["aiPolicies", "approvals", "connectors", "fields", "icp", "retention", "roles", "stages", "terminology", "workflows"],
+      "properties": {
+        "aiPolicies": { "$ref": "#/$defs/boundedUniqueList" },
+        "approvals": { "$ref": "#/$defs/boundedUniqueList" },
+        "connectors": { "$ref": "#/$defs/boundedUniqueList" },
+        "fields": { "$ref": "#/$defs/boundedUniqueList" },
+        "icp": { "$ref": "#/$defs/boundedUniqueList" },
+        "retention": { "$ref": "#/$defs/boundedUniqueList" },
+        "roles": { "$ref": "#/$defs/boundedUniqueList" },
+        "stages": { "$ref": "#/$defs/boundedUniqueList" },
+        "terminology": {
+          "type": "object",
+          "minProperties": 1,
+          "maxProperties": 100,
+          "propertyNames": { "$ref": "#/$defs/stableId" },
+          "additionalProperties": { "$ref": "#/$defs/boundedText" }
+        },
+        "workflows": { "$ref": "#/$defs/boundedUniqueList" }
+      }
+    },
+    "sourcePackId": { "$ref": "#/$defs/stableId" },
+    "sourcePackVersion": { "$ref": "#/$defs/stableId" },
+    "tenantSlug": { "$ref": "#/$defs/stableId" }
+  },
+  "$defs": {
+    "stableId": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{2,199}$"
+    },
+    "boundedText": { "type": "string", "minLength": 1, "maxLength": 200 },
+    "boundedUniqueList": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/boundedText" }
+    }
+  }
+}

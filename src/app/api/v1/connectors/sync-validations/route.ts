@@ -39,12 +39,16 @@ export async function POST(request: Request) {
       request: validation,
       requestedAt: identity.requestedAt,
     });
-    const status = result.syncReceipt.finality === "RECONCILING"
+    const status = result.validationOutcome.state === "RECONCILING"
       ? 202
-      : result.commandReceipt.idempotentReplay
+      : result.validationOutcome.success && result.commandReceipt.idempotentReplay
         ? 200
-        : 201;
-    return apiResponse({ ok: true, result }, { requestIdentity: identity, status });
+        : result.validationOutcome.success
+          ? 201
+          : result.validationOutcome.state === "VERSION_MISMATCH" || result.validationOutcome.state === "BLOCKED"
+            ? 409
+            : 503;
+    return apiResponse({ ok: result.validationOutcome.success, result }, { requestIdentity: identity, status });
   } catch (error) {
     return onboardRouteFailure(error, identity);
   }

@@ -2,6 +2,7 @@ import { apiResponse } from "@/lib/api/http";
 import type { RequestIdentityEnvelope } from "@/modules/platform-contracts/requestIdentity";
 import { IdempotencyConflictError } from "@/modules/platform-guarantees/commandKernel";
 import { OnboardCoreContractError } from "./contracts";
+import { OnboardCoreBindingError } from "./sourceBinding";
 import { OnboardCoreDomainError } from "./store";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
@@ -13,7 +14,7 @@ export function routeUuid(value: string | null, field: string) {
 }
 
 export function onboardRouteFailure(error: unknown, identity: RequestIdentityEnvelope) {
-  if (error instanceof OnboardCoreContractError || error instanceof OnboardCoreDomainError) {
+  if (error instanceof OnboardCoreContractError || error instanceof OnboardCoreBindingError || error instanceof OnboardCoreDomainError) {
     return apiResponse(
       { ok: false, code: error.code, message: error.message },
       { requestIdentity: identity, status: error.status },

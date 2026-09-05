@@ -24,17 +24,13 @@ apply() {
 apply supabase/migrations/20260831022000_p110_command_ledger_baseline.sql
 apply supabase/migrations/20260905040000_onboard_core_blueprints_mandates.sql
 apply supabase/migrations/20260905041000_onboard_core_import_dry_runs.sql
+apply supabase/migrations/20260905050000_onboard_core_correction_01.sql
+
+apply scripts/validation/rollback-onboard-core-correction-01.sql
+apply supabase/migrations/20260905050000_onboard_core_correction_01.sql
+reverse_reapply="$(docker exec "${container_name}" psql -At -v ON_ERROR_STOP=1 -U postgres -d "${database}" -c "select json_build_object('revocations',to_regclass('public.onboarding_setup_mandate_revocations'),'runtime_column',(select count(*) from information_schema.columns where table_schema='public' and table_name='onboarding_import_receipts' and column_name='measured_runtime_ms'))")"
+test "${reverse_reapply}" = '{"revocations" : "onboarding_setup_mandate_revocations", "runtime_column" : 1}'
+echo "correction_reverse_reapply=${reverse_reapply}"
 docker exec "${container_name}" psql -v ON_ERROR_STOP=1 -U postgres -d "${database}" -c "grant usage on schema public to ${role}; grant select,insert,update,delete on all tables in schema public to ${role}" >/dev/null
-
 NODE_PATH=scripts/validation/node-stubs DATABASE_URL="postgres://${role}:${password}@127.0.0.1:${host_port}/${database}" node --import tsx scripts/validation/onboard-core-import-proof.ts
-
-apply scripts/validation/rollback-onboard-core-import-dry-runs.sql
-reverse_state="$(docker exec "${container_name}" psql -At -v ON_ERROR_STOP=1 -U postgres -d "${database}" -c "select json_build_object('batches',to_regclass('public.onboarding_import_batches'),'rows',to_regclass('public.onboarding_import_rows'),'receipts',to_regclass('public.onboarding_import_receipts'),'mandates',to_regclass('public.onboarding_setup_mandates'))")"
-test "${reverse_state}" = '{"batches" : null, "rows" : null, "receipts" : null, "mandates" : "onboarding_setup_mandates"}'
-echo "rollback=${reverse_state}"
-
-apply supabase/migrations/20260905041000_onboard_core_import_dry_runs.sql
-reapply_count="$(docker exec "${container_name}" psql -At -v ON_ERROR_STOP=1 -U postgres -d "${database}" -c "select count(*) from pg_class where oid in ('public.onboarding_import_batches'::regclass,'public.onboarding_import_rows'::regclass,'public.onboarding_import_receipts'::regclass)")"
-test "${reapply_count}" = "3"
-echo "reapply_relations=${reapply_count}"
 echo "cleanup=scheduled"

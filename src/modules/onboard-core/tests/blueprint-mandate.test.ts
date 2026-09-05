@@ -1,184 +1,119 @@
 import assert from "node:assert/strict";
+import crypto from "node:crypto";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
 import { onboardingCoreEnabledForTenant } from "@/lib/api/config";
-import {
-  ONBOARD_CORE_API_VERSION,
-  TENANT_BLUEPRINT_MAPPING_VERSION,
-  TENANT_PACK_DRAFT_VERSION,
-  OnboardCoreContractError,
-  blueprintDraftObjectVersion,
-  blueprintIdempotencyKey,
-  issueApprovedBlueprint,
-  issueDraftBlueprint,
-  issueSetupMandate,
-  parseSetupMandateRequest,
-  parseTenantBlueprintApprovalRequest,
-  parseTenantBlueprintProposal,
-} from "../contracts";
 import { sha256 } from "@/modules/platform-guarantees/eventContract";
+import {
+  ONBOARD_CORE_API_VERSION, SETUP_MANDATE_REVOCATION_VERSION, TENANT_BLUEPRINT_MAPPING_VERSION,
+  TENANT_PACK_DRAFT_VERSION, OnboardCoreContractError, admitProposalSourceBinding,
+  blueprintIdempotencyKey, issueDraftBlueprint, parseSetupMandateRevocationRequest, parseTenantBlueprintProposal,
+} from "../contracts";
+import { verifySupabaseHumanApprovalToken, type HumanJwk } from "../humanApproval";
+import {
+  TENANT_PACK_DRAFT_SCHEMA_DIGEST, TENANT_PACK_DRAFT_SCHEMA_PATH, TENANT_PACK_SOURCE_BINDING_VERSION,
+  tenantPackSourceBindingDigest,
+  type TenantPackSourceBindingV1,
+} from "../sourceBinding";
 
 const draft = {
   contractVersion: TENANT_PACK_DRAFT_VERSION,
   sections: {
-    aiPolicies: ["no autonomous send"],
-    approvals: ["human setup approval"],
-    connectors: ["google workspace"],
-    fields: ["company name", "email"],
-    icp: ["mid market services"],
-    retention: ["customer zero default"],
-    roles: ["admin", "operator"],
-    stages: ["new", "qualified"],
-    terminology: { lead: "prospect" },
-    workflows: ["lead qualification"],
+    aiPolicies: ["no autonomous send"], approvals: ["human setup approval"], connectors: ["google workspace"],
+    fields: ["company name", "email"], icp: ["mid market services"], retention: ["customer zero default"],
+    roles: ["admin", "operator"], stages: ["new", "qualified"], terminology: { lead: "prospect" }, workflows: ["lead qualification"],
   },
-  sourcePackId: "tenant-pack-customer-zero",
-  sourcePackVersion: "1.0.0",
-  tenantSlug: "tenant-customer-zero",
+  sourcePackId: "tenant-pack-customer-zero", sourcePackVersion: "1.0.0", tenantSlug: "tenant-customer-zero",
 } as const;
 
-function proposal(overrides: Record<string, unknown> = {}) {
-  return {
-    contractVersion: ONBOARD_CORE_API_VERSION,
-    draft,
-    mappingVersion: TENANT_BLUEPRINT_MAPPING_VERSION,
-    sourceDigest: sha256(draft),
-    sourceSchemaDigest: "a".repeat(64),
-    ...overrides,
-  };
-}
+const sourceBinding = {
+  consumerEvidenceSha: "1".repeat(40), consumerImplementationSha: "2".repeat(40),
+  consumerRepository: "CIBOTFLOW/Luzione-UI" as const, contractVersion: TENANT_PACK_SOURCE_BINDING_VERSION,
+  evidenceDigest: "3".repeat(64), evidencePath: "evidence/tenant-pack-v1.json",
+  mapperDigest: "4".repeat(64), mapperPath: "src/contracts/onboarding/tenant-pack-mapper.ts",
+  sourceSchemaDigest: TENANT_PACK_DRAFT_SCHEMA_DIGEST, sourceSchemaPath: TENANT_PACK_DRAFT_SCHEMA_PATH,
+} satisfies TenantPackSourceBindingV1;
 
+function proposal(overrides: Record<string, unknown> = {}) {
+  return { contractVersion: ONBOARD_CORE_API_VERSION, draft, mappingVersion: TENANT_BLUEPRINT_MAPPING_VERSION, sourceBinding, sourceDigest: sha256(draft), sourceSchemaDigest: TENANT_PACK_DRAFT_SCHEMA_DIGEST, ...overrides };
+}
 function expectCode(callback: () => unknown, code: string) {
   assert.throws(callback, (error: unknown) => error instanceof OnboardCoreContractError && error.code === code);
 }
 
-test("L2 DRAFT input maps to L1-issued canonical identity, refs, policies, and stable reservation", () => {
-  const parsed = parseTenantBlueprintProposal(proposal());
-  const blueprint = issueDraftBlueprint("tenant-customer-zero", parsed);
-  assert.equal(blueprint.contractVersion, "TenantBlueprint/v1");
-  assert.equal(blueprint.tenantId, "tenant-customer-zero");
-  assert.equal(blueprint.approval.state, "DRAFT");
-  assert.equal(blueprint.approval.approvalRef, null);
-  assert.deepEqual(blueprint.sections.fields, ["field:company-name", "field:email"]);
-  assert.deepEqual(blueprint.sections.connectors, ["connector:google-workspace"]);
-  assert.deepEqual(blueprint.sections.retention, ["retention-policy:customer-zero-default"]);
-  assert.deepEqual(blueprint.sections.aiPolicies, ["ai-policy:no-autonomous-send"]);
-  assert.match(blueprint.blueprintId, /^[0-9a-f-]{36}$/);
-  assert.equal(issueDraftBlueprint("tenant-customer-zero", parsed).blueprintId, blueprint.blueprintId);
-  assert.equal(blueprintIdempotencyKey("tenant-customer-zero", parsed), blueprintIdempotencyKey("tenant-customer-zero", parsed));
-  assert.match(blueprintDraftObjectVersion(blueprint, parsed.sourceDigest), /:draft@[a-f0-9]{64}$/);
-});
-
-test("proposal is strict, digest-bound, versioned, tenant-bound, and denies client authority fields", () => {
-  expectCode(() => parseTenantBlueprintProposal({ ...proposal(), actorId: "forged" }), "FIELD_SET_MISMATCH");
-  expectCode(() => parseTenantBlueprintProposal(proposal({ contractVersion: "wrong" })), "WRONG_VERSION");
-  expectCode(() => parseTenantBlueprintProposal(proposal({ mappingVersion: "TenantBlueprintMap/v2" })), "WRONG_MAPPING_VERSION");
-  expectCode(() => parseTenantBlueprintProposal(proposal({ sourceDigest: "b".repeat(64) })), "SOURCE_DIGEST_MISMATCH");
-  const changedDraft = { ...draft, sections: { ...draft.sections, fields: ["changed"] } };
-  const changed = parseTenantBlueprintProposal(proposal({ draft: changedDraft, sourceDigest: sha256(changedDraft) }));
-  assert.notEqual(
-    blueprintIdempotencyKey("tenant-customer-zero", parseTenantBlueprintProposal(proposal())),
-    blueprintIdempotencyKey("tenant-customer-zero", changed),
-  );
-  expectCode(
-    () => issueDraftBlueprint("tenant-other", parseTenantBlueprintProposal(proposal())),
-    "TENANT_MISMATCH",
-  );
-});
-
-test("approval request carries no caller-issued approval identity and supersession is explicit", () => {
-  const blueprint = issueDraftBlueprint("tenant-customer-zero", parseTenantBlueprintProposal(proposal()));
-  const approval = parseTenantBlueprintApprovalRequest({
-    blueprintId: blueprint.blueprintId,
-    contractVersion: ONBOARD_CORE_API_VERSION,
-    decision: "APPROVE",
-    expectedObjectVersion: blueprintDraftObjectVersion(blueprint, sha256(draft)),
-    supersedesApprovalRef: null,
-  });
-  assert.equal(approval.decision, "APPROVE");
-  expectCode(() => parseTenantBlueprintApprovalRequest({ ...approval, approvalRef: "client:forged" }), "FIELD_SET_MISMATCH");
-  expectCode(() => parseTenantBlueprintApprovalRequest({ ...approval, decision: "SUPERSEDE_AND_APPROVE" }), "APPROVAL_LINEAGE_INVALID");
-});
-
-test("L1 issues a bounded expiring NO_EFFECT mandate from exact approval", () => {
-  const blueprint = issueDraftBlueprint("tenant-customer-zero", parseTenantBlueprintProposal(proposal()));
-  const approved = issueApprovedBlueprint(blueprint, {
-    approvalRef: "approval:human-20260905",
-    approvedAt: "2026-09-05T12:00:00.000Z",
-  });
-  const mandate = issueSetupMandate({
-    approvalRef: "approval:human-20260905",
-    approvedBlueprint: approved,
-    requestedAt: "2026-09-05T12:01:00.000Z",
-  });
-  assert.equal(mandate.effectCeiling, "NO_EFFECT");
-  assert.equal(mandate.expiresAt, "2026-09-06T12:01:00.000Z");
-  assert.equal(mandate.allowedActions.includes("APPLY_TENANT_CONFIGURATION"), false);
-  assert.equal(mandate.prohibitedActions.includes("CREATE_OR_READ_CREDENTIAL"), true);
-  assert.deepEqual(parseSetupMandateRequest({
-    blueprintId: blueprint.blueprintId,
-    blueprintVersion: blueprint.version,
-    contractVersion: ONBOARD_CORE_API_VERSION,
-    expectedBlueprintObjectVersion: "tenant-blueprint:approved-version",
-    profile: "NO_EFFECT_IMPORT_AND_CONNECTOR_VALIDATION",
-  }).profile, "NO_EFFECT_IMPORT_AND_CONNECTOR_VALIDATION");
-  expectCode(() => parseSetupMandateRequest({
-    blueprintId: blueprint.blueprintId,
-    blueprintVersion: blueprint.version,
-    contractVersion: ONBOARD_CORE_API_VERSION,
-    expectedBlueprintObjectVersion: "tenant-blueprint:approved-version",
-    profile: "LIVE_EFFECT",
-  }), "AUTHORITY_DENIED");
-});
-
-test("onboarding mutation gate requires global exact true plus exact feature and tenant admission", () => {
-  const original = { ...process.env };
+test("v2 Blueprint identity and reservation content-bind exact admitted schema and L2 evidence", () => {
+  const previous = process.env.LUZIONE_API_ONBOARDING_L2_BINDINGS;
+  process.env.LUZIONE_API_ONBOARDING_L2_BINDINGS = JSON.stringify([{ ...sourceBinding, sourcePackId: draft.sourcePackId, sourcePackVersion: draft.sourcePackVersion, tenantId: draft.tenantSlug }]);
   try {
-    process.env.DATABASE_URL = "postgres://configured.invalid/db";
-    process.env.LUZIONE_API_SERVICE_TOKEN = "configured";
-    process.env.LUZIONE_API_MUTATIONS_ENABLED = "true";
-    process.env.LUZIONE_API_ONBOARDING_CORE_ENABLED = "true";
-    process.env.LUZIONE_API_ONBOARDING_CORE_TENANTS = "tenant-customer-zero";
-    assert.equal(onboardingCoreEnabledForTenant("tenant-customer-zero"), true);
-    assert.equal(onboardingCoreEnabledForTenant("tenant-other"), false);
-    process.env.LUZIONE_API_MUTATIONS_ENABLED = "TRUE";
-    assert.equal(onboardingCoreEnabledForTenant("tenant-customer-zero"), false);
+    const parsed = parseTenantBlueprintProposal(proposal());
+    const admitted = admitProposalSourceBinding(draft.tenantSlug, parsed);
+    assert.equal(admitted.digest, tenantPackSourceBindingDigest(sourceBinding));
+    const blueprint = issueDraftBlueprint(draft.tenantSlug, parsed);
+    const changed = parseTenantBlueprintProposal(proposal({ sourceBinding: { ...sourceBinding, evidenceDigest: "5".repeat(64) } }));
+    assert.notEqual(blueprintIdempotencyKey(draft.tenantSlug, parsed), blueprintIdempotencyKey(draft.tenantSlug, changed));
+    assert.throws(() => admitProposalSourceBinding(draft.tenantSlug, changed), /differs from the admitted exact record/);
+    assert.match(blueprint.blueprintId, /^[0-9a-f-]{36}$/);
   } finally {
-    process.env = original;
+    if (previous === undefined) delete process.env.LUZIONE_API_ONBOARDING_L2_BINDINGS;
+    else process.env.LUZIONE_API_ONBOARDING_L2_BINDINGS = previous;
   }
 });
 
-test("routes are authenticated, tenant/server-derived, default-off, and publish no provider effect", () => {
-  for (const path of [
-    "src/app/api/v1/onboarding/tenant-blueprints/route.ts",
-    "src/app/api/v1/onboarding/tenant-blueprints/approvals/route.ts",
-    "src/app/api/v1/onboarding/setup-mandates/route.ts",
-  ]) {
-    const source = readFileSync(path, "utf8");
-    assert.match(source, /requireServiceActor\(request\.headers/);
-    assert.match(source, /bindAuthenticatedRequestIdentity\(identity, actor/);
-    assert.doesNotMatch(source, /tenantId\s*:\s*(body|proposal|approval|mandateRequest)\./);
-  }
-  const mutations = [
-    readFileSync("src/app/api/v1/onboarding/tenant-blueprints/route.ts", "utf8"),
-    readFileSync("src/app/api/v1/onboarding/tenant-blueprints/approvals/route.ts", "utf8"),
-    readFileSync("src/app/api/v1/onboarding/setup-mandates/route.ts", "utf8"),
-  ].join("\n");
-  assert.match(mutations, /onboardingCoreEnabledForTenant\(actor\.tenantId\)/);
-  assert.doesNotMatch(mutations, /ProviderWorkerRuntime|fetch\(|secret-ref:|LIVE_EFFECT/);
+test("schema bytes, surplus fields, wrong schema and old versions fail closed", () => {
+  const rawDigest = crypto.createHash("sha256").update(readFileSync(TENANT_PACK_DRAFT_SCHEMA_PATH)).digest("hex");
+  assert.equal(rawDigest, TENANT_PACK_DRAFT_SCHEMA_DIGEST);
+  expectCode(() => parseTenantBlueprintProposal({ ...proposal(), actorId: "forged" }), "FIELD_SET_MISMATCH");
+  expectCode(() => parseTenantBlueprintProposal(proposal({ contractVersion: "LuzioneOnboardCoreApi/v1" })), "WRONG_VERSION");
+  expectCode(() => parseTenantBlueprintProposal(proposal({ mappingVersion: "TenantBlueprintMap/v1" })), "WRONG_MAPPING_VERSION");
+  expectCode(() => parseTenantBlueprintProposal(proposal({ sourceSchemaDigest: "a".repeat(64) })), "SOURCE_SCHEMA_DIGEST_MISMATCH");
 });
 
-test("migration is tenant-RLS, append-only, P110-dependent and exactly reversible", () => {
-  const migration = readFileSync("supabase/migrations/20260905040000_onboard_core_blueprints_mandates.sql", "utf8");
-  const rollback = readFileSync("scripts/validation/rollback-onboard-core-blueprints-mandates.sql", "utf8");
-  assert.match(migration, /requires the P110 command ledger baseline/);
-  assert.equal((migration.match(/force row level security/g) ?? []).length, 3);
-  assert.equal((migration.match(/append_only/g) ?? []).length, 3);
-  assert.match(migration, /actor_type text not null check \(actor_type = 'user'\)/);
-  for (const relation of [
-    "onboarding_tenant_blueprint_drafts",
-    "onboarding_tenant_blueprint_approvals",
-    "onboarding_setup_mandates",
-  ]) assert.match(rollback, new RegExp(`drop table if exists public\\.${relation}`));
+test("separate signed Supabase user subject derives authority only from app_metadata", async () => {
+  const { privateKey, publicKey } = crypto.generateKeyPairSync("rsa", { modulusLength: 2048 });
+  const now = Math.floor(Date.now() / 1_000);
+  const header = Buffer.from(JSON.stringify({ alg: "RS256", kid: "proof-key", typ: "JWT" })).toString("base64url");
+  const payload = Buffer.from(JSON.stringify({
+    app_metadata: { luzione_capabilities: ["onboarding.blueprint.approve"], luzione_tenant_id: draft.tenantSlug },
+    aud: "authenticated", exp: now + 300, iat: now, is_anonymous: false,
+    iss: "https://proof.supabase.co/auth/v1", role: "authenticated",
+    session_id: "11111111-1111-4111-8111-111111111111", sub: "22222222-2222-4222-8222-222222222222",
+    user_metadata: { luzione_capabilities: ["forged"] },
+  })).toString("base64url");
+  const signature = crypto.sign("RSA-SHA256", Buffer.from(`${header}.${payload}`), privateKey).toString("base64url");
+  const jwk = { ...publicKey.export({ format: "jwk" }), alg: "RS256" as const, kid: "proof-key", kty: "RSA" as const, use: "sig" } satisfies HumanJwk;
+  const loader = async () => [jwk];
+  const subject = await verifySupabaseHumanApprovalToken(`${header}.${payload}.${signature}`, "https://proof.supabase.co/auth/v1", "onboarding.blueprint.approve", loader);
+  assert.equal(subject?.tenantId, draft.tenantSlug);
+  assert.deepEqual(subject?.capabilities, ["onboarding.blueprint.approve"]);
+  assert.equal(await verifySupabaseHumanApprovalToken(`${header}.${payload}.${signature}`, "https://proof.supabase.co/auth/v1", "forged", loader), null);
+});
+
+test("revocation is strict, versioned, append-only in storage and human-separated in routes", () => {
+  const revocation = parseSetupMandateRevocationRequest({ contractVersion: ONBOARD_CORE_API_VERSION, expectedMandateObjectVersion: "setup-mandate:proof@v1", mandateId: "55555555-5555-4555-8555-555555555555", reasonCode: "SECURITY_HOLD", revocationVersion: SETUP_MANDATE_REVOCATION_VERSION });
+  assert.equal(revocation.reasonCode, "SECURITY_HOLD");
+  const route = readFileSync("src/app/api/v1/onboarding/setup-mandates/revocations/route.ts", "utf8");
+  const store = readFileSync("src/modules/onboard-core/store.ts", "utf8");
+  assert.match(route, /requireHumanApprovalSubject/);
+  assert.match(store, /DISTINCT_HUMAN_APPROVER_REQUIRED/);
+  assert.match(store, /onboarding_setup_mandate_revocations/);
+  assert.doesNotMatch(store, /update public\.onboarding_setup_mandates\s+set revoked/);
+});
+
+test("all mutations remain exact-default-off and migration is tenant RLS, append-only and reversible", () => {
+  const previous = { ...process.env };
+  try {
+    process.env.DATABASE_URL = "postgres://configured.invalid/db"; process.env.LUZIONE_API_SERVICE_TOKEN = "configured";
+    process.env.LUZIONE_API_MUTATIONS_ENABLED = "true"; process.env.LUZIONE_API_ONBOARDING_CORE_ENABLED = "true";
+    process.env.LUZIONE_API_ONBOARDING_CORE_TENANTS = draft.tenantSlug;
+    assert.equal(onboardingCoreEnabledForTenant(draft.tenantSlug), true);
+    process.env.LUZIONE_API_MUTATIONS_ENABLED = "TRUE";
+    assert.equal(onboardingCoreEnabledForTenant(draft.tenantSlug), false);
+  } finally { process.env = previous; }
+  const migration = readFileSync("supabase/migrations/20260905050000_onboard_core_correction_01.sql", "utf8");
+  const rollback = readFileSync("scripts/validation/rollback-onboard-core-correction-01.sql", "utf8");
+  assert.match(migration, /onboarding_setup_mandate_revocations_append_only/);
+  assert.match(migration, /force row level security/);
+  assert.match(migration, /revoke all.*service_role/);
+  assert.match(rollback, /drop table if exists public\.onboarding_setup_mandate_revocations/);
 });

@@ -16,6 +16,7 @@ import {
 } from "./contracts";
 
 export const ONBOARD_IMPORT_MAPPING_VERSION = "CRMImportDryRunMap/v1";
+export const ONBOARD_IMPORT_MAPPING_VERSION_V2 = "CRMImportDryRunMap/v2";
 
 const ID = /^[A-Za-z0-9][A-Za-z0-9._:-]{2,199}$/;
 const DIGEST = /^[a-f0-9]{64}$/;
@@ -27,13 +28,20 @@ export type ImportDryRunRow = {
   sourceRowId: string;
 };
 
+export type ImportDryRunSourceRow = {
+  matchKeyDigest: string | null;
+  payloadDigest: string;
+  sourceRowId: string;
+};
+
 export type ImportDryRunRequest = {
   contractVersion: typeof ONBOARD_CORE_API_VERSION;
   dedupeKey: string;
   expectedMandateObjectVersion: string;
   mandateId: string;
-  mappingVersion: typeof ONBOARD_IMPORT_MAPPING_VERSION;
-  rows: readonly ImportDryRunRow[];
+  mappingVersion: typeof ONBOARD_IMPORT_MAPPING_VERSION_V2;
+  rows: readonly ImportDryRunSourceRow[];
+  sourceBindingDigest: string;
   source: {
     consentRef: string;
     digest: string;
@@ -85,10 +93,11 @@ function digest(value: unknown, field: string) {
   return parsed;
 }
 
-export function importSourceDigest(input: Pick<ImportDryRunRequest, "mappingVersion" | "rows" | "source">) {
+export function importSourceDigest(input: Pick<ImportDryRunRequest, "mappingVersion" | "rows" | "source" | "sourceBindingDigest">) {
   return sha256({
     mappingVersion: input.mappingVersion,
     rows: input.rows,
+    sourceBindingDigest: input.sourceBindingDigest,
     source: {
       consentRef: input.source.consentRef,
       kind: input.source.kind,
@@ -100,31 +109,22 @@ export function importSourceDigest(input: Pick<ImportDryRunRequest, "mappingVers
 export function parseImportDryRunRequest(value: unknown): ImportDryRunRequest {
   const input = exact(object(value, "importDryRun"), [
     "contractVersion", "dedupeKey", "expectedMandateObjectVersion", "mandateId",
-    "mappingVersion", "rows", "source",
+    "mappingVersion", "rows", "source", "sourceBindingDigest",
   ], "importDryRun");
   if (input.contractVersion !== ONBOARD_CORE_API_VERSION) {
     throw new OnboardCoreContractError("WRONG_VERSION", `contractVersion must be ${ONBOARD_CORE_API_VERSION}.`);
   }
-  if (input.mappingVersion !== ONBOARD_IMPORT_MAPPING_VERSION) {
-    throw new OnboardCoreContractError("WRONG_MAPPING_VERSION", `mappingVersion must be ${ONBOARD_IMPORT_MAPPING_VERSION}.`, 409);
+  if (input.mappingVersion !== ONBOARD_IMPORT_MAPPING_VERSION_V2) {
+    throw new OnboardCoreContractError("WRONG_MAPPING_VERSION", `mappingVersion must be ${ONBOARD_IMPORT_MAPPING_VERSION_V2}.`, 409);
   }
   if (!Array.isArray(input.rows) || input.rows.length === 0 || input.rows.length > 10_000) {
     throw new OnboardCoreContractError("INVALID_REQUEST", "rows must be a non-empty bounded digest manifest.");
   }
-  const rows = input.rows.map((value, index): ImportDryRunRow => {
-    const row = exact(object(value, `rows[${index}]`), ["outcome", "payloadDigest", "reasonCode", "sourceRowId"], `rows[${index}]`);
-    if (!(["ACCEPTED", "CONFLICT", "DUPLICATE", "REJECTED"] as unknown[]).includes(row.outcome)) {
-      throw new OnboardCoreContractError("INVALID_REQUEST", `rows[${index}].outcome is unsupported.`);
-    }
-    const reasonCode = row.reasonCode === null ? null : id(row.reasonCode, `rows[${index}].reasonCode`);
-    const failed = row.outcome === "CONFLICT" || row.outcome === "REJECTED";
-    if (failed !== (reasonCode !== null)) {
-      throw new OnboardCoreContractError("IMPORT_EVIDENCE_REQUIRED", "Rejected/conflicted rows require a reasonCode and successful rows forbid it.", 409);
-    }
+  const rows = input.rows.map((value, index): ImportDryRunSourceRow => {
+    const row = exact(object(value, `rows[${index}]`), ["matchKeyDigest", "payloadDigest", "sourceRowId"], `rows[${index}]`);
     return {
-      outcome: row.outcome as ImportDryRunRow["outcome"],
+      matchKeyDigest: row.matchKeyDigest === null ? null : digest(row.matchKeyDigest, `rows[${index}].matchKeyDigest`),
       payloadDigest: digest(row.payloadDigest, `rows[${index}].payloadDigest`),
-      reasonCode,
       sourceRowId: id(row.sourceRowId, `rows[${index}].sourceRowId`),
     };
   });
@@ -140,8 +140,9 @@ export function parseImportDryRunRequest(value: unknown): ImportDryRunRequest {
     dedupeKey: id(input.dedupeKey, "dedupeKey"),
     expectedMandateObjectVersion: text(input.expectedMandateObjectVersion, "expectedMandateObjectVersion", 300),
     mandateId: uuid(input.mandateId, "mandateId"),
-    mappingVersion: ONBOARD_IMPORT_MAPPING_VERSION,
+    mappingVersion: ONBOARD_IMPORT_MAPPING_VERSION_V2,
     rows,
+    sourceBindingDigest: digest(input.sourceBindingDigest, "sourceBindingDigest"),
     source: {
       consentRef: id(sourceInput.consentRef, "source.consentRef"),
       digest: digest(sourceInput.digest, "source.digest"),
@@ -171,10 +172,39 @@ export function issueImportEvidence(input: {
   if (input.mandate.tenantId !== input.tenantId) {
     throw new OnboardCoreContractError("TENANT_MISMATCH", "Import tenant must match its Setup Mandate.", 403);
   }
-  const failed = input.request.rows.filter((row) => row.outcome === "REJECTED" || row.outcome === "CONFLICT");
-  const conflicts = input.request.rows.filter((row) => row.outcome === "CONFLICT");
-  const accepted = input.request.rows.filter((row) => row.outcome === "ACCEPTED").length;
-  const duplicates = input.request.rows.filter((row) => row.outcome === "DUPLICATE").length;
+  const grouped = new Map<string, ImportDryRunSourceRow[]>();
+  for (const row of input.request.rows) {
+    if (row.matchKeyDigest === null) continue;
+    grouped.set(row.matchKeyDigest, [...(grouped.get(row.matchKeyDigest) ?? []), row]);
+  }
+  const rows: Array<ImportDryRunRow & { exceptionRef: string | null; matchKeyDigest: string | null; reconciliationRef: string | null }> = input.request.rows.map((row) => {
+    const group = row.matchKeyDigest === null ? [] : grouped.get(row.matchKeyDigest) ?? [];
+    const distinctPayloads = new Set(group.map((candidate) => candidate.payloadDigest));
+    const outcome: ImportDryRunRow["outcome"] = row.matchKeyDigest === null
+      ? "REJECTED"
+      : distinctPayloads.size > 1
+        ? "CONFLICT"
+        : group[0]?.sourceRowId === row.sourceRowId
+          ? "ACCEPTED"
+          : "DUPLICATE";
+    const reasonCode = outcome === "REJECTED" ? "MATCH_KEY_MISSING" : outcome === "CONFLICT" ? "MATCH_KEY_PAYLOAD_CONFLICT" : null;
+    const reservation = importReservation(input.tenantId, input.request);
+    return {
+      outcome,
+      matchKeyDigest: row.matchKeyDigest,
+      payloadDigest: row.payloadDigest,
+      reasonCode,
+      sourceRowId: row.sourceRowId,
+      exceptionRef: outcome === "REJECTED" || outcome === "CONFLICT"
+        ? `import-exception:${deterministicUuid("import-row-exception", { batchId: reservation.batchId, reasonCode, sourceRowId: row.sourceRowId })}` : null,
+      reconciliationRef: outcome === "CONFLICT"
+        ? `import-reconciliation:${deterministicUuid("import-row-reconciliation", { batchId: reservation.batchId, sourceRowId: row.sourceRowId })}` : null,
+    };
+  });
+  const failed = rows.filter((row) => row.outcome === "REJECTED" || row.outcome === "CONFLICT");
+  const conflicts = rows.filter((row) => row.outcome === "CONFLICT");
+  const accepted = rows.filter((row) => row.outcome === "ACCEPTED").length;
+  const duplicates = rows.filter((row) => row.outcome === "DUPLICATE").length;
   const rejected = failed.length;
   const total = input.request.rows.length;
   if (total > input.mandate.limits.maxImportRecords) {
@@ -191,15 +221,6 @@ export function issueImportEvidence(input: {
       ? "STAGED"
       : "RECONCILIATION_REQUIRED";
   const reservation = importReservation(input.tenantId, input.request);
-  const rows = input.request.rows.map((row) => ({
-    ...row,
-    exceptionRef: row.outcome === "REJECTED" || row.outcome === "CONFLICT"
-      ? `import-exception:${deterministicUuid("import-row-exception", { batchId: reservation.batchId, reasonCode: row.reasonCode, sourceRowId: row.sourceRowId })}`
-      : null,
-    reconciliationRef: row.outcome === "CONFLICT"
-      ? `import-reconciliation:${deterministicUuid("import-row-reconciliation", { batchId: reservation.batchId, sourceRowId: row.sourceRowId })}`
-      : null,
-  }));
   const reconciliationRef = conflicts.length
     ? `import-reconciliation:${deterministicUuid("import-batch-reconciliation", { batchId: reservation.batchId, sourceDigest: input.request.source.digest })}`
     : null;

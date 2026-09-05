@@ -10,11 +10,21 @@ import {
   parseTenantBlueprintV1,
 } from "@/modules/luzione-core-contracts/consumerSdk";
 import { canonicalJson, sha256 } from "@/modules/platform-guarantees/eventContract";
+import {
+  TENANT_PACK_DRAFT_SCHEMA_DIGEST,
+  assertTenantPackSourceBindingAdmitted,
+  parseTenantPackSourceBinding,
+  tenantPackSourceBindingDigest,
+  type TenantPackSourceBindingV1,
+} from "./sourceBinding";
 
-export const ONBOARD_CORE_API_VERSION = "LuzioneOnboardCoreApi/v1";
+export const LEGACY_ONBOARD_CORE_API_VERSION = "LuzioneOnboardCoreApi/v1";
+export const ONBOARD_CORE_API_VERSION = "LuzioneOnboardCoreApi/v2";
 export const TENANT_PACK_DRAFT_VERSION = "LuzioneTenantPackDraft/v1";
-export const TENANT_BLUEPRINT_MAPPING_VERSION = "TenantBlueprintMap/v1";
-export const ONBOARD_CORE_POLICY_VERSION = "ONBOARD-CORE-01/policy-v1";
+export const LEGACY_TENANT_BLUEPRINT_MAPPING_VERSION = "TenantBlueprintMap/v1";
+export const TENANT_BLUEPRINT_MAPPING_VERSION = "TenantBlueprintMap/v2";
+export const SETUP_MANDATE_REVOCATION_VERSION = "SetupMandateRevocation/v1";
+export const ONBOARD_CORE_POLICY_VERSION = "ONBOARD-CORE-CORRECTION-01/policy-v2";
 
 const ID = /^[A-Za-z0-9][A-Za-z0-9._:-]{2,199}$/;
 const DIGEST = /^[a-f0-9]{64}$/;
@@ -47,8 +57,9 @@ export type TenantBlueprintProposal = {
   contractVersion: typeof ONBOARD_CORE_API_VERSION;
   draft: TenantPackDraftV1;
   mappingVersion: typeof TENANT_BLUEPRINT_MAPPING_VERSION;
+  sourceBinding: TenantPackSourceBindingV1;
   sourceDigest: string;
-  sourceSchemaDigest: string;
+  sourceSchemaDigest: typeof TENANT_PACK_DRAFT_SCHEMA_DIGEST;
 };
 
 export type TenantBlueprintApprovalRequest = {
@@ -65,6 +76,14 @@ export type SetupMandateRequest = {
   contractVersion: typeof ONBOARD_CORE_API_VERSION;
   expectedBlueprintObjectVersion: string;
   profile: "NO_EFFECT_IMPORT_AND_CONNECTOR_VALIDATION";
+};
+
+export type SetupMandateRevocationRequest = {
+  contractVersion: typeof ONBOARD_CORE_API_VERSION;
+  expectedMandateObjectVersion: string;
+  mandateId: string;
+  reasonCode: "APPROVAL_WITHDRAWN" | "LIMIT_CHANGED" | "SECURITY_HOLD" | "SOURCE_WITHDRAWN";
+  revocationVersion: typeof SETUP_MANDATE_REVOCATION_VERSION;
 };
 
 export class OnboardCoreContractError extends Error {
@@ -160,7 +179,7 @@ function parseDraft(value: unknown): TenantPackDraftV1 {
 
 export function parseTenantBlueprintProposal(value: unknown): TenantBlueprintProposal {
   const input = exact(object(value, "proposal"), [
-    "contractVersion", "draft", "mappingVersion", "sourceDigest", "sourceSchemaDigest",
+    "contractVersion", "draft", "mappingVersion", "sourceBinding", "sourceDigest", "sourceSchemaDigest",
   ], "proposal");
   if (input.contractVersion !== ONBOARD_CORE_API_VERSION) {
     throw new OnboardCoreContractError("WRONG_VERSION", `contractVersion must be ${ONBOARD_CORE_API_VERSION}.`);
@@ -169,6 +188,11 @@ export function parseTenantBlueprintProposal(value: unknown): TenantBlueprintPro
     throw new OnboardCoreContractError("WRONG_MAPPING_VERSION", `mappingVersion must be ${TENANT_BLUEPRINT_MAPPING_VERSION}.`, 409);
   }
   const draft = parseDraft(input.draft);
+  const sourceBinding = parseTenantPackSourceBinding(input.sourceBinding);
+  if (input.sourceSchemaDigest !== TENANT_PACK_DRAFT_SCHEMA_DIGEST
+    || sourceBinding.sourceSchemaDigest !== input.sourceSchemaDigest) {
+    throw new OnboardCoreContractError("SOURCE_SCHEMA_DIGEST_MISMATCH", "sourceSchemaDigest must match both the admitted exact Tenant Pack schema bytes and source binding.", 409);
+  }
   const sourceDigest = digest(input.sourceDigest, "sourceDigest");
   const computed = sha256(draft);
   if (computed !== sourceDigest) {
@@ -178,8 +202,9 @@ export function parseTenantBlueprintProposal(value: unknown): TenantBlueprintPro
     contractVersion: ONBOARD_CORE_API_VERSION,
     draft,
     mappingVersion: TENANT_BLUEPRINT_MAPPING_VERSION,
+    sourceBinding,
     sourceDigest,
-    sourceSchemaDigest: digest(input.sourceSchemaDigest, "sourceSchemaDigest"),
+    sourceSchemaDigest: TENANT_PACK_DRAFT_SCHEMA_DIGEST,
   };
 }
 
@@ -227,6 +252,28 @@ export function parseSetupMandateRequest(value: unknown): SetupMandateRequest {
   };
 }
 
+export function parseSetupMandateRevocationRequest(value: unknown): SetupMandateRevocationRequest {
+  const input = exact(object(value, "revocation"), [
+    "contractVersion", "expectedMandateObjectVersion", "mandateId", "reasonCode", "revocationVersion",
+  ], "revocation");
+  if (input.contractVersion !== ONBOARD_CORE_API_VERSION) {
+    throw new OnboardCoreContractError("WRONG_VERSION", `contractVersion must be ${ONBOARD_CORE_API_VERSION}.`);
+  }
+  if (input.revocationVersion !== SETUP_MANDATE_REVOCATION_VERSION) {
+    throw new OnboardCoreContractError("WRONG_REVOCATION_VERSION", `revocationVersion must be ${SETUP_MANDATE_REVOCATION_VERSION}.`, 409);
+  }
+  if (!(new Set(["APPROVAL_WITHDRAWN", "LIMIT_CHANGED", "SECURITY_HOLD", "SOURCE_WITHDRAWN"])).has(String(input.reasonCode))) {
+    throw new OnboardCoreContractError("INVALID_REQUEST", "reasonCode is unsupported.");
+  }
+  return {
+    contractVersion: ONBOARD_CORE_API_VERSION,
+    expectedMandateObjectVersion: text(input.expectedMandateObjectVersion, "expectedMandateObjectVersion", 300),
+    mandateId: uuid(input.mandateId, "mandateId"),
+    reasonCode: input.reasonCode as SetupMandateRevocationRequest["reasonCode"],
+    revocationVersion: SETUP_MANDATE_REVOCATION_VERSION,
+  };
+}
+
 function slug(value: string) {
   const normalized = value.normalize("NFKD").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 120);
   if (!normalized) throw new OnboardCoreContractError("INVALID_REQUEST", "Draft content cannot map to an empty canonical reference.");
@@ -247,8 +294,10 @@ export function deterministicUuid(namespace: string, value: unknown) {
 
 export function blueprintTuple(tenantId: string, proposal: TenantBlueprintProposal) {
   return {
+    sourceBindingDigest: tenantPackSourceBindingDigest(proposal.sourceBinding),
     mappingVersion: proposal.mappingVersion,
     sourceDigest: proposal.sourceDigest,
+    sourceSchemaDigest: proposal.sourceSchemaDigest,
     sourcePackId: proposal.draft.sourcePackId,
     sourcePackVersion: proposal.draft.sourcePackVersion,
     tenantId,
@@ -285,6 +334,15 @@ export function issueDraftBlueprint(tenantId: string, proposal: TenantBlueprintP
     },
     tenantId,
     version: proposal.draft.sourcePackVersion,
+  });
+}
+
+export function admitProposalSourceBinding(tenantId: string, proposal: TenantBlueprintProposal) {
+  return assertTenantPackSourceBindingAdmitted({
+    binding: proposal.sourceBinding,
+    sourcePackId: proposal.draft.sourcePackId,
+    sourcePackVersion: proposal.draft.sourcePackVersion,
+    tenantId,
   });
 }
 

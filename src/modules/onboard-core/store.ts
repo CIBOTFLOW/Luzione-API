@@ -16,6 +16,8 @@ import {
 import { sha256 } from "@/modules/platform-guarantees/eventContract";
 import {
   ONBOARD_CORE_POLICY_VERSION,
+  SETUP_MANDATE_REVOCATION_VERSION,
+  admitProposalSourceBinding,
   blueprintApprovalObjectVersion,
   blueprintDraftObjectVersion,
   blueprintIdempotencyKey,
@@ -26,9 +28,11 @@ import {
   issueSetupMandate,
   setupMandateObjectVersion,
   type SetupMandateRequest,
+  type SetupMandateRevocationRequest,
   type TenantBlueprintApprovalRequest,
   type TenantBlueprintProposal,
 } from "./contracts";
+import type { HumanApprovalSubject } from "./humanApproval";
 
 export class OnboardCoreDomainError extends Error {
   constructor(
@@ -69,6 +73,8 @@ function blueprintReadback(row: Record<string, unknown>) {
     blueprint: jsonObject(row.canonical_blueprint, "canonical_blueprint") as TenantBlueprintV1,
     mappingVersion: String(row.mapping_version),
     objectVersion: String(row.object_version),
+    sourceBinding: jsonObject(row.source_binding, "source_binding"),
+    sourceBindingDigest: String(row.source_binding_digest),
     sourceDigest: String(row.source_digest),
     sourcePackId: String(row.source_pack_id),
     sourcePackVersion: String(row.source_pack_version),
@@ -81,6 +87,7 @@ function mandateReadback(row: Record<string, unknown>, now = new Date()) {
   const active = row.revoked_at === null && Date.parse(String(row.expires_at)) > now.getTime();
   return {
     mandate: { ...mandate, active },
+    sourceBindingDigest: String(row.source_binding_digest),
     objectVersion: String(row.object_version),
     revocation: row.revoked_at === null
       ? null
@@ -100,7 +107,7 @@ export class OnboardCoreStore {
       this.pool,
       actor.tenantId,
       `select draft.source_pack_id, draft.source_pack_version, draft.source_digest,
-              draft.source_schema_digest, draft.mapping_version,
+              draft.source_schema_digest, draft.source_binding, draft.source_binding_digest, draft.mapping_version,
               coalesce(event.canonical_blueprint, draft.canonical_blueprint) canonical_blueprint,
               coalesce(event.object_version, draft.object_version) object_version
          from public.onboarding_tenant_blueprint_drafts draft
@@ -123,9 +130,16 @@ export class OnboardCoreStore {
     const row = await readOne(
       this.pool,
       actor.tenantId,
-      `select canonical_mandate, object_version, expires_at, revoked_at, revocation_ref
-         from public.onboarding_setup_mandates
-        where tenant_id = $1 and mandate_id = $2::uuid
+      `select mandate.canonical_mandate, mandate.object_version, mandate.expires_at,
+              mandate.source_binding_digest, revocation.revoked_at, revocation.revocation_ref
+         from public.onboarding_setup_mandates mandate
+         left join lateral (
+           select event.revoked_at, event.revocation_ref
+             from public.onboarding_setup_mandate_revocations event
+            where event.tenant_id = mandate.tenant_id and event.mandate_id = mandate.mandate_id
+            order by event.revoked_at desc, event.revocation_event_id desc limit 1
+         ) revocation on true
+        where mandate.tenant_id = $1 and mandate.mandate_id = $2::uuid
         limit 1`,
       [actor.tenantId, mandateId],
     );
@@ -138,6 +152,7 @@ export class OnboardCoreStore {
     proposal: TenantBlueprintProposal;
     requestedAt: string;
   }) {
+    const admittedSource = admitProposalSourceBinding(input.actor.tenantId, input.proposal);
     const tuple = blueprintTuple(input.actor.tenantId, input.proposal);
     const blueprint = issueDraftBlueprint(input.actor.tenantId, input.proposal);
     const objectVersion = blueprintDraftObjectVersion(blueprint, input.proposal.sourceDigest);
@@ -156,6 +171,8 @@ export class OnboardCoreStore {
         mappingVersion: input.proposal.mappingVersion,
         sourceDigest: input.proposal.sourceDigest,
         sourceSchemaDigest: input.proposal.sourceSchemaDigest,
+        sourceBinding: admittedSource.binding,
+        sourceBindingDigest: admittedSource.digest,
         sourceTuple: tuple,
       },
       policyVersion: ONBOARD_CORE_POLICY_VERSION,
@@ -169,6 +186,7 @@ export class OnboardCoreStore {
         sourceRefs: [
           `tenant-pack:${input.proposal.draft.sourcePackId}@${input.proposal.draft.sourcePackVersion}`,
           `sha256:${input.proposal.sourceDigest}`,
+          `l2-binding:${admittedSource.digest}`,
           input.proposal.mappingVersion,
         ],
       },
@@ -193,9 +211,9 @@ export class OnboardCoreStore {
       await transaction.client.query(
         `insert into public.onboarding_tenant_blueprint_drafts
           (tenant_id, blueprint_id, source_pack_id, source_pack_version, source_digest,
-           source_schema_digest, mapping_version, draft_payload_hash, canonical_blueprint,
+           source_schema_digest, source_binding, source_binding_digest, mapping_version, draft_payload_hash, canonical_blueprint,
            object_version, created_by, created_by_type, created_at)
-         values ($1,$2::uuid,$3,$4,$5,$6,$7,$8,$9::jsonb,$10,$11,$12,$13)`,
+         values ($1,$2::uuid,$3,$4,$5,$6,$7::jsonb,$8,$9,$10,$11::jsonb,$12,$13,$14,$15)`,
         [
           input.actor.tenantId,
           blueprint.blueprintId,
@@ -203,6 +221,8 @@ export class OnboardCoreStore {
           input.proposal.draft.sourcePackVersion,
           input.proposal.sourceDigest,
           input.proposal.sourceSchemaDigest,
+          JSON.stringify(admittedSource.binding),
+          admittedSource.digest,
           input.proposal.mappingVersion,
           sha256(input.proposal.draft),
           JSON.stringify(blueprint),
@@ -228,13 +248,15 @@ export class OnboardCoreStore {
     actor: ApiActor;
     approval: TenantBlueprintApprovalRequest;
     correlationId: string;
+    human: HumanApprovalSubject;
     requestedAt: string;
   }) {
-    if (input.actor.actorType !== "user") {
-      throw new OnboardCoreDomainError("HUMAN_APPROVAL_REQUIRED", "Blueprint approval requires a credential-bound human actor.", 403);
+    if (input.human.tenantId !== input.actor.tenantId || !input.human.capabilities.includes("onboarding.blueprint.approve")) {
+      throw new OnboardCoreDomainError("HUMAN_APPROVAL_REQUIRED", "Blueprint approval requires a separately authenticated same-tenant human subject.", 403);
     }
     const commandTuple = {
-      actorId: input.actor.actorId,
+      humanActorId: input.human.actorId,
+      proposalActorId: input.actor.actorId,
       blueprintId: input.approval.blueprintId,
       decision: input.approval.decision,
       expectedObjectVersion: input.approval.expectedObjectVersion,
@@ -244,7 +266,7 @@ export class OnboardCoreStore {
     const idempotencyKey = `onboard-blueprint-approval:${sha256(commandTuple)}`;
     const approvalRef = `approval:${deterministicUuid("tenant-blueprint-approval", commandTuple)}`;
     const request = createLifecycleCommandRequest({
-      actor: { actorId: input.actor.actorId, actorType: input.actor.actorType, roles: [] },
+      actor: { actorId: input.human.actorId, actorType: "user", roles: [] },
       causationId: null,
       commandId: deterministicUuid("tenant-blueprint-approval-command", commandTuple),
       commandType: "onboarding.tenant_blueprint.approve",
@@ -282,12 +304,13 @@ export class OnboardCoreStore {
     input: {
       actor: ApiActor;
       approval: TenantBlueprintApprovalRequest;
+      human: HumanApprovalSubject;
       requestedAt: string;
     },
     approvalRef: string,
   ) {
     const draftResult = await transaction.client.query(
-      `select canonical_blueprint, object_version, source_pack_id
+      `select canonical_blueprint, object_version, source_pack_id, created_by
          from public.onboarding_tenant_blueprint_drafts
         where tenant_id = $1 and blueprint_id = $2::uuid
         for update`,
@@ -295,6 +318,9 @@ export class OnboardCoreStore {
     );
     const draftRow = draftResult.rows[0] as Record<string, unknown> | undefined;
     if (!draftRow) throw new OnboardCoreDomainError("BLUEPRINT_NOT_FOUND", "Tenant Blueprint not found.", 404);
+    if (String(draftRow.created_by) === input.human.actorId) {
+      throw new OnboardCoreDomainError("DISTINCT_HUMAN_APPROVER_REQUIRED", "The human approver must be distinct from the proposal subject.", 403);
+    }
     if (String(draftRow.object_version) !== input.approval.expectedObjectVersion) {
       throw new OnboardCoreDomainError("STALE_BLUEPRINT", "Blueprint expectedObjectVersion is stale.", 409);
     }
@@ -349,8 +375,8 @@ export class OnboardCoreStore {
         `insert into public.onboarding_tenant_blueprint_approvals
           (tenant_id, approval_event_id, blueprint_id, action, approval_ref,
            supersedes_approval_ref, canonical_blueprint, object_version, actor_id,
-           actor_type, approved_at, created_at)
-         values ($1,$2::uuid,$3::uuid,'SUPERSEDED',$4,$4,$5::jsonb,$6,$7,$8,$9,$9)`,
+           actor_type, proposal_actor_id, human_authentication_ref, approved_at, created_at)
+         values ($1,$2::uuid,$3::uuid,'SUPERSEDED',$4,$4,$5::jsonb,$6,$7,'user',$8,$9,$10,$10)`,
         [
           input.actor.tenantId,
           deterministicUuid("tenant-blueprint-supersession-event", { approvalRef: active.approval_ref, replacement: approvalRef }),
@@ -358,8 +384,9 @@ export class OnboardCoreStore {
           active.approval_ref,
           JSON.stringify(supersededBlueprint),
           blueprintApprovalObjectVersion(supersededBlueprint, String(active.approval_ref)),
+          input.human.actorId,
           input.actor.actorId,
-          input.actor.actorType,
+          input.human.authenticationRef,
           input.requestedAt,
         ],
       );
@@ -371,8 +398,8 @@ export class OnboardCoreStore {
       `insert into public.onboarding_tenant_blueprint_approvals
         (tenant_id, approval_event_id, blueprint_id, action, approval_ref,
          supersedes_approval_ref, canonical_blueprint, object_version, actor_id,
-         actor_type, approved_at, created_at)
-       values ($1,$2::uuid,$3::uuid,'APPROVED',$4,$5,$6::jsonb,$7,$8,$9,$10,$10)`,
+         actor_type, proposal_actor_id, human_authentication_ref, approved_at, created_at)
+       values ($1,$2::uuid,$3::uuid,'APPROVED',$4,$5,$6::jsonb,$7,$8,'user',$9,$10,$11,$11)`,
       [
         input.actor.tenantId,
         deterministicUuid("tenant-blueprint-approval-event", { approvalRef }),
@@ -381,8 +408,9 @@ export class OnboardCoreStore {
         input.approval.supersedesApprovalRef,
         JSON.stringify(approvedBlueprint),
         objectVersion,
+        input.human.actorId,
         input.actor.actorId,
-        input.actor.actorType,
+        input.human.authenticationRef,
         input.requestedAt,
       ],
     );
@@ -460,9 +488,9 @@ export class OnboardCoreStore {
       const objectVersion = setupMandateObjectVersion(mandate);
       const inserted = await transaction.client.query(
         `insert into public.onboarding_setup_mandates
-          (tenant_id, mandate_id, blueprint_id, blueprint_version, approval_ref,
+          (tenant_id, mandate_id, blueprint_id, blueprint_version, approval_ref, source_binding_digest,
            canonical_mandate, object_version, expires_at, created_by, created_by_type, created_at)
-         values ($1,$2::uuid,$3::uuid,$4,$5,$6::jsonb,$7,$8,$9,$10,$11)
+         values ($1,$2::uuid,$3::uuid,$4,$5,$6,$7::jsonb,$8,$9,$10,$11,$12)
          on conflict (tenant_id, mandate_id) do nothing
          returning mandate_id`,
         [
@@ -471,6 +499,7 @@ export class OnboardCoreStore {
           approvedBlueprint.blueprintId,
           approvedBlueprint.version,
           approved.approval_ref,
+          approved.source_binding_digest,
           JSON.stringify(mandate),
           objectVersion,
           mandate.expiresAt,
@@ -492,10 +521,66 @@ export class OnboardCoreStore {
     return { readback, receipt };
   }
 
+  async revokeMandate(input: {
+    actor: ApiActor;
+    correlationId: string;
+    human: HumanApprovalSubject;
+    requestedAt: string;
+    revocation: SetupMandateRevocationRequest;
+  }) {
+    if (input.human.tenantId !== input.actor.tenantId || !input.human.capabilities.includes("onboarding.mandate.revoke")) {
+      throw new OnboardCoreDomainError("HUMAN_REVOCATION_REQUIRED", "Mandate revocation requires a separately authenticated same-tenant human subject.", 403);
+    }
+    const tuple = { humanActorId: input.human.actorId, ...input.revocation, tenantId: input.actor.tenantId };
+    const revocationRef = `mandate-revocation:${deterministicUuid("setup-mandate-revocation", tuple)}`;
+    const request = createLifecycleCommandRequest({
+      actor: { actorId: input.human.actorId, actorType: "user", roles: [] },
+      causationId: null,
+      commandId: deterministicUuid("setup-mandate-revocation-command", tuple),
+      commandType: "onboarding.setup_mandate.revoke",
+      correlationId: input.correlationId,
+      expectedObjectVersion: input.revocation.expectedMandateObjectVersion,
+      idempotencyKey: `onboard-mandate-revocation:${sha256(tuple)}`,
+      payload: input.revocation,
+      policyVersion: ONBOARD_CORE_POLICY_VERSION,
+      requestedAt: input.requestedAt,
+      stepId: null,
+      target: { objectId: input.revocation.mandateId, objectType: "setup_mandate_revocation", objectVersion: input.revocation.expectedMandateObjectVersion, ownerProject: "LUZIONE_API", sourceRefs: [SETUP_MANDATE_REVOCATION_VERSION] },
+      tenantId: input.actor.tenantId,
+      workflowId: null,
+    });
+    const receipt = await this.kernel.execute(request, async (transaction) => {
+      const mandate = await transaction.client.query(
+        `select object_version from public.onboarding_setup_mandates where tenant_id=$1 and mandate_id=$2::uuid for update`,
+        [input.actor.tenantId, input.revocation.mandateId],
+      );
+      if (!mandate.rows.length) throw new OnboardCoreDomainError("MANDATE_NOT_FOUND", "Same-tenant Setup Mandate not found.", 404);
+      if (String(mandate.rows[0].object_version) !== input.revocation.expectedMandateObjectVersion) throw new OnboardCoreDomainError("STALE_MANDATE", "Mandate object version is stale.", 409);
+      const prior = await transaction.client.query(
+        `select revocation_ref from public.onboarding_setup_mandate_revocations where tenant_id=$1 and mandate_id=$2::uuid limit 1`,
+        [input.actor.tenantId, input.revocation.mandateId],
+      );
+      if (prior.rows.length) throw new OnboardCoreDomainError("MANDATE_ALREADY_REVOKED", "Mandate revocation is append-only and already exists.", 409);
+      await transaction.client.query(
+        `insert into public.onboarding_setup_mandate_revocations
+          (tenant_id,revocation_event_id,mandate_id,revocation_ref,reason_code,actor_id,human_authentication_ref,revoked_at)
+         values ($1,$2::uuid,$3::uuid,$4,$5,$6,$7,$8)`,
+        [input.actor.tenantId, deterministicUuid("setup-mandate-revocation-event", tuple), input.revocation.mandateId, revocationRef, input.revocation.reasonCode, input.human.actorId, input.human.authenticationRef, input.requestedAt],
+      );
+      return { evidenceRefs: [`postgres:public.onboarding_setup_mandate_revocations/${revocationRef}`], objectVersion: input.revocation.expectedMandateObjectVersion };
+    });
+    const readback = await this.readMandate(input.actor, input.revocation.mandateId);
+    if (!readback || readback.mandate.active || !readback.revocation) throw new OnboardCoreDomainError("READBACK_UNCONFIRMED", "Mandate revocation readback could not be confirmed.", 503);
+    return { readback, receipt };
+  }
+
   private async readActiveApprovalForUpdate(client: PoolClient, tenantId: string, blueprintId: string) {
     const result = await client.query(
-      `select approved.approval_ref, approved.canonical_blueprint, approved.object_version
+      `select approved.approval_ref, approved.canonical_blueprint, approved.object_version,
+              draft.source_binding_digest
          from public.onboarding_tenant_blueprint_approvals approved
+         join public.onboarding_tenant_blueprint_drafts draft
+           on draft.tenant_id=approved.tenant_id and draft.blueprint_id=approved.blueprint_id
         where approved.tenant_id = $1 and approved.blueprint_id = $2::uuid
           and approved.action = 'APPROVED'
           and not exists (

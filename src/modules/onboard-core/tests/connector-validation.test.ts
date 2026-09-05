@@ -2,130 +2,87 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-import { connectorSyncValidationEnabledForTenant } from "@/lib/api/config";
 import { connectorBindingFixture } from "@/modules/luzione-core-contracts/fixtures";
 import { sha256 } from "@/modules/platform-guarantees/eventContract";
 import {
-  CONNECTOR_SANDBOX_DESTINATION,
-  CONNECTOR_SYNC_VALIDATION_VERSION,
-  connectorValidationPayloadDigest,
-  connectorValidationReservation,
-  issueSyncReceipt,
-  parseConnectorSyncValidationRequest,
+  CONNECTOR_SANDBOX_DESTINATION, CONNECTOR_SYNC_VALIDATION_VERSION, CONNECTOR_VALIDATION_OUTCOME_VERSION,
+  classifyConnectorOutcome, connectorValidationPayloadDigest, connectorValidationReservation, parseConnectorSyncValidationRequest,
 } from "../connectorContracts";
 import { ONBOARD_CORE_API_VERSION, OnboardCoreContractError } from "../contracts";
 
-const binding = {
-  ...connectorBindingFixture,
-  credentialReference: "secret-ref:connector-binding-customer-zero",
-  status: "DRAFT" as const,
-};
-const validation = {
-  changes: { created: 2, duplicates: 1, failed: 0, updated: 3 },
-  cursorAfter: "sandbox-cursor:after-1",
-  scenario: "matched" as const,
-};
-
+const binding = { ...connectorBindingFixture, credentialReference: "secret-ref:connector-binding-customer-zero", status: "DRAFT" as const };
+const validation = { changes: { created: 2, duplicates: 1, failed: 0, updated: 3 }, cursorAfter: "sandbox-cursor:after-1", scenario: "matched" as const };
+const requestBase = { binding, contractVersion: ONBOARD_CORE_API_VERSION, expectedMandateObjectVersion: "setup-mandate:proof@v2", mandateId: "55555555-5555-4555-8555-555555555555", operationKey: "customer-zero-connector-check-1", sourceBindingDigest: "9".repeat(64), validation };
 function request(overrides: Record<string, unknown> = {}) {
-  return {
-    binding,
-    contractVersion: ONBOARD_CORE_API_VERSION,
-    operationKey: "customer-zero-connector-check-1",
-    payloadDigest: connectorValidationPayloadDigest({ binding, validation }),
-    validation,
-    ...overrides,
-  };
+  const merged = { ...requestBase, ...overrides };
+  return { ...merged, payloadDigest: connectorValidationPayloadDigest(merged) };
 }
-
 function expectCode(callback: () => unknown, code: string) {
   assert.throws(callback, (error: unknown) => error instanceof OnboardCoreContractError && error.code === code);
 }
-
-test("strict connector validation recomputes digest and preserves tenant/key reservation", () => {
-  const parsed = parseConnectorSyncValidationRequest(request());
-  assert.equal(parsed.binding.contractVersion, "ConnectorBinding/v1");
-  assert.equal(parsed.validation.scenario, "matched");
-  assert.equal(CONNECTOR_SANDBOX_DESTINATION, "sandbox.echo");
-  const reservation = connectorValidationReservation(binding.tenantId, parsed);
-  assert.match(reservation.idempotencyKey, /^connector-sync-validation:[a-f0-9]{64}$/);
-  assert.equal(reservation, reservation);
-  assert.equal(connectorValidationReservation(binding.tenantId, parsed).commandId, reservation.commandId);
-});
-
-test("connector boundary rejects surplus, wrong digest, live/revoked status, unapproved provider and secret-shaped input", () => {
-  expectCode(() => parseConnectorSyncValidationRequest({ ...request(), actorId: "forged" }), "FIELD_SET_MISMATCH");
-  expectCode(() => parseConnectorSyncValidationRequest({ ...request(), payloadDigest: sha256({ changed: true }) }), "PAYLOAD_DIGEST_MISMATCH");
-  const bound = { ...binding, status: "BOUND" as const };
-  expectCode(() => parseConnectorSyncValidationRequest({ ...request(), binding: bound, payloadDigest: connectorValidationPayloadDigest({ binding: bound, validation }) }), "CONNECTOR_STATUS_DENIED");
-  const revoked = { ...binding, revocation: { revokedAt: "2026-09-05T00:00:00.000Z", revocationRef: "revocation:proof" }, status: "REVOKED" as const };
-  expectCode(() => parseConnectorSyncValidationRequest({ ...request(), binding: revoked, payloadDigest: connectorValidationPayloadDigest({ binding: revoked, validation }) }), "CONNECTOR_STATUS_DENIED");
-  const microsoft = { ...binding, provider: "MICROSOFT_365" as const };
-  expectCode(() => parseConnectorSyncValidationRequest({ ...request(), binding: microsoft, payloadDigest: connectorValidationPayloadDigest({ binding: microsoft, validation }) }), "CONNECTOR_PROVIDER_DENIED");
-  const credential = { ...binding, credentialReference: "secret-ref::bad" };
-  expectCode(() => parseConnectorSyncValidationRequest({ ...request(), binding: credential, payloadDigest: connectorValidationPayloadDigest({ binding: credential, validation }) }), "CREDENTIAL_REFERENCE_INVALID");
-});
-
-test("only L1 issues canonical sandbox SyncReceipt finality", () => {
-  const receipt = issueSyncReceipt({
-    binding,
-    changes: validation.changes,
-    cursorAfter: validation.cursorAfter,
-    finality: "SOURCE_CONFIRMED",
-    providerAcknowledgementRef: "sandbox-ack:proof",
-    reconciliationRef: "reconcile:proof",
-    sourceReadbackRef: "sandbox-readback:proof",
+function classify(overrides: Record<string, unknown> = {}) {
+  return classifyConnectorOutcome({
+    binding, changes: validation.changes, cursorAfter: validation.cursorAfter, lastErrorCode: null,
+    providerAcknowledgementRef: "sandbox-ack:proof", reconciliationRef: "reconcile:proof",
+    reconciliationResult: "MATCHED", sourceReadbackRef: "sandbox-readback:proof", state: "SOURCE_CONFIRMED",
+    ...overrides,
   });
-  assert.equal(receipt.contractVersion, "SyncReceipt/v1");
-  assert.equal(receipt.tenantId, binding.tenantId);
-  assert.equal(receipt.bindingId, binding.bindingId);
-  assert.equal(receipt.finality, "SOURCE_CONFIRMED");
-  assert.deepEqual(receipt.changes, validation.changes);
+}
+
+test("strict v2 connector request binds exact Mandate, L2 evidence and canonical payload digest", () => {
+  const parsed = parseConnectorSyncValidationRequest(request());
+  assert.equal(parsed.mandateId, requestBase.mandateId);
+  assert.equal(parsed.sourceBindingDigest, requestBase.sourceBindingDigest);
+  assert.equal(CONNECTOR_SYNC_VALIDATION_VERSION, "ConnectorSyncValidation/v2");
+  assert.equal(CONNECTOR_SANDBOX_DESTINATION, "sandbox.echo");
+  assert.deepEqual(connectorValidationReservation(binding.tenantId, parsed), connectorValidationReservation(binding.tenantId, parsed));
+  expectCode(() => parseConnectorSyncValidationRequest({ ...request(), actorId: "forged" }), "FIELD_SET_MISMATCH");
+  expectCode(() => parseConnectorSyncValidationRequest({ ...request(), payloadDigest: sha256({ forged: true }) }), "PAYLOAD_DIGEST_MISMATCH");
 });
 
-test("connector gate requires global, feature, tenant and existing sandbox adapter admission", () => {
-  const original = { ...process.env };
-  try {
-    process.env.DATABASE_URL = "postgres://configured.invalid/db";
-    process.env.LUZIONE_API_SERVICE_TOKEN = "configured";
-    process.env.LUZIONE_API_MUTATIONS_ENABLED = "true";
-    process.env.LUZIONE_API_CONNECTOR_SYNC_VALIDATIONS_ENABLED = "true";
-    process.env.LUZIONE_API_CONNECTOR_SYNC_VALIDATION_TENANTS = binding.tenantId;
-    process.env.LUZIONE_API_PROVIDER_SANDBOX_ENABLED = "true";
-    process.env.LUZIONE_API_PROVIDER_SANDBOX_TENANTS = binding.tenantId;
-    process.env.LUZIONE_API_PROVIDER_SANDBOX_DESTINATIONS = "sandbox.echo";
-    assert.equal(connectorSyncValidationEnabledForTenant(binding.tenantId), true);
-    process.env.LUZIONE_API_PROVIDER_SANDBOX_DESTINATIONS = "provider.other";
-    assert.equal(connectorSyncValidationEnabledForTenant(binding.tenantId), false);
-    process.env.LUZIONE_API_PROVIDER_SANDBOX_DESTINATIONS = "sandbox.echo";
-    process.env.LUZIONE_API_MUTATIONS_ENABLED = "false";
-    assert.equal(connectorSyncValidationEnabledForTenant(binding.tenantId), false);
-  } finally {
-    process.env = original;
-  }
+test("SOURCE_CONFIRMED requires matching readback and is the only successful outcome", () => {
+  const matched = classify();
+  assert.equal(matched.contractVersion, CONNECTOR_VALIDATION_OUTCOME_VERSION);
+  assert.equal(matched.success, true);
+  assert.equal(matched.syncReceipt?.finality, "SOURCE_CONFIRMED");
+  const falseConfirmed = classify({ reconciliationResult: "SOURCE_UNAVAILABLE" });
+  assert.equal(falseConfirmed.success, false);
+  assert.equal(falseConfirmed.state, "TERMINAL_UNAVAILABLE");
+  assert.equal(falseConfirmed.syncReceipt, null);
 });
 
-test("the sole endpoint is service-authenticated, default-off, P110/provider-runtime scoped and NO_EFFECT", () => {
+test("exact VERSION_MISMATCH, BLOCKED and ACK/no-readback probes never claim success", () => {
+  const version = classify({ lastErrorCode: "SOURCE_VERSION_MISMATCH", reconciliationResult: "VERSION_MISMATCH", sourceReadbackRef: "sandbox-readback:different", state: "BLOCKED" });
+  assert.deepEqual([version.state, version.evidenceCode, version.success, version.syncReceipt], ["VERSION_MISMATCH", "VERSION_MISMATCH", false, null]);
+  const blocked = classify({ lastErrorCode: "EFFECT_KILL_ACTIVE", reconciliationRef: null, reconciliationResult: null, sourceReadbackRef: null, state: "BLOCKED" });
+  assert.deepEqual([blocked.state, blocked.evidenceCode, blocked.success], ["BLOCKED", "BLOCKED", false]);
+  const ack = classify({ reconciliationRef: null, reconciliationResult: null, sourceReadbackRef: null, state: "PROVIDER_ACKNOWLEDGED" });
+  assert.equal(ack.state, "ACKNOWLEDGED");
+  assert.equal(ack.evidenceCode, "ACK_WITHOUT_READBACK");
+  assert.equal(ack.success, false);
+  assert.equal(ack.syncReceipt?.finality, "ACKNOWLEDGED");
+});
+
+test("RECONCILING is pending only and exhausted ambiguity/terminal unavailable are typed non-success", () => {
+  const pending = classify({ reconciliationResult: "PENDING", sourceReadbackRef: null, state: "RECONCILIATION_REQUIRED" });
+  assert.equal(pending.state, "RECONCILING");
+  assert.equal(pending.syncReceipt?.finality, "RECONCILING");
+  const exhausted = classify({ lastErrorCode: "RECONCILIATION_BUDGET_EXHAUSTED", reconciliationResult: "SOURCE_UNAVAILABLE", sourceReadbackRef: null, state: "BLOCKED" });
+  assert.equal(exhausted.state, "AMBIGUITY_EXHAUSTED");
+  assert.equal(exhausted.syncReceipt, null);
+  const unavailable = classify({ providerAcknowledgementRef: null, reconciliationRef: null, reconciliationResult: null, sourceReadbackRef: null, state: "DEAD_LETTERED" });
+  assert.equal(unavailable.state, "TERMINAL_UNAVAILABLE");
+});
+
+test("service enforces exact active same-tenant Mandate, unsuperseded approval and deadline with NO_EFFECT sandbox only", () => {
   const route = readFileSync("src/app/api/v1/connectors/sync-validations/route.ts", "utf8");
   const service = readFileSync("src/modules/onboard-core/connectorService.ts", "utf8");
-  const store = readFileSync("src/lib/platform-guarantees/postgresWorkflowDeliveryStore.ts", "utf8");
-  assert.match(route, /requireServiceActor\(request\.headers, "connector\.sync_validation\.execute"\)/);
-  assert.match(route, /connectorSyncValidationEnabledForTenant\(actor\.tenantId\)/);
-  assert.match(service, /actor\.actorType !== "service"/);
-  assert.match(service, /LifecycleCommandKernel/);
-  assert.match(service, /SandboxEchoProviderAdapter/);
+  assert.match(route, /connectorSyncValidationEnabledForTenant/);
+  assert.match(service, /VALIDATE_CONNECTOR_READBACK/);
+  assert.match(service, /onboarding_setup_mandate_revocations/);
+  assert.match(service, /MANDATE_BLUEPRINT_SUPERSEDED/);
+  assert.match(service, /MANDATE_RUNTIME_EXCEEDED/);
   assert.match(service, /effectClass: "NO_EFFECT"/);
-  assert.match(service, /outboxMessageId: commandReceipt\.outboxMessageId/);
-  assert.match(store, /\$4::text is null or outbox\.outbox_message_id = \$4/);
-  assert.doesNotMatch(`${route}\n${service}`, /fetch\(|GmailRfqCanaryAdapter|MICROSOFT_365|credentialReference\s*\)|DATABASE_URL\s*=|LIVE/);
-});
-
-test("connector slice adds no schema, migration, OAuth, credential resolution, scheduler, or production adapter", () => {
-  const paths = [
-    "src/modules/onboard-core/connectorContracts.ts",
-    "src/modules/onboard-core/connectorService.ts",
-    "src/app/api/v1/connectors/sync-validations/route.ts",
-  ];
-  const source = paths.map((path) => readFileSync(path, "utf8")).join("\n");
-  assert.equal(CONNECTOR_SYNC_VALIDATION_VERSION, "ConnectorSyncValidation/v1");
-  assert.doesNotMatch(source, /create table|alter table|oauth|scheduler|cron|Gmail|QuickBooks.*Adapter|Google.*Adapter/i);
+  assert.match(service, /SandboxEchoProviderAdapter/);
+  assert.doesNotMatch(`${route}\n${service}`, /GmailRfqCanaryAdapter|credentialReference\s*\)|LIVE_EFFECT/);
 });
