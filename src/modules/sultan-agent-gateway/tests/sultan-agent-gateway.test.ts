@@ -29,6 +29,8 @@ import {
   type SultanAgentGatewayStore,
 } from "@/modules/sultan-agent-gateway/service";
 import type { ProviderMessage } from "@/modules/provider-runtime/contracts";
+import type { Stage5AdmissionReceipt } from "@/modules/sultan-stage5/contracts";
+import type { EffectExecutionEnvelope } from "@/modules/effect-admission/contracts";
 
 const NOW = "2026-09-01T12:00:00.000Z";
 const APPROVAL_SECRET = "test-approval-secret-that-is-longer-than-thirty-two-bytes";
@@ -103,10 +105,16 @@ class FakeStore implements SultanAgentGatewayStore {
   executions = 0;
   observed: AuthoritativeCaseSnapshot | null = authoritativeSnapshot();
   preparation: SultanCommandPreparation | null = null;
+  preparationInput: Parameters<SultanAgentGatewayStore["prepareCommand"]>[0] | null = null;
+  executionEnvelope: EffectExecutionEnvelope | null = null;
 
   async requireStage5Admission() {
     this.admissionChecks += 1;
-    return { admissionReceiptId: "s5admit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" } as never;
+    return {
+      admissionReceiptId: "s5admit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      receiptHash: "e".repeat(64),
+      credentialActor: { tenantId: "luzione" },
+    } as Stage5AdmissionReceipt;
   }
 
   async readCase() { return this.observed; }
@@ -115,6 +123,7 @@ class FakeStore implements SultanAgentGatewayStore {
   }
   async prepareCommand(input: Parameters<SultanAgentGatewayStore["prepareCommand"]>[0]) {
     this.preparations += 1;
+    this.preparationInput = input;
     this.preparation = {
       contractVersion: LUZIONE_SULTAN_COMMAND_PREPARATION_V1,
       admissionReceiptId: input.call.admissionReceiptId,
@@ -139,8 +148,23 @@ class FakeStore implements SultanAgentGatewayStore {
     };
     return this.preparation;
   }
+  async readCommandAdmissionLineage() {
+    const input = this.preparationInput;
+    if (!input) return null;
+    return {
+      admission: await this.requireStage5Admission(),
+      commandHash: input.commandHash,
+      effectClass: input.effectClass,
+      operationId: input.call.operationId,
+      originatingEnvelopeRef: input.originatingEnvelopeRef,
+      prepareAdmissionRef: input.prepareAdmission.decisionRef,
+      prepareExecutionIdentity: input.prepareAdmission.executionIdentity,
+      toolId: input.call.toolId,
+    };
+  }
   async executeCommand(input: Parameters<SultanAgentGatewayStore["executeCommand"]>[0]) {
     this.executions += 1;
+    this.executionEnvelope = input.effectExecutionEnvelope;
     const receipt: SultanEffectReceipt = {
       contractVersion: LUZIONE_SULTAN_EFFECT_RECEIPT_V1,
       receiptId: "sultan-receipt-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -264,6 +288,9 @@ test("A1 command prepares, interrupts, and executes only with an exact signed hu
   assert.equal(interrupted.policyDecision, "REQUIRE_APPROVAL");
   assert.equal(store.preparations, 1);
   assert.ok(store.preparation);
+  assert.equal(store.preparationInput?.admissionReceiptHash, "e".repeat(64));
+  assert.equal(store.preparationInput?.prepareAdmission.checkpoint, "SULTAN_PREPARE");
+  assert.match(store.preparationInput?.originatingEnvelopeRef ?? "", /^sultan-stage5:[a-f0-9]{64}$/);
 
   const unsigned: Omit<SultanApprovalAdmission, "signature"> = {
     contractVersion: "sultan.human-approval-admission.v1",
@@ -281,6 +308,10 @@ test("A1 command prepares, interrupts, and executes only with an exact signed hu
   assert.equal(executed.receipt.effectClass, "A1");
   assert.equal(executed.readback.providerRef, null);
   assert.equal(store.executions, 1);
+  assert.equal(store.executionEnvelope?.admissionCheckpoint, "SULTAN_EXECUTE");
+  assert.equal(store.executionEnvelope?.sourcePayloadHash, unsigned.commandHash);
+  assert.equal(store.executionEnvelope?.originatingEnvelopeRef, store.preparationInput?.originatingEnvelopeRef);
+  assert.equal(store.executionEnvelope?.effectAuthority, "SANDBOX_ONLY");
 
   await assert.rejects(
     () => service.execute({ actor: actor(), reservationId: unsigned.reservationId, commandHash: unsigned.commandHash, approvalAdmission: { ...approvalAdmission, signature: "e".repeat(64) } }),
@@ -379,6 +410,7 @@ function providerMessage(): ProviderMessage {
     effectAdmissionRef: `effect-admission:${"a".repeat(64)}`,
     effectClass: "EXTERNAL_EFFECT", expectedObjectVersion: "commercial-case:case-canary-001:v7",
     idempotencyKey: "sultan-rfq-canary:operation.canary.001", objectId: "case-canary-001", objectType: "commercial_case",
+    originatingEnvelopeRef: `p110-origin:${"f".repeat(64)}`,
     outboxMessageId: "outbox-001", payload, payloadHash: sha256(payload), receiptId: "receipt-001",
     resultingObjectVersion: "commercial-case:case-canary-001:v7", tenantId: "luzione",
   };

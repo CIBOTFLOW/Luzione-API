@@ -16,6 +16,11 @@ import {
 } from "@/modules/sultan-agent-gateway/contracts";
 import { sha256 } from "@/modules/platform-guarantees/eventContract";
 import { DefaultOffEffectAdmissionGate, type EffectAdmissionGate } from "@/modules/effect-admission/gate";
+import {
+  buildEffectExecutionEnvelope,
+  type EffectAdmissionDecision,
+  type EffectExecutionEnvelope,
+} from "@/modules/effect-admission/contracts";
 import type { Stage5AdmissionReceipt } from "@/modules/sultan-stage5/contracts";
 import {
   SULTAN_AGENT_GATEWAY_POLICY_VERSION,
@@ -82,6 +87,7 @@ export type SultanAgentGatewayStore = {
   readCase(actor: ApiActor, caseRef: SultanCaseRef): Promise<AuthoritativeCaseSnapshot | null>;
   readEvidence(actor: ApiActor, caseRef: SultanCaseRef, toolId: string): Promise<BoundEvidence>;
   prepareCommand(input: {
+    admissionReceiptHash: string;
     actor: ApiActor;
     call: SultanToolCall;
     effectClass: "A1" | "A2" | "A3";
@@ -90,11 +96,24 @@ export type SultanAgentGatewayStore = {
     preview: Readonly<Record<string, unknown>>;
     observedCase: AuthoritativeCaseSnapshot;
     now: string;
+    originatingEnvelopeRef: string;
+    prepareAdmission: EffectAdmissionDecision;
   }): Promise<SultanCommandPreparation>;
+  readCommandAdmissionLineage(actor: ApiActor, reservationId: string): Promise<{
+    admission: Stage5AdmissionReceipt;
+    commandHash: string;
+    effectClass: "A1" | "A2" | "A3";
+    operationId: string;
+    originatingEnvelopeRef: string;
+    prepareAdmissionRef: string;
+    prepareExecutionIdentity: string;
+    toolId: string;
+  } | null>;
   executeCommand(input: {
     actor: ApiActor;
     reservationId: string;
     commandHash: string;
+    effectExecutionEnvelope: EffectExecutionEnvelope;
     approvalAdmission: SultanApprovalAdmission;
     now: string;
   }): Promise<SultanCommandExecution>;
@@ -178,7 +197,7 @@ export class SultanAgentGatewayService {
     assertSultanActor(input.actor, "sultan.command.prepare");
     const descriptor = this.admitTool(input.actor, input.call);
     if (descriptor.effectClass === "A0") throw new SultanAgentGatewayError("COMMAND_PREPARATION_NOT_REQUIRED", "A0 reads use the tool invocation route.", 422);
-    await this.store.requireStage5Admission({
+    const admission = await this.store.requireStage5Admission({
       actor: input.actor,
       call: input.call,
       effectClass: descriptor.effectClass,
@@ -205,16 +224,20 @@ export class SultanAgentGatewayService {
       critic: input.call.controlEvidence,
       preview,
     });
-    await this.requireEffectAdmission({
+    const originatingEnvelopeRef = sultanOriginatingEnvelopeRef(input.call, admission);
+    const prepareAdmission = await this.requireEffectAdmission({
       actor: input.actor,
-      authorityRef: `stage5:${input.call.admissionReceiptId}`,
+      authorityRef: `stage5:${admission.admissionReceiptId}:${admission.receiptHash}`,
       checkpoint: "SULTAN_PREPARE",
       commandHash,
       effectClass: descriptor.effectClass,
       operationKey: input.call.operationId,
+      originatingEnvelopeRef,
+      stage5ReceiptHash: admission.receiptHash,
       toolId: input.call.toolId,
     });
     return await this.store.prepareCommand({
+      admissionReceiptHash: admission.receiptHash,
       actor: input.actor,
       call: input.call,
       effectClass: descriptor.effectClass,
@@ -223,22 +246,41 @@ export class SultanAgentGatewayService {
       preview,
       observedCase,
       now: this.now().toISOString(),
+      originatingEnvelopeRef,
+      prepareAdmission,
     });
   }
 
   async execute(input: { actor: ApiActor; reservationId: string; commandHash: string; approvalAdmission: SultanApprovalAdmission }) {
     assertSultanActor(input.actor, "sultan.command.execute");
     this.verifyApproval(input.reservationId, input.commandHash, input.approvalAdmission);
-    await this.requireEffectAdmission({
+    const lineage = await this.store.readCommandAdmissionLineage(input.actor, input.reservationId);
+    if (!lineage) throw new SultanAgentGatewayError("COMMAND_RESERVATION_NOT_FOUND", "The command reservation and exact Stage 5 lineage were not found.", 404);
+    if (lineage.commandHash !== input.commandHash) throw new SultanAgentGatewayError("COMMAND_HASH_MISMATCH", "Execution does not match the reserved command.", 409);
+    if (lineage.effectClass !== "A1") throw new SultanAgentGatewayError("COMMAND_EXECUTION_BLOCKED", "Only an approved A1 internal action can enter the bounded execution envelope.", 403);
+    const decision = await this.requireEffectAdmission({
       actor: input.actor,
       authorityRef: `human-approval:${input.approvalAdmission.approvalId}`,
       checkpoint: "SULTAN_EXECUTE",
       commandHash: input.commandHash,
-      effectClass: "A1",
-      operationKey: input.reservationId,
-      toolId: "luzione.internal.command.execute",
+      effectClass: lineage.effectClass,
+      operationKey: lineage.operationId,
+      originatingEnvelopeRef: lineage.originatingEnvelopeRef,
+      stage5ReceiptHash: lineage.admission.receiptHash,
+      toolId: lineage.toolId,
     });
-    return await this.store.executeCommand({ ...input, now: this.now().toISOString() });
+    const subject = this.effectSubject({
+      actor: input.actor,
+      authorityRef: `human-approval:${input.approvalAdmission.approvalId}`,
+      checkpoint: "SULTAN_EXECUTE",
+      commandHash: input.commandHash,
+      effectClass: lineage.effectClass,
+      operationKey: lineage.operationId,
+      originatingEnvelopeRef: lineage.originatingEnvelopeRef,
+      stage5ReceiptHash: lineage.admission.receiptHash,
+    });
+    const effectExecutionEnvelope = buildEffectExecutionEnvelope(subject, decision);
+    return await this.store.executeCommand({ ...input, effectExecutionEnvelope, now: this.now().toISOString() });
   }
 
   async readEffect(actor: ApiActor, receiptId: string) {
@@ -279,10 +321,32 @@ export class SultanAgentGatewayService {
     commandHash: string;
     effectClass: "A1" | "A2" | "A3";
     operationKey: string;
+    originatingEnvelopeRef: string;
+    stage5ReceiptHash: string;
     toolId: string;
   }) {
+    const decision = await this.effectAdmission.decide(this.effectSubject(input));
+    if (!decision.admitted) {
+      throw new SultanAgentGatewayError(`EFFECT_${decision.denialCode}`, `Effect admission denied ${input.toolId} at ${input.checkpoint}.`, 403);
+    }
+    if (input.checkpoint === "SULTAN_EXECUTE" && !decision.executeAuthorized) {
+      throw new SultanAgentGatewayError("EFFECT_EXECUTE_NOT_AUTHORIZED", "The final Sultan admission did not authorize this exact execution envelope.", 403);
+    }
+    return decision;
+  }
+
+  private effectSubject(input: {
+    actor: ApiActor;
+    authorityRef: string;
+    checkpoint: "SULTAN_EXECUTE" | "SULTAN_PREPARE";
+    commandHash: string;
+    effectClass: "A1" | "A2" | "A3";
+    operationKey: string;
+    originatingEnvelopeRef: string;
+    stage5ReceiptHash: string;
+  }) {
     const external = input.effectClass !== "A1";
-    const decision = await this.effectAdmission.decide({
+    return {
       actor: { actorId: input.actor.actorId, actorType: input.actor.actorType },
       authorityRef: input.authorityRef,
       checkpoint: input.checkpoint,
@@ -292,15 +356,29 @@ export class SultanAgentGatewayService {
       destination: external ? SULTAN_RFQ_CANARY_DESTINATION : "postgres.sultan-internal-action",
       effectClass: external ? "EXTERNAL_EFFECT" : "REVERSIBLE_INTERNAL",
       operationKey: input.operationKey,
-      payloadHash: input.commandHash,
+      originatingEnvelopeRef: input.originatingEnvelopeRef,
+      preparedDispatchDigest: sha256({
+        commandHash: input.commandHash,
+        contractVersion: "luzione-sultan-prepared-command/v1",
+        originatingEnvelopeRef: input.originatingEnvelopeRef,
+        stage5ReceiptHash: input.stage5ReceiptHash,
+      }),
       provider: external ? "gmail" : "luzione-api",
+      sourcePayloadHash: input.commandHash,
       tenantId: input.actor.tenantId,
-    });
-    if (!decision.admitted) {
-      throw new SultanAgentGatewayError(`EFFECT_${decision.denialCode}`, `Effect admission denied ${input.toolId} at ${input.checkpoint}.`, 403);
-    }
-    return decision;
+    } as const;
   }
+}
+
+function sultanOriginatingEnvelopeRef(call: SultanToolCall, admission: Stage5AdmissionReceipt) {
+  return `sultan-stage5:${sha256({
+    admissionReceiptId: admission.admissionReceiptId,
+    agent: call.agent,
+    operationId: call.operationId,
+    receiptHash: admission.receiptHash,
+    runId: call.runId,
+    toolCallId: call.toolCallId,
+  })}`;
 }
 
 export function approvalSignature(secret: string, admission: Omit<SultanApprovalAdmission, "signature"> | SultanApprovalAdmission) {

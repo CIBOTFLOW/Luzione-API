@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/effect-admission/luzione-prepared-provider-dispatch-v1.schema.json",
+  "title": "Luzione Prepared Provider Dispatch v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["adapterContractVersion", "contractVersion", "credentialBindingId", "destination", "effectClass", "idempotencyKey", "objectRef", "originatingEnvelopeRef", "payload", "payloadHash", "provider", "providerRequestRef", "resultingObjectVersion", "sourcePayloadHash", "tenantId"],
+  "properties": {
+    "adapterContractVersion": { "const": "luzione-provider-adapter/v0.3" },
+    "contractVersion": { "const": "luzione-prepared-provider-dispatch/v1" },
+    "credentialBindingId": { "$ref": "#/$defs/token" },
+    "destination": { "$ref": "#/$defs/token" },
+    "effectClass": { "enum": ["EXTERNAL_EFFECT", "NO_EFFECT", "REVERSIBLE_INTERNAL"] },
+    "idempotencyKey": { "$ref": "#/$defs/token" },
+    "objectRef": { "$ref": "#/$defs/token" },
+    "originatingEnvelopeRef": { "$ref": "#/$defs/token" },
+    "payload": { "type": "object" },
+    "payloadHash": { "$ref": "#/$defs/digest" },
+    "provider": { "$ref": "#/$defs/token" },
+    "providerRequestRef": { "$ref": "#/$defs/token" },
+    "resultingObjectVersion": { "$ref": "#/$defs/token" },
+    "sourcePayloadHash": { "$ref": "#/$defs/digest" },
+    "tenantId": { "$ref": "#/$defs/token" }
+  },
+  "$defs": {
+    "token": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:@/-]{1,511}$" },
+    "digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  }
+}

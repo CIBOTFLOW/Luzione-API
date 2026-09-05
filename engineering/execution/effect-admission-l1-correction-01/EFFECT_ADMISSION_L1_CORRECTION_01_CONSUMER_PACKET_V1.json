@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "EFFECT-ADMISSION-L1-CORRECTION-01-CONSUMER-PACKET/v1",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "branch": "codex/effect-admission-l1-correction-01-g0-2ed64d7",
+  "baseSha": "37e1fa164b982fcb861d19539cdeec87f6d9a289",
+  "implementationSha": "6bdc17b343a94b55de2b4cdd34c485ea06ab97a6",
+  "pins": {
+    "effectAdmission": "luzione-effect-admission/v2",
+    "effectExecutionEnvelope": "luzione-effect-execution-envelope/v1",
+    "providerAdapter": "luzione-provider-adapter/v0.3",
+    "preparedProviderDispatch": "luzione-prepared-provider-dispatch/v1",
+    "providerCredentialRelease": "luzione-provider-credential-release/v1",
+    "migration": "supabase/migrations/20260905120000_effect_admission_l1_correction.sql"
+  },
+  "authoritativeSources": [
+    "contracts/effect-admission/luzione-effect-admission-v2.schema.json",
+    "contracts/effect-admission/luzione-effect-execution-envelope-v1.schema.json",
+    "contracts/effect-admission/luzione-prepared-provider-dispatch-v1.schema.json",
+    "contracts/effect-admission/luzione-provider-credential-release-v1.schema.json",
+    "src/modules/effect-admission/contracts.ts",
+    "src/modules/provider-runtime/contracts.ts"
+  ],
+  "l2": {
+    "mayConsume": [
+      "opaque decision and execution-envelope references returned by L1",
+      "typed denied/non-final status for presentation",
+      "exact implementation and schema pins for compatibility fixtures"
+    ],
+    "mustNot": [
+      "select tenant, actor, authority, provider, destination, credential binding, kill version or finality",
+      "construct or sign an L1 execution envelope",
+      "interpret SANDBOX_ONLY as live authority",
+      "redefine an API-owned admission, receipt or readback field"
+    ],
+    "requiredReturn": "Independent strict-parser evidence at the exact implementation SHA; no API repository change is implied."
+  },
+  "l3": {
+    "mayConsume": [
+      "API-issued Sultan prepare admission reference and execution envelope",
+      "exact Stage-5 admission receipt lineage through the API prepare/execute boundary",
+      "typed fail-closed codes and sandbox-only effect authority"
+    ],
+    "mustNot": [
+      "create a Sultan-local admission, credential, execution-envelope, receipt or finality authority",
+      "send credential material or caller-declared kill versions",
+      "treat prepare as execute authority",
+      "register the historical Gmail v0.2 adapter with provider worker v0.3"
+    ],
+    "requiredReturn": "Pin the implementation SHA and five versions; prove prepare and execute use the API boundary with logical-agent versus authenticated-service identity preserved."
+  },
+  "activation": "NO_EFFECT_SANDBOX_ONLY",
+  "compatibility": "v1 admission and provider v0.2 remain historical only; v2/v0.3 are exact-version successors and are not production authority."
+}

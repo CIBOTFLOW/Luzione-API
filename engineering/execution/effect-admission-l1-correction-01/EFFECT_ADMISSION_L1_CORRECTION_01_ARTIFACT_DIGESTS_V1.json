@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "EFFECT-ADMISSION-L1-CORRECTION-01-ARTIFACT-DIGESTS/v1",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "baseSha": "37e1fa164b982fcb861d19539cdeec87f6d9a289",
+  "implementationSha": "6bdc17b343a94b55de2b4cdd34c485ea06ab97a6",
+  "controllerRelease": "51253c275eb02ef821438a8b875af7e4928f59a1",
+  "assuranceFingerprint": "a24eefb14a9681ad97a415b8d48c43a7d88900e8c86a8f489645f9354a1a62d9",
+  "contractVersions": [
+    "luzione-effect-admission/v2",
+    "luzione-effect-execution-envelope/v1",
+    "luzione-provider-adapter/v0.3",
+    "luzione-prepared-provider-dispatch/v1",
+    "luzione-provider-credential-release/v1"
+  ],
+  "artifacts": [
+    {"path":"contracts/effect-admission/luzione-effect-admission-v2.schema.json","sha256":"07f697f6295de9a5fad24408480a925e4793bbf15a04062a64946ed2aa6a4d9f"},
+    {"path":"contracts/effect-admission/luzione-effect-execution-envelope-v1.schema.json","sha256":"759a41a8ed3dfc9a8dfcac12fea01a1fe066dedc771a7845cf574373bf06b2f5"},
+    {"path":"contracts/effect-admission/luzione-prepared-provider-dispatch-v1.schema.json","sha256":"63c69ca83c595acef626621390ba80b475118135146a3c97de005bf55d106bbd"},
+    {"path":"contracts/effect-admission/luzione-provider-credential-release-v1.schema.json","sha256":"9b3642bfd0698f21796fcb54cce755efd11b02e65d47eda913419ed0cfc26cc2"},
+    {"path":"supabase/migrations/20260905120000_effect_admission_l1_correction.sql","sha256":"b0acf28946c5d50a6585c3ff445b0dc1e5ef7d4e2b8b6e56793ad0e467ce5e6b"},
+    {"path":"scripts/validation/rollback-effect-admission-l1-correction.sql","sha256":"f40ceef4148725745a5ecde269823d00803a871ec0c37db9f4b846e86d1c6a10"},
+    {"path":"src/modules/effect-admission/contracts.ts","sha256":"71fbece607d583cbde6a655fa062ca941de3889f8f535db67373a7f297b9b891"},
+    {"path":"src/modules/provider-runtime/contracts.ts","sha256":"b83d540519701b045e2529f828c810f68b78d210c366e209d3b858ad0fd9d18b"},
+    {"path":"src/modules/provider-runtime/runtime.ts","sha256":"88cefd310645d560d45a036659c89ba101f4e1c34330555b7f7c7d826f297310"},
+    {"path":"src/modules/sultan-agent-gateway/service.ts","sha256":"73adee2e67b98c21e08067d2ab3e27c0785471a7c6af4b678cdd8179fd8c1776"},
+    {"path":"src/modules/sultan-agent-gateway/postgresStore.ts","sha256":"90c88711f8972b15e2d8bfd94defff0172ba54306a1814af9cc5f84046c106b7"}
+  ],
+  "frozenTrees": {
+    "contracts/core": "d57ccc4cccd97b37acd1a1575b1e07ede5787349",
+    "src/modules/luzione-core-contracts": "d594fa014d7020fdf8386c7a6926ff9b573ac355"
+  }
+}

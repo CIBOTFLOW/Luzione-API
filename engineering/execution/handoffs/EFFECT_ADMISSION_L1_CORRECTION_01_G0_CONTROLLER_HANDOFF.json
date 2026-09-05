@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "EFFECT-ADMISSION-L1-CORRECTION-01-HANDOFF/v1",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "branch": "codex/effect-admission-l1-correction-01-g0-2ed64d7",
+  "baseSha": "37e1fa164b982fcb861d19539cdeec87f6d9a289",
+  "implementationSha": "6bdc17b343a94b55de2b4cdd34c485ea06ab97a6",
+  "finalShaBinding": "PEEL_DETACHED_ANNOTATED_TAG_EFFECT_ADMISSION_L1_CORRECTION_01_G0",
+  "controllerRelease": "51253c275eb02ef821438a8b875af7e4928f59a1",
+  "assuranceFingerprint": "a24eefb14a9681ad97a415b8d48c43a7d88900e8c86a8f489645f9354a1a62d9",
+  "engineeringState": "BOUNDED_PASS",
+  "releaseEvidence": "LOCAL_PROVEN",
+  "effectAuthority": "SANDBOX_ONLY",
+  "finality": "BOUNDED_CLAIM",
+  "localVerification": {
+    "compliance": "7/7",
+    "focused": "21/21",
+    "full": "389/389",
+    "typecheck": "PASS",
+    "lint": "PASS_ZERO_WARNINGS",
+    "build": "PASS_NEXTJS_16.3.4_WEBPACK",
+    "disposableMigration": "PASS_13_COLUMNS_4_CONSTRAINTS_CROSS_TENANT_KILL_ISOLATION_REVERSE_0_REAPPLY_13_CLEANUP"
+  },
+  "rollbackProof": {
+    "path": "scripts/validation/rollback-effect-admission-l1-correction.sql",
+    "safeScope": "pre-v2-evidence disposable shape only",
+    "guard": "fails if v2 provider or Sultan lineage exists",
+    "productionRollback": "NOT_AUTHORIZED_NOT_RUN"
+  },
+  "runtimeTruth": {
+    "providerMode": "SANDBOX_ONLY",
+    "registeredAdapter": "SandboxEchoProviderAdapter",
+    "liveAdapter": "historical v0.2 only and type-incompatible with v0.3 registry",
+    "credentialResolution": "NOT_RUN",
+    "providerEffect": "NOT_RUN",
+    "productionQueryOrMutation": "NOT_RUN",
+    "deployment": "NOT_RUN"
+  },
+  "deferred": [
+    "exact-final automated CI and CodeQL",
+    "Git-bound preview and authenticated application readback",
+    "independent L2/L3 exact-pin consumer evidence",
+    "managed migration, backup/PITR and recovery",
+    "all G1/G2, live-effect, merge, default-branch and production actions"
+  ],
+  "nextAction": "Controller validates the detached exact-final tag and exact-head CI, then authorizes CONNECTOR-REVOCATION-L1-G0 on one fresh non-default branch; do not overlap API writers."
+}

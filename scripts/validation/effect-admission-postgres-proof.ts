@@ -12,13 +12,34 @@ const reader = new PostgresEffectKillStateReader(pool);
 async function main() {
   try {
     const columns = await pool.query(
-      `select column_name from information_schema.columns
-        where table_schema='public' and table_name='p110_delivery_attempts'
-          and column_name = any($1::text[])
-        order by column_name`,
-      [["credential_binding_id", "effect_admission_contract_version", "effect_admission_digest", "effect_admission_kill_version", "effect_admission_ref"]],
+      `select table_name,column_name from information_schema.columns
+        where table_schema='public' and (
+          (table_name='p110_delivery_attempts' and column_name = any($1::text[]))
+          or (table_name='sultan_agent_command_reservations' and column_name = any($2::text[]))
+          or (table_name='sultan_agent_internal_actions' and column_name = any($3::text[]))
+        ) order by table_name,column_name`,
+      [
+        ["effect_execution_envelope", "effect_execution_envelope_ref", "effect_execution_identity", "originating_envelope_ref", "prepared_dispatch_digest"],
+        ["admission_receipt_hash", "originating_envelope_ref", "prepare_effect_admission_ref", "prepare_execution_identity"],
+        ["effect_execution_envelope", "effect_execution_envelope_ref", "effect_execution_identity", "originating_envelope_ref"],
+      ],
     );
-    assert.equal(columns.rows.length, 5);
+    assert.equal(columns.rows.length, 13, JSON.stringify(columns.rows));
+    const constraints = await pool.query(
+      `select conname,pg_get_constraintdef(oid) definition
+         from pg_constraint
+        where conname = any($1::text[])
+        order by conname`,
+      [[
+        "p110_delivery_attempt_effect_admission_check",
+        "sultan_agent_command_exact_stage5_admission_fk",
+        "sultan_agent_command_prepare_effect_lineage_check",
+        "sultan_agent_internal_action_effect_envelope_check",
+      ]],
+    );
+    assert.equal(constraints.rows.length, 4);
+    assert.match(constraints.rows.find((row) => row.conname === "p110_delivery_attempt_effect_admission_check").definition, /luzione-effect-admission\/v2/);
+    assert.match(constraints.rows.find((row) => row.conname === "p110_delivery_attempt_effect_admission_check").definition, /SANDBOX/);
 
     await pool.query(
       `insert into public.p110_kill_switches(tenant_id,switch_id,scope_type,scope_ref,reason,activated_by)
@@ -40,7 +61,7 @@ async function main() {
     const deactivated = await reader.read({ destination: "provider.proof", tenantId: "effect-proof-a" });
     assert.deepEqual(deactivated.activeKillRefs, []);
     assert.notEqual(deactivated.killVersion, tenantA.killVersion);
-    process.stdout.write(`${JSON.stringify({ columns: columns.rows.map((row) => row.column_name), crossTenantVisible: false, killVersionChangesOnToggle: true, result: "PASS" })}\n`);
+    process.stdout.write(`${JSON.stringify({ correctionColumns: columns.rows.length, correctionConstraints: constraints.rows.length, crossTenantVisible: false, killVersionChangesOnToggle: true, result: "PASS" })}\n`);
   } finally {
     await pool.end();
   }

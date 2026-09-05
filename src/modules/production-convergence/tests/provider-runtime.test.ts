@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 
 import { sha256 } from "@/modules/platform-guarantees/eventContract";
-import { ProviderContractError, assertObservation, providerMessageFromRow } from "@/modules/provider-runtime/contracts";
+import { ProviderContractError, parsePreparedProviderDispatch, providerMessageFromRow, type ProviderExecutionContext } from "@/modules/provider-runtime/contracts";
 import { ProviderAdapterRegistry } from "@/modules/provider-runtime/registry";
 import { ProviderWorkerRuntime, type ProviderWorkerStore } from "@/modules/provider-runtime/runtime";
 import { SandboxEchoProviderAdapter } from "@/modules/provider-runtime/sandboxEchoAdapter";
@@ -21,7 +21,7 @@ function row(scenario = "matched") {
     actor_type: "service",
     authorization_ref: "sandbox-authorization:proof",
     destination: "sandbox.echo",
-    effect_class: "EXTERNAL_EFFECT",
+    effect_class: "NO_EFFECT",
     expected_object_version: "order:proof:v0",
     idempotency_key: `provider-${scenario}`,
     outbox_message_id: `outbox-${scenario}`,
@@ -41,12 +41,28 @@ class FakeStore implements ProviderWorkerStore {
   calls: Array<{ input: Record<string, unknown>; method: string }> = [];
   claimed = new Map<string, Record<string, unknown>>();
   claimedReconciliations = new Map<string, Record<string, unknown>>();
+  started = new Map<string, ProviderExecutionContext>();
   async claimDueOutbox() { const value = this.deliveries; this.deliveries = []; value.forEach((row) => this.claimed.set(String(row.outbox_message_id), row)); return value; }
   async claimDueReconciliations() { const value = this.reconciliations; this.reconciliations = []; value.forEach((row) => this.claimedReconciliations.set(String(row.reconciliation_id), row)); return value; }
   async readClaimedOutboxForAdmission(input: Record<string, unknown>) { return this.claimed.get(String(input.outboxMessageId))!; }
-  async readClaimedReconciliationForAdmission(input: Record<string, unknown>) { return this.claimedReconciliations.get(String(input.reconciliationId))!; }
+  async readClaimedReconciliationForAdmission(input: Record<string, unknown>) {
+    const row = this.claimedReconciliations.get(String(input.reconciliationId))!;
+    const context = this.started.get(String(row.outbox_message_id))!;
+    return {
+      ...row,
+      effect_execution_envelope: context.executionEnvelope,
+      effect_execution_envelope_ref: context.executionEnvelope.executionEnvelopeRef,
+      effect_execution_identity: context.executionEnvelope.executionIdentity,
+      originating_envelope_ref: context.executionEnvelope.originatingEnvelopeRef,
+      prepared_dispatch_digest: context.executionEnvelope.preparedDispatchDigest,
+    };
+  }
   async completeClaimedReconciliation(input: Record<string, unknown>) { this.calls.push({ input, method: "complete" }); return input; }
-  async recordDispatchStarted(input: Record<string, unknown>) { this.calls.push({ input, method: "started" }); return input; }
+  async recordDispatchStarted(input: Parameters<ProviderWorkerStore["recordDispatchStarted"]>[0]) {
+    this.started.set(input.outboxMessageId, input.effectExecutionContext);
+    this.calls.push({ input: input as unknown as Record<string, unknown>, method: "started" });
+    return input;
+  }
   async recordOutboxFailure(input: Record<string, unknown>) { this.calls.push({ input, method: "failed" }); return { state: input.failureClass === "AMBIGUOUS_AFTER_ACK" ? "RECONCILIATION_REQUIRED" : "DEAD_LETTERED" }; }
   async recordProviderAcknowledgement(input: Record<string, unknown>) { this.calls.push({ input, method: "acknowledged" }); return input; }
 }
@@ -65,13 +81,15 @@ test("provider adapter contract validates durable payload identity and exact rea
   assert.equal(message.destination, "sandbox.echo");
   assert.throws(() => providerMessageFromRow({ ...row(), payload_hash: "0".repeat(64) }), (error: unknown) => error instanceof ProviderContractError && error.code === "PROVIDER_PAYLOAD_HASH_MISMATCH");
   const adapter = new SandboxEchoProviderAdapter();
-  const prepared = await adapter.prepare({ ...message, effectAdmissionRef: `effect-admission:${"a".repeat(64)}` });
-  const executed = await adapter.execute(prepared);
-  assert.equal(executed.state, "ACKNOWLEDGED");
-  const observation = await adapter.observe(prepared, "sandbox-ack:provider-matched");
-  assert.equal(assertObservation(observation, message.resultingObjectVersion).result, "MATCHED");
-  assert.throws(() => assertObservation({ ...observation, observedObjectVersion: "wrong" }, message.resultingObjectVersion), /exact expected source version/);
-  assert.equal((await adapter.compensate(prepared)).state, "NOT_SUPPORTED");
+  const prepared = parsePreparedProviderDispatch(await adapter.prepare(message), message, adapter);
+  assert.equal(prepared.sourcePayloadHash, message.payloadHash);
+  assert.equal(prepared.originatingEnvelopeRef, message.originatingEnvelopeRef);
+  assert.throws(() => parsePreparedProviderDispatch({ ...prepared, surplus: true }, message, adapter), /missing or surplus/);
+  const missing: Record<string, unknown> = { ...prepared };
+  delete missing.sourcePayloadHash;
+  assert.throws(() => parsePreparedProviderDispatch(missing, message, adapter), /missing or surplus/);
+  assert.throws(() => parsePreparedProviderDispatch({ ...prepared, contractVersion: "luzione-prepared-provider-dispatch/v2" }, message, adapter), /unsupported/);
+  assert.throws(() => parsePreparedProviderDispatch({ ...prepared, payload: { scenario: "different" } }, message, adapter), /payload digest/);
 });
 
 test("worker durably starts before acknowledgement and reconciles ambiguous outcomes", async () => {
