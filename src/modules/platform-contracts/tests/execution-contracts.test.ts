@@ -151,7 +151,7 @@ test("all current API route modules create request identity at their entrypoints
   const routes = [
     "autonomy/constitution", "autonomy/evaluate", "autonomy/identity/evaluate",
     "autonomy/petitions/evaluate", "catalog", "catalog/shopify/projections",
-    "commands/commercial-cases", "commands/fulfillment-intents", "commands/leads", "commands/orders", "commands/proposal-reviews", "commands/quote-approvals", "commands/quotes", "governance/evaluate", "healthz", "livez", "platform-guarantees", "readyz",
+    "commands/commercial-cases", "commands/fulfillment-intents", "commands/leads", "commands/orders", "commands/proposal-reviews", "commands/quote-approvals", "commands/quotes", "governance/evaluate", "healthz", "livez", "platform-guarantees", "procurement/commands", "readyz",
     "security/rls-readiness", "sultan/agent-intents/evaluate", "sultan/runtime-status", "workflows",
   ];
   for (const route of routes) {
