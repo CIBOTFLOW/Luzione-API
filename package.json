@@ -12,6 +12,7 @@
     "test": "node --import tsx --test src/lib/tests/*.test.ts src/modules/*/tests/*.test.ts",
     "test:a02-contracts": "node --import tsx --test src/modules/shared-contract-drafts/tests/*.test.ts",
     "test:core-contracts": "node --import tsx --test src/modules/luzione-core-contracts/tests/*.test.ts",
+    "contracts:generate:seed-product": "node scripts/generate-seed-product-contract-schema.mjs",
     "test:core02-inventory": "node --import tsx --test src/modules/core-02-inventory/tests/*.test.ts",
     "test:ops-contracts": "node --import tsx --test src/modules/operations-evidence-contracts/tests/*.test.ts",
     "test:onboard-core": "node --import tsx --test src/modules/onboard-core/tests/*.test.ts",

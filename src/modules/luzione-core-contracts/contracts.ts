@@ -3,6 +3,12 @@ import type {
   A02ReadbackDraft,
   A02ReceiptDraft,
 } from "@/modules/shared-contract-drafts/contracts";
+import {
+  SEED_PRODUCT_CONTRACT_VERSIONS,
+  type LuzioneSeedProductContractDocument,
+} from "./seedProductContracts";
+
+export * from "./seedProductContracts";
 
 export const CORE_CONTRACT_BUNDLE_VERSION = "LuzioneCoreContracts/v1";
 
@@ -21,6 +27,7 @@ export const CORE_CONTRACT_VERSIONS = Object.freeze({
   supportCase: "SupportCase/v1",
   syncReceipt: "SyncReceipt/v1",
   tenantBlueprint: "TenantBlueprint/v1",
+  ...SEED_PRODUCT_CONTRACT_VERSIONS,
 } as const);
 
 export type CoreContractVersion = (typeof CORE_CONTRACT_VERSIONS)[keyof typeof CORE_CONTRACT_VERSIONS];
@@ -370,4 +377,5 @@ export type LuzioneCoreContractDocument =
   | SupportActionV1
   | SupportCaseV1
   | SyncReceiptV1
-  | TenantBlueprintV1;
+  | TenantBlueprintV1
+  | LuzioneSeedProductContractDocument;

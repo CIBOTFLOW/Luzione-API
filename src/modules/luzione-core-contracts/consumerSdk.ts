@@ -25,28 +25,11 @@ import {
   type SyncReceiptV1,
   type TenantBlueprintV1,
 } from "./contracts";
+import { LuzioneCoreCompatibilityError, type LuzioneCoreCompatibilityErrorCode } from "./compatibilityError";
+import { SEED_PRODUCT_CONTRACT_VERSIONS } from "./seedProductContracts";
+import { parseLuzioneSeedProductContractDocument } from "./seedProductConsumerSdk";
 
-export type LuzioneCoreCompatibilityErrorCode =
-  | "CORE_AUTHORITY_DENIED"
-  | "CORE_DARK_FLAG_REQUIRED"
-  | "CORE_EXPIRED"
-  | "CORE_FIELD_SET_MISMATCH"
-  | "CORE_FINALITY_INVALID"
-  | "CORE_REFERENCE_MISMATCH"
-  | "CORE_REPLAY_CONFLICT"
-  | "CORE_TENANT_MISMATCH"
-  | "CORE_VALUE_INVALID"
-  | "CORE_WRONG_VERSION";
-
-export class LuzioneCoreCompatibilityError extends Error {
-  readonly code: LuzioneCoreCompatibilityErrorCode;
-
-  constructor(code: LuzioneCoreCompatibilityErrorCode, message: string) {
-    super(message);
-    this.name = "LuzioneCoreCompatibilityError";
-    this.code = code;
-  }
-}
+export { LuzioneCoreCompatibilityError, type LuzioneCoreCompatibilityErrorCode } from "./compatibilityError";
 
 type JsonObject = Record<string, unknown>;
 
@@ -658,7 +641,11 @@ export function parseLuzioneCoreContractDocument(value: unknown): LuzioneCoreCon
     case CORE_CONTRACT_VERSIONS.supportCase: return parseSupportCaseV1(value);
     case CORE_CONTRACT_VERSIONS.syncReceipt: return parseSyncReceiptV1(value);
     case CORE_CONTRACT_VERSIONS.tenantBlueprint: return parseTenantBlueprintV1(value);
-    default: wrongVersion("contract.contractVersion", Object.values(CORE_CONTRACT_VERSIONS).join(" | "));
+    default:
+      if (Object.values(SEED_PRODUCT_CONTRACT_VERSIONS).includes(contractVersion as never)) {
+        return parseLuzioneSeedProductContractDocument(value);
+      }
+      wrongVersion("contract.contractVersion", Object.values(CORE_CONTRACT_VERSIONS).join(" | "));
   }
 }
 

@@ -1,0 +1,3377 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/core/v1/luzione-seed-product-contracts-v1.schema.json",
+  "title": "Luzione seed product contracts v1",
+  "description": "Additive strict P0 business graph contracts within LuzioneCoreContracts/v1. Library-only and not runtime activation authority.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/ApprovalDecision"
+    },
+    {
+      "$ref": "#/$defs/AuthorityPolicy"
+    },
+    {
+      "$ref": "#/$defs/BidComparison"
+    },
+    {
+      "$ref": "#/$defs/EvidenceArtifact"
+    },
+    {
+      "$ref": "#/$defs/FieldChangeProposal"
+    },
+    {
+      "$ref": "#/$defs/InstallationRecord"
+    },
+    {
+      "$ref": "#/$defs/OutcomeReceipt"
+    },
+    {
+      "$ref": "#/$defs/Package"
+    },
+    {
+      "$ref": "#/$defs/ProductCandidate"
+    },
+    {
+      "$ref": "#/$defs/ProductSource"
+    },
+    {
+      "$ref": "#/$defs/Project"
+    },
+    {
+      "$ref": "#/$defs/ProjectPackage"
+    },
+    {
+      "$ref": "#/$defs/ProposalLine"
+    },
+    {
+      "$ref": "#/$defs/ProposalTemplate"
+    },
+    {
+      "$ref": "#/$defs/ProposalVersion"
+    },
+    {
+      "$ref": "#/$defs/PurchaseOrder"
+    },
+    {
+      "$ref": "#/$defs/PurchaseOrderAcknowledgement"
+    },
+    {
+      "$ref": "#/$defs/ReceivingRecord"
+    },
+    {
+      "$ref": "#/$defs/RFQ"
+    },
+    {
+      "$ref": "#/$defs/Shipment"
+    },
+    {
+      "$ref": "#/$defs/Space"
+    },
+    {
+      "$ref": "#/$defs/Specification"
+    },
+    {
+      "$ref": "#/$defs/SpecificationLine"
+    },
+    {
+      "$ref": "#/$defs/SupplierQuote"
+    },
+    {
+      "$ref": "#/$defs/SultanReviewItem"
+    },
+    {
+      "$ref": "#/$defs/TimelineEvent"
+    }
+  ],
+  "$defs": {
+    "SourceRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "objectId",
+        "objectType",
+        "ownerProject",
+        "tenantId",
+        "version"
+      ],
+      "properties": {
+        "objectId": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "objectType": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "ownerProject": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "tenantId": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "version": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    },
+    "MutationBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "expectedVersion",
+        "idempotencyKey",
+        "payloadHash"
+      ],
+      "properties": {
+        "expectedVersion": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "idempotencyKey": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "payloadHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "AuthorityBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actorId",
+        "actorType",
+        "approvalRef",
+        "capability",
+        "decision",
+        "effectClass",
+        "policyVersion",
+        "serverDerivedIdentityRef"
+      ],
+      "properties": {
+        "actorId": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "actorType": {
+          "enum": [
+            "HUMAN",
+            "SERVICE",
+            "SULTAN_AGENT"
+          ]
+        },
+        "approvalRef": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "capability": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "decision": {
+          "enum": [
+            "ALLOW",
+            "DENY",
+            "REQUIRE_HUMAN"
+          ]
+        },
+        "effectClass": {
+          "enum": [
+            "A0",
+            "A1",
+            "A2",
+            "A3",
+            "A4"
+          ]
+        },
+        "policyVersion": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "serverDerivedIdentityRef": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    },
+    "ReceiptReadback": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "committedVersion",
+        "finality",
+        "observedAt",
+        "observedVersion",
+        "providerAcknowledgementRef",
+        "receiptId",
+        "sourceReadbackRef"
+      ],
+      "properties": {
+        "committedVersion": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "finality": {
+          "enum": [
+            "DOMAIN_COMMITTED",
+            "PROVIDER_ACKNOWLEDGED",
+            "RECONCILING",
+            "SOURCE_CONFIRMED"
+          ]
+        },
+        "observedAt": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "observedVersion": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "providerAcknowledgementRef": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "receiptId": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "sourceReadbackRef": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "ApprovalDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority",
+        "contractVersion",
+        "createdAt",
+        "data",
+        "mutation",
+        "receipt",
+        "resource",
+        "sourceRefs",
+        "tenantId",
+        "updatedAt"
+      ],
+      "properties": {
+        "authority": {
+          "$ref": "#/$defs/AuthorityBoundary"
+        },
+        "contractVersion": {
+          "const": "ApprovalDecision/v1"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "comment",
+            "decidedAt",
+            "decidedBy",
+            "decision",
+            "evidenceRefs",
+            "proposalVersion",
+            "proposalVersionId",
+            "scope",
+            "targetId"
+          ],
+          "properties": {
+            "comment": {},
+            "decidedAt": {},
+            "decidedBy": {},
+            "decision": {},
+            "evidenceRefs": {},
+            "proposalVersion": {},
+            "proposalVersionId": {},
+            "scope": {},
+            "targetId": {}
+          }
+        },
+        "mutation": {
+          "$ref": "#/$defs/MutationBoundary"
+        },
+        "receipt": {
+          "$ref": "#/$defs/ReceiptReadback"
+        },
+        "resource": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "archivedAt",
+            "id",
+            "status",
+            "type",
+            "version"
+          ],
+          "properties": {
+            "archivedAt": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "id": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            },
+            "status": {
+              "enum": [
+                "ACTIVE",
+                "REVOKED",
+                "SUPERSEDED"
+              ]
+            },
+            "type": {
+              "const": "APPROVAL_DECISION"
+            },
+            "version": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            }
+          }
+        },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "AuthorityPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority",
+        "contractVersion",
+        "createdAt",
+        "data",
+        "mutation",
+        "receipt",
+        "resource",
+        "sourceRefs",
+        "tenantId",
+        "updatedAt"
+      ],
+      "properties": {
+        "authority": {
+          "$ref": "#/$defs/AuthorityBoundary"
+        },
+        "contractVersion": {
+          "const": "AuthorityPolicy/v1"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "capabilityRules",
+            "effectCeiling",
+            "fieldRules",
+            "killSwitchActive",
+            "scopeRef"
+          ],
+          "properties": {
+            "capabilityRules": {},
+            "effectCeiling": {},
+            "fieldRules": {},
+            "killSwitchActive": {},
+            "scopeRef": {}
+          }
+        },
+        "mutation": {
+          "$ref": "#/$defs/MutationBoundary"
+        },
+        "receipt": {
+          "$ref": "#/$defs/ReceiptReadback"
+        },
+        "resource": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "archivedAt",
+            "id",
+            "status",
+            "type",
+            "version"
+          ],
+          "properties": {
+            "archivedAt": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "id": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            },
+            "status": {
+              "enum": [
+                "ACTIVE",
+                "ARCHIVED",
+                "DISABLED"
+              ]
+            },
+            "type": {
+              "const": "AUTHORITY_POLICY"
+            },
+            "version": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            }
+          }
+        },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "BidComparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority",
+        "contractVersion",
+        "createdAt",
+        "data",
+        "mutation",
+        "receipt",
+        "resource",
+        "sourceRefs",
+        "tenantId",
+        "updatedAt"
+      ],
+      "properties": {
+        "authority": {
+          "$ref": "#/$defs/AuthorityBoundary"
+        },
+        "contractVersion": {
+          "const": "BidComparison/v1"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "basisCurrency",
+            "recommendationEvidenceRefs",
+            "recommendedSupplierQuoteId",
+            "rfqIds",
+            "rows",
+            "selectedByHumanApprovalRef",
+            "supplierQuoteIds"
+          ],
+          "properties": {
+            "basisCurrency": {},
+            "recommendationEvidenceRefs": {},
+            "recommendedSupplierQuoteId": {},
+            "rfqIds": {},
+            "rows": {},
+            "selectedByHumanApprovalRef": {},
+            "supplierQuoteIds": {}
+          }
+        },
+        "mutation": {
+          "$ref": "#/$defs/MutationBoundary"
+        },
+        "receipt": {
+          "$ref": "#/$defs/ReceiptReadback"
+        },
+        "resource": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "archivedAt",
+            "id",
+            "status",
+            "type",
+            "version"
+          ],
+          "properties": {
+            "archivedAt": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "id": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            },
+            "status": {
+              "enum": [
+                "APPROVED",
+                "ARCHIVED",
+                "DRAFT",
+                "REVIEW_REQUIRED"
+              ]
+            },
+            "type": {
+              "const": "BID_COMPARISON"
+            },
+            "version": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            }
+          }
+        },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "EvidenceArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority",
+        "contractVersion",
+        "createdAt",
+        "data",
+        "mutation",
+        "receipt",
+        "resource",
+        "sourceRefs",
+        "tenantId",
+        "updatedAt"
+      ],
+      "properties": {
+        "authority": {
+          "$ref": "#/$defs/AuthorityBoundary"
+        },
+        "contractVersion": {
+          "const": "EvidenceArtifact/v1"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "capturedAt",
+            "confidence",
+            "contentDigest",
+            "kind",
+            "mimeType",
+            "promptInjectionState",
+            "provider",
+            "sourceRecordRef",
+            "storageRef"
+          ],
+          "properties": {
+            "capturedAt": {},
+            "confidence": {},
+            "contentDigest": {},
+            "kind": {},
+            "mimeType": {},
+            "promptInjectionState": {},
+            "provider": {},
+            "sourceRecordRef": {},
+            "storageRef": {}
+          }
+        },
+        "mutation": {
+          "$ref": "#/$defs/MutationBoundary"
+        },
+        "receipt": {
+          "$ref": "#/$defs/ReceiptReadback"
+        },
+        "resource": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "archivedAt",
+            "id",
+            "status",
+            "type",
+            "version"
+          ],
+          "properties": {
+            "archivedAt": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "id": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            },
+            "status": {
+              "enum": [
+                "ACTIVE",
+                "ARCHIVED",
+                "QUARANTINED",
+                "REVIEW_REQUIRED"
+              ]
+            },
+            "type": {
+              "const": "EVIDENCE_ARTIFACT"
+            },
+            "version": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            }
+          }
+        },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "FieldChangeProposal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority",
+        "contractVersion",
+        "createdAt",
+        "data",
+        "mutation",
+        "receipt",
+        "resource",
+        "sourceRefs",
+        "tenantId",
+        "updatedAt"
+      ],
+      "properties": {
+        "authority": {
+          "$ref": "#/$defs/AuthorityBoundary"
+        },
+        "contractVersion": {
+          "const": "FieldChangeProposal/v1"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "confidence",
+            "conflictVersion",
+            "evidenceRefs",
+            "fieldPath",
+            "newValue",
+            "oldValue",
+            "targetId",
+            "targetType",
+            "targetVersion"
+          ],
+          "properties": {
+            "confidence": {},
+            "conflictVersion": {},
+            "evidenceRefs": {},
+            "fieldPath": {},
+            "newValue": {},
+            "oldValue": {},
+            "targetId": {},
+            "targetType": {},
+            "targetVersion": {}
+          }
+        },
+        "mutation": {
+          "$ref": "#/$defs/MutationBoundary"
+        },
+        "receipt": {
+          "$ref": "#/$defs/ReceiptReadback"
+        },
+        "resource": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "archivedAt",
+            "id",
+            "status",
+            "type",
+            "version"
+          ],
+          "properties": {
+            "archivedAt": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "id": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            },
+            "status": {
+              "enum": [
+                "ACCEPTED",
+                "CONFLICT",
+                "EDITED",
+                "PENDING",
+                "REJECTED"
+              ]
+            },
+            "type": {
+              "const": "FIELD_CHANGE_PROPOSAL"
+            },
+            "version": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            }
+          }
+        },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "InstallationRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority",
+        "contractVersion",
+        "createdAt",
+        "data",
+        "mutation",
+        "receipt",
+        "resource",
+        "sourceRefs",
+        "tenantId",
+        "updatedAt"
+      ],
+      "properties": {
+        "authority": {
+          "$ref": "#/$defs/AuthorityBoundary"
+        },
+        "contractVersion": {
+          "const": "InstallationRecord/v1"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "completedAt",
+            "installerId",
+            "issueEvidenceRefs",
+            "projectId",
+            "scheduledAt",
+            "spaceIds",
+            "startedAt"
+          ],
+          "properties": {
+            "completedAt": {},
+            "installerId": {},
+            "issueEvidenceRefs": {},
+            "projectId": {},
+            "scheduledAt": {},
+            "spaceIds": {},
+            "startedAt": {}
+          }
+        },
+        "mutation": {
+          "$ref": "#/$defs/MutationBoundary"
+        },
+        "receipt": {
+          "$ref": "#/$defs/ReceiptReadback"
+        },
+        "resource": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "archivedAt",
+            "id",
+            "status",
+            "type",
+            "version"
+          ],
+          "properties": {
+            "archivedAt": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "id": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            },
+            "status": {
+              "enum": [
+                "CANCELLED",
+                "COMPLETE",
+                "IN_PROGRESS",
+                "ISSUE",
+                "SCHEDULED"
+              ]
+            },
+            "type": {
+              "const": "INSTALLATION_RECORD"
+            },
+            "version": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            }
+          }
+        },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "OutcomeReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority",
+        "contractVersion",
+        "createdAt",
+        "data",
+        "mutation",
+        "receipt",
+        "resource",
+        "sourceRefs",
+        "tenantId",
+        "updatedAt"
+      ],
+      "properties": {
+        "authority": {
+          "$ref": "#/$defs/AuthorityBoundary"
+        },
+        "contractVersion": {
+          "const": "OutcomeReceipt/v1"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "actionType",
+            "actualEffect",
+            "operationId",
+            "result",
+            "subjectRef",
+            "value"
+          ],
+          "properties": {
+            "actionType": {},
+            "actualEffect": {},
+            "operationId": {},
+            "result": {},
+            "subjectRef": {},
+            "value": {}
+          }
+        },
+        "mutation": {
+          "$ref": "#/$defs/MutationBoundary"
+        },
+        "receipt": {
+          "$ref": "#/$defs/ReceiptReadback"
+        },
+        "resource": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "archivedAt",
+            "id",
+            "status",
+            "type",
+            "version"
+          ],
+          "properties": {
+            "archivedAt": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "id": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            },
+            "status": {
+              "enum": [
+                "FAILED",
+                "INDETERMINATE",
+                "OWNER_COMMITTED",
+                "SOURCE_CONFIRMED"
+              ]
+            },
+            "type": {
+              "const": "OUTCOME_RECEIPT"
+            },
+            "version": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            }
+          }
+        },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "Package": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority",
+        "contractVersion",
+        "createdAt",
+        "data",
+        "mutation",
+        "receipt",
+        "resource",
+        "sourceRefs",
+        "tenantId",
+        "updatedAt"
+      ],
+      "properties": {
+        "authority": {
+          "$ref": "#/$defs/AuthorityBoundary"
+        },
+        "contractVersion": {
+          "const": "Package/v1"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "dimensions",
+            "label",
+            "quantity",
+            "shipmentId",
+            "trackingNumber",
+            "weight"
+          ],
+          "properties": {
+            "dimensions": {},
+            "label": {},
+            "quantity": {},
+            "shipmentId": {},
+            "trackingNumber": {},
+            "weight": {}
+          }
+        },
+        "mutation": {
+          "$ref": "#/$defs/MutationBoundary"
+        },
+        "receipt": {
+          "$ref": "#/$defs/ReceiptReadback"
+        },
+        "resource": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "archivedAt",
+            "id",
+            "status",
+            "type",
+            "version"
+          ],
+          "properties": {
+            "archivedAt": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "id": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            },
+            "status": {
+              "enum": [
+                "DAMAGED",
+                "DELIVERED",
+                "IN_TRANSIT",
+                "MISSING",
+                "PLANNED",
+                "RECEIVED"
+              ]
+            },
+            "type": {
+              "const": "PACKAGE"
+            },
+            "version": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            }
+          }
+        },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "ProductCandidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority",
+        "contractVersion",
+        "createdAt",
+        "data",
+        "mutation",
+        "receipt",
+        "resource",
+        "sourceRefs",
+        "tenantId",
+        "updatedAt"
+      ],
+      "properties": {
+        "authority": {
+          "$ref": "#/$defs/AuthorityBoundary"
+        },
+        "contractVersion": {
+          "const": "ProductCandidate/v1"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "attributes",
+            "confidence",
+            "lane",
+            "leadTimeDays",
+            "price",
+            "productSourceId",
+            "sku",
+            "title",
+            "vendorId"
+          ],
+          "properties": {
+            "attributes": {},
+            "confidence": {},
+            "lane": {},
+            "leadTimeDays": {},
+            "price": {},
+            "productSourceId": {},
+            "sku": {},
+            "title": {},
+            "vendorId": {}
+          }
+        },
+        "mutation": {
+          "$ref": "#/$defs/MutationBoundary"
+        },
+        "receipt": {
+          "$ref": "#/$defs/ReceiptReadback"
+        },
+        "resource": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "archivedAt",
+            "id",
+            "status",
+            "type",
+            "version"
+          ],
+          "properties": {
+            "archivedAt": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "id": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            },
+            "status": {
+              "enum": [
+                "ARCHIVED",
+                "ELIGIBLE",
+                "REJECTED",
+                "REVIEW_REQUIRED",
+                "SELECTED"
+              ]
+            },
+            "type": {
+              "const": "PRODUCT_CANDIDATE"
+            },
+            "version": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            }
+          }
+        },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "ProductSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority",
+        "contractVersion",
+        "createdAt",
+        "data",
+        "mutation",
+        "receipt",
+        "resource",
+        "sourceRefs",
+        "tenantId",
+        "updatedAt"
+      ],
+      "properties": {
+        "authority": {
+          "$ref": "#/$defs/AuthorityBoundary"
+        },
+        "contractVersion": {
+          "const": "ProductSource/v1"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "contentDigest",
+            "kind",
+            "locator",
+            "observedAt",
+            "sourceArtifactRef",
+            "validUntil"
+          ],
+          "properties": {
+            "contentDigest": {},
+            "kind": {},
+            "locator": {},
+            "observedAt": {},
+            "sourceArtifactRef": {},
+            "validUntil": {}
+          }
+        },
+        "mutation": {
+          "$ref": "#/$defs/MutationBoundary"
+        },
+        "receipt": {
+          "$ref": "#/$defs/ReceiptReadback"
+        },
+        "resource": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "archivedAt",
+            "id",
+            "status",
+            "type",
+            "version"
+          ],
+          "properties": {
+            "archivedAt": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "id": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            },
+            "status": {
+              "enum": [
+                "ACTIVE",
+                "ARCHIVED",
+                "CONFLICT",
+                "REVIEW_REQUIRED"
+              ]
+            },
+            "type": {
+              "const": "PRODUCT_SOURCE"
+            },
+            "version": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            }
+          }
+        },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "Project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority",
+        "contractVersion",
+        "createdAt",
+        "data",
+        "mutation",
+        "receipt",
+        "resource",
+        "sourceRefs",
+        "tenantId",
+        "updatedAt"
+      ],
+      "properties": {
+        "authority": {
+          "$ref": "#/$defs/AuthorityBoundary"
+        },
+        "contractVersion": {
+          "const": "Project/v1"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "accountId",
+            "budget",
+            "name",
+            "opportunityId",
+            "ownerId",
+            "targetEndAt",
+            "targetStartAt"
+          ],
+          "properties": {
+            "accountId": {},
+            "budget": {},
+            "name": {},
+            "opportunityId": {},
+            "ownerId": {},
+            "targetEndAt": {},
+            "targetStartAt": {}
+          }
+        },
+        "mutation": {
+          "$ref": "#/$defs/MutationBoundary"
+        },
+        "receipt": {
+          "$ref": "#/$defs/ReceiptReadback"
+        },
+        "resource": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "archivedAt",
+            "id",
+            "status",
+            "type",
+            "version"
+          ],
+          "properties": {
+            "archivedAt": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "id": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            },
+            "status": {
+              "enum": [
+                "ACTIVE",
+                "ARCHIVED",
+                "DRAFT",
+                "ON_HOLD"
+              ]
+            },
+            "type": {
+              "const": "PROJECT"
+            },
+            "version": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            }
+          }
+        },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "ProjectPackage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority",
+        "contractVersion",
+        "createdAt",
+        "data",
+        "mutation",
+        "receipt",
+        "resource",
+        "sourceRefs",
+        "tenantId",
+        "updatedAt"
+      ],
+      "properties": {
+        "authority": {
+          "$ref": "#/$defs/AuthorityBoundary"
+        },
+        "contractVersion": {
+          "const": "ProjectPackage/v1"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "assetRefs",
+            "canonicalProjectId",
+            "plannerProjectRef",
+            "provenanceRefs",
+            "publishedAt",
+            "sourceVersionHash",
+            "spaceRefs",
+            "specificationRefs",
+            "uncertainty"
+          ],
+          "properties": {
+            "assetRefs": {},
+            "canonicalProjectId": {},
+            "plannerProjectRef": {},
+            "provenanceRefs": {},
+            "publishedAt": {},
+            "sourceVersionHash": {},
+            "spaceRefs": {},
+            "specificationRefs": {},
+            "uncertainty": {}
+          }
+        },
+        "mutation": {
+          "$ref": "#/$defs/MutationBoundary"
+        },
+        "receipt": {
+          "$ref": "#/$defs/ReceiptReadback"
+        },
+        "resource": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "archivedAt",
+            "id",
+            "status",
+            "type",
+            "version"
+          ],
+          "properties": {
+            "archivedAt": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "id": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            },
+            "status": {
+              "enum": [
+                "ARCHIVED",
+                "PUBLISHED",
+                "SUPERSEDED"
+              ]
+            },
+            "type": {
+              "const": "PROJECT_PACKAGE"
+            },
+            "version": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            }
+          }
+        },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "ProposalLine": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority",
+        "contractVersion",
+        "createdAt",
+        "data",
+        "mutation",
+        "receipt",
+        "resource",
+        "sourceRefs",
+        "tenantId",
+        "updatedAt"
+      ],
+      "properties": {
+        "authority": {
+          "$ref": "#/$defs/AuthorityBoundary"
+        },
+        "contractVersion": {
+          "const": "ProposalLine/v1"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "confidence",
+            "costMinor",
+            "description",
+            "landedCostMinor",
+            "lineType",
+            "optionGroupId",
+            "proposalVersionId",
+            "quantity",
+            "sourceRef",
+            "totalMinor",
+            "unitPriceMinor"
+          ],
+          "properties": {
+            "confidence": {},
+            "costMinor": {},
+            "description": {},
+            "landedCostMinor": {},
+            "lineType": {},
+            "optionGroupId": {},
+            "proposalVersionId": {},
+            "quantity": {},
+            "sourceRef": {},
+            "totalMinor": {},
+            "unitPriceMinor": {}
+          }
+        },
+        "mutation": {
+          "$ref": "#/$defs/MutationBoundary"
+        },
+        "receipt": {
+          "$ref": "#/$defs/ReceiptReadback"
+        },
+        "resource": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "archivedAt",
+            "id",
+            "status",
+            "type",
+            "version"
+          ],
+          "properties": {
+            "archivedAt": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "id": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            },
+            "status": {
+              "enum": [
+                "ACTIVE",
+                "ARCHIVED",
+                "OPTIONAL",
+                "REMOVED"
+              ]
+            },
+            "type": {
+              "const": "PROPOSAL_LINE"
+            },
+            "version": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            }
+          }
+        },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "ProposalTemplate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority",
+        "contractVersion",
+        "createdAt",
+        "data",
+        "mutation",
+        "receipt",
+        "resource",
+        "sourceRefs",
+        "tenantId",
+        "updatedAt"
+      ],
+      "properties": {
+        "authority": {
+          "$ref": "#/$defs/AuthorityBoundary"
+        },
+        "contractVersion": {
+          "const": "ProposalTemplate/v1"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "contentDigest",
+            "format",
+            "mergeTokens",
+            "name",
+            "storageObjectRef",
+            "validationIssues"
+          ],
+          "properties": {
+            "contentDigest": {},
+            "format": {},
+            "mergeTokens": {},
+            "name": {},
+            "storageObjectRef": {},
+            "validationIssues": {}
+          }
+        },
+        "mutation": {
+          "$ref": "#/$defs/MutationBoundary"
+        },
+        "receipt": {
+          "$ref": "#/$defs/ReceiptReadback"
+        },
+        "resource": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "archivedAt",
+            "id",
+            "status",
+            "type",
+            "version"
+          ],
+          "properties": {
+            "archivedAt": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "id": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            },
+            "status": {
+              "enum": [
+                "ACTIVE",
+                "ARCHIVED",
+                "INVALID",
+                "VALIDATING"
+              ]
+            },
+            "type": {
+              "const": "PROPOSAL_TEMPLATE"
+            },
+            "version": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            }
+          }
+        },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "ProposalVersion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority",
+        "contractVersion",
+        "createdAt",
+        "data",
+        "mutation",
+        "receipt",
+        "resource",
+        "sourceRefs",
+        "tenantId",
+        "updatedAt"
+      ],
+      "properties": {
+        "authority": {
+          "$ref": "#/$defs/AuthorityBoundary"
+        },
+        "contractVersion": {
+          "const": "ProposalVersion/v1"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "currency",
+            "decisionState",
+            "lineIds",
+            "pdfArtifactRef",
+            "projectId",
+            "revision",
+            "templateId",
+            "totalMinor",
+            "webViewRef"
+          ],
+          "properties": {
+            "currency": {},
+            "decisionState": {},
+            "lineIds": {},
+            "pdfArtifactRef": {},
+            "projectId": {},
+            "revision": {},
+            "templateId": {},
+            "totalMinor": {},
+            "webViewRef": {}
+          }
+        },
+        "mutation": {
+          "$ref": "#/$defs/MutationBoundary"
+        },
+        "receipt": {
+          "$ref": "#/$defs/ReceiptReadback"
+        },
+        "resource": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "archivedAt",
+            "id",
+            "status",
+            "type",
+            "version"
+          ],
+          "properties": {
+            "archivedAt": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "id": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            },
+            "status": {
+              "enum": [
+                "ACCEPTED",
+                "ARCHIVED",
+                "DRAFT",
+                "REJECTED",
+                "SENT",
+                "SUPERSEDED"
+              ]
+            },
+            "type": {
+              "const": "PROPOSAL_VERSION"
+            },
+            "version": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            }
+          }
+        },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "PurchaseOrder": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority",
+        "contractVersion",
+        "createdAt",
+        "data",
+        "mutation",
+        "receipt",
+        "resource",
+        "sourceRefs",
+        "tenantId",
+        "updatedAt"
+      ],
+      "properties": {
+        "authority": {
+          "$ref": "#/$defs/AuthorityBoundary"
+        },
+        "contractVersion": {
+          "const": "PurchaseOrder/v1"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "bidComparisonId",
+            "currency",
+            "lineRefs",
+            "proposalVersionId",
+            "releaseApprovalRef",
+            "supplierId",
+            "supplierQuoteId",
+            "totalMinor"
+          ],
+          "properties": {
+            "bidComparisonId": {},
+            "currency": {},
+            "lineRefs": {},
+            "proposalVersionId": {},
+            "releaseApprovalRef": {},
+            "supplierId": {},
+            "supplierQuoteId": {},
+            "totalMinor": {}
+          }
+        },
+        "mutation": {
+          "$ref": "#/$defs/MutationBoundary"
+        },
+        "receipt": {
+          "$ref": "#/$defs/ReceiptReadback"
+        },
+        "resource": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "archivedAt",
+            "id",
+            "status",
+            "type",
+            "version"
+          ],
+          "properties": {
+            "archivedAt": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "id": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            },
+            "status": {
+              "enum": [
+                "ACKNOWLEDGED",
+                "ARCHIVED",
+                "DRAFT",
+                "RELEASED",
+                "VOID"
+              ]
+            },
+            "type": {
+              "const": "PURCHASE_ORDER"
+            },
+            "version": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            }
+          }
+        },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "PurchaseOrderAcknowledgement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority",
+        "contractVersion",
+        "createdAt",
+        "data",
+        "mutation",
+        "receipt",
+        "resource",
+        "sourceRefs",
+        "tenantId",
+        "updatedAt"
+      ],
+      "properties": {
+        "authority": {
+          "$ref": "#/$defs/AuthorityBoundary"
+        },
+        "contractVersion": {
+          "const": "PurchaseOrderAcknowledgement/v1"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "acknowledgedPurchaseOrderVersion",
+            "expectedReadyAt",
+            "purchaseOrderId",
+            "supplierId",
+            "variances"
+          ],
+          "properties": {
+            "acknowledgedPurchaseOrderVersion": {},
+            "expectedReadyAt": {},
+            "purchaseOrderId": {},
+            "supplierId": {},
+            "variances": {}
+          }
+        },
+        "mutation": {
+          "$ref": "#/$defs/MutationBoundary"
+        },
+        "receipt": {
+          "$ref": "#/$defs/ReceiptReadback"
+        },
+        "resource": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "archivedAt",
+            "id",
+            "status",
+            "type",
+            "version"
+          ],
+          "properties": {
+            "archivedAt": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "id": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            },
+            "status": {
+              "enum": [
+                "CONFLICT",
+                "PROVIDER_ACKNOWLEDGED",
+                "SOURCE_CONFIRMED"
+              ]
+            },
+            "type": {
+              "const": "PURCHASE_ORDER_ACKNOWLEDGEMENT"
+            },
+            "version": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            }
+          }
+        },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "ReceivingRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority",
+        "contractVersion",
+        "createdAt",
+        "data",
+        "mutation",
+        "receipt",
+        "resource",
+        "sourceRefs",
+        "tenantId",
+        "updatedAt"
+      ],
+      "properties": {
+        "authority": {
+          "$ref": "#/$defs/AuthorityBoundary"
+        },
+        "contractVersion": {
+          "const": "ReceivingRecord/v1"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "counts",
+            "discrepancyEvidenceRefs",
+            "packageIds",
+            "receivedAt",
+            "receivedBy",
+            "shipmentId"
+          ],
+          "properties": {
+            "counts": {},
+            "discrepancyEvidenceRefs": {},
+            "packageIds": {},
+            "receivedAt": {},
+            "receivedBy": {},
+            "shipmentId": {}
+          }
+        },
+        "mutation": {
+          "$ref": "#/$defs/MutationBoundary"
+        },
+        "receipt": {
+          "$ref": "#/$defs/ReceiptReadback"
+        },
+        "resource": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "archivedAt",
+            "id",
+            "status",
+            "type",
+            "version"
+          ],
+          "properties": {
+            "archivedAt": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "id": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            },
+            "status": {
+              "enum": [
+                "COMPLETE",
+                "DISCREPANCY",
+                "DRAFT"
+              ]
+            },
+            "type": {
+              "const": "RECEIVING_RECORD"
+            },
+            "version": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            }
+          }
+        },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "RFQ": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority",
+        "contractVersion",
+        "createdAt",
+        "data",
+        "mutation",
+        "receipt",
+        "resource",
+        "sourceRefs",
+        "tenantId",
+        "updatedAt"
+      ],
+      "properties": {
+        "authority": {
+          "$ref": "#/$defs/AuthorityBoundary"
+        },
+        "contractVersion": {
+          "const": "RFQ/v1"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "dueAt",
+            "projectId",
+            "requestedFields",
+            "specificationId",
+            "specificationLineIds",
+            "supplierId"
+          ],
+          "properties": {
+            "dueAt": {},
+            "projectId": {},
+            "requestedFields": {},
+            "specificationId": {},
+            "specificationLineIds": {},
+            "supplierId": {}
+          }
+        },
+        "mutation": {
+          "$ref": "#/$defs/MutationBoundary"
+        },
+        "receipt": {
+          "$ref": "#/$defs/ReceiptReadback"
+        },
+        "resource": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "archivedAt",
+            "id",
+            "status",
+            "type",
+            "version"
+          ],
+          "properties": {
+            "archivedAt": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "id": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            },
+            "status": {
+              "enum": [
+                "ARCHIVED",
+                "CANCELLED",
+                "DRAFT",
+                "OPEN",
+                "RESPONDED",
+                "SENT"
+              ]
+            },
+            "type": {
+              "const": "RFQ"
+            },
+            "version": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            }
+          }
+        },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "Shipment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority",
+        "contractVersion",
+        "createdAt",
+        "data",
+        "mutation",
+        "receipt",
+        "resource",
+        "sourceRefs",
+        "tenantId",
+        "updatedAt"
+      ],
+      "properties": {
+        "authority": {
+          "$ref": "#/$defs/AuthorityBoundary"
+        },
+        "contractVersion": {
+          "const": "Shipment/v1"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "carrier",
+            "expectedDeliveryAt",
+            "purchaseOrderIds",
+            "risk",
+            "supplierId",
+            "trackingNumber"
+          ],
+          "properties": {
+            "carrier": {},
+            "expectedDeliveryAt": {},
+            "purchaseOrderIds": {},
+            "risk": {},
+            "supplierId": {},
+            "trackingNumber": {}
+          }
+        },
+        "mutation": {
+          "$ref": "#/$defs/MutationBoundary"
+        },
+        "receipt": {
+          "$ref": "#/$defs/ReceiptReadback"
+        },
+        "resource": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "archivedAt",
+            "id",
+            "status",
+            "type",
+            "version"
+          ],
+          "properties": {
+            "archivedAt": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "id": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            },
+            "status": {
+              "enum": [
+                "CANCELLED",
+                "DELIVERED",
+                "EXCEPTION",
+                "IN_TRANSIT",
+                "PLANNED",
+                "READY"
+              ]
+            },
+            "type": {
+              "const": "SHIPMENT"
+            },
+            "version": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            }
+          }
+        },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "Space": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority",
+        "contractVersion",
+        "createdAt",
+        "data",
+        "mutation",
+        "receipt",
+        "resource",
+        "sourceRefs",
+        "tenantId",
+        "updatedAt"
+      ],
+      "properties": {
+        "authority": {
+          "$ref": "#/$defs/AuthorityBoundary"
+        },
+        "contractVersion": {
+          "const": "Space/v1"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "floor",
+            "kind",
+            "name",
+            "projectId",
+            "sequence"
+          ],
+          "properties": {
+            "floor": {},
+            "kind": {},
+            "name": {},
+            "projectId": {},
+            "sequence": {}
+          }
+        },
+        "mutation": {
+          "$ref": "#/$defs/MutationBoundary"
+        },
+        "receipt": {
+          "$ref": "#/$defs/ReceiptReadback"
+        },
+        "resource": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "archivedAt",
+            "id",
+            "status",
+            "type",
+            "version"
+          ],
+          "properties": {
+            "archivedAt": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "id": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            },
+            "status": {
+              "enum": [
+                "ACTIVE",
+                "ARCHIVED",
+                "DRAFT"
+              ]
+            },
+            "type": {
+              "const": "SPACE"
+            },
+            "version": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            }
+          }
+        },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "Specification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority",
+        "contractVersion",
+        "createdAt",
+        "data",
+        "mutation",
+        "receipt",
+        "resource",
+        "sourceRefs",
+        "tenantId",
+        "updatedAt"
+      ],
+      "properties": {
+        "authority": {
+          "$ref": "#/$defs/AuthorityBoundary"
+        },
+        "contractVersion": {
+          "const": "Specification/v1"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "activatedAt",
+            "plannerPackageId",
+            "projectId",
+            "publishedPackageVersion",
+            "revisionOfVersion",
+            "spaceIds",
+            "title"
+          ],
+          "properties": {
+            "activatedAt": {},
+            "plannerPackageId": {},
+            "projectId": {},
+            "publishedPackageVersion": {},
+            "revisionOfVersion": {},
+            "spaceIds": {},
+            "title": {}
+          }
+        },
+        "mutation": {
+          "$ref": "#/$defs/MutationBoundary"
+        },
+        "receipt": {
+          "$ref": "#/$defs/ReceiptReadback"
+        },
+        "resource": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "archivedAt",
+            "id",
+            "status",
+            "type",
+            "version"
+          ],
+          "properties": {
+            "archivedAt": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "id": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            },
+            "status": {
+              "enum": [
+                "ACTIVE_PROCUREMENT",
+                "APPROVED",
+                "ARCHIVED",
+                "DRAFT",
+                "REVISION_PROPOSED"
+              ]
+            },
+            "type": {
+              "const": "SPECIFICATION"
+            },
+            "version": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            }
+          }
+        },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "SpecificationLine": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority",
+        "contractVersion",
+        "createdAt",
+        "data",
+        "mutation",
+        "receipt",
+        "resource",
+        "sourceRefs",
+        "tenantId",
+        "updatedAt"
+      ],
+      "properties": {
+        "authority": {
+          "$ref": "#/$defs/AuthorityBoundary"
+        },
+        "contractVersion": {
+          "const": "SpecificationLine/v1"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "approvalState",
+            "deliveryRisk",
+            "description",
+            "productCandidateIds",
+            "quantity",
+            "selectedCandidateId",
+            "sourcingState",
+            "spaceId",
+            "specificationId",
+            "unit"
+          ],
+          "properties": {
+            "approvalState": {},
+            "deliveryRisk": {},
+            "description": {},
+            "productCandidateIds": {},
+            "quantity": {},
+            "selectedCandidateId": {},
+            "sourcingState": {},
+            "spaceId": {},
+            "specificationId": {},
+            "unit": {}
+          }
+        },
+        "mutation": {
+          "$ref": "#/$defs/MutationBoundary"
+        },
+        "receipt": {
+          "$ref": "#/$defs/ReceiptReadback"
+        },
+        "resource": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "archivedAt",
+            "id",
+            "status",
+            "type",
+            "version"
+          ],
+          "properties": {
+            "archivedAt": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "id": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            },
+            "status": {
+              "enum": [
+                "APPROVED",
+                "ARCHIVED",
+                "DRAFT",
+                "SOURCING",
+                "SUBSTITUTION_PROPOSED"
+              ]
+            },
+            "type": {
+              "const": "SPECIFICATION_LINE"
+            },
+            "version": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            }
+          }
+        },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "SupplierQuote": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority",
+        "contractVersion",
+        "createdAt",
+        "data",
+        "mutation",
+        "receipt",
+        "resource",
+        "sourceRefs",
+        "tenantId",
+        "updatedAt"
+      ],
+      "properties": {
+        "authority": {
+          "$ref": "#/$defs/AuthorityBoundary"
+        },
+        "contractVersion": {
+          "const": "SupplierQuote/v1"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "evidenceArtifactId",
+            "lines",
+            "responseSource",
+            "rfqId",
+            "supplierId",
+            "validUntil"
+          ],
+          "properties": {
+            "evidenceArtifactId": {},
+            "lines": {},
+            "responseSource": {},
+            "rfqId": {},
+            "supplierId": {},
+            "validUntil": {}
+          }
+        },
+        "mutation": {
+          "$ref": "#/$defs/MutationBoundary"
+        },
+        "receipt": {
+          "$ref": "#/$defs/ReceiptReadback"
+        },
+        "resource": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "archivedAt",
+            "id",
+            "status",
+            "type",
+            "version"
+          ],
+          "properties": {
+            "archivedAt": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "id": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            },
+            "status": {
+              "enum": [
+                "ARCHIVED",
+                "NORMALIZED",
+                "REJECTED",
+                "REVIEW_REQUIRED",
+                "SELECTED"
+              ]
+            },
+            "type": {
+              "const": "SUPPLIER_QUOTE"
+            },
+            "version": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            }
+          }
+        },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "SultanReviewItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority",
+        "contractVersion",
+        "createdAt",
+        "data",
+        "mutation",
+        "receipt",
+        "resource",
+        "sourceRefs",
+        "tenantId",
+        "updatedAt"
+      ],
+      "properties": {
+        "authority": {
+          "$ref": "#/$defs/AuthorityBoundary"
+        },
+        "contractVersion": {
+          "const": "SultanReviewItem/v1"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "authorityPolicyId",
+            "critic",
+            "evidenceRefs",
+            "outcomeReceiptId",
+            "recommendation",
+            "reviewType",
+            "subjectRefs",
+            "summary",
+            "uncertainty"
+          ],
+          "properties": {
+            "authorityPolicyId": {},
+            "critic": {},
+            "evidenceRefs": {},
+            "outcomeReceiptId": {},
+            "recommendation": {},
+            "reviewType": {},
+            "subjectRefs": {},
+            "summary": {},
+            "uncertainty": {}
+          }
+        },
+        "mutation": {
+          "$ref": "#/$defs/MutationBoundary"
+        },
+        "receipt": {
+          "$ref": "#/$defs/ReceiptReadback"
+        },
+        "resource": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "archivedAt",
+            "id",
+            "status",
+            "type",
+            "version"
+          ],
+          "properties": {
+            "archivedAt": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "id": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            },
+            "status": {
+              "enum": [
+                "ACCEPTED",
+                "APPLIED",
+                "EDITED",
+                "PENDING",
+                "REJECTED"
+              ]
+            },
+            "type": {
+              "const": "SULTAN_REVIEW_ITEM"
+            },
+            "version": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            }
+          }
+        },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "TimelineEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority",
+        "contractVersion",
+        "createdAt",
+        "data",
+        "mutation",
+        "receipt",
+        "resource",
+        "sourceRefs",
+        "tenantId",
+        "updatedAt"
+      ],
+      "properties": {
+        "authority": {
+          "$ref": "#/$defs/AuthorityBoundary"
+        },
+        "contractVersion": {
+          "const": "TimelineEvent/v1"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "actorId",
+            "aggregateRefs",
+            "eventType",
+            "evidenceRefs",
+            "occurredAt",
+            "recordedAt",
+            "summary",
+            "visibility"
+          ],
+          "properties": {
+            "actorId": {},
+            "aggregateRefs": {},
+            "eventType": {},
+            "evidenceRefs": {},
+            "occurredAt": {},
+            "recordedAt": {},
+            "summary": {},
+            "visibility": {}
+          }
+        },
+        "mutation": {
+          "$ref": "#/$defs/MutationBoundary"
+        },
+        "receipt": {
+          "$ref": "#/$defs/ReceiptReadback"
+        },
+        "resource": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "archivedAt",
+            "id",
+            "status",
+            "type",
+            "version"
+          ],
+          "properties": {
+            "archivedAt": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "id": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            },
+            "status": {
+              "enum": [
+                "ACTIVE",
+                "ARCHIVED"
+              ]
+            },
+            "type": {
+              "const": "TIMELINE_EVENT"
+            },
+            "version": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 512
+            }
+          }
+        },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}

@@ -239,7 +239,7 @@ test("schema, manifest and six-capability Sultan mapping are mechanically comple
     consumerFinalSha: string; effectAuthority: string;
   };
   assert.equal(schema.oneOf.length, 14);
-  assert.equal(Object.keys(manifest.contracts).length, 14);
+  assert.equal(Object.keys(manifest.contracts).length, 40);
   assert.deepEqual(manifest.preservedA02.versions, CORE_A02_PINS);
   assert.equal(manifest.fepDependency, false);
   assert.equal(mapping.consumerFinalSha, "e2b95ab71e5a604dcdd8ff6ab75b50a32ba4d838");

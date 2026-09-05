@@ -9,7 +9,12 @@ export type ContractMaturity =
 
 export type PlatformContractDescriptor = {
   compatibility: "ADDITIVE_MINOR" | "EXACT_VERSION" | "NEW_MAJOR_FOR_BREAKING";
-  consumers: readonly ("CIBOTFLOW/Luzione-UI" | "CIBOTFLOW/Sultan-OS")[];
+  consumers: readonly (
+    | "CIBOTFLOW/Luzione-UI"
+    | "CIBOTFLOW/Sultan-OS"
+    | "CIBOTFLOW/Luzione-Room-Planner-MVP"
+    | "CIBOTFLOW/Supplier-Designer-Portal"
+  )[];
   contractId: string;
   currentRuntime: boolean;
   maturity: ContractMaturity;
@@ -784,20 +789,29 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
   },
   {
     compatibility: "EXACT_VERSION",
-    consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
+    consumers: [
+      "CIBOTFLOW/Luzione-UI",
+      "CIBOTFLOW/Sultan-OS",
+      "CIBOTFLOW/Luzione-Room-Planner-MVP",
+      "CIBOTFLOW/Supplier-Designer-Portal",
+    ],
     contractId: "luzione-core-contract-bundle-v1",
     currentRuntime: false,
     maturity: "LIBRARY_ONLY",
-    name: "CORE-01 strict operation, receipt, readback, onboarding, import, connector and support contract bundle",
+    name: "CORE-01 strict platform and seed-product contract bundle",
     ownerRepository: "CIBOTFLOW/Luzione-API",
     pendingChangeRefs: ["controller:CORE-01:G0", "controller:SUPPORT-01:L1-CORE-CONTRACTS:v1"],
     sourcePaths: [
       "contracts/core/luzione-core-v1.manifest.json",
       "contracts/core/v1/luzione-core-contracts-v1.schema.json",
+      "contracts/core/v1/luzione-seed-product-contracts-v1.schema.json",
       "contracts/core/consumer-mappings/sultan-runtime-01-v1.json",
       "src/modules/luzione-core-contracts/contracts.ts",
       "src/modules/luzione-core-contracts/consumerSdk.ts",
-      "src/modules/luzione-core-contracts/fixtures.ts"
+      "src/modules/luzione-core-contracts/fixtures.ts",
+      "src/modules/luzione-core-contracts/seedProductContracts.ts",
+      "src/modules/luzione-core-contracts/seedProductConsumerSdk.ts",
+      "src/modules/luzione-core-contracts/seedProductFixtures.ts"
     ],
     version: "LuzioneCoreContracts/v1",
   },
