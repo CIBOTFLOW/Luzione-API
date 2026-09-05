@@ -8,7 +8,7 @@
   "seed_product_contract_producer_sha": "e14b405d58a293c002f5676984a95e55372b3bd2",
   "schedule_contract_producer_sha": "265724e528502b44a1250efea551539d74cb0bbd",
   "procurement_contract_producer_sha": "777e0d471d2ecf02294fffb7562761d6f8a36dbd",
-  "supplier_identity_contract_producer_sha": "9ad995ef52dcc8c39698a165095658bc756a295f",
+  "supplier_identity_contract_producer_sha": "6467b989db7422c45935dcec3ad334b4fe99ce5f",
   "effect_authority": "NO_EFFECT",
   "http_surfaces": [
     {"route_id":"seed-supplier-profile-command","method":"POST","path":"/api/v1/supplier-profiles/commands","source_path":"src/app/api/v1/supplier-profiles/commands/route.ts","authentication":"credential-bound service transport plus signed same-tenant human subject and default-off command admission","canonical_readback":"P110 receipt plus exact SupplierProfile/v1 and TimelineEvent/v1 owner readback","effect":"DEFAULT_OFF_NO_EFFECT_INTERNAL_MUTATION","external_effect_authorized":false},

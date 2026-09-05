@@ -6,11 +6,12 @@
   "producer_branch": "codex/seed-supplier-identity-a2s",
   "base_sha": "5cc727ac0cfb3f8f7fa75015246486bf7f7089f5",
   "implementation_sha": "9ad995ef52dcc8c39698a165095658bc756a295f",
+  "correction_sha": "6467b989db7422c45935dcec3ad334b4fe99ce5f",
   "exact_candidate_sha": null,
   "seed_product_contract_producer_sha": "e14b405d58a293c002f5676984a95e55372b3bd2",
   "schedule_contract_producer_sha": "265724e528502b44a1250efea551539d74cb0bbd",
   "procurement_contract_producer_sha": "777e0d471d2ecf02294fffb7562761d6f8a36dbd",
-  "supplier_identity_contract_producer_sha": "9ad995ef52dcc8c39698a165095658bc756a295f",
+  "supplier_identity_contract_producer_sha": "6467b989db7422c45935dcec3ad334b4fe99ce5f",
   "contracts": {
     "supplier_profile": "SupplierProfile/v1",
     "supplier_command": "SeedSupplierIdentityCommand/v1",

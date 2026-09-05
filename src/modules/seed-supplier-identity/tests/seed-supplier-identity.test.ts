@@ -245,7 +245,7 @@ test("A2S additive evidence manifest seals current artifacts without rewriting h
     implementation_sha: string;
   };
   assert.equal(manifest.base_sha, "5cc727ac0cfb3f8f7fa75015246486bf7f7089f5");
-  assert.equal(manifest.implementation_sha, "9ad995ef52dcc8c39698a165095658bc756a295f");
+  assert.equal(manifest.implementation_sha, "6467b989db7422c45935dcec3ad334b4fe99ce5f");
   for (const artifact of manifest.artifacts) {
     assert.equal(createHash("sha256").update(readFileSync(artifact.path)).digest("hex"), artifact.sha256, artifact.path);
   }

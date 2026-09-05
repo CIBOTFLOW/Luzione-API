@@ -7,7 +7,7 @@ import type { TimelineEventV1 } from "@/modules/luzione-core-contracts/seedProdu
 import { sha256 } from "@/modules/platform-guarantees/eventContract";
 
 export const SUPPLIER_PROFILE_READ_MODEL_VERSION = "SupplierProfileReadModel/v1";
-export const SEED_SUPPLIER_IDENTITY_CONTRACT_PRODUCER_SHA = "9ad995ef52dcc8c39698a165095658bc756a295f";
+export const SEED_SUPPLIER_IDENTITY_CONTRACT_PRODUCER_SHA = "6467b989db7422c45935dcec3ad334b4fe99ce5f";
 
 export const SEED_SUPPLIER_IDENTITY_HTTP_ROUTES = Object.freeze({
   accountProfile: "/api/v1/accounts/:accountId/supplier-profile",
