@@ -1270,6 +1270,46 @@
         "The code defect is locally and independently repaired, but production remains on the old SHA and can still reproduce it."
       ],
       "next_action": "After the managed recovery and Vercel access gates pass, canary and promote exact candidate 0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a, then prove repeated readyz=200 through the production pooler."
+    },
+    {
+      "failure_id": "CORE_02_SHALLOW_PR_BASE_OBJECT_20260905",
+      "project_id": "CORE-02",
+      "observed_at": "2026-09-05T01:53:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "2e62ceba046192769148017b4f624846b6fa71c4",
+      "environment": "ci",
+      "layer": "contract-freeze-test-harness",
+      "symptom": "The first exact-head Release gate failed one of 343 tests because the CORE-02 freeze proof tried to resolve the stacked PR base commit from GitHub's shallow merge checkout.",
+      "expected": "The contract and SDK freeze proof runs in local and shallow PR checkouts while still failing on any checked-out tree drift from the immutable CORE-01 release trees.",
+      "actual": "Release gate 33937410404 checked out merge ref 5ba0d36962d6628aa75860cc5e585cbefb3be88e without base object bb5eb395af0873f4483ba2dc10c76f9941051dde; git rev-parse of the base path failed before the checked-out-tree equality assertions ran. The inventory and 342 other tests passed.",
+      "classification": {
+        "domain": "PLATFORM",
+        "class": "INVALID",
+        "retry": "NEVER",
+        "severity": "ERROR"
+      },
+      "evidence_refs": [
+        "github-actions:33937410404",
+        "github-actions-job:101227913148",
+        "github-actions-artifact:9960640053",
+        "commit:2e62ceba046192769148017b4f624846b6fa71c4",
+        "src/modules/core-02-inventory/tests/core-02-inventory.test.ts"
+      ],
+      "repair_attempts": [
+        "Kept the exact base SHA and the two immutable tree IDs pinned in the manifest and test.",
+        "Removed only the assumption that a shallow PR checkout retains the base commit object.",
+        "Compared the checked-out HEAD contract and SDK trees to the immutable tree IDs derived from the exact CORE-01 final.",
+        "Reran focused 6/6, full 343/343, compliance, typecheck, lint, build, Release gate 33937609720 and CodeQL 33937609688 successfully at c9e11c4d2ceb062678b3146ba6e8601ba7846761."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "commit:c9e11c4d2ceb062678b3146ba6e8601ba7846761",
+      "remaining_uncertainty": [
+        "The test proves immutable repository tree identity, not an authenticated deployed application boundary."
+      ],
+      "next_action": "Retain both the failed first-head and successful repaired-head CI records as append-only evidence; no further repair is required."
     }
   ]
 }

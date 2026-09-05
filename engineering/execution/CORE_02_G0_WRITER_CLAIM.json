@@ -9,8 +9,8 @@
     "lane": "L1",
     "threadId": "01a063d3-a21c-7e60-a257-9ef6d89cad4c",
     "claimedAt": "2026-09-05T01:36:47Z",
-    "releasedAt": null,
-    "state": "CLAIMED"
+    "releasedAt": "2026-09-05T01:58:29Z",
+    "state": "RELEASED"
   },
   "scope": "Documentation-and-test-only API-owned dependency inventory for GJ-1, GJ-2, and GJ-3",
   "effectAuthority": "NO_EFFECT",
