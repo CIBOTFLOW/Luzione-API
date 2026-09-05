@@ -1,0 +1,83 @@
+{
+  "handoffSchema": "ONBOARD-CORE-CORRECTION-02/G0-Controller-Handoff/v1",
+  "projectId": "ONBOARD-CORE-CORRECTION-02",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "controllerAuthority": "CIBOTFLOW/Luzione-platform-program@4cd6e143c05d9318006b033d5331bba9bb7d5e6a",
+  "assuranceFingerprint": "9e1e2f515f8445e17a9168261676de4697182d903689e7c7e1f330c9cda54352",
+  "baseSha": "221d2b96b970a8036923b28a1e3ebc7fe489db34",
+  "branch": "codex/onboard-core-correction-02-g0-4cd6e14",
+  "implementationSha": "533c1f5bb287c03cb74e9e66c64808d4b1a8a8f0",
+  "finalShaBinding": "PEEL_DETACHED_ANNOTATED_TAG_ONBOARD_CORE_CORRECTION_02_EXACT_FINAL",
+  "changedSemantics": [
+    "Original Tenant Pack boundedText code-point length is enforced before trimming.",
+    "Original stableId bytes must match the pinned schema pattern; whitespace cannot normalize into an admitted identifier.",
+    "Correction reverse refuses before DDL if any v2-only revocation or provenance exists."
+  ],
+  "contractVersions": [
+    "LuzioneOnboardCoreApi/v2",
+    "TenantBlueprintMap/v2",
+    "TenantPackSourceBinding/v1",
+    "LuzioneHumanApprovalSubject/v1",
+    "SetupMandateRevocation/v1",
+    "CRMImportDryRunMap/v2",
+    "ConnectorSyncValidation/v2",
+    "ConnectorValidationOutcome/v1"
+  ],
+  "contractIdentifiersChanged": false,
+  "sourceSchema": {
+    "path": "contracts/onboard-core/luzione-tenant-pack-draft-v1.schema.json",
+    "sha256": "c94dd71d93d72b048ceaa77b1ba08cb84e1f610393f139060f49ead684d28eb4",
+    "bytesChanged": false
+  },
+  "migration": {
+    "forward": "supabase/migrations/20260905050000_onboard_core_correction_01.sql",
+    "forwardSha256": "6b5e94bd5fa4b94e98055a3b7817b8296da68891e7751055b04b56c257096afd",
+    "forwardBytesChanged": false,
+    "reverse": "scripts/validation/rollback-onboard-core-correction-01.sql",
+    "reverseSha256": "364f09b332ffddce42ad6e8ce9dcab8d56e6a7b62cba99f287efef64c20328b9",
+    "managedOrProductionApplication": false
+  },
+  "verification": {
+    "compliance": "PASS_7_OF_7",
+    "typecheck": "PASS",
+    "lint": "PASS_ZERO_WARNINGS",
+    "focused": "PASS_ONBOARD_CORE_17_OF_17",
+    "full": "PASS_447_OF_447",
+    "build": "PASS_NEXTJS_16_3_4_WEBPACK",
+    "blueprintMandateDisposable": "PASS_2_DRAFTS_2_APPROVALS_1_SUPERSESSION_1_MANDATE_5_RECEIPTS",
+    "importDisposable": "PASS_1_BATCH_4_ROWS_1_IMPORT_RECEIPT_5_COMMAND_RECEIPTS_1_CONFLICT",
+    "connectorDisposable": "PASS_3_NO_EFFECT_1_SOURCE_CONFIRMED_1_BLOCKED_ZERO_SCHEMA_DELTA",
+    "correction02Reverse": "PASS_EMPTY_REVERSE_REAPPLY_AND_EXACT_POPULATED_REFUSAL_WITH_SCHEMA_DATA_READBACK",
+    "gitReverseCheck": "PASS_FULL_CANDIDATE_REVERSE_APPLY_CHECK_AGAINST_221D2B96B970A8036923B28A1E3EBC7FE489DB34"
+  },
+  "negativePaths": [
+    "201-character raw boundedText that canonicalizes below the maximum",
+    "whitespace-padded stableId that canonicalizes to another admitted identifier",
+    "distinct raw-versus-canonical payload SHA collision attempt",
+    "legacy SetupMandate/v1 plus v2 append-only revocation reverse attempt"
+  ],
+  "readback": {
+    "local": "PASS_POST_REFUSAL_REVOCATION_RELATION_1_ROW_LEGACY_MANDATE_1_ROW_V2_COLUMNS_PRESENT",
+    "preview": "PENDING_EXACT_FINAL_PUSH_AND_DRAFT_PR",
+    "production": "NOT_QUERIED"
+  },
+  "rollbackProof": "PASS_EMPTY_PRE_ACTIVATION_REVERSE_REAPPLY; POPULATED_REVERSE_FAILS_BEFORE_DDL; NO_PRODUCTION_ROLLBACK_AUTHORITY",
+  "runtimeTruth": {
+    "effectsEnabled": false,
+    "sourceBindingsDefault": "EMPTY_DENY_ALL",
+    "sandboxAdapterOnly": "SandboxEchoProviderAdapter",
+    "credentialResolutionPerformed": false,
+    "providerEffectsPerformed": false,
+    "productionQueriedOrMutated": false
+  },
+  "risks": [
+    "Independent assurance and an exact L2 consumer repin are not yet recorded.",
+    "Exact-final automated CI and authenticated Git-bound application readback are not yet available in this tracked commit.",
+    "Managed backup/PITR, migration and recovery evidence remain absent; local reverse/reapply grants no rollback authority.",
+    "The connector rehearsal uses SandboxEcho and cannot prove a real provider or credential boundary."
+  ],
+  "effectAuthority": "NO_EFFECT",
+  "g1OrG2Claim": false,
+  "writerRelease": "AFTER_FINAL_COMMIT_PUSH_TAG_AND_HANDOFF",
+  "oneNextAction": "L5 independently reruns ONBOARD-CORE-CORRECTION assurance against the exact implementation/final pair and L2 returns one exact consumer repin; keep all G1/G2 and production holds."
+}

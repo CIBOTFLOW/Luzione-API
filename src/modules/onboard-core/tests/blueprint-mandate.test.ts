@@ -69,6 +69,48 @@ test("schema bytes, surplus fields, wrong schema and old versions fail closed", 
   expectCode(() => parseTenantBlueprintProposal(proposal({ sourceSchemaDigest: "a".repeat(64) })), "SOURCE_SCHEMA_DIGEST_MISMATCH");
 });
 
+test("raw Tenant Pack strings are schema-valid before canonicalization and cannot collide", () => {
+  const schema = JSON.parse(readFileSync(TENANT_PACK_DRAFT_SCHEMA_PATH, "utf8")) as {
+    $defs: { boundedText: { maxLength: number }; stableId: { maxLength: number; pattern: string } };
+  };
+  assert.equal(schema.$defs.boundedText.maxLength, 200);
+  assert.equal(schema.$defs.stableId.maxLength, 200);
+
+  const exactUnicodeBound = "🟢".repeat(200);
+  const exactUnicodeDraft = {
+    ...draft,
+    sections: { ...draft.sections, aiPolicies: [exactUnicodeBound] },
+  };
+  assert.equal(Array.from(exactUnicodeBound).length, 200);
+  assert.equal(
+    parseTenantBlueprintProposal(proposal({ draft: exactUnicodeDraft, sourceDigest: sha256(exactUnicodeDraft) }))
+      .draft.sections.aiPolicies[0],
+    exactUnicodeBound,
+  );
+
+  const overlongValue = draft.sections.aiPolicies[0].padStart(201, " ");
+  const overlongDraft = {
+    ...draft,
+    sections: { ...draft.sections, aiPolicies: [overlongValue] },
+  };
+  assert.equal(overlongValue.length, 201);
+  assert.notEqual(sha256(overlongDraft), sha256(draft));
+  expectCode(
+    () => parseTenantBlueprintProposal(proposal({ draft: overlongDraft })),
+    "INVALID_REQUEST",
+  );
+
+  const whitespaceIdDraft = { ...draft, sourcePackId: `${draft.sourcePackId} ` };
+  assert.notEqual(sha256(whitespaceIdDraft), sha256(draft));
+  assert.equal(new RegExp(schema.$defs.stableId.pattern).test(whitespaceIdDraft.sourcePackId), false);
+  expectCode(
+    () => parseTenantBlueprintProposal(proposal({ draft: whitespaceIdDraft })),
+    "INVALID_REQUEST",
+  );
+
+  assert.equal(parseTenantBlueprintProposal(proposal()).draft.sourcePackId, draft.sourcePackId);
+});
+
 test("separate signed Supabase user subject derives authority only from app_metadata", async () => {
   const { privateKey, publicKey } = crypto.generateKeyPairSync("rsa", { modulusLength: 2048 });
   const now = Math.floor(Date.now() / 1_000);
@@ -115,5 +157,8 @@ test("all mutations remain exact-default-off and migration is tenant RLS, append
   assert.match(migration, /onboarding_setup_mandate_revocations_append_only/);
   assert.match(migration, /force row level security/);
   assert.match(migration, /revoke all.*service_role/);
+  assert.match(rollback, /ONBOARD_CORE_CORRECTION_REVERSE_BLOCKED_V2_PROVENANCE/);
   assert.match(rollback, /drop table if exists public\.onboarding_setup_mandate_revocations/);
+  assert.ok(rollback.indexOf("ONBOARD_CORE_CORRECTION_REVERSE_BLOCKED_V2_PROVENANCE")
+    < rollback.indexOf("drop table if exists public.onboarding_setup_mandate_revocations"));
 });

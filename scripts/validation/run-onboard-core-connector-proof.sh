@@ -16,6 +16,7 @@ trap cleanup EXIT
 
 docker exec "${container_name}" psql -v ON_ERROR_STOP=1 -U postgres -d postgres -c "create role ${role} login password '${password}' bypassrls"
 docker exec "${container_name}" createdb -U postgres "${database}"
+docker exec "${container_name}" psql -v ON_ERROR_STOP=1 -U postgres -d "${database}" -c "create extension if not exists pgcrypto" >/dev/null
 
 apply() {
   docker exec -i "${container_name}" psql -q -v ON_ERROR_STOP=1 -U postgres -d "${database}" < "$1"
@@ -25,6 +26,12 @@ apply supabase/migrations/20260831022000_p110_command_ledger_baseline.sql
 apply supabase/migrations/20260831030000_p110_p111_workflow_delivery_baseline.sql
 apply supabase/migrations/20260831080000_provider_worker_runtime.sql
 apply supabase/migrations/20260905090000_effect_admission_evidence.sql
+apply supabase/migrations/20260901123000_sultan_agent_policy_envelopes.sql
+apply supabase/migrations/20260901130000_sultan_agent_internal_actions.sql
+apply supabase/migrations/20260902010000_sultan_stage5_authority_outcomes.sql
+apply supabase/migrations/20260902010100_sultan_stage5_post_inference_receipt_constraints.sql
+apply supabase/migrations/20260905120000_effect_admission_l1_correction.sql
+apply supabase/migrations/20260905131000_effect_admission_l1_correction_02.sql
 apply supabase/migrations/20260905040000_onboard_core_blueprints_mandates.sql
 apply supabase/migrations/20260905041000_onboard_core_import_dry_runs.sql
 apply supabase/migrations/20260905050000_onboard_core_correction_01.sql

@@ -113,17 +113,28 @@ function exact(input: Record<string, unknown>, keys: readonly string[], field: s
   return input;
 }
 
+function exceedsCodePointLimit(value: string, max: number) {
+  let length = 0;
+  const characters = value[Symbol.iterator]();
+  while (!characters.next().done) {
+    length += 1;
+    if (length > max) return true;
+  }
+  return false;
+}
+
 function text(value: unknown, field: string, max = 500) {
-  if (typeof value !== "string" || !value.trim() || value.trim().length > max) {
+  if (typeof value !== "string" || exceedsCodePointLimit(value, max) || !value.trim()) {
     throw new OnboardCoreContractError("INVALID_REQUEST", `${field} must be a bounded non-empty string.`);
   }
   return value.trim();
 }
 
 function id(value: unknown, field: string) {
-  const parsed = text(value, field, 200);
-  if (!ID.test(parsed)) throw new OnboardCoreContractError("INVALID_REQUEST", `${field} must be a stable identifier.`);
-  return parsed;
+  if (typeof value !== "string" || value.length > 200 || !ID.test(value)) {
+    throw new OnboardCoreContractError("INVALID_REQUEST", `${field} must be a stable identifier.`);
+  }
+  return value;
 }
 
 function digest(value: unknown, field: string) {
