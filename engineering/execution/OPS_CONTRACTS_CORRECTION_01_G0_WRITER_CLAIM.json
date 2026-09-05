@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "OPS-CONTRACTS-CORRECTION-01/API-Writer-Claim/v1",
+  "projectId": "OPS-CONTRACTS-CORRECTION-01",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "branch": "codex/ops-contracts-correction-01-g0-b3977b5",
+  "baseSha": "e6dce8c92f8cee9102af341615c0fa31345ca77d",
+  "controllerAuthority": "CIBOTFLOW/Luzione-platform-program@b3977b5879557b0cabc1c18792cf9a868489f8e2",
+  "assuranceFingerprintSha256": "80ae6a53c8ff28259389b1175f7029bf920013e03c7e5419b145c9c2a569decf",
+  "writer": {
+    "lane": "L1",
+    "threadId": "01a063d3-a21c-7e60-a257-9ef6d89cad4c",
+    "claimedAt": "2026-09-05T06:51:29Z",
+    "releasedAt": null,
+    "state": "ACTIVE_SINGLE_WRITER"
+  },
+  "scope": "Versioned operations-evidence append ledger, strict SDK/schema parity fixtures, eleven assurance negatives, and immutable G0 evidence only",
+  "effectAuthority": "NO_EFFECT",
+  "prohibitedEffects": [
+    "production query or migration",
+    "credential or provider effect",
+    "route, scheduler, worker, deployment, or runtime activation",
+    "default-branch mutation, merge, promotion, or rollback"
+  ]
+}

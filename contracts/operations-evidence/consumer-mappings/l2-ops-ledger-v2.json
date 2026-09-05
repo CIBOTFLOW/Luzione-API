@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "L2OperationsEvidenceLedgerConsumerPacket/v2",
+  "producerRepository": "CIBOTFLOW/Luzione-API",
+  "producerBaseSha": "e6dce8c92f8cee9102af341615c0fa31345ca77d",
+  "producerImplementationSha": "PENDING_IMPLEMENTATION_COMMIT",
+  "ledgerVersion": "LuzioneOperationsEvidenceLedger/v2",
+  "baseRecordBundleVersion": "LuzioneOperationsEvidence/v1",
+  "assuranceFingerprintSha256": "80ae6a53c8ff28259389b1175f7029bf920013e03c7e5419b145c9c2a569decf",
+  "consumerRepository": "CIBOTFLOW/Luzione-UI",
+  "allowedUse": "STRUCTURAL_ADAPTER_AND_SYNTHETIC_COMPATIBILITY_ONLY_PENDING_OPS_CONTRACTS_ASSURE_02",
+  "requiredPaths": {
+    "schema": "contracts/operations-evidence/v2/luzione-operations-evidence-ledger-v2.schema.json",
+    "manifest": "contracts/operations-evidence/luzione-operations-evidence-ledger-v2.manifest.json",
+    "sdk": "src/modules/operations-evidence-contracts/v2/index.ts",
+    "rules": "src/modules/operations-evidence-contracts/v2/rules.ts",
+    "fixtures": "src/modules/operations-evidence-contracts/v2/fixtures.ts"
+  },
+  "consumerSequence": [
+    "pin exact implementation and final evidence SHAs plus raw artifact digests",
+    "strict-parse the manifest and full content-addressed v2 ledger",
+    "supply the exact explicit assessment clock and prior set after genesis",
+    "consume only SDK-derived daily weekly capability entry exit and stage results",
+    "retain L1 record tenant owner authority and finality as read-only values"
+  ],
+  "prohibitions": [
+    "do not use v1 records directly for credit owner stage entry exit or G2 decisions",
+    "do not mint or reinterpret canonical human owners authority grants evidence refs record identity supersession or proof days",
+    "do not persist credentials PII secrets or document bodies",
+    "do not activate routes providers production writes migrations deployments or a proof window"
+  ],
+  "effectAuthority": "NO_EFFECT",
+  "productionReady": false,
+  "nextGate": "OPS-CONTRACTS-ASSURE-02"
+}

@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/operations-evidence/v2/luzione-operations-evidence-ledger-v2.schema.json",
+  "title": "Luzione Operations Evidence Append Ledger v2",
+  "description": "Strict NO_EFFECT append-ledger envelope. Cross-record, prior-set, clock, owner, authority, formula and reference semantics are enforced by the generated L1 SDK.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "assessmentTime": { "$ref": "#/$defs/Timestamp" },
+    "authorityGrants": { "type": "array", "items": { "$ref": "#/$defs/AuthorityGrant" }, "uniqueItems": true },
+    "capabilityEpochResets": { "type": "array", "items": { "$ref": "#/$defs/CapabilityEpochReset" }, "uniqueItems": true },
+    "contractVersion": { "const": "LuzioneOperationsEvidenceLedger/v2" },
+    "dailyMetricBindings": { "type": "array", "items": { "$ref": "#/$defs/DailyMetricBinding" }, "uniqueItems": true },
+    "effectAuthority": { "const": "NO_EFFECT" },
+    "entries": { "type": "array", "items": { "$ref": "#/$defs/Entry" }, "minItems": 1, "uniqueItems": true },
+    "ledgerDigest": { "$ref": "#/$defs/Sha256" },
+    "ledgerId": { "$ref": "#/$defs/Id" },
+    "ownerContexts": { "type": "array", "items": { "$ref": "#/$defs/OwnerContext" }, "minItems": 1, "uniqueItems": true },
+    "priorRecordSetDigest": { "oneOf": [{ "$ref": "#/$defs/Sha256" }, { "type": "null" }] },
+    "recordSetDigest": { "$ref": "#/$defs/Sha256" },
+    "tenantId": { "$ref": "#/$defs/Id" }
+  },
+  "required": [
+    "assessmentTime",
+    "authorityGrants",
+    "capabilityEpochResets",
+    "contractVersion",
+    "dailyMetricBindings",
+    "effectAuthority",
+    "entries",
+    "ledgerDigest",
+    "ledgerId",
+    "ownerContexts",
+    "priorRecordSetDigest",
+    "recordSetDigest",
+    "tenantId"
+  ],
+  "$defs": {
+    "Id": { "type": "string", "minLength": 3, "maxLength": 240, "pattern": "^\\S(?:.*\\S)?$" },
+    "Sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "Timestamp": { "type": "string", "format": "date-time", "pattern": "Z$" },
+    "Date": { "type": "string", "format": "date", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "Entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contentDigest": { "$ref": "#/$defs/Sha256" },
+        "document": {
+          "allOf": [
+            { "$ref": "../v1/luzione-operations-evidence-v1.schema.json" },
+            {
+              "if": { "properties": { "contractVersion": { "const": "CapabilityWindowLedger/v1" } }, "required": ["contractVersion"] },
+              "then": { "properties": { "payload": { "properties": { "dailyRecordIds": { "maxItems": 30 } } } } }
+            }
+          ]
+        }
+      },
+      "required": ["contentDigest", "document"]
+    },
+    "OwnerContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "authorityEvidenceRefId": { "$ref": "#/$defs/Id" },
+        "contractVersion": { "const": "CanonicalHumanOwnerContext/v1" },
+        "function": { "enum": ["FOUNDER", "PLATFORM_OPERATIONS", "SUPPORT_OPERATIONS"] },
+        "membershipState": { "const": "ACTIVE" },
+        "ownerId": { "$ref": "#/$defs/Id" },
+        "principalType": { "const": "HUMAN" },
+        "role": { "enum": ["FOUNDER", "IREM"] },
+        "tenantId": { "$ref": "#/$defs/Id" }
+      },
+      "required": ["authorityEvidenceRefId", "contractVersion", "function", "membershipState", "ownerId", "principalType", "role", "tenantId"]
+    },
+    "AuthorityGrant": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "actionId": { "enum": ["g2:activate-reads", "g2:activate-reversible-writes", "g2:activate-bounded-provider-actions", "g2:open-formal-proof"] },
+        "authorityEvidenceRefId": { "$ref": "#/$defs/Id" },
+        "contractVersion": { "const": "G2EffectAuthorityGrant/v1" },
+        "effect": { "enum": ["TENANT_LIVE_READ", "TENANT_REVERSIBLE_WRITE", "BOUNDED_PROVIDER_ACTION", "FORMAL_PROOF_OPEN"] },
+        "expiresAt": { "$ref": "#/$defs/Timestamp" },
+        "grantId": { "$ref": "#/$defs/Id" },
+        "grantedAt": { "$ref": "#/$defs/Timestamp" },
+        "requestedStage": { "enum": ["READS", "REVERSIBLE_WRITES", "BOUNDED_PROVIDER_ACTIONS", "FORMAL_PROOF"] },
+        "signerFunction": { "const": "FOUNDER" },
+        "signerOwnerId": { "$ref": "#/$defs/Id" },
+        "state": { "const": "GRANTED" },
+        "tenantId": { "$ref": "#/$defs/Id" }
+      },
+      "required": ["actionId", "authorityEvidenceRefId", "contractVersion", "effect", "expiresAt", "grantId", "grantedAt", "requestedStage", "signerFunction", "signerOwnerId", "state", "tenantId"]
+    },
+    "CapabilityEpochReset": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "capabilityId": { "$ref": "#/$defs/Id" },
+        "contractVersion": { "const": "CapabilityEpochReset/v1" },
+        "effectiveDate": { "$ref": "#/$defs/Date" },
+        "incidentRecordId": { "$ref": "#/$defs/Id" },
+        "newEpochId": { "$ref": "#/$defs/Id" },
+        "priorEpochId": { "$ref": "#/$defs/Id" },
+        "recoveryEvidenceRefId": { "$ref": "#/$defs/Id" },
+        "resetId": { "$ref": "#/$defs/Id" },
+        "tenantId": { "$ref": "#/$defs/Id" }
+      },
+      "required": ["capabilityId", "contractVersion", "effectiveDate", "incidentRecordId", "newEpochId", "priorEpochId", "recoveryEvidenceRefId", "resetId", "tenantId"]
+    },
+    "HardZeroObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "evidenceRefId": { "$ref": "#/$defs/Id" },
+        "metricId": { "$ref": "#/$defs/Id" },
+        "metricKey": { "enum": ["duplicateEffect", "falseFinality", "p0P1AutoClose", "secretExposure", "unauthorizedCrossTenantSuccess", "unauthorizedEffect", "unapprovedProviderDispatch", "unverifiedClosure"] },
+        "value": { "type": "integer", "minimum": 0 }
+      },
+      "required": ["evidenceRefId", "metricId", "metricKey", "value"]
+    },
+    "DailyMetricBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "completenessEvidenceRefId": { "$ref": "#/$defs/Id" },
+        "completenessMetricId": { "$ref": "#/$defs/Id" },
+        "completenessReportRecordId": { "$ref": "#/$defs/Id" },
+        "contractVersion": { "const": "DailyMetricEvidenceBinding/v1" },
+        "dailyRecordId": { "$ref": "#/$defs/Id" },
+        "hardZeros": { "type": "array", "items": { "$ref": "#/$defs/HardZeroObservation" }, "minItems": 8, "maxItems": 8, "uniqueItems": true },
+        "metricCatalogRecordId": { "$ref": "#/$defs/Id" },
+        "telemetryEvidenceRefId": { "$ref": "#/$defs/Id" },
+        "telemetryMetricId": { "$ref": "#/$defs/Id" }
+      },
+      "required": ["completenessEvidenceRefId", "completenessMetricId", "completenessReportRecordId", "contractVersion", "dailyRecordId", "hardZeros", "metricCatalogRecordId", "telemetryEvidenceRefId", "telemetryMetricId"]
+    }
+  },
+  "x-luzione-semanticRules": {
+    "capabilityProofDayMaximum": 30,
+    "completenessDenominatorMinimum": 1,
+    "hardZeroMetricCount": 8,
+    "priorSetOverwriteAllowed": false,
+    "schemaSdkParity": "BIDIRECTIONAL_FIXTURES_REQUIRED"
+  }
+}
