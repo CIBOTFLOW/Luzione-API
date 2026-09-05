@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.luzione.ai/support/v1/schemas/support-privacy-retention-read-packet-v1.schema.json",
+  "title": "SupportPrivacyRetentionReadPacket/v1",
+  "allOf": [
+    {
+      "$ref": "./internal-definitions.schema.json#/$defs/ReadPacketEnvelope"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "SupportPrivacyRetentionReadPacket/v1"
+        },
+        "payload": {
+          "$ref": "./internal-definitions.schema.json#/$defs/SupportPrivacyRetentionReadPacketV1Payload"
+        }
+      }
+    }
+  ],
+  "unevaluatedProperties": false
+}

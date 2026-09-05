@@ -1,0 +1,75 @@
+{
+  "pinVersion": "LuzioneSupportL2ReadersPin/v1",
+  "consumerRepository": "CIBOTFLOW/Luzione-UI",
+  "producerRepository": "CIBOTFLOW/Luzione-API",
+  "producerBranch": "codex/support-output-contract-l1-g0-f655931",
+  "baseSha": "bb4c9e3e337c64d30991badfd43bb182ad0a8a16",
+  "implementationSha": "7f584651a71fd9218ccf4452e3a8584b68df727a",
+  "implementationTreeSha": "b0e89ca1d3c539fd718ecf01cb09d577ebaf5e0a",
+  "finalCommitBinding": {
+    "mode": "DETACHED_ANNOTATED_TAG",
+    "tag": "support-contract-bundle-l1-g0-exact-final",
+    "tagMustPeelToFinalHandoffCommit": true
+  },
+  "selfBinding": {
+    "path": "contracts/support/v1/consumers/l2-support-readers.pin.json",
+    "gitBlobAndSha256RecordedIn": "support-contract-bundle-l1-g0-exact-final"
+  },
+  "manifest": {
+    "path": "contracts/support/v1/manifest.json",
+    "sha256": "1a6e407d3490e9f833e83fd822a50c92c6e4d0ad5b50b13286d093389e42fc0e"
+  },
+  "generatedSdk": {
+    "path": "contracts/support/v1/generated/typescript/index.ts",
+    "sha256": "22da15fec183a9e15382d1b9752147fe3fc6fafe86b57db7e0394bc0b1763c16",
+    "treeGitSha": "d6353067d35a980416e8a024d2b6bdcc1b088009"
+  },
+  "fixtures": {
+    "treeGitSha": "5963d1dda95880d14643b7f49a7814a8006f504a",
+    "adverseSha256": "96d13097790b5483efe70c53bd7f1b719c5f1fb1c33a51ce982a6363a23ee0a1",
+    "blockedDependenciesSha256": "a36dc38df681041ae3aa596a98a7c1a7c730fe88f11b27eb7ea78d88fa087630",
+    "operationsV3AbsentSha256": "a45910e6811dc0b1300f067bbcb051418cb2bbf6350e73519e262f1f8028ebab"
+  },
+  "internalDefinitions": {
+    "path": "contracts/support/v1/schemas/internal-definitions.schema.json",
+    "sha256": "d73942caea8caca330b123bdee733628c10ed0327618ddc7f1046d1f63c3ca63"
+  },
+  "schemas": [
+    ["QualifiedSupportSourceRef/v1", "0ceaab41f64ff34acdd0959e7446a0c747055c28998e962200a0a8eb456f96fc"],
+    ["SupportRedactionReceipt/v1", "a3b72d738ac4e1edfbab4a4bbe76566e5786611ac3eb2cce861d70082d3a962b"],
+    ["SupportPrivacyRetentionRef/v1", "91e2c9101960f1a0631978570eaa6f1696581c9704347837a1af2cdd3828dc96"],
+    ["SupportDataDispositionReceipt/v1", "fe50209545d486d82f38c7593533d03a43acec04e492d7208a77d2461b09efd2"],
+    ["SupportPolicyEntitlementRef/v1", "2afb2178ce6cb61b966911c81c77b40b3e848b9fa93218a2af6fd7bf084f9d47"],
+    ["SupportIntakeEvidence/v1", "8c16ae74258455fc4f151c1da6bf6912de02c84fd2e78506c3b76d291e73fc3e"],
+    ["SupportOwnershipAcceptanceEvidence/v1", "b52ab975b96449204f6431c89c14f335cb570f125ceea3be942c314b4037a6f8"],
+    ["SupportSlaScheduleEvent/v1", "72cd46580642b6d34ef08a3bdce56f9e23a181d51c06a310597ef37bd800558f"],
+    ["SupportCaseIncidentBinding/v1", "000f8850d2a2b53a662bb0f1b1742cb0025cca13092025d1380e202c4ca550f5"],
+    ["SupportClosureEvidence/v1", "a96a5de46b8a2bcb5e37a2fac1e4afa94003932b8e389739943cc0b6d54ea2a3"],
+    ["SupportReopenEvidence/v1", "8003094c7bd7a6330f1ec1d153156d8b79b8e4c3f2df85a7b5703e7a72d6b908"],
+    ["LegacySupportQuarantineManifest/v1", "6a05f1691844a2d05b48d5fe1be08794391422a3d908b31709f0de6324bab9e1"],
+    ["SupportPolicyEntitlementReadPacket/v1", "49c0d9a038cd39735a5a6768eda093a28b5aded4fe514f40d7776dee6fed76ea"],
+    ["SupportRosterCoverageReadPacket/v1", "33c327f74470d352f6c1cba9047782949814134f9d4acfda655ba79259136c40"],
+    ["SupportPrivacyRetentionReadPacket/v1", "48ce98e29e4f07b7b72759f1abed6a4eadbc986e77859a54096e9beefd9a30d5"],
+    ["SupportLegacyCompatibilityReadPacket/v1", "29d3e578fa0ff6e44a47a05ca0733aee32e01940c068fdc9742a30b38c77d35a"],
+    ["SupportInvestigationReadPacket/v1", "063ac8e93cae37d80b489eb1c96eacc870a1dccbe0a128dfd22eb4faef7617cf"],
+    ["SupportIncidentEscalationReadPacket/v1", "afafd8804c2e366a8dee84a0e6ce7686a8e6a5feb3f7bee235a3d1b52f4d63dd"],
+    ["SupportObservabilityRecoveryReadPacket/v1", "67d025955f8b71efa6af15d2e9f538a736c759a09d51669d35d72a968e6a6efc"],
+    ["SupportOutputHandoff/v1", "ec0ed5a5f943547f9f9d4fc02240728fe4ac6f5f7e42ea9028811eac1ea84eda"]
+  ],
+  "readableContracts": [
+    "QualifiedSupportSourceRef/v1", "SupportRedactionReceipt/v1", "SupportPrivacyRetentionRef/v1", "SupportDataDispositionReceipt/v1",
+    "SupportPolicyEntitlementRef/v1", "SupportIntakeEvidence/v1", "SupportOwnershipAcceptanceEvidence/v1", "SupportSlaScheduleEvent/v1",
+    "SupportCaseIncidentBinding/v1", "SupportClosureEvidence/v1", "SupportReopenEvidence/v1", "LegacySupportQuarantineManifest/v1",
+    "SupportPolicyEntitlementReadPacket/v1", "SupportRosterCoverageReadPacket/v1", "SupportPrivacyRetentionReadPacket/v1",
+    "SupportLegacyCompatibilityReadPacket/v1", "SupportInvestigationReadPacket/v1", "SupportIncidentEscalationReadPacket/v1",
+    "SupportObservabilityRecoveryReadPacket/v1"
+  ],
+  "operationsV3": {
+    "state": "ABSENT",
+    "reason": "AWAITING_OPS_CONTRACTS_ASSURE_04",
+    "decisionCredit": 0
+  },
+  "consumerBoundary": "PURE_ROUTE_DISCONNECTED_READERS_ONLY_NO_WRITER_RESOLVER_PROVIDER_OR_FINALITY",
+  "effectAuthority": "NO_EFFECT",
+  "finality": "NOT_FINAL"
+}

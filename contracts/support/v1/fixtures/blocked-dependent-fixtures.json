@@ -1,0 +1,13 @@
+{
+  "fixtureVersion": "LuzioneSupportBlockedDependencyFixtures/v1",
+  "effectAuthority": "NO_EFFECT",
+  "decisionCredit": 0,
+  "dependencies": [
+    { "fixture": "owner-acceptance", "state": "BLOCKED_INCOMPLETE", "missing": ["canonical-human-authority"] },
+    { "fixture": "roster-coverage", "state": "BLOCKED_INCOMPLETE", "missing": ["canonical-human-authority", "current-roster"] },
+    { "fixture": "founder-irem-escalation", "state": "BLOCKED_INCOMPLETE", "missing": ["founder-function", "irem-function", "current-coverage"] },
+    { "fixture": "g2-effect-authority", "state": "BLOCKED_INCOMPLETE", "missing": ["distinct-effect-authority-grant"] },
+    { "fixture": "incident-recovery", "state": "BLOCKED_INCOMPLETE", "missing": ["resolved-verified-incident", "incident-bound-recovery"] },
+    { "fixture": "capability-epoch", "state": "BLOCKED_INCOMPLETE", "missing": ["verified-reset-lineage"] }
+  ]
+}

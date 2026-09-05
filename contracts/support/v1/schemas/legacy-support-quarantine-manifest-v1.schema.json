@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.luzione.ai/support/v1/schemas/legacy-support-quarantine-manifest-v1.schema.json",
+  "title": "LegacySupportQuarantineManifest/v1",
+  "allOf": [
+    {
+      "$ref": "./internal-definitions.schema.json#/$defs/DocumentEnvelope"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "LegacySupportQuarantineManifest/v1"
+        },
+        "payload": {
+          "$ref": "./internal-definitions.schema.json#/$defs/LegacySupportQuarantineManifestV1Payload"
+        }
+      }
+    }
+  ],
+  "unevaluatedProperties": false
+}

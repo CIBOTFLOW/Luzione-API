@@ -1,0 +1,329 @@
+{
+  "manifestVersion": "LuzioneSupportContractBundleManifest/v1",
+  "bundleVersion": "LuzioneSupportContractBundle/v1",
+  "controllerAuthority": "f655931439d0f9fabfdbeb6e8a6a1271894c1dd6",
+  "implementationPacketFingerprintSha256": "89492596874d04cc58b819ac005ec7bd08ed77328f5eafe666e54e075ef246a0",
+  "collisionFingerprintSha256": "b388706239d0675febc634e0e9276a368b6e1664a42914ebee60a8edce7fb684",
+  "effectAuthority": "NO_EFFECT",
+  "finality": "NOT_FINAL",
+  "productionReady": false,
+  "publicEntryCount": 20,
+  "split": {
+    "sourceEvidence": 12,
+    "readProjections": 7,
+    "emulatorReceipts": 1
+  },
+  "internalDefinitions": {
+    "path": "contracts/support/v1/schemas/internal-definitions.schema.json",
+    "sha256": "d73942caea8caca330b123bdee733628c10ed0327618ddc7f1046d1f63c3ca63",
+    "public": false
+  },
+  "operationsV3Dependency": {
+    "state": "ABSENT",
+    "reason": "AWAITING_OPS_CONTRACTS_ASSURE_04",
+    "expectedOwner": "CIBOTFLOW/Luzione-API",
+    "expectedType": "LuzioneOperationsEvidenceLedger",
+    "expectedVersion": "LuzioneOperationsEvidenceLedger/v3"
+  },
+  "frozenSpine": {
+    "baseSha": "bb4c9e3e337c64d30991badfd43bb182ad0a8a16",
+    "coreTreeGitSha": "d57ccc4cccd97b37acd1a1575b1e07ede5787349",
+    "coreSdkTreeGitSha": "d594fa014d7020fdf8386c7a6926ff9b573ac355",
+    "p110P111TreeGitSha": "a22ce25cd93e362ff44688b456b63e3eb8ec10e2",
+    "coreSchemaSha256": "13edcb0d5ec3509e21bc4a299e442c81072426772e7419a1b56160697b05be2d",
+    "coreManifestSha256": "a3bf790b2c75bcba1023aa8f5d87abb01e638a4d56a8c626a58f78c26a4232dc",
+    "coreTypesSha256": "a62c71cbf7e23e5dbae8df227b7f69cd29f327beb9b342646eab69a0bbddef6f",
+    "coreParserSha256": "5e1b61f8083d222bb3e38adecdf12347447753b5d448fbe36cffba93cdc27630",
+    "coreFixturesSha256": "2d2c9d71d156bf57b6a1e26967dde8101e920aeeecafdf5c481081e5e95b74d0",
+    "p110EventSha256": "cba2fd316401c84cb445235b35417af29fea942f3fad5d5e73777acb84639241",
+    "p110CommandSha256": "2627de6bd434c22b88ac43e0bf0f6c97d833ad75cd7fd6c55da657ccef3b5630",
+    "p111StateSha256": "548c52c09dc26350129b39d6a2949a380e9e3e76bbeb7d0981c0e0ef5de94bfd",
+    "p111RetrySha256": "36c0ae43e1a96639c38b1817763516c7e80923ff80b2929922e96f5fee1786ce",
+    "p111RecoverySha256": "35ab18554e685f3613de8a65b93596e3ec2ef4d47c6a38f892a6a21d1877b629"
+  },
+  "entries": [
+    {
+      "order": 1,
+      "contractVersion": "QualifiedSupportSourceRef/v1",
+      "kind": "SOURCE_EVIDENCE",
+      "schemaPath": "contracts/support/v1/schemas/qualified-support-source-ref-v1.schema.json",
+      "schemaSha256": "0ceaab41f64ff34acdd0959e7446a0c747055c28998e962200a0a8eb456f96fc",
+      "dependencies": []
+    },
+    {
+      "order": 2,
+      "contractVersion": "SupportRedactionReceipt/v1",
+      "kind": "SOURCE_EVIDENCE",
+      "schemaPath": "contracts/support/v1/schemas/support-redaction-receipt-v1.schema.json",
+      "schemaSha256": "a3b72d738ac4e1edfbab4a4bbe76566e5786611ac3eb2cce861d70082d3a962b",
+      "dependencies": [
+        "QualifiedSupportSourceRef/v1"
+      ]
+    },
+    {
+      "order": 3,
+      "contractVersion": "SupportPrivacyRetentionRef/v1",
+      "kind": "SOURCE_EVIDENCE",
+      "schemaPath": "contracts/support/v1/schemas/support-privacy-retention-ref-v1.schema.json",
+      "schemaSha256": "91e2c9101960f1a0631978570eaa6f1696581c9704347837a1af2cdd3828dc96",
+      "dependencies": [
+        "QualifiedSupportSourceRef/v1",
+        "SupportRedactionReceipt/v1"
+      ]
+    },
+    {
+      "order": 4,
+      "contractVersion": "SupportDataDispositionReceipt/v1",
+      "kind": "SOURCE_EVIDENCE",
+      "schemaPath": "contracts/support/v1/schemas/support-data-disposition-receipt-v1.schema.json",
+      "schemaSha256": "fe50209545d486d82f38c7593533d03a43acec04e492d7208a77d2461b09efd2",
+      "dependencies": [
+        "QualifiedSupportSourceRef/v1",
+        "SupportPrivacyRetentionRef/v1"
+      ]
+    },
+    {
+      "order": 5,
+      "contractVersion": "SupportPolicyEntitlementRef/v1",
+      "kind": "SOURCE_EVIDENCE",
+      "schemaPath": "contracts/support/v1/schemas/support-policy-entitlement-ref-v1.schema.json",
+      "schemaSha256": "2afb2178ce6cb61b966911c81c77b40b3e848b9fa93218a2af6fd7bf084f9d47",
+      "dependencies": [
+        "QualifiedSupportSourceRef/v1"
+      ]
+    },
+    {
+      "order": 6,
+      "contractVersion": "SupportIntakeEvidence/v1",
+      "kind": "SOURCE_EVIDENCE",
+      "schemaPath": "contracts/support/v1/schemas/support-intake-evidence-v1.schema.json",
+      "schemaSha256": "8c16ae74258455fc4f151c1da6bf6912de02c84fd2e78506c3b76d291e73fc3e",
+      "dependencies": [
+        "QualifiedSupportSourceRef/v1",
+        "SupportRedactionReceipt/v1"
+      ]
+    },
+    {
+      "order": 7,
+      "contractVersion": "SupportOwnershipAcceptanceEvidence/v1",
+      "kind": "SOURCE_EVIDENCE",
+      "schemaPath": "contracts/support/v1/schemas/support-ownership-acceptance-evidence-v1.schema.json",
+      "schemaSha256": "b52ab975b96449204f6431c89c14f335cb570f125ceea3be942c314b4037a6f8",
+      "dependencies": [
+        "QualifiedSupportSourceRef/v1",
+        "SupportIntakeEvidence/v1"
+      ]
+    },
+    {
+      "order": 8,
+      "contractVersion": "SupportSlaScheduleEvent/v1",
+      "kind": "SOURCE_EVIDENCE",
+      "schemaPath": "contracts/support/v1/schemas/support-sla-schedule-event-v1.schema.json",
+      "schemaSha256": "72cd46580642b6d34ef08a3bdce56f9e23a181d51c06a310597ef37bd800558f",
+      "dependencies": [
+        "QualifiedSupportSourceRef/v1",
+        "SupportPolicyEntitlementRef/v1",
+        "SupportOwnershipAcceptanceEvidence/v1"
+      ]
+    },
+    {
+      "order": 9,
+      "contractVersion": "SupportCaseIncidentBinding/v1",
+      "kind": "SOURCE_EVIDENCE",
+      "schemaPath": "contracts/support/v1/schemas/support-case-incident-binding-v1.schema.json",
+      "schemaSha256": "000f8850d2a2b53a662bb0f1b1742cb0025cca13092025d1380e202c4ca550f5",
+      "dependencies": [
+        "QualifiedSupportSourceRef/v1",
+        "SupportOwnershipAcceptanceEvidence/v1"
+      ]
+    },
+    {
+      "order": 10,
+      "contractVersion": "SupportClosureEvidence/v1",
+      "kind": "SOURCE_EVIDENCE",
+      "schemaPath": "contracts/support/v1/schemas/support-closure-evidence-v1.schema.json",
+      "schemaSha256": "a96a5de46b8a2bcb5e37a2fac1e4afa94003932b8e389739943cc0b6d54ea2a3",
+      "dependencies": [
+        "QualifiedSupportSourceRef/v1",
+        "SupportOwnershipAcceptanceEvidence/v1",
+        "SupportSlaScheduleEvent/v1"
+      ]
+    },
+    {
+      "order": 11,
+      "contractVersion": "SupportReopenEvidence/v1",
+      "kind": "SOURCE_EVIDENCE",
+      "schemaPath": "contracts/support/v1/schemas/support-reopen-evidence-v1.schema.json",
+      "schemaSha256": "8003094c7bd7a6330f1ec1d153156d8b79b8e4c3f2df85a7b5703e7a72d6b908",
+      "dependencies": [
+        "QualifiedSupportSourceRef/v1",
+        "SupportClosureEvidence/v1"
+      ]
+    },
+    {
+      "order": 12,
+      "contractVersion": "LegacySupportQuarantineManifest/v1",
+      "kind": "SOURCE_EVIDENCE",
+      "schemaPath": "contracts/support/v1/schemas/legacy-support-quarantine-manifest-v1.schema.json",
+      "schemaSha256": "6a05f1691844a2d05b48d5fe1be08794391422a3d908b31709f0de6324bab9e1",
+      "dependencies": [
+        "QualifiedSupportSourceRef/v1"
+      ]
+    },
+    {
+      "order": 13,
+      "contractVersion": "SupportPolicyEntitlementReadPacket/v1",
+      "kind": "READ_PROJECTION",
+      "schemaPath": "contracts/support/v1/schemas/support-policy-entitlement-read-packet-v1.schema.json",
+      "schemaSha256": "49c0d9a038cd39735a5a6768eda093a28b5aded4fe514f40d7776dee6fed76ea",
+      "dependencies": [
+        "SupportPolicyEntitlementRef/v1"
+      ]
+    },
+    {
+      "order": 14,
+      "contractVersion": "SupportRosterCoverageReadPacket/v1",
+      "kind": "READ_PROJECTION",
+      "schemaPath": "contracts/support/v1/schemas/support-roster-coverage-read-packet-v1.schema.json",
+      "schemaSha256": "33c327f74470d352f6c1cba9047782949814134f9d4acfda655ba79259136c40",
+      "dependencies": [
+        "SupportOwnershipAcceptanceEvidence/v1"
+      ]
+    },
+    {
+      "order": 15,
+      "contractVersion": "SupportPrivacyRetentionReadPacket/v1",
+      "kind": "READ_PROJECTION",
+      "schemaPath": "contracts/support/v1/schemas/support-privacy-retention-read-packet-v1.schema.json",
+      "schemaSha256": "48ce98e29e4f07b7b72759f1abed6a4eadbc986e77859a54096e9beefd9a30d5",
+      "dependencies": [
+        "SupportPrivacyRetentionRef/v1",
+        "SupportDataDispositionReceipt/v1"
+      ]
+    },
+    {
+      "order": 16,
+      "contractVersion": "SupportLegacyCompatibilityReadPacket/v1",
+      "kind": "READ_PROJECTION",
+      "schemaPath": "contracts/support/v1/schemas/support-legacy-compatibility-read-packet-v1.schema.json",
+      "schemaSha256": "29d3e578fa0ff6e44a47a05ca0733aee32e01940c068fdc9742a30b38c77d35a",
+      "dependencies": [
+        "LegacySupportQuarantineManifest/v1",
+        "SupportPrivacyRetentionRef/v1"
+      ]
+    },
+    {
+      "order": 17,
+      "contractVersion": "SupportInvestigationReadPacket/v1",
+      "kind": "READ_PROJECTION",
+      "schemaPath": "contracts/support/v1/schemas/support-investigation-read-packet-v1.schema.json",
+      "schemaSha256": "063ac8e93cae37d80b489eb1c96eacc870a1dccbe0a128dfd22eb4faef7617cf",
+      "dependencies": [
+        "QualifiedSupportSourceRef/v1",
+        "SupportRedactionReceipt/v1",
+        "SupportPolicyEntitlementReadPacket/v1",
+        "SupportRosterCoverageReadPacket/v1"
+      ]
+    },
+    {
+      "order": 18,
+      "contractVersion": "SupportIncidentEscalationReadPacket/v1",
+      "kind": "READ_PROJECTION",
+      "schemaPath": "contracts/support/v1/schemas/support-incident-escalation-read-packet-v1.schema.json",
+      "schemaSha256": "afafd8804c2e366a8dee84a0e6ce7686a8e6a5feb3f7bee235a3d1b52f4d63dd",
+      "dependencies": [
+        "SupportCaseIncidentBinding/v1",
+        "SupportPolicyEntitlementReadPacket/v1",
+        "SupportRosterCoverageReadPacket/v1"
+      ]
+    },
+    {
+      "order": 19,
+      "contractVersion": "SupportObservabilityRecoveryReadPacket/v1",
+      "kind": "READ_PROJECTION",
+      "schemaPath": "contracts/support/v1/schemas/support-observability-recovery-read-packet-v1.schema.json",
+      "schemaSha256": "67d025955f8b71efa6af15d2e9f538a736c759a09d51669d35d72a968e6a6efc",
+      "dependencies": [
+        "QualifiedSupportSourceRef/v1",
+        "SupportSlaScheduleEvent/v1",
+        "SupportClosureEvidence/v1",
+        "SupportReopenEvidence/v1",
+        "SupportIncidentEscalationReadPacket/v1"
+      ]
+    },
+    {
+      "order": 20,
+      "contractVersion": "SupportOutputHandoff/v1",
+      "kind": "EMULATOR_RECEIPT",
+      "schemaPath": "contracts/support/v1/schemas/support-output-handoff-v1.schema.json",
+      "schemaSha256": "ec0ed5a5f943547f9f9d4fc02240728fe4ac6f5f7e42ea9028811eac1ea84eda",
+      "dependencies": [
+        "SupportInvestigationReadPacket/v1",
+        "SupportIncidentEscalationReadPacket/v1",
+        "SupportObservabilityRecoveryReadPacket/v1"
+      ]
+    }
+  ],
+  "generatedSdk": {
+    "path": "contracts/support/v1/generated/typescript/index.ts",
+    "inputType": "Uint8Array",
+    "publicTypes": [
+      "QualifiedSupportSourceRefV1",
+      "SupportRedactionReceiptV1",
+      "SupportPrivacyRetentionRefV1",
+      "SupportDataDispositionReceiptV1",
+      "SupportPolicyEntitlementRefV1",
+      "SupportIntakeEvidenceV1",
+      "SupportOwnershipAcceptanceEvidenceV1",
+      "SupportSlaScheduleEventV1",
+      "SupportCaseIncidentBindingV1",
+      "SupportClosureEvidenceV1",
+      "SupportReopenEvidenceV1",
+      "LegacySupportQuarantineManifestV1",
+      "SupportPolicyEntitlementReadPacketV1",
+      "SupportRosterCoverageReadPacketV1",
+      "SupportPrivacyRetentionReadPacketV1",
+      "SupportLegacyCompatibilityReadPacketV1",
+      "SupportInvestigationReadPacketV1",
+      "SupportIncidentEscalationReadPacketV1",
+      "SupportObservabilityRecoveryReadPacketV1",
+      "SupportOutputHandoffV1"
+    ],
+    "publicParsers": [
+      "parseQualifiedSupportSourceRefV1",
+      "parseSupportRedactionReceiptV1",
+      "parseSupportPrivacyRetentionRefV1",
+      "parseSupportDataDispositionReceiptV1",
+      "parseSupportPolicyEntitlementRefV1",
+      "parseSupportIntakeEvidenceV1",
+      "parseSupportOwnershipAcceptanceEvidenceV1",
+      "parseSupportSlaScheduleEventV1",
+      "parseSupportCaseIncidentBindingV1",
+      "parseSupportClosureEvidenceV1",
+      "parseSupportReopenEvidenceV1",
+      "parseLegacySupportQuarantineManifestV1",
+      "parseSupportPolicyEntitlementReadPacketV1",
+      "parseSupportRosterCoverageReadPacketV1",
+      "parseSupportPrivacyRetentionReadPacketV1",
+      "parseSupportLegacyCompatibilityReadPacketV1",
+      "parseSupportInvestigationReadPacketV1",
+      "parseSupportIncidentEscalationReadPacketV1",
+      "parseSupportObservabilityRecoveryReadPacketV1",
+      "parseSupportOutputHandoffV1"
+    ],
+    "forbiddenExports": [
+      "builder",
+      "store",
+      "resolver",
+      "provider",
+      "writer",
+      "migration",
+      "scheduler",
+      "finalizer"
+    ]
+  },
+  "generation": {
+    "command": "node contracts/support/v1/generated/typescript/generate.mjs --check",
+    "deterministic": true
+  }
+}

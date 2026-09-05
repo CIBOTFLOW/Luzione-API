@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.luzione.ai/support/v1/schemas/qualified-support-source-ref-v1.schema.json",
+  "title": "QualifiedSupportSourceRef/v1",
+  "allOf": [
+    {
+      "$ref": "./internal-definitions.schema.json#/$defs/DocumentEnvelope"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "QualifiedSupportSourceRef/v1"
+        },
+        "payload": {
+          "$ref": "./internal-definitions.schema.json#/$defs/QualifiedSupportSourceRefV1Payload"
+        }
+      }
+    }
+  ],
+  "unevaluatedProperties": false
+}

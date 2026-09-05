@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.luzione.ai/support/v1/schemas/support-observability-recovery-read-packet-v1.schema.json",
+  "title": "SupportObservabilityRecoveryReadPacket/v1",
+  "allOf": [
+    {
+      "$ref": "./internal-definitions.schema.json#/$defs/ReadPacketEnvelope"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "SupportObservabilityRecoveryReadPacket/v1"
+        },
+        "payload": {
+          "$ref": "./internal-definitions.schema.json#/$defs/SupportObservabilityRecoveryReadPacketV1Payload"
+        }
+      }
+    }
+  ],
+  "unevaluatedProperties": false
+}

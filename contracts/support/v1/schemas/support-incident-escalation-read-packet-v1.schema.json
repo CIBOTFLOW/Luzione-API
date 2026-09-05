@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.luzione.ai/support/v1/schemas/support-incident-escalation-read-packet-v1.schema.json",
+  "title": "SupportIncidentEscalationReadPacket/v1",
+  "allOf": [
+    {
+      "$ref": "./internal-definitions.schema.json#/$defs/ReadPacketEnvelope"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "SupportIncidentEscalationReadPacket/v1"
+        },
+        "payload": {
+          "$ref": "./internal-definitions.schema.json#/$defs/SupportIncidentEscalationReadPacketV1Payload"
+        }
+      }
+    }
+  ],
+  "unevaluatedProperties": false
+}

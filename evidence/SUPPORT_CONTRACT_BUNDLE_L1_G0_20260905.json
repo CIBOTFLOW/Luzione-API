@@ -1,0 +1,123 @@
+{
+  "evidenceVersion": "SupportContractBundleL1G0Evidence/v1",
+  "recordedAt": "2026-09-05T18:11:17Z",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "controllerAuthority": "f655931439d0f9fabfdbeb6e8a6a1271894c1dd6",
+  "implementationPacketFingerprintSha256": "89492596874d04cc58b819ac005ec7bd08ed77328f5eafe666e54e075ef246a0",
+  "collisionFingerprintSha256": "b388706239d0675febc634e0e9276a368b6e1664a42914ebee60a8edce7fb684",
+  "branch": "codex/support-output-contract-l1-g0-f655931",
+  "baseSha": "bb4c9e3e337c64d30991badfd43bb182ad0a8a16",
+  "implementationSha": "7f584651a71fd9218ccf4452e3a8584b68df727a",
+  "implementationTreeGitSha": "b0e89ca1d3c539fd718ecf01cb09d577ebaf5e0a",
+  "exactFinalBinding": {
+    "mode": "DETACHED_ANNOTATED_TAG",
+    "tag": "support-contract-bundle-l1-g0-exact-final",
+    "requirement": "The annotated tag must peel to the evidence-and-pin commit and record that exact commit plus both pin blobs and raw SHA-256 digests."
+  },
+  "claim": {
+    "engineeringState": "BOUNDED_PASS",
+    "releaseEvidence": "LOCAL_PROVEN",
+    "effectAuthority": "NO_EFFECT",
+    "finality": "BOUNDED_CLAIM",
+    "productionReady": false,
+    "g1": false,
+    "g2": false
+  },
+  "bundle": {
+    "version": "LuzioneSupportContractBundle/v1",
+    "manifestPath": "contracts/support/v1/manifest.json",
+    "manifestSha256": "1a6e407d3490e9f833e83fd822a50c92c6e4d0ad5b50b13286d093389e42fc0e",
+    "publicEntryCount": 20,
+    "sourceEvidenceCount": 12,
+    "readProjectionCount": 7,
+    "outputHandoffCount": 1,
+    "schemaTreeGitSha": "68ecefd8ff4b62427e879b6f9607252e72bb49a4",
+    "internalDefinitionsSha256": "d73942caea8caca330b123bdee733628c10ed0327618ddc7f1046d1f63c3ca63",
+    "generatedSdkTreeGitSha": "d6353067d35a980416e8a024d2b6bdcc1b088009",
+    "generatedSdkSha256": "22da15fec183a9e15382d1b9752147fe3fc6fafe86b57db7e0394bc0b1763c16",
+    "generatorSha256": "da8021007c1d38713ebfb9f839b97d2c485f24844ca4d54f6cd8a776552b6468",
+    "runtimeTemplateSha256": "c515f080a369c2e121b4d09299fd8e009dd7fa24db9deaa224321e6ddc82a8b7",
+    "fixtureTreeGitSha": "5963d1dda95880d14643b7f49a7814a8006f504a",
+    "testTreeGitSha": "bc45161a0b15a456e08f2a84cc5732edcc688caf",
+    "adverseFixturesSha256": "96d13097790b5483efe70c53bd7f1b719c5f1fb1c33a51ce982a6363a23ee0a1",
+    "blockedDependenciesFixturesSha256": "a36dc38df681041ae3aa596a98a7c1a7c730fe88f11b27eb7ea78d88fa087630",
+    "operationsV3AbsentFixtureSha256": "a45910e6811dc0b1300f067bbcb051418cb2bbf6350e73519e262f1f8028ebab"
+  },
+  "schemaPins": [
+    ["QualifiedSupportSourceRef/v1", "0ceaab41f64ff34acdd0959e7446a0c747055c28998e962200a0a8eb456f96fc"],
+    ["SupportRedactionReceipt/v1", "a3b72d738ac4e1edfbab4a4bbe76566e5786611ac3eb2cce861d70082d3a962b"],
+    ["SupportPrivacyRetentionRef/v1", "91e2c9101960f1a0631978570eaa6f1696581c9704347837a1af2cdd3828dc96"],
+    ["SupportDataDispositionReceipt/v1", "fe50209545d486d82f38c7593533d03a43acec04e492d7208a77d2461b09efd2"],
+    ["SupportPolicyEntitlementRef/v1", "2afb2178ce6cb61b966911c81c77b40b3e848b9fa93218a2af6fd7bf084f9d47"],
+    ["SupportIntakeEvidence/v1", "8c16ae74258455fc4f151c1da6bf6912de02c84fd2e78506c3b76d291e73fc3e"],
+    ["SupportOwnershipAcceptanceEvidence/v1", "b52ab975b96449204f6431c89c14f335cb570f125ceea3be942c314b4037a6f8"],
+    ["SupportSlaScheduleEvent/v1", "72cd46580642b6d34ef08a3bdce56f9e23a181d51c06a310597ef37bd800558f"],
+    ["SupportCaseIncidentBinding/v1", "000f8850d2a2b53a662bb0f1b1742cb0025cca13092025d1380e202c4ca550f5"],
+    ["SupportClosureEvidence/v1", "a96a5de46b8a2bcb5e37a2fac1e4afa94003932b8e389739943cc0b6d54ea2a3"],
+    ["SupportReopenEvidence/v1", "8003094c7bd7a6330f1ec1d153156d8b79b8e4c3f2df85a7b5703e7a72d6b908"],
+    ["LegacySupportQuarantineManifest/v1", "6a05f1691844a2d05b48d5fe1be08794391422a3d908b31709f0de6324bab9e1"],
+    ["SupportPolicyEntitlementReadPacket/v1", "49c0d9a038cd39735a5a6768eda093a28b5aded4fe514f40d7776dee6fed76ea"],
+    ["SupportRosterCoverageReadPacket/v1", "33c327f74470d352f6c1cba9047782949814134f9d4acfda655ba79259136c40"],
+    ["SupportPrivacyRetentionReadPacket/v1", "48ce98e29e4f07b7b72759f1abed6a4eadbc986e77859a54096e9beefd9a30d5"],
+    ["SupportLegacyCompatibilityReadPacket/v1", "29d3e578fa0ff6e44a47a05ca0733aee32e01940c068fdc9742a30b38c77d35a"],
+    ["SupportInvestigationReadPacket/v1", "063ac8e93cae37d80b489eb1c96eacc870a1dccbe0a128dfd22eb4faef7617cf"],
+    ["SupportIncidentEscalationReadPacket/v1", "afafd8804c2e366a8dee84a0e6ce7686a8e6a5feb3f7bee235a3d1b52f4d63dd"],
+    ["SupportObservabilityRecoveryReadPacket/v1", "67d025955f8b71efa6af15d2e9f538a736c759a09d51669d35d72a968e6a6efc"],
+    ["SupportOutputHandoff/v1", "ec0ed5a5f943547f9f9d4fc02240728fe4ac6f5f7e42ea9028811eac1ea84eda"]
+  ],
+  "consumerPins": {
+    "l2": {
+      "path": "contracts/support/v1/consumers/l2-support-readers.pin.json",
+      "sha256": "8ca1e64c1c92d277ff04c9bdc8c1f1ec2a14e56fac8bb29c1956c22f64d0a1ba",
+      "gitBlobSha": "98f90c1cc889ff4e464b53e7271a7b888db5cb73"
+    },
+    "l3": {
+      "path": "contracts/support/v1/consumers/l3-support-output.pin.json",
+      "sha256": "ce8ddc5a8f69329e6a2e904605ce3d7dc6dd1a9753430704d534a07ded36a03e",
+      "gitBlobSha": "41fdd57c8de69b9ca73473188c02b1fcc5e720ce"
+    }
+  },
+  "frozenSpine": {
+    "coreTreeGitSha": "d57ccc4cccd97b37acd1a1575b1e07ede5787349",
+    "coreSdkTreeGitSha": "d594fa014d7020fdf8386c7a6926ff9b573ac355",
+    "p110P111TreeGitSha": "a22ce25cd93e362ff44688b456b63e3eb8ec10e2",
+    "supportCaseActionReply": "BYTE_IDENTICAL_TO_BASE",
+    "operationsV3": "ABSENT/AWAITING_OPS_CONTRACTS_ASSURE_04"
+  },
+  "verification": {
+    "focused14Groups": {"result": "PASS", "tests": 14, "failed": 0, "skipped": 0},
+    "fullRepositoryTests": {"result": "PASS", "tests": 447, "failed": 0, "skipped": 0},
+    "compliance": {"result": "PASS", "checks": 7, "failed": 0},
+    "typecheck": "PASS",
+    "lint": "PASS_ZERO_WARNINGS",
+    "build": "PASS_NEXT_16_3_4_WEBPACK",
+    "deterministicGeneration": "PASS_23_ARTIFACTS",
+    "frozenSpineDiff": "EMPTY",
+    "implementationScopeDiff": "PASS_ALLOWED_PATHS_ONLY",
+    "exactHeadCiAtEvidenceSeal": "NOT_OBSERVED",
+    "preview": "NOT_REQUESTED_NO_DEPLOYMENT"
+  },
+  "negativeEvidence": [
+    "non-Uint8Array, oversize, BOM, invalid UTF-8, duplicate-key, unpaired-surrogate, C0/C1-control, trailing-byte and normalization inputs reject",
+    "surplus, missing, wrong-version, cross-tenant, stale, conflicting-source, nonexistent-prior, fork, cycle and changed-replay inputs reject",
+    "typed ABSENT blocks dependent owner, roster, founder-Irem, G2, incident-recovery and epoch claims",
+    "customer draft replies cannot claim acknowledgement, delivery, provider acceptance, canonical receipt or finality",
+    "SupportOutputHandoff remains NO_EFFECT and NOT_FINAL and exposes no writer, provider, store, resolver, scheduler, migration or finalizer"
+  ],
+  "reverseAndRecovery": {
+    "beforeAnyConsumerPin": "Git-only reverse of evidence commit then implementation commit restores the exact base; no DDL, data, credential or provider state exists.",
+    "afterConsumerPin": "Do not rewrite or silently repin v1. Publish an additive forward-only successor with new version and consumer pins.",
+    "productionRollbackAuthority": false
+  },
+  "deferredExternalInfrastructure": [
+    "exact-head hosted CI observation occurs only after final push",
+    "no preview or deployment was requested or created by this work",
+    "L2/L3 consumer integration and authenticated readback are unexercised"
+  ],
+  "remainingUncertainty": [
+    "OPS-CONTRACTS-ASSURE-04 has not cleared operations-v3",
+    "all dependent human authority, roster, founder-Irem, G2, incident-recovery and epoch inputs remain BLOCKED_INCOMPLETE",
+    "no production, provider, database, credential or runtime behavior was exercised"
+  ],
+  "nextAction": "SUPPORT-CONTRACT-BUNDLE-ASSURE-01 must verify the detached exact-final tag, both consumer pin blobs, all 20 schema/SDK semantics and the 14 adverse groups before any consumer integration."
+}
