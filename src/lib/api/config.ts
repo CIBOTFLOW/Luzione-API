@@ -75,6 +75,12 @@ export function connectorRevocationEnabledForTenant(tenantId: string) {
     && providerAdapterEnabled({ destination: "sandbox.connector-revocation", mode: "SANDBOX", tenantId });
 }
 
+export function seedProjectPublicationEnabledForTenant(tenantId: string) {
+  return runtimeConfig().mutationsEnabled
+    && process.env.LUZIONE_API_SEED_PROJECT_PUBLICATION_ENABLED === "true"
+    && allowlist("LUZIONE_API_SEED_PROJECT_PUBLICATION_TENANTS").has(tenantId);
+}
+
 export function providerAdapterEnabled(input: { destination: string; mode: "LIVE" | "SANDBOX"; tenantId: string }) {
   const prefix = input.mode === "LIVE" ? "LUZIONE_API_PROVIDER_LIVE" : "LUZIONE_API_PROVIDER_SANDBOX";
   return runtimeConfig().mutationsEnabled

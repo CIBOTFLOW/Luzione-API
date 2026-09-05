@@ -789,6 +789,38 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
   },
   {
     compatibility: "EXACT_VERSION",
+    consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Luzione-Room-Planner-MVP"],
+    contractId: "seed-project-publication-command",
+    currentRuntime: true,
+    maturity: "IMPLEMENTED",
+    name: "Governed Opportunity-to-Project and immutable Planner publication command",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: ["controller:SEED-PROJECT-PUBLICATION-A2:G0_G1_CANDIDATE"],
+    sourcePaths: [
+      "src/modules/seed-project-publication/contracts.ts",
+      "src/modules/seed-project-publication/store.ts",
+      "supabase/migrations/20260905083212_seed_project_publication_a2.sql"
+    ],
+    version: "SeedProjectPublicationCommand/v1",
+  },
+  {
+    compatibility: "EXACT_VERSION",
+    consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Luzione-Room-Planner-MVP"],
+    contractId: "project-specification-schedule-read-model",
+    currentRuntime: true,
+    maturity: "IMPLEMENTED",
+    name: "Tenant-bound Project, Space, Specification, Line and pending-revision schedule projection",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: ["controller:SEED-PROJECT-PUBLICATION-A2:G0_G1_CANDIDATE"],
+    sourcePaths: [
+      "src/modules/seed-project-publication/readModel.ts",
+      "src/modules/seed-project-publication/fixtures.ts",
+      "src/app/api/v1/projects/[projectId]/specification-schedule/route.ts"
+    ],
+    version: "ProjectSpecificationScheduleReadModel/v1",
+  },
+  {
+    compatibility: "EXACT_VERSION",
     consumers: [
       "CIBOTFLOW/Luzione-UI",
       "CIBOTFLOW/Sultan-OS",

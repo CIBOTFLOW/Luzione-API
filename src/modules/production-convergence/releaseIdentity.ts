@@ -3,6 +3,8 @@ export const API_CONTRACT_RELEASE_VERSION = "luzione-api-contract/v0.1";
 
 export const API_CONTRACT_RELEASE_COMPONENTS = Object.freeze([
   "api-http-response/1.0",
+  "ProjectSpecificationScheduleReadModel/v1",
+  "SeedProjectPublicationCommand/v1",
   "luzione-request-identity/v1",
   "luzione-table-object-registry/v1",
   "luzione-platform-failure/v1",
@@ -29,6 +31,7 @@ export const API_SCHEMA_VERSIONS = Object.freeze([
   "20260901130000_sultan_agent_internal_actions",
   "20260902010000_sultan_stage5_authority_outcomes",
   "20260902010100_sultan_stage5_post_inference_receipt_constraints",
+  "20260905083212_seed_project_publication_a2",
 ]);
 
 const SHA = /^[a-f0-9]{40}$/;
