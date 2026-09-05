@@ -32,7 +32,9 @@ import {
 import {
   evidenceArtifactIdFor,
   objectiveScore,
+  productCandidateReadbackDefects,
   productCandidateIdFor,
+  productSourceReadbackDefects,
   productSourceIdFor,
   procurementVersions,
   timelineProjectVersion,
@@ -96,6 +98,20 @@ function sourceFromRow(row: Row) {
   const id = String(row.product_source_id);
   const version = String(row.object_version);
   const data = json<ProductSourceRecordCommand["source"] & { sourceArtifactRef: string }>(row.canonical_payload);
+  const projectId = nullableText(row.project_id);
+  const defects = productSourceReadbackDefects({
+    artifactContentDigest: String(row.artifact_content_digest),
+    artifactId: String(row.artifact_id),
+    artifactProjectId: nullableText(row.artifact_project_id),
+    artifactStatus: String(row.artifact_status),
+    artifactVersion: String(row.artifact_version),
+    payloadContentDigest: data.contentDigest,
+    payloadSourceArtifactRef: data.sourceArtifactRef,
+    rowContentDigest: String(row.content_digest),
+    sourceProjectId: projectId,
+    sourceStatus: String(row.status),
+  });
+  if (defects.length) throw new SeedProcurementDomainError("CANONICAL_READBACK_CORRUPT", `Product Source readback failed lineage checks: ${defects.join(", ")}.`, 500);
   const resource = parseProductSourceV1({
     ...boundaries(row, version, "procurement.product_source.record"),
     contractVersion: SEED_PRODUCT_CONTRACT_VERSIONS.productSource,
@@ -106,7 +122,7 @@ function sourceFromRow(row: Row) {
     tenantId,
     updatedAt: iso(row.created_at),
   });
-  return { conflictRefs: json<string[]>(row.conflict_refs), duplicateOfSourceId: row.duplicate_of_source_id === null ? null : String(row.duplicate_of_source_id), extractionProvenance: json<string[]>(row.extraction_provenance), ingestionFormat: String(row.ingestion_format), projectId: nullableText(row.project_id), resource };
+  return { conflictRefs: json<string[]>(row.conflict_refs), duplicateOfSourceId: row.duplicate_of_source_id === null ? null : String(row.duplicate_of_source_id), extractionProvenance: json<string[]>(row.extraction_provenance), ingestionFormat: String(row.ingestion_format), projectId, resource };
 }
 
 function candidateFromRow(row: Row) {
@@ -114,6 +130,17 @@ function candidateFromRow(row: Row) {
   const id = String(row.product_candidate_id);
   const version = String(row.object_version);
   const data = json<ProductCandidateRecordCommand["candidate"] & { productSourceId: string }>(row.canonical_payload);
+  const projectId = nullableText(row.project_id);
+  const defects = productCandidateReadbackDefects({
+    candidateProjectId: projectId,
+    candidateStatus: String(row.status),
+    payloadProductSourceId: data.productSourceId,
+    productSourceId: String(row.product_source_id),
+    productSourceProjectId: nullableText(row.product_source_project_id),
+    productSourceStatus: String(row.product_source_status),
+    productSourceVersion: String(row.product_source_version),
+  });
+  if (defects.length) throw new SeedProcurementDomainError("CANONICAL_READBACK_CORRUPT", `Product Candidate readback failed lineage checks: ${defects.join(", ")}.`, 500);
   const resource = parseProductCandidateV1({
     ...boundaries(row, version, "procurement.product_candidate.record"),
     contractVersion: SEED_PRODUCT_CONTRACT_VERSIONS.productCandidate,
@@ -124,7 +151,7 @@ function candidateFromRow(row: Row) {
     tenantId,
     updatedAt: iso(row.created_at),
   });
-  return { conflictRefs: json<string[]>(row.conflict_refs), duplicateOfCandidateId: row.duplicate_of_candidate_id === null ? null : String(row.duplicate_of_candidate_id), extractionProvenance: json<string[]>(row.extraction_provenance), fit: { inputs: json<ProductCandidateRecordCommand["fit"]["inputs"]>(row.fit_inputs), score: Number(row.objective_fit_score), weights: json<ProductCandidateRecordCommand["fit"]["weights"]>(row.fit_weights) }, projectId: nullableText(row.project_id), resource };
+  return { conflictRefs: json<string[]>(row.conflict_refs), duplicateOfCandidateId: row.duplicate_of_candidate_id === null ? null : String(row.duplicate_of_candidate_id), extractionProvenance: json<string[]>(row.extraction_provenance), fit: { inputs: json<ProductCandidateRecordCommand["fit"]["inputs"]>(row.fit_inputs), score: Number(row.objective_fit_score), weights: json<ProductCandidateRecordCommand["fit"]["weights"]>(row.fit_weights) }, projectId, resource };
 }
 
 async function bindRead(client: PoolClient, tenantId: string) { await client.query("begin read only"); await client.query("select set_config('app.tenant_id', $1, true)", [tenantId]); }
@@ -156,8 +183,8 @@ export class SeedProcurementStore {
       const project = await client.query("select project_id,version from public.seed_projects where tenant_id = $1 and project_id = $2 limit 1", [actor.tenantId, projectId]);
       if (!project.rows[0]) return null;
       const evidence = await client.query(`select a.*, ${RECEIPT_COLUMNS} from public.seed_procurement_evidence_artifacts a join public.p110_command_receipts r on r.tenant_id=a.tenant_id and r.command_id=a.created_command_id where a.tenant_id=$1 and a.project_id=$2 order by a.captured_at,a.artifact_id`, [actor.tenantId, projectId]);
-      const sources = await client.query(`select s.*, ${RECEIPT_COLUMNS}, a.object_version artifact_version from public.seed_product_sources s join public.seed_procurement_evidence_artifacts a on a.tenant_id=s.tenant_id and a.artifact_id=s.artifact_id join public.p110_command_receipts r on r.tenant_id=s.tenant_id and r.command_id=s.created_command_id where s.tenant_id=$1 and s.project_id=$2 order by s.observed_at,s.product_source_id`, [actor.tenantId, projectId]);
-      const candidates = await client.query(`select c.*, ${RECEIPT_COLUMNS}, s.object_version product_source_version from public.seed_product_candidates c join public.seed_product_sources s on s.tenant_id=c.tenant_id and s.product_source_id=c.product_source_id join public.p110_command_receipts r on r.tenant_id=c.tenant_id and r.command_id=c.created_command_id where c.tenant_id=$1 and c.project_id=$2 order by c.objective_fit_score desc,c.product_candidate_id`, [actor.tenantId, projectId]);
+      const sources = await client.query(`select s.*, ${RECEIPT_COLUMNS}, a.object_version artifact_version,a.content_digest artifact_content_digest,a.status artifact_status,a.project_id artifact_project_id from public.seed_product_sources s join public.seed_procurement_evidence_artifacts a on a.tenant_id=s.tenant_id and a.artifact_id=s.artifact_id join public.p110_command_receipts r on r.tenant_id=s.tenant_id and r.command_id=s.created_command_id where s.tenant_id=$1 and s.project_id=$2 order by s.observed_at,s.product_source_id`, [actor.tenantId, projectId]);
+      const candidates = await client.query(`select c.*, ${RECEIPT_COLUMNS}, s.object_version product_source_version,s.status product_source_status,s.project_id product_source_project_id from public.seed_product_candidates c join public.seed_product_sources s on s.tenant_id=c.tenant_id and s.product_source_id=c.product_source_id join public.p110_command_receipts r on r.tenant_id=c.tenant_id and r.command_id=c.created_command_id where c.tenant_id=$1 and c.project_id=$2 order by c.objective_fit_score desc,c.product_candidate_id`, [actor.tenantId, projectId]);
       const heldRows = await client.query(`select
         (select count(*) from public.seed_rfq_drafts where tenant_id=$1 and project_id=$2) rfqs,
         (select count(*) from public.seed_supplier_quotes where tenant_id=$1 and project_id=$2) quotes,
@@ -166,7 +193,7 @@ export class SeedProcurementStore {
         (select count(*) from public.seed_purchase_order_drafts where tenant_id=$1 and project_id=$2) pos,
         (select count(*) from public.seed_purchase_order_acknowledgements where tenant_id=$1 and project_id=$2) acks`, [actor.tenantId, projectId]);
       if (Object.values(heldRows.rows[0] as Row).some((value) => Number(value) !== 0)) throw new Error("Dependency-held A3 downstream tables unexpectedly contain canonical rows.");
-      const timelineRows = await client.query(`select e.*, r.receipt_id, r.expected_object_version, r.committed_object_version, r.policy_version, r.actor_id, r.actor_type, r.idempotency_key, r.payload_hash, r.command_type
+      const timelineRows = await client.query(`select e.*, r.receipt_id, r.expected_object_version, r.committed_object_version, r.policy_version, r.actor_id, r.actor_type, r.idempotency_key, r.payload_hash, r.command_type, r.correlation_id
         from public.p110_event_envelopes e join public.p110_command_receipts r on r.tenant_id=e.tenant_id and r.event_id=e.event_id
         where e.tenant_id=$1 and r.command_id in (
           select created_command_id from public.seed_procurement_evidence_artifacts where tenant_id=$1 and project_id=$2
@@ -176,7 +203,7 @@ export class SeedProcurementStore {
       return { acknowledgements: [], bidComparisons: [], blockedDependencies: [
         { affectedCapabilities: ["rfq.create_draft", "supplier_quote.normalize", "bid_comparison.create", "procurement_selection.record"], code: "SUPPLIER_ELIGIBILITY_UNVERIFIED", requiredContract: "SupplierProfile/v1", summary: "The existing tenant Account projection proves identity but has no supplier eligibility fact." },
         { affectedCapabilities: ["purchase_order.create_draft", "purchase_order_acknowledgement.record"], code: "PROPOSAL_CANONICAL_READER_UNAVAILABLE", requiredContract: "ProposalVersion/v1 canonical API readback", summary: "The API publishes a ProposalVersion contract but does not yet own a tenant/project/version-matched Proposal runtime reader." },
-      ], evidenceArtifacts: evidence.rows.map((row) => ({ projectId: String(row.project_id), resource: evidenceFromRow(row as Row) })), productCandidates: candidates.rows.map((row) => candidateFromRow(row as Row)), productSources: sources.rows.map((row) => sourceFromRow(row as Row)), purchaseOrders: [], rfqs: [], selectionDecisions: [], supplierQuotes: [], timeline: timelineRows.rows.map((row) => timelineFromRow(row as Row, projectId, timelineProjectVersion(projectId, project.rows[0].version))) };
+      ], evidenceArtifacts: evidence.rows.map((row) => ({ projectId: nullableText(row.project_id), resource: evidenceFromRow(row as Row) })), productCandidates: candidates.rows.map((row) => candidateFromRow(row as Row)), productSources: sources.rows.map((row) => sourceFromRow(row as Row)), purchaseOrders: [], rfqs: [], selectionDecisions: [], supplierQuotes: [], timeline: timelineRows.rows.map((row) => timelineFromRow(row as Row, projectId, timelineProjectVersion(projectId, project.rows[0].version))) };
     });
   }
 
@@ -189,14 +216,14 @@ export class SeedProcurementStore {
 
   async readProductSource(actor: ApiActor, sourceId: string) {
     return this.readTransaction(actor.tenantId, async (client) => {
-      const result = await client.query(`select s.*, ${RECEIPT_COLUMNS}, a.object_version artifact_version from public.seed_product_sources s join public.seed_procurement_evidence_artifacts a on a.tenant_id=s.tenant_id and a.artifact_id=s.artifact_id join public.p110_command_receipts r on r.tenant_id=s.tenant_id and r.command_id=s.created_command_id where s.tenant_id=$1 and s.product_source_id=$2 limit 1`, [actor.tenantId, sourceId]);
+      const result = await client.query(`select s.*, ${RECEIPT_COLUMNS}, a.object_version artifact_version,a.content_digest artifact_content_digest,a.status artifact_status,a.project_id artifact_project_id from public.seed_product_sources s join public.seed_procurement_evidence_artifacts a on a.tenant_id=s.tenant_id and a.artifact_id=s.artifact_id join public.p110_command_receipts r on r.tenant_id=s.tenant_id and r.command_id=s.created_command_id where s.tenant_id=$1 and s.product_source_id=$2 limit 1`, [actor.tenantId, sourceId]);
       return result.rows[0] ? sourceFromRow(result.rows[0] as Row) : null;
     });
   }
 
   async readProductCandidate(actor: ApiActor, candidateId: string) {
     return this.readTransaction(actor.tenantId, async (client) => {
-      const result = await client.query(`select c.*, ${RECEIPT_COLUMNS}, s.object_version product_source_version from public.seed_product_candidates c join public.seed_product_sources s on s.tenant_id=c.tenant_id and s.product_source_id=c.product_source_id join public.p110_command_receipts r on r.tenant_id=c.tenant_id and r.command_id=c.created_command_id where c.tenant_id=$1 and c.product_candidate_id=$2 limit 1`, [actor.tenantId, candidateId]);
+      const result = await client.query(`select c.*, ${RECEIPT_COLUMNS}, s.object_version product_source_version,s.status product_source_status,s.project_id product_source_project_id from public.seed_product_candidates c join public.seed_product_sources s on s.tenant_id=c.tenant_id and s.product_source_id=c.product_source_id join public.p110_command_receipts r on r.tenant_id=c.tenant_id and r.command_id=c.created_command_id where c.tenant_id=$1 and c.product_candidate_id=$2 limit 1`, [actor.tenantId, candidateId]);
       return result.rows[0] ? candidateFromRow(result.rows[0] as Row) : null;
     });
   }

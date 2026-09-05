@@ -55,6 +55,44 @@ export function timelineProjectVersion(projectId: string, canonicalVersion: unkn
   return projectVersion(projectId, version);
 }
 
+export function productSourceReadbackDefects(input: {
+  artifactContentDigest: string;
+  artifactId: string;
+  artifactProjectId: string | null;
+  artifactStatus: string;
+  artifactVersion: string;
+  payloadContentDigest: string;
+  payloadSourceArtifactRef: string;
+  rowContentDigest: string;
+  sourceProjectId: string | null;
+  sourceStatus: string;
+}) {
+  const defects: string[] = [];
+  if (input.payloadSourceArtifactRef !== input.artifactId) defects.push("SOURCE_ARTIFACT_ID_MISMATCH");
+  if (input.artifactVersion !== procurementVersions.evidence(input.artifactId)) defects.push("SOURCE_ARTIFACT_VERSION_MISMATCH");
+  if (new Set([input.payloadContentDigest, input.rowContentDigest, input.artifactContentDigest]).size !== 1) defects.push("SOURCE_CONTENT_DIGEST_MISMATCH");
+  if (input.sourceProjectId !== input.artifactProjectId) defects.push("SOURCE_PROJECT_SCOPE_MISMATCH");
+  if (input.artifactStatus !== "ACTIVE" && input.sourceStatus === "ACTIVE") defects.push("SOURCE_EVIDENCE_STATUS_PROMOTION");
+  return defects;
+}
+
+export function productCandidateReadbackDefects(input: {
+  candidateProjectId: string | null;
+  candidateStatus: string;
+  payloadProductSourceId: string;
+  productSourceId: string;
+  productSourceProjectId: string | null;
+  productSourceStatus: string;
+  productSourceVersion: string;
+}) {
+  const defects: string[] = [];
+  if (input.payloadProductSourceId !== input.productSourceId) defects.push("CANDIDATE_SOURCE_ID_MISMATCH");
+  if (input.productSourceVersion !== procurementVersions.productSource(input.productSourceId)) defects.push("CANDIDATE_SOURCE_VERSION_MISMATCH");
+  if (input.candidateProjectId !== input.productSourceProjectId) defects.push("CANDIDATE_PROJECT_SCOPE_MISMATCH");
+  if (input.productSourceStatus !== "ACTIVE" && ["ELIGIBLE", "SELECTED"].includes(input.candidateStatus)) defects.push("CANDIDATE_SOURCE_STATUS_PROMOTION");
+  return defects;
+}
+
 export function objectiveScore(fit: ObjectiveFit) {
   const keys = Object.keys(fit.inputs).sort() as Array<keyof ObjectiveFit["inputs"]>;
   const weight = keys.reduce((sum, key) => sum + fit.weights[key], 0);

@@ -152,7 +152,7 @@ async function main() {
     await assert.rejects(store.execute(input(tenantA, ack as never, "correlation-ack-held")), (error: unknown) => domainCode(error) === "PURCHASE_ORDER_NOT_AVAILABLE");
 
     const client = await pool.connect();
-    try { await client.query("begin"); await client.query("select set_config('app.tenant_id',$1,true)", [tenantA.tenantId]); await assert.rejects(client.query("insert into public.seed_rfq_drafts (tenant_id) values ($1)", [tenantA.tenantId]), /downstream write held/); await client.query("rollback"); }
+    try { await client.query("begin"); await client.query("select set_config('app.tenant_id',$1,true)", [tenantA.tenantId]); await assert.rejects(client.query("insert into public.seed_rfq_drafts (tenant_id) values ($1)", [tenantA.tenantId]), /permission denied/); await client.query("rollback"); }
     finally { client.release(); }
 
     const graph = await new SeedProcurementStore(pool).readProjectProcurement(tenantA, projectId);
@@ -163,6 +163,8 @@ async function main() {
     assert.equal(parsedGraph.blockedDependencies.length, 2);
     assert.equal(parsedGraph.rfqs.length + parsedGraph.supplierQuotes.length + parsedGraph.bidComparisons.length + parsedGraph.purchaseOrders.length + parsedGraph.acknowledgements.length, 0);
     assert.equal(parsedGraph.productCandidates.find((item) => item.resource.resource.status === "ELIGIBLE")?.fit.score, objectiveScore(fit));
+    assert.equal(parsedGraph.timeline.every((item) => item.authority.serverDerivedIdentityRef !== "correlation:undefined"), true);
+    assert.equal(parsedGraph.timeline.some((item) => item.authority.serverDerivedIdentityRef === "correlation:correlation-source-1"), true);
     assert.equal(await new SeedProcurementStore(pool).readProjectProcurement(tenantB, projectId), null);
 
     const ledger = await tenantQuery<{ bad_effects: string; events: string; outboxes: string; receipts: string }>(tenantA.tenantId, `select

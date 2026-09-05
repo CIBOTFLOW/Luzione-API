@@ -433,7 +433,8 @@ begin
     execute 'create policy seed_purchase_order_drafts_runtime_tenant on public.seed_purchase_order_drafts to luzione_api_runtime using (tenant_id = (select current_setting(''app.tenant_id'', true))) with check (tenant_id = (select current_setting(''app.tenant_id'', true)))';
     execute 'create policy seed_purchase_order_acks_runtime_tenant on public.seed_purchase_order_acknowledgements to luzione_api_runtime using (tenant_id = (select current_setting(''app.tenant_id'', true))) with check (tenant_id = (select current_setting(''app.tenant_id'', true)))';
     grant select, insert on table public.seed_procurement_evidence_artifacts, public.seed_product_sources,
-      public.seed_product_candidates, public.seed_rfq_drafts, public.seed_supplier_quotes,
+      public.seed_product_candidates to luzione_api_runtime;
+    grant select on table public.seed_rfq_drafts, public.seed_supplier_quotes,
       public.seed_bid_comparisons, public.seed_procurement_selection_decisions,
       public.seed_purchase_order_drafts, public.seed_purchase_order_acknowledgements to luzione_api_runtime;
   end if;

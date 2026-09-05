@@ -24,7 +24,10 @@ import {
 import {
   normalizeQuoteEconomics,
   objectiveScore,
+  productCandidateReadbackDefects,
+  productSourceReadbackDefects,
   procurementInvariantDefects,
+  procurementVersions,
   timelineProjectVersion,
 } from "@/modules/seed-procurement/model";
 import {
@@ -148,6 +151,19 @@ test("TimelineEvent Project aggregate derives the actual canonical Project versi
   assert.throws(() => timelineProjectVersion("project-1", 0), /invalid/);
 });
 
+test("single-resource row reconstruction detects tampered relational lineage", () => {
+  const artifactId = "evidence-artifact-1";
+  const sourceId = "product-source-1";
+  const digest = "a".repeat(64);
+  const sourceInput = { artifactContentDigest: digest, artifactId, artifactProjectId: "project-1", artifactStatus: "ACTIVE", artifactVersion: procurementVersions.evidence(artifactId), payloadContentDigest: digest, payloadSourceArtifactRef: artifactId, rowContentDigest: digest, sourceProjectId: "project-1", sourceStatus: "ACTIVE" };
+  assert.deepEqual(productSourceReadbackDefects(sourceInput), []);
+  assert.deepEqual(productSourceReadbackDefects({ ...sourceInput, artifactProjectId: null, artifactStatus: "REVIEW_REQUIRED", artifactVersion: "evidence-artifact:stale:v0", payloadContentDigest: "b".repeat(64), payloadSourceArtifactRef: "evidence-other" }), ["SOURCE_ARTIFACT_ID_MISMATCH", "SOURCE_ARTIFACT_VERSION_MISMATCH", "SOURCE_CONTENT_DIGEST_MISMATCH", "SOURCE_PROJECT_SCOPE_MISMATCH", "SOURCE_EVIDENCE_STATUS_PROMOTION"]);
+
+  const candidateInput = { candidateProjectId: "project-1", candidateStatus: "ELIGIBLE", payloadProductSourceId: sourceId, productSourceId: sourceId, productSourceProjectId: "project-1", productSourceStatus: "ACTIVE", productSourceVersion: procurementVersions.productSource(sourceId) };
+  assert.deepEqual(productCandidateReadbackDefects(candidateInput), []);
+  assert.deepEqual(productCandidateReadbackDefects({ ...candidateInput, payloadProductSourceId: "product-source-other", productSourceProjectId: null, productSourceStatus: "REVIEW_REQUIRED", productSourceVersion: "product-source:stale:v0" }), ["CANDIDATE_SOURCE_ID_MISMATCH", "CANDIDATE_SOURCE_VERSION_MISMATCH", "CANDIDATE_PROJECT_SCOPE_MISMATCH", "CANDIDATE_SOURCE_STATUS_PROMOTION"]);
+});
+
 test("known-bad tenant predicate, stale version and corrupt landed total controls are detected", () => {
   assert.deepEqual(procurementInvariantDefects({ actualVersion: "spec:v2", expectedVersion: "spec:v1", landedTotalMinor: 90, query: "select * from seed_supplier_quotes where supplier_quote_id=$2", supplierCostTotalMinor: 100 }), ["TENANT_PREDICATE_MISSING", "STALE_VERSION_ACCEPTED", "LANDED_TOTAL_CORRUPT"]);
   assert.deepEqual(procurementInvariantDefects({ actualVersion: "spec:v1", expectedVersion: "spec:v1", landedTotalMinor: 110, query: "select * from seed_supplier_quotes where tenant_id=$1 and supplier_quote_id=$2", supplierCostTotalMinor: 100 }), []);
@@ -164,12 +180,16 @@ test("migration and store enforce forced RLS, explicit runtime role, immutable r
   assert.match(migration, /seed_procurement_a3_hold_unresolved_dependencies/);
   assert.match(migration, /seed_procurement_a3_validate_product_lineage/);
   assert.match(migration, /grant select, insert on table/);
+  assert.doesNotMatch(migration, /grant select, insert on table public\.seed_rfq_drafts/);
   assert.doesNotMatch(migration, /grant[^;]*\bupdate\b/i);
   assert.match(store, /SUPPLIER_ELIGIBILITY_UNVERIFIED/);
   assert.match(store, /PROPOSAL_CANONICAL_READER_UNAVAILABLE/);
   assert.match(store, /if \(!readback \|\| !readbackMatchesReceipt\)/);
   assert.match(store, /s\.project_id=\$2/);
   assert.match(store, /c\.project_id=\$2/);
+  assert.match(store, /artifact_content_digest/);
+  assert.match(store, /product_source_status/);
+  assert.match(store, /r\.correlation_id/);
   assert.match(store, /where tenant_id=\$1 and id::text=\$2/);
   assert.match(route, /A1_NO_EFFECT/);
   assert.doesNotMatch(`${store}\n${route}`, /fetch\(|EXTERNAL_EFFECT|supplier_rfq_email|sendRfq|releasePurchaseOrder/);
