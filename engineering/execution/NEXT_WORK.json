@@ -116,7 +116,7 @@
       "platform_project": "LUZIONE_CRM_OS_ONBOARDING_CORE_ASSURANCE",
       "title": "Executable V2 Reverse Safety and Corrected Consumer Identity",
       "priority": 537,
-      "status": "IN_PROGRESS",
+      "status": "BOUNDED_PASS",
       "depends_on": ["ONBOARD-CORE-CORRECTION-02", "OPS-CONTRACTS-CORRECTION-03"],
       "starting_sha": "c7a0b46dbc3b776f49fd8d151c221c9d023a85d8",
       "controller_authority": "CIBOTFLOW/Luzione-platform-program@e698099e8b4b2de8abf3a9373fa7521fab0556ff",
@@ -126,9 +126,11 @@
       "published_artifacts": ["six isolated populated reverse fixtures", "seven-case pre-DDL refusal proof", "strict import/connector original-byte negatives", "corrected v2 L2 consumer packet"],
       "required_evidence": ["mixed v1/v2 denial", "201-plus Unicode whitespace and raw-canonical denial", "empty reverse/reapply", "seven isolated populated reverse refusals", "unchanged rows and schema snapshots", "full local and exact-SHA CI"],
       "irreversible_effects": [],
-      "release_evidence": "NOT_ASSESSED",
+      "completion_evidence_ref": "ONBOARD_CORE_CORRECTION_03_G0_20260905",
+      "implementation_sha": "fb6b71510acbe9a14ef1d03bd4dfe617cd2744a1",
+      "release_evidence": "LOCAL_PROVEN",
       "effect_authority": "NO_EFFECT",
-      "finality": "NOT_FINAL"
+      "finality": "BOUNDED_CLAIM"
     },
     {
       "project_id": "OPS-CONTRACTS-CORRECTION-03",

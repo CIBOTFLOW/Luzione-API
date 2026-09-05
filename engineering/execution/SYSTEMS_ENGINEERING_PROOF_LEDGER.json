@@ -2799,6 +2799,55 @@
         "This candidate is not integrated, G1 or production-ready."
       ],
       "next_proof_needed": ["OPS-CONTRACTS-ASSURE-04 independently verifies the exact implementation/final/tag tuple while L2/L3 keep source packets ABSENT unless exact immutable returns exist."]
+    },
+    {
+      "proof_id": "ONBOARD_CORE_CORRECTION_03_G0_20260905",
+      "project_id": "ONBOARD-CORE-CORRECTION-03",
+      "recorded_at": "2026-09-05T17:35:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "fb6b71510acbe9a14ef1d03bd4dfe617cd2744a1",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "ONBOARD-CORE-CORRECTION-03 closes only the six unexecuted v2 reverse-preflight categories and the import-route v2 identity plus import/connector original-byte parser gaps without changing any existing contract, migration, provider or authority meaning.",
+      "exercised_boundaries": [
+        "Import POST and GET now advertise CRMImportDryRunMap/v2, matching the already-required request parser; mixed API-v1/import-v2 and API-v2/import-v1 packets deny.",
+        "Import and connector stable identifiers reject raw 201-plus, Unicode, leading/trailing whitespace and raw/canonical collision candidates before normalization or payload acceptance.",
+        "Six new fixture files independently populate Blueprint source binding, approval proposal/human authentication, Mandate source binding, Import Batch source binding, Import Row match key and Import Receipt source/runtime/deadline provenance.",
+        "Together with the existing append-only revocation fixture, seven fresh disposable databases each refused the reverse in the first pre-DDL block and retained identical SHA-256 snapshots over relation security, columns, constraints, triggers, policies and rows.",
+        "The empty disposable database reversed to zero v2 columns/no revocation relation and reapplied to 10 v2 columns/the revocation relation.",
+        "Blueprint/Mandate, Import and SandboxEcho connector disposable suites passed with exact v2 contract output and no connector schema delta.",
+        "Focused onboarding passed 20/20; full repository passed 447/447; compliance passed 7/7; typecheck, zero-warning lint and Next.js 16.3.4 webpack build passed.",
+        "Exact base-to-implementation source diff passed git apply --reverse --check with exit 0 in an isolated extracted tree.",
+        "Core, effect-admission, connector-revocation, operations v1/v2/v3, onboarding schema and correction migration/reverse bytes remained exact to the base."
+      ],
+      "untested_boundaries": [
+        "independent ONBOARD-CORE-CORRECTION assurance and exact L2 corrected-v2 consumer implementation",
+        "exact-final automated CI and authenticated Git-bound application readback until separately observed",
+        "managed migration, backup/PITR, destructive rollback or forward production recovery",
+        "production data, real credentials/providers, activation, merge/default branch, G1 or G2"
+      ],
+      "evidence_refs": [
+        "commit:fb6b71510acbe9a14ef1d03bd4dfe617cd2744a1",
+        "engineering/execution/onboard-core-correction-03/ONBOARD_CORE_CORRECTION_03_ARTIFACT_DIGESTS_V1.json",
+        "engineering/execution/onboard-core-correction-03/ONBOARD_CORE_CORRECTION_03_ASSURANCE_MATRIX_V1.json",
+        "engineering/execution/onboard-core-correction-03/ONBOARD_CORE_CORRECTION_03_L2_CONSUMER_PACKET_V1.json",
+        "engineering/execution/handoffs/ONBOARD_CORE_CORRECTION_03_G0_CONTROLLER_HANDOFF.json",
+        "evidence/ONBOARD_CORE_CORRECTION_03_G0_20260905.md"
+      ],
+      "failure_refs": ["ONBOARD_CORE_CORRECTION_03_TEST_ISOLATION_20260905", "ONBOARD_CORE_CORRECTION_03_ZERO_WARNING_LINT_20260905", "ONBOARD_CORE_CORRECTION_03_TREE_QUERY_PATH_SHADOW_20260905"],
+      "cross_repo_handoffs": [
+        "L2 must pin the implementation plus detached exact-final tag, use only the listed v2 request identity and digests, preserve v1 as compatibility-fixture-only, and retain default-empty source admission.",
+        "L2 cannot mint tenant, actor, approval, Mandate, replay, receipt, readback, provider or finality truth; SandboxEcho and VALIDATED_NO_EFFECT grant no source or production finality."
+      ],
+      "deferred_external_infra": ["exact-final CI", "authenticated preview/readback", "independent assurance and L2 repin", "managed recovery", "every credential/provider/production/G2 boundary"],
+      "remaining_uncertainty": [
+        "Producer-local reverse and parser evidence does not independently clear consumer integration.",
+        "No hosted database, authenticated application readback, real provider or credential boundary was exercised.",
+        "This candidate is not integrated, G1 or production-ready."
+      ],
+      "next_proof_needed": ["Independent assurance reruns all seven isolated populated pre-DDL refusals and L2 returns one exact route-disconnected corrected-v2 consumer pin against the implementation/final/tag tuple."]
     }
   ]
 }
