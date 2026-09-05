@@ -81,6 +81,12 @@
       "get": { "operationId": "getSetupMandate", "summary": "Read one same-tenant expiring SetupMandate/v1", "responses": { "200": { "description": "Canonical Setup Mandate readback" }, "404": { "description": "Mandate not found in the authenticated tenant" } } },
       "post": { "operationId": "issueSetupMandate", "summary": "Issue a default-off NO_EFFECT mandate from an exact active approved Blueprint", "responses": { "201": { "description": "Immutable Setup Mandate committed with P110 receipt" }, "403": { "description": "Approved active Blueprint authority missing" }, "409": { "description": "Stale Blueprint or immutable Mandate conflict" }, "503": { "description": "Onboarding persistence disabled or unavailable" } } }
     },
+    "/api/v1/onboarding/imports/dry-runs": {
+      "post": { "operationId": "createImportDryRun", "summary": "Persist an exact digest-only, NO_EFFECT import validation under an active Setup Mandate", "responses": { "201": { "description": "ImportBatch/v1 and deterministic ImportReceipt/v1 committed with P110 receipt" }, "403": { "description": "Mandate inactive, expired, revoked, superseded, cross-tenant, or insufficient" }, "409": { "description": "Digest, idempotency, mapping, or object-version conflict" }, "503": { "description": "Onboarding persistence disabled or unavailable" } } }
+    },
+    "/api/v1/onboarding/imports/{batchId}": {
+      "get": { "operationId": "getImportDryRun", "summary": "Read the same-tenant Batch, row evidence, and no-effect Receipt", "parameters": [{ "name": "batchId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }], "responses": { "200": { "description": "Canonical import dry-run readback" }, "404": { "description": "Batch not found in the authenticated tenant" } } }
+    },
     "/api/v1/provider-operations": {
       "get": { "operationId": "getProviderOperations", "summary": "Read tenant-bound provider worker, reconciliation, dead-letter and kill-switch aggregates", "responses": { "200": { "description": "Bounded provider operations readback" }, "401": { "description": "Service authentication required" }, "503": { "description": "Readback unavailable" } } }
     },
