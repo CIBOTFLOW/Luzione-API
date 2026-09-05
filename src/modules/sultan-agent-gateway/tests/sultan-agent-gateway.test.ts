@@ -3,6 +3,8 @@ import test from "node:test";
 
 import type { ApiActor } from "@/lib/api/actor";
 import { sha256 } from "@/modules/platform-guarantees/eventContract";
+import { effectBindingKey, killState } from "@/modules/effect-admission/contracts";
+import { StaticEffectAdmissionGate } from "@/modules/effect-admission/gate";
 import {
   LUZIONE_SULTAN_COMMAND_EXECUTION_V1,
   LUZIONE_SULTAN_COMMAND_PREPARATION_V1,
@@ -31,6 +33,14 @@ import type { ProviderMessage } from "@/modules/provider-runtime/contracts";
 const NOW = "2026-09-01T12:00:00.000Z";
 const APPROVAL_SECRET = "test-approval-secret-that-is-longer-than-thirty-two-bytes";
 const CASE_SOURCE = "postgres:public.commercial_cases/case-canary-001@commercial-case:case-canary-001:v7";
+
+const admissionGate = () => new StaticEffectAdmissionGate(killState([]), {
+  enabled: true,
+  admittedBindings: new Set([
+    effectBindingKey({ actor: { actorId: "service:sultan-os", actorType: "service" }, credentialBindingId: "credential-binding:none:luzione-api-internal/v1", destination: "postgres.sultan-internal-action", provider: "luzione-api", tenantId: "luzione" }),
+    effectBindingKey({ actor: { actorId: "service:sultan-os", actorType: "service" }, credentialBindingId: "credential-binding:gmail:sultan-rfq-canary/v1", destination: SULTAN_RFQ_CANARY_DESTINATION, provider: "gmail", tenantId: "luzione" }),
+  ]),
+});
 
 function actor(capabilities: string[] = [
   "sultan.tool.manifest.read", "sultan.tool.invoke", "sultan.effect.read", "sultan.case.read",
@@ -188,7 +198,7 @@ class DenyingAdmissionStore extends FakeStore {
 }
 
 test("manifest derives steward server-side and hides tools outside capability intersection", () => {
-  const service = new SultanAgentGatewayService(new FakeStore(), () => new Date(NOW), APPROVAL_SECRET);
+  const service = new SultanAgentGatewayService(new FakeStore(), () => new Date(NOW), APPROVAL_SECRET, admissionGate());
   const manifest = service.manifest({
     actor: actor(["sultan.tool.manifest.read", "sultan.case.read"]),
     assertedAgent: { agentId: "agent.luzione.revenue-steward", agentVersion: "v1" },
@@ -213,7 +223,7 @@ test("parser rejects client-forged tenant authority at any depth", () => {
 
 test("read tools return exact authoritative version and stale calls fail closed", async () => {
   const store = new FakeStore();
-  const service = new SultanAgentGatewayService(store, () => new Date(NOW), APPROVAL_SECRET);
+  const service = new SultanAgentGatewayService(store, () => new Date(NOW), APPROVAL_SECRET, admissionGate());
   const ready = await service.invoke({ actor: actor(), call: call() });
   assert.equal(ready.status, "READY");
   assert.equal(store.admissionChecks, 1);
@@ -227,7 +237,7 @@ test("read tools return exact authoritative version and stale calls fail closed"
 
 test("no Sultan read or command preparation can bypass exact Stage 5 admission", async () => {
   const store = new DenyingAdmissionStore();
-  const service = new SultanAgentGatewayService(store, () => new Date(NOW), APPROVAL_SECRET);
+  const service = new SultanAgentGatewayService(store, () => new Date(NOW), APPROVAL_SECRET, admissionGate());
   await assert.rejects(
     () => service.invoke({ actor: actor(), call: call() }),
     (error: unknown) => error instanceof SultanAgentGatewayError && error.code === "STAGE5_ADMISSION_DENIED",
@@ -247,7 +257,7 @@ test("no Sultan read or command preparation can bypass exact Stage 5 admission",
 
 test("A1 command prepares, interrupts, and executes only with an exact signed human approval", async () => {
   const store = new FakeStore();
-  const service = new SultanAgentGatewayService(store, () => new Date(NOW), APPROVAL_SECRET);
+  const service = new SultanAgentGatewayService(store, () => new Date(NOW), APPROVAL_SECRET, admissionGate());
   const noteCall = call("luzione.note.append", { campaignId: "sultan-campaign-pilot-001", note: "Synthetic test note; no customer data." });
   const interrupted = await service.invoke({ actor: actor(), call: noteCall });
   assert.equal(interrupted.status, "AWAITING_APPROVAL");
@@ -280,7 +290,7 @@ test("A1 command prepares, interrupts, and executes only with an exact signed hu
 
 test("A2 RFQ canary stops at preparation and cannot reserve provider dispatch", async () => {
   const store = new FakeStore();
-  const service = new SultanAgentGatewayService(store, () => new Date(NOW), APPROVAL_SECRET);
+  const service = new SultanAgentGatewayService(store, () => new Date(NOW), APPROVAL_SECRET, admissionGate());
   const args = {
     recipient: SULTAN_RFQ_CANARY_RECIPIENT,
     subject: "[SULTAN RFQ CANARY] Synthetic stone sample pricing",
@@ -335,7 +345,7 @@ test("command parser accepts only the versioned execution envelope", () => {
 
 test("Gmail adapter records PROVIDER_ACCEPTED identity and never retries an indeterminate send", async () => {
   let providerCalls = 0;
-  const adapter = new GmailRfqCanaryAdapter({ SULTAN_RFQ_CANARY_SENDER: "canary@luzione.com", GMAIL_SULTAN_RFQ_ACCESS_TOKEN: "test-token" }, async () => {
+  const adapter = new GmailRfqCanaryAdapter({ credentialBindingId: "credential-binding:gmail:sultan-rfq-canary/v1", sender: "canary@luzione.com", resolveCredential: async () => "synthetic-test-token" }, async () => {
     providerCalls += 1;
     return new Response(JSON.stringify({ id: "gmail-message-001", threadId: "thread-001" }), { status: 200 });
   });
@@ -344,7 +354,7 @@ test("Gmail adapter records PROVIDER_ACCEPTED identity and never retries an inde
   assert.equal(providerCalls, 1);
 
   let ambiguousCalls = 0;
-  const ambiguousAdapter = new GmailRfqCanaryAdapter({ SULTAN_RFQ_CANARY_SENDER: "canary@luzione.com", GMAIL_SULTAN_RFQ_ACCESS_TOKEN: "test-token" }, async () => {
+  const ambiguousAdapter = new GmailRfqCanaryAdapter({ credentialBindingId: "credential-binding:gmail:sultan-rfq-canary/v1", sender: "canary@luzione.com", resolveCredential: async () => "synthetic-test-token" }, async () => {
     ambiguousCalls += 1;
     throw new TypeError("connection closed");
   });
@@ -364,7 +374,9 @@ function providerMessage(): ProviderMessage {
     envelopeId: "envelope-001", envelopeExpiresAt: "2026-09-02T12:00:00.000Z",
   };
   return {
+    actor: { actorId: "service:sultan-os", actorType: "service" },
     authorizationRef: "sultan-rfq-envelope:envelope-001", destination: SULTAN_RFQ_CANARY_DESTINATION,
+    effectAdmissionRef: `effect-admission:${"a".repeat(64)}`,
     effectClass: "EXTERNAL_EFFECT", expectedObjectVersion: "commercial-case:case-canary-001:v7",
     idempotencyKey: "sultan-rfq-canary:operation.canary.001", objectId: "case-canary-001", objectType: "commercial_case",
     outboxMessageId: "outbox-001", payload, payloadHash: sha256(payload), receiptId: "receipt-001",

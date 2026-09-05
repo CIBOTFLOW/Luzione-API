@@ -1,4 +1,6 @@
 import { providerAdapterEnabled } from "@/lib/api/config";
+import { DefaultOffEffectAdmissionGate, type EffectAdmissionGate } from "@/modules/effect-admission/gate";
+import type { EffectAdmissionCheckpoint, EffectAdmissionDecision } from "@/modules/effect-admission/contracts";
 import { PROVIDER_ADAPTER_CONTRACT_VERSION, ProviderContractError, assertAdapterResult, assertObservation, providerMessageFromRow, type ProviderMode } from "@/modules/provider-runtime/contracts";
 import { ProviderAdapterRegistry } from "@/modules/provider-runtime/registry";
 
@@ -15,6 +17,8 @@ type DeliveryFailure = {
 export type ProviderWorkerStore = {
   claimDueOutbox(input: { limit?: number; outboxMessageId?: string; tenantId: string; workerId: string }): Promise<Record<string, unknown>[]>;
   claimDueReconciliations(input: { limit?: number; outboxMessageId?: string; tenantId: string; workerId: string }): Promise<Record<string, unknown>[]>;
+  readClaimedOutboxForAdmission(input: { outboxMessageId: string; tenantId: string; workerId: string }): Promise<Record<string, unknown>>;
+  readClaimedReconciliationForAdmission(input: { reconciliationId: string; tenantId: string; workerId: string }): Promise<Record<string, unknown>>;
   completeClaimedReconciliation(input: {
     notes?: string | null;
     observedObjectVersion?: string | null;
@@ -24,7 +28,7 @@ export type ProviderWorkerStore = {
     tenantId: string;
     workerId: string;
   }): Promise<unknown>;
-  recordDispatchStarted(input: { adapterContractVersion: string; outboxMessageId: string; providerMode: ProviderMode; providerRequestRef: string; tenantId: string; workerId: string }): Promise<unknown>;
+  recordDispatchStarted(input: { adapterContractVersion: string; credentialBindingId: string; effectAdmissionDigest: string; effectAdmissionKillVersion: string; effectAdmissionRef: string; outboxMessageId: string; providerMode: ProviderMode; providerRequestRef: string; tenantId: string; workerId: string }): Promise<unknown>;
   recordOutboxFailure(input: DeliveryFailure): Promise<unknown>;
   recordProviderAcknowledgement(input: { outboxMessageId: string; providerAcknowledgementRef: string; tenantId: string; workerId: string }): Promise<unknown>;
 };
@@ -41,6 +45,7 @@ export class ProviderWorkerRuntime {
     private readonly store: ProviderWorkerStore,
     private readonly registry: ProviderAdapterRegistry,
     private readonly enabled: Enablement = providerAdapterEnabled,
+    private readonly effectAdmission: EffectAdmissionGate = new DefaultOffEffectAdmissionGate(),
   ) {}
 
   async runDeliveryBatch(input: { limit?: number; outboxMessageId?: string; tenantId: string; workerId: string }) {
@@ -68,16 +73,55 @@ export class ProviderWorkerRuntime {
         outcomes.push({ destination: message.destination, outboxMessageId, state: "DEAD_LETTERED" });
         continue;
       }
+      let claimDecision: EffectAdmissionDecision;
+      let admittedMessage;
+      try {
+        ({ decision: claimDecision, message: admittedMessage } = await this.admitDelivery({
+          adapter,
+          checkpoint: "PROVIDER_CLAIM",
+          input,
+          outboxMessageId,
+          prior: null,
+        }));
+        ({ decision: claimDecision, message: admittedMessage } = await this.admitDelivery({
+          adapter,
+          checkpoint: "PROVIDER_PRE_CREDENTIAL",
+          input,
+          outboxMessageId,
+          prior: claimDecision,
+        }));
+      } catch (error) {
+        const bounded = boundedError(error);
+        await this.store.recordOutboxFailure({ errorCode: bounded.code, errorSummary: bounded.summary, failureClass: "POLICY_BLOCKED", outboxMessageId, tenantId: input.tenantId, workerId: input.workerId });
+        outcomes.push({ destination: message.destination, outboxMessageId, state: "DEAD_LETTERED" });
+        continue;
+      }
       let prepared;
       try {
-        prepared = await adapter.prepare(message);
+        prepared = await adapter.prepare(admittedMessage);
       } catch (error) {
         const bounded = boundedError(error);
         await this.store.recordOutboxFailure({ errorCode: bounded.code, errorSummary: bounded.summary, failureClass: "CONTRACT_VIOLATION", outboxMessageId, tenantId: input.tenantId, workerId: input.workerId });
         outcomes.push({ destination: message.destination, outboxMessageId, state: "DEAD_LETTERED" });
         continue;
       }
-      await this.store.recordDispatchStarted({ adapterContractVersion: PROVIDER_ADAPTER_CONTRACT_VERSION, outboxMessageId, providerMode: adapter.mode, providerRequestRef: prepared.providerRequestRef, tenantId: input.tenantId, workerId: input.workerId });
+      let dispatchDecision: EffectAdmissionDecision;
+      try {
+        ({ decision: dispatchDecision } = await this.admitDelivery({
+          adapter,
+          checkpoint: "PROVIDER_PRE_DISPATCH",
+          input,
+          outboxMessageId,
+          prior: claimDecision,
+        }));
+      } catch (error) {
+        const bounded = boundedError(error);
+        await this.store.recordOutboxFailure({ errorCode: bounded.code, errorSummary: bounded.summary, failureClass: "POLICY_BLOCKED", outboxMessageId, tenantId: input.tenantId, workerId: input.workerId });
+        outcomes.push({ destination: message.destination, outboxMessageId, state: "DEAD_LETTERED" });
+        continue;
+      }
+      prepared = { ...prepared, effectAdmissionRef: dispatchDecision.decisionRef };
+      await this.store.recordDispatchStarted({ adapterContractVersion: PROVIDER_ADAPTER_CONTRACT_VERSION, credentialBindingId: adapter.credentialBindingId, effectAdmissionDigest: dispatchDecision.bindingDigest, effectAdmissionKillVersion: dispatchDecision.killVersion, effectAdmissionRef: dispatchDecision.decisionRef, outboxMessageId, providerMode: adapter.mode, providerRequestRef: prepared.providerRequestRef, tenantId: input.tenantId, workerId: input.workerId });
       let execution;
       try {
         execution = assertAdapterResult(await adapter.execute(prepared));
@@ -119,7 +163,10 @@ export class ProviderWorkerRuntime {
         continue;
       }
       try {
-        const prepared = await adapter.prepare(message);
+        const row = await this.store.readClaimedReconciliationForAdmission({ reconciliationId, tenantId: input.tenantId, workerId: input.workerId });
+        const fresh = providerMessageFromRow(row);
+        const decision = await this.requireAdmission(fresh, adapter, "PROVIDER_RECONCILE", null);
+        const prepared = await adapter.prepare({ ...fresh, effectAdmissionRef: decision.decisionRef });
         const observation = assertObservation(await adapter.reconcile(prepared), message.resultingObjectVersion);
         await this.store.completeClaimedReconciliation({ notes: observation.notes, observedObjectVersion: observation.observedObjectVersion, reconciliationId, result: observation.result, sourceReadbackRef: observation.sourceReadbackRef, tenantId: input.tenantId, workerId: input.workerId });
         outcomes.push({ reconciliationId, result: observation.result });
@@ -131,5 +178,46 @@ export class ProviderWorkerRuntime {
       }
     }
     return { claimed: claimed.length, outcomes };
+  }
+
+  private async admitDelivery(input: {
+    adapter: NonNullable<ReturnType<ProviderAdapterRegistry["get"]>>;
+    checkpoint: EffectAdmissionCheckpoint;
+    input: { tenantId: string; workerId: string };
+    outboxMessageId: string;
+    prior: EffectAdmissionDecision | null;
+  }) {
+    const row = await this.store.readClaimedOutboxForAdmission({ outboxMessageId: input.outboxMessageId, tenantId: input.input.tenantId, workerId: input.input.workerId });
+    const message = providerMessageFromRow(row);
+    const decision = await this.requireAdmission(message, input.adapter, input.checkpoint, input.prior);
+    return { decision, message: { ...message, effectAdmissionRef: decision.decisionRef } };
+  }
+
+  private async requireAdmission(
+    message: ReturnType<typeof providerMessageFromRow>,
+    adapter: NonNullable<ReturnType<ProviderAdapterRegistry["get"]>>,
+    checkpoint: EffectAdmissionCheckpoint,
+    prior: EffectAdmissionDecision | null,
+  ) {
+    if (message.destination !== adapter.destination) {
+      throw new ProviderContractError("EFFECT_DESTINATION_CHANGED", "The durable destination changed after adapter selection.");
+    }
+    const decision = await this.effectAdmission.decide({
+      actor: message.actor,
+      authorityRef: message.authorizationRef ?? "authority:none:no-effect",
+      checkpoint,
+      credentialBindingId: adapter.credentialBindingId,
+      destination: adapter.destination,
+      effectClass: message.effectClass,
+      operationKey: message.idempotencyKey,
+      payloadHash: message.payloadHash,
+      provider: adapter.provider,
+      tenantId: message.tenantId,
+    }, prior);
+    if (!decision.admitted) throw new ProviderContractError(`EFFECT_${decision.denialCode}`, "The exact effect admission decision denied this checkpoint.");
+    if (checkpoint === "PROVIDER_PRE_DISPATCH" && !decision.dispatchAuthorized) {
+      throw new ProviderContractError("EFFECT_DISPATCH_NOT_AUTHORIZED", "The exact effect admission decision did not authorize dispatch.");
+    }
+    return decision;
   }
 }

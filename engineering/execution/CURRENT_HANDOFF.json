@@ -2,10 +2,10 @@
   "schema_version": 2,
   "queue_id": "LUZIONE_API_SYSTEMS_ENGINEERING_V1",
   "repository": "CIBOTFLOW/Luzione-API",
-  "program_state": "ONBOARD_CORE_01_BOUNDED_PASS_LOCAL_PROVEN_NO_EFFECT_EXACT_FINAL_CI_PENDING",
-  "current_project": "ONBOARD-CORE-01",
-  "next_projects": ["EFFECT-ADMISSION-L1", "OPS-CONTRACTS-CORRECTION-01"],
-  "next_action": "After pushing and recording the exact ONBOARD-CORE-01 final, create a fresh non-default EFFECT-ADMISSION-L1 successor branch from that exact commit; preserve this branch and PR #69 unchanged.",
+  "program_state": "EFFECT_ADMISSION_L1_BOUNDED_PASS_LOCAL_PROVEN_NO_EFFECT_EXACT_FINAL_CI_PENDING",
+  "current_project": "EFFECT-ADMISSION-L1",
+  "next_projects": ["ONBOARD-CORE-CORRECTION-01", "OPS-CONTRACTS-CORRECTION-01"],
+  "next_action": "Push the exact EFFECT-ADMISSION-L1 final, record exact-head CI and protected preview truth, release this writer, then create one fresh non-default ONBOARD-CORE-CORRECTION-01 branch from that exact final; do not overlap OPS-CONTRACTS-CORRECTION-01.",
   "canonical_program": "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md",
   "failure_ledger": "engineering/execution/SYSTEMS_ENGINEERING_FAILURE_LEDGER.json",
   "proof_ledger": "engineering/execution/SYSTEMS_ENGINEERING_PROOF_LEDGER.json",
@@ -105,7 +105,7 @@
     "Supabase Pro plan entitlement indicates daily backups should exist, but the available management surface cannot list a project-specific backup receipt or PITR window; no production DDL is safe until that exact restore evidence is recorded."
   ],
   "stop_code": null,
-  "updated_at": "2026-09-05T03:42:58.000Z",
+  "updated_at": "2026-09-05T04:17:01.000Z",
   "api_stage5_001": {
     "status": "EXACT_IMPLEMENTATION_AND_MANAGED_RECOVERY_PASS_PUBLICATION_PENDING_PRODUCTION_BLOCKED",
     "branch": "codex/stage5-authority-outcomes-v2",
@@ -347,6 +347,30 @@
     "effect_authority": "NO_EFFECT",
     "production_observation": "NOT_RUN",
     "writer_lock": "RELEASED_AFTER_FINAL_COMMIT_AND_PUSH",
-    "exact_successors": ["EFFECT-ADMISSION-L1", "OPS-CONTRACTS-CORRECTION-01"]
+    "exact_successors": ["EFFECT-ADMISSION-L1", "ONBOARD-CORE-CORRECTION-01", "OPS-CONTRACTS-CORRECTION-01"]
+  },
+  "effect_admission_l1": {
+    "status": "BOUNDED_PASS_LOCAL_PROVEN_NO_EFFECT_NOT_G1_EXACT_FINAL_CI_PENDING",
+    "controller_authority": "e1b8bc54dfebbeca4a83987ec016d6fc41dad8a9",
+    "source_packet": "EFFECT-KILL-AUDIT-01/v1",
+    "source_fingerprint": "b7a73c98c741f0d258bada5297b59092adb5ce3ae6fbdb8e01ed09758d3f155d",
+    "base_sha": "6a667b4f2d78cafd506929396d0042fafcbb9356",
+    "branch": "codex/effect-admission-l1-g0-f7fd111",
+    "implementation_sha": "7d3a269b1ae64ff26974942eb85216f5d008758d",
+    "evidence_head": "COMMIT_CONTAINING_THIS_HANDOFF",
+    "contract_versions": ["luzione-effect-admission/v1", "luzione-provider-adapter/v0.2", "luzione-workflow-delivery/v0.1", "luzione-sultan-command-preparation/v1", "luzione-sultan-command-execution/v1"],
+    "migration": "20260905090000_effect_admission_evidence.sql",
+    "local_verification": "PASS_COMPLIANCE_7_OF_7_TYPECHECK_LINT_ZERO_WARNINGS_FOCUSED_19_OF_19_FULL_391_OF_391_NEXTJS_16_3_4_WEBPACK_BUILD_TWO_DISPOSABLE_PROOFS",
+    "database_reverse_proof": "PASS_ADDITIVE_ATTEMPT_EVIDENCE_5_COLUMNS_ROLLBACK_TO_0_REAPPLY_TO_5_CONNECTOR_SCHEMA_DELTA_0",
+    "runtime_activation": "NOT_PERFORMED_EFFECT_FLAG_FALSE_BINDINGS_EMPTY_LIVE_ADAPTERS_ZERO",
+    "credential_resolution": "NOT_PERFORMED_OPAQUE_RESOLVER_ONLY",
+    "provider_effects": "NOT_PERFORMED_SANDBOX_ECHO_ONLY",
+    "production_query_or_mutation": "NOT_PERFORMED",
+    "effect_authority": "NO_EFFECT",
+    "production_observation": "NOT_RUN",
+    "exact_head_automation": "PENDING_FINAL_PUSH",
+    "preview": "PENDING_FINAL_PUSH",
+    "writer_lock": "RELEASED_AFTER_FINAL_COMMIT_PUSH_AND_HANDOFF",
+    "exact_successors": ["ONBOARD-CORE-CORRECTION-01", "OPS-CONTRACTS-CORRECTION-01"]
   }
 }

@@ -2256,6 +2256,60 @@
       "next_proof_needed": [
         "Run exact-final automated CI on draft PR #69, record any protected Git-bound preview truthfully, then dispatch EFFECT-ADMISSION-L1 from the exact ONBOARD final on a fresh non-default branch."
       ]
+    },
+    {
+      "proof_id": "EFFECT_ADMISSION_L1_G0_20260905",
+      "project_id": "EFFECT-ADMISSION-L1",
+      "recorded_at": "2026-09-05T04:17:01Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "7d3a269b1ae64ff26974942eb85216f5d008758d",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "EFFECT-ADMISSION-L1 publishes and applies one strict default-off luzione-effect-admission/v1 decision to Sultan prepare/execute and provider claim/pre-credential/pre-dispatch/reconcile boundaries, replaces raw Gmail-token authority with an opaque resolver boundary, records additive attempt evidence and preserves reservation/finality without activating any effect.",
+      "exercised_boundaries": [
+        "The decision binds tenant, service actor, authority evidence, stable operation key, recomputed payload hash, provider, destination, opaque credential-binding ID and a digest-derived kill version.",
+        "Unset/false admission, agent actor, tenant/provider/destination/credential mismatch, changed payload and unavailable kill state failed closed.",
+        "Provider work reread the durable claimed payload and kill state at claim/pre-credential and again immediately before dispatch; a kill change between checkpoints denied dispatch.",
+        "Ambiguous acknowledgement entered reconciliation; reconciliation invoked only source observation and did not redispatch.",
+        "The worker registers only sandbox.echo; the Gmail adapter requires an injected opaque resolver and no raw Gmail access-token environment authority remains in executable source.",
+        "The additive migration stored contract, decision reference/digest, kill version and opaque binding on new STARTED attempts; disposable proof observed five columns, reverse proof returned to zero and reapply returned to five.",
+        "The existing sandbox connector proof produced three NO_EFFECT receipts, one deterministic conflict, three attempts and three reconciliations with zero connector schema delta.",
+        "Focused effect/provider/Sultan tests passed 19/19; compliance passed 7/7; TypeScript, zero-warning ESLint, all 391 tests and the Next.js 16.3.4 webpack build passed.",
+        "Frozen LuzioneCoreContracts/v1 contract and SDK trees remained d57ccc4cccd97b37acd1a1575b1e07ede5787349 and d594fa014d7020fdf8386c7a6926ff9b573ac355."
+      ],
+      "untested_boundaries": [
+        "exact-final automated CI, CodeQL and authenticated Git-bound preview readback",
+        "independent L2/L3 exact-SHA consumption and the controller EFFECT-KILL recheck",
+        "managed migration, backup/PITR or deployed worker lifecycle",
+        "credential resolution, live provider acknowledgement, customer effect, production dispatch or recovery",
+        "G1, G2, merge, default-branch action or production readiness"
+      ],
+      "evidence_refs": [
+        "commit:7d3a269b1ae64ff26974942eb85216f5d008758d",
+        "architecture/production-convergence/EFFECT_ADMISSION_L1_WORKING_CONTRACT.md",
+        "contracts/effect-admission/luzione-effect-admission-v1.schema.json",
+        "engineering/execution/effect-admission-l1/EFFECT_ADMISSION_L1_ARTIFACT_DIGESTS_V1.json",
+        "engineering/execution/effect-admission-l1/EFFECT_ADMISSION_L1_API_SINK_INVENTORY_V1.json",
+        "engineering/execution/effect-admission-l1/EFFECT_ADMISSION_L1_CONSUMER_PACKET_V1.json",
+        "src/modules/effect-admission/tests/effect-admission.test.ts",
+        "supabase/migrations/20260905090000_effect_admission_evidence.sql"
+      ],
+      "failure_refs": ["EFFECT_ADMISSION_L1_TAXONOMY_REGISTRATION_20260905", "EFFECT_ADMISSION_L1_DISPOSABLE_PROOF_HARNESS_20260905"],
+      "cross_repo_handoffs": [
+        "L2 may preserve operation keys and return API-issued decisions/receipts but may not select identity, credential binding, kill version or finality; its separate sink correction remains required.",
+        "L3 must pin the exact API implementation and provider-adapter v0.2, preserve logical-agent versus service-actor separation and must not implement a local admission, credential, receipt or finality authority."
+      ],
+      "deferred_external_infra": ["exact-head automated CI", "authenticated preview access", "independent consumers", "managed recovery and every live effect authority"],
+      "remaining_uncertainty": [
+        "The controller audit remains NOT_CLEARED across its 38-route cross-repository census because the published source provides aggregate counts rather than a complete identifier list and L2 correction is outstanding.",
+        "The v0.2 provider boundary is a deliberate successor pin and is not evidence that any deployed worker consumes it.",
+        "Synthetic local evidence does not prove production credentials, providers, kill-state freshness or recovery."
+      ],
+      "next_proof_needed": [
+        "Run exact-final automated CI and record protected preview truth, then dispatch ONBOARD-CORE-CORRECTION-01 from that immutable final on a fresh non-default branch before OPS-CONTRACTS-CORRECTION-01."
+      ]
     }
   ]
 }

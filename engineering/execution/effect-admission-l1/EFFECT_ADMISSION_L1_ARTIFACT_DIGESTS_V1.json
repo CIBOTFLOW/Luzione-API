@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "EFFECT-ADMISSION-L1/Artifact-Digests/v1",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "branch": "codex/effect-admission-l1-g0-f7fd111",
+  "baseSha": "6a667b4f2d78cafd506929396d0042fafcbb9356",
+  "implementationSha": "7d3a269b1ae64ff26974942eb85216f5d008758d",
+  "digestAlgorithm": "sha256",
+  "artifacts": [
+    {"path":"architecture/production-convergence/EFFECT_ADMISSION_L1_WORKING_CONTRACT.md","digest":"7f7c5116716aa23f58f2e3bd79bef134b9bb51f09da5cf6f9884db90dde64c22"},
+    {"path":"contracts/effect-admission/luzione-effect-admission-v1.schema.json","digest":"ab93453962086e6339dd78f3125b8a529ffa21d6801883c7c405f6b6e8b0f263"},
+    {"path":"src/modules/effect-admission/contracts.ts","digest":"08b87f4ab0a9f9b40e20a88dfe6f78cbd79e0fa2925d6a0b48cb465e51a866eb"},
+    {"path":"src/modules/effect-admission/gate.ts","digest":"e5be55b449193f28900d0e0620ec892cb1253a477c1d54f51286e8cab52d375a"},
+    {"path":"src/modules/provider-runtime/contracts.ts","digest":"8ce88e7de7cabc4fc9bf0d27770977605032fdaf275f78d8bc8e2cb5411f4e97"},
+    {"path":"src/modules/provider-runtime/runtime.ts","digest":"2af031d639821298c54bf0ebdfea4886d838ecd47ab5107dad3ff840d95ff0b5"},
+    {"path":"src/modules/sultan-agent-gateway/service.ts","digest":"8ba1d797a4181bd3096a1584b4d197048447fed42d0e0194497897a77db6e6a4"},
+    {"path":"src/modules/sultan-agent-gateway/gmailRfqCanaryAdapter.ts","digest":"d1d485c1f5832d55dbf5a3083c000efdaef58f34e3669ced5fe8cf0ff6550499"},
+    {"path":"supabase/migrations/20260905090000_effect_admission_evidence.sql","digest":"b2fa44ee4535126db9913a849e3120ccf6149a9fccbbdfeeec2a2c32c525123b"},
+    {"path":"scripts/validation/rollback-effect-admission-evidence.sql","digest":"267127f4e5f8929063ef6ec3f8758874667af939f7099b2495cfb7947280df5c"},
+    {"path":"src/modules/effect-admission/tests/effect-admission.test.ts","digest":"eff53bdeb1f0e08bf546f9a81891a68acb5e6f7a4d9d4f5baca7ba0404133fab"}
+  ],
+  "frozenTrees": {
+    "contracts/core": "d57ccc4cccd97b37acd1a1575b1e07ede5787349",
+    "src/modules/luzione-core-contracts": "d594fa014d7020fdf8386c7a6926ff9b573ac355"
+  },
+  "effectAuthority": "NO_EFFECT",
+  "productionReadyClaim": false
+}

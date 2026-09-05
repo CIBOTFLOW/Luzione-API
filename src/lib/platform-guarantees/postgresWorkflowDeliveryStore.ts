@@ -158,7 +158,8 @@ export class PostgresWorkflowDeliveryStore {
          )
          select claimed.*, receipt.target_object_type, receipt.target_object_id,
                 receipt.expected_object_version,
-                receipt.committed_object_version as resulting_object_version
+                receipt.committed_object_version as resulting_object_version,
+                receipt.actor_id, receipt.actor_type
            from claimed
            join public.p110_command_receipts receipt
              on receipt.tenant_id = claimed.tenant_id and receipt.receipt_id = claimed.receipt_id`,
@@ -183,8 +184,16 @@ export class PostgresWorkflowDeliveryStore {
     });
   }
 
+  async readClaimedOutboxForAdmission(input: { outboxMessageId: string; tenantId: string; workerId: string }) {
+    return this.transaction(input.tenantId, async (client) => this.lockOwnedOutbox(client, input));
+  }
+
   async recordDispatchStarted(input: {
     adapterContractVersion: string;
+    credentialBindingId: string;
+    effectAdmissionDigest: string;
+    effectAdmissionKillVersion: string;
+    effectAdmissionRef: string;
     outboxMessageId: string;
     providerMode: "LIVE" | "SANDBOX";
     providerRequestRef: string;
@@ -196,10 +205,13 @@ export class PostgresWorkflowDeliveryStore {
       await client.query(
         `insert into public.p110_delivery_attempts
           (tenant_id, attempt_id, outbox_message_id, attempt_number, result, started_at,
-           adapter_contract_version, provider_mode, provider_request_ref)
-         values ($1,$2,$3,$4,'STARTED',now(),$5,$6,$7)`,
+           adapter_contract_version, provider_mode, provider_request_ref,
+           effect_admission_contract_version,effect_admission_ref,effect_admission_digest,
+           effect_admission_kill_version,credential_binding_id)
+         values ($1,$2,$3,$4,'STARTED',now(),$5,$6,$7,'luzione-effect-admission/v1',$8,$9,$10,$11)`,
         [input.tenantId, `attempt_${crypto.randomUUID()}`, input.outboxMessageId,
-          row.attempt_count, input.adapterContractVersion, input.providerMode, input.providerRequestRef],
+          row.attempt_count, input.adapterContractVersion, input.providerMode, input.providerRequestRef,
+          input.effectAdmissionRef, input.effectAdmissionDigest, input.effectAdmissionKillVersion, input.credentialBindingId],
       );
       await client.query(
         `update public.p110_outbox_messages
@@ -215,7 +227,8 @@ export class PostgresWorkflowDeliveryStore {
     const result = await client.query(
       `select outbox.*, receipt.correlation_id, receipt.expected_object_version,
               receipt.committed_object_version as resulting_object_version,
-              receipt.target_object_type, receipt.target_object_id
+              receipt.target_object_type, receipt.target_object_id,
+              receipt.actor_id, receipt.actor_type
          from public.p110_outbox_messages outbox
          join public.p110_command_receipts receipt
            on receipt.tenant_id = outbox.tenant_id and receipt.receipt_id = outbox.receipt_id
@@ -441,7 +454,8 @@ export class PostgresWorkflowDeliveryStore {
          select claimed.*, outbox.destination, outbox.effect_class, outbox.authorization_ref,
                 outbox.idempotency_key, outbox.payload, outbox.payload_hash, outbox.attempt_count as delivery_attempt_count,
                 outbox.provider_acknowledgement_ref, receipt.target_object_type, receipt.target_object_id,
-                receipt.expected_object_version, receipt.committed_object_version as resulting_object_version
+                receipt.expected_object_version, receipt.committed_object_version as resulting_object_version,
+                receipt.actor_id, receipt.actor_type
            from claimed
            join public.p110_outbox_messages outbox
              on outbox.tenant_id = claimed.tenant_id and outbox.outbox_message_id = claimed.outbox_message_id
@@ -450,6 +464,27 @@ export class PostgresWorkflowDeliveryStore {
         [input.tenantId, boundedLimit(input.limit), workerId, input.outboxMessageId ?? null],
       );
       return claimed.rows;
+    });
+  }
+
+  async readClaimedReconciliationForAdmission(input: { reconciliationId: string; tenantId: string; workerId: string }) {
+    return this.transaction(input.tenantId, async (client) => {
+      const result = await client.query(
+        `select checkpoint.reconciliation_id,outbox.*,receipt.target_object_type,receipt.target_object_id,
+                receipt.expected_object_version,receipt.committed_object_version as resulting_object_version,
+                receipt.actor_id,receipt.actor_type
+           from public.p110_reconciliation_checkpoints checkpoint
+           join public.p110_outbox_messages outbox
+             on outbox.tenant_id=checkpoint.tenant_id and outbox.outbox_message_id=checkpoint.outbox_message_id
+           join public.p110_command_receipts receipt
+             on receipt.tenant_id=checkpoint.tenant_id and receipt.receipt_id=checkpoint.receipt_id
+          where checkpoint.tenant_id=$1 and checkpoint.reconciliation_id=$2 and checkpoint.result='PENDING'
+            and checkpoint.lease_owner=$3 and checkpoint.lease_expires_at>now()
+          for update of checkpoint`,
+        [input.tenantId, input.reconciliationId, validatedWorkerId(input.workerId)],
+      );
+      if (result.rows.length !== 1) throw new WorkflowDeliveryStoreError("RECONCILIATION_LEASE_NOT_OWNED", "The reconciliation lease is absent, expired or owned by another worker.");
+      return result.rows[0] as Record<string, unknown>;
     });
   }
 

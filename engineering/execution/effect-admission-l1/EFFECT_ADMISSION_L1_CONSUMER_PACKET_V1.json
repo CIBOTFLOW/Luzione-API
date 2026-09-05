@@ -1,0 +1,66 @@
+{
+  "schemaVersion": "EFFECT-ADMISSION-L1/Consumer-Packet/v1",
+  "producerRepository": "CIBOTFLOW/Luzione-API",
+  "producerBranch": "codex/effect-admission-l1-g0-f7fd111",
+  "baseSha": "6a667b4f2d78cafd506929396d0042fafcbb9356",
+  "implementationSha": "7d3a269b1ae64ff26974942eb85216f5d008758d",
+  "contractPins": {
+    "effectAdmission": "luzione-effect-admission/v1",
+    "providerAdapter": "luzione-provider-adapter/v0.2",
+    "workflowDelivery": "luzione-workflow-delivery/v0.1",
+    "sultanCommandPreparation": "luzione-sultan-command-preparation/v1",
+    "sultanCommandExecution": "luzione-sultan-command-execution/v1"
+  },
+  "authoritativeSources": {
+    "effectAdmissionSchema": "contracts/effect-admission/luzione-effect-admission-v1.schema.json",
+    "effectAdmissionParserEvaluator": "src/modules/effect-admission/contracts.ts",
+    "effectAdmissionGate": "src/modules/effect-admission/gate.ts",
+    "providerBoundary": "src/modules/provider-runtime/contracts.ts",
+    "providerRuntime": "src/modules/provider-runtime/runtime.ts",
+    "sultanBoundary": "src/modules/sultan-agent-gateway/service.ts",
+    "attemptEvidenceMigration": "supabase/migrations/20260905090000_effect_admission_evidence.sql",
+    "attemptEvidenceRollback": "scripts/validation/rollback-effect-admission-evidence.sql"
+  },
+  "artifactDigests": {
+    "effectAdmissionSchema": "ab93453962086e6339dd78f3125b8a529ffa21d6801883c7c405f6b6e8b0f263",
+    "effectAdmissionParserEvaluator": "08b87f4ab0a9f9b40e20a88dfe6f78cbd79e0fa2925d6a0b48cb465e51a866eb",
+    "effectAdmissionGate": "e5be55b449193f28900d0e0620ec892cb1253a477c1d54f51286e8cab52d375a",
+    "providerBoundary": "8ce88e7de7cabc4fc9bf0d27770977605032fdaf275f78d8bc8e2cb5411f4e97",
+    "providerRuntime": "2af031d639821298c54bf0ebdfea4886d838ecd47ab5107dad3ff840d95ff0b5",
+    "sultanBoundary": "8ba1d797a4181bd3096a1584b4d197048447fed42d0e0194497897a77db6e6a4",
+    "migration": "b2fa44ee4535126db9913a849e3120ccf6149a9fccbbdfeeec2a2c32c525123b",
+    "rollback": "267127f4e5f8929063ef6ec3f8758874667af939f7099b2495cfb7947280df5c"
+  },
+  "l2Requirement": {
+    "must": [
+      "Treat the API decision, actor, tenant, credential-binding ID, kill version, receipt and finality as server-owned; never construct or redefine them in Luzione UI.",
+      "Bind every future UI effect reservation to one stable operation key and canonical payload hash, then return the API-issued decision/receipt/readback references unchanged.",
+      "Complete CRM-CORRECTION-01 over the separate UI effect-sink inventory before requesting EFFECT-KILL-RECHECK-01."
+    ],
+    "mustNot": [
+      "Send credential material or a client-selected credential binding.",
+      "Treat a provider acknowledgement, HTTP success or an admitted decision as business finality.",
+      "Use this producer packet as proof that any UI sink is guarded or that G1/G2 is met."
+    ]
+  },
+  "l3Requirement": {
+    "must": [
+      "Pin the exact API implementation SHA and exact contract strings before exercising the Sultan prepare/execute routes.",
+      "Preserve the stable operationId/commandHash and consume only the API-owned decision through existing routes.",
+      "Keep Sultan logical agents distinct from the authenticated service actor and preserve separate human approval for execution."
+    ],
+    "mustNot": [
+      "Implement a Sultan-local effect admission, kill version, credential resolver, receipt or finality authority.",
+      "Pass tenant, actor, raw token, credential binding or kill state as model-controlled authority.",
+      "Activate provider effects from this bounded candidate."
+    ]
+  },
+  "providerWorkerRepin": {
+    "requiredBeforeExecution": true,
+    "rule": "A worker consuming luzione-provider-adapter/v0.2 must use the exact API source and apply the additive attempt-evidence migration in an isolated environment first; v0.1 workers must not be relabelled as v0.2.",
+    "newHttpRoute": false
+  },
+  "effectAuthority": "NO_EFFECT",
+  "integrationClaim": false,
+  "productionReadyClaim": false
+}

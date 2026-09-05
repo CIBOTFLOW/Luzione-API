@@ -1,14 +1,16 @@
 import { sha256 } from "@/modules/platform-guarantees/eventContract";
 import type { FailureClass } from "@/modules/platform-guarantees/types";
 
-export const PROVIDER_ADAPTER_CONTRACT_VERSION = "luzione-provider-adapter/v0.1";
+export const PROVIDER_ADAPTER_CONTRACT_VERSION = "luzione-provider-adapter/v0.2";
 
 export type ProviderMode = "LIVE" | "SANDBOX";
 export type ProviderEffectClass = "EXTERNAL_EFFECT" | "NO_EFFECT" | "REVERSIBLE_INTERNAL";
 
 export type ProviderMessage = {
+  actor: { actorId: string; actorType: "agent" | "service" | "system" | "user" };
   authorizationRef: string | null;
   destination: string;
+  effectAdmissionRef: string | null;
   effectClass: ProviderEffectClass;
   expectedObjectVersion: string;
   idempotencyKey: string;
@@ -24,13 +26,17 @@ export type ProviderMessage = {
 
 export type PreparedProviderRequest = {
   contractVersion: typeof PROVIDER_ADAPTER_CONTRACT_VERSION;
+  credentialBindingId: string;
   destination: string;
+  effectAdmissionRef: string;
   idempotencyKey: string;
   objectRef: string;
   payload: Record<string, unknown>;
   payloadHash: string;
+  provider: string;
   providerRequestRef: string;
   resultingObjectVersion: string;
+  tenantId: string;
 };
 
 export type ProviderExecutionResult =
@@ -49,6 +55,7 @@ export type ProviderCompensationResult =
   | { reason: string; state: "NOT_SUPPORTED" };
 
 export type ProviderAdapter = {
+  readonly credentialBindingId: string;
   readonly destination: string;
   readonly mode: ProviderMode;
   readonly provider: string;
@@ -100,8 +107,13 @@ export function providerMessageFromRow(row: Record<string, unknown>): ProviderMe
     throw new ProviderContractError("PROVIDER_AUTHORITY_MISSING", "External effects require a durable authorization reference.");
   }
   return {
+    actor: {
+      actorId: text(row.actor_id, "actorId", 512),
+      actorType: actorType(row.actor_type),
+    },
     authorizationRef,
     destination,
+    effectAdmissionRef: null,
     effectClass: effectClass as ProviderEffectClass,
     expectedObjectVersion: text(row.expected_object_version, "expectedObjectVersion", 300),
     idempotencyKey: text(row.idempotency_key, "idempotencyKey", 500),
@@ -114,6 +126,14 @@ export function providerMessageFromRow(row: Record<string, unknown>): ProviderMe
     resultingObjectVersion: text(row.resulting_object_version, "resultingObjectVersion", 300),
     tenantId: text(row.tenant_id, "tenantId", 200),
   };
+}
+
+function actorType(value: unknown): ProviderMessage["actor"]["actorType"] {
+  const parsed = text(value, "actorType", 20);
+  if (!(["agent", "service", "system", "user"] as string[]).includes(parsed)) {
+    throw new ProviderContractError("PROVIDER_ACTOR_INVALID", "The durable receipt actor type is invalid.");
+  }
+  return parsed as ProviderMessage["actor"]["actorType"];
 }
 
 export function assertAdapterResult(result: ProviderExecutionResult) {

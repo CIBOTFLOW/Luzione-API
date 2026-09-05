@@ -9,6 +9,7 @@ function scenario(payload: Record<string, unknown>): Scenario {
 }
 
 export class SandboxEchoProviderAdapter implements ProviderAdapter {
+  readonly credentialBindingId = "credential-binding:none:sandbox-echo/v1";
   readonly destination = "sandbox.echo";
   readonly mode = "SANDBOX" as const;
   readonly provider = "luzione-deterministic-simulator";
@@ -17,13 +18,17 @@ export class SandboxEchoProviderAdapter implements ProviderAdapter {
     scenario(message.payload);
     return {
       contractVersion: PROVIDER_ADAPTER_CONTRACT_VERSION,
+      credentialBindingId: this.credentialBindingId,
       destination: this.destination,
+      effectAdmissionRef: requiredAdmission(message),
       idempotencyKey: message.idempotencyKey,
       objectRef: `${message.objectType}:${message.objectId}`,
       payload: message.payload,
       payloadHash: message.payloadHash,
+      provider: this.provider,
       providerRequestRef: `sandbox-request:${message.idempotencyKey}`,
       resultingObjectVersion: message.resultingObjectVersion,
+      tenantId: message.tenantId,
     };
   }
 
@@ -55,4 +60,12 @@ export class SandboxEchoProviderAdapter implements ProviderAdapter {
     if (selected === "version_mismatch") return { observedObjectVersion: `${request.resultingObjectVersion}:different`, result: "VERSION_MISMATCH" as const, sourceReadbackRef: `sandbox-readback:${request.idempotencyKey}:different` };
     return { observedObjectVersion: request.resultingObjectVersion, result: "MATCHED" as const, sourceReadbackRef: `sandbox-readback:${request.idempotencyKey}:${request.payloadHash}` };
   }
+}
+
+function requiredAdmission(message: ProviderMessage) {
+  const value = message.effectAdmissionRef;
+  if (typeof value !== "string" || !/^effect-admission:[a-f0-9]{64}$/.test(value)) {
+    throw new Error("Sandbox request is missing the exact effect-admission reference.");
+  }
+  return value;
 }

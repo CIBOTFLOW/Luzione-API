@@ -4,6 +4,8 @@ import { bindAuthenticatedRequestIdentity } from "@/modules/platform-contracts/r
 import { SultanAgentGatewayError } from "@/modules/sultan-agent-gateway/contracts";
 import { parseCommandPreparationEnvelope } from "@/modules/sultan-agent-gateway/parser";
 import { PostgresSultanAgentGatewayStore } from "@/modules/sultan-agent-gateway/postgresStore";
+import { databasePool } from "@/lib/db";
+import { ConfiguredEffectAdmissionGate, PostgresEffectKillStateReader } from "@/modules/effect-admission/gate";
 import { SultanAgentGatewayService } from "@/modules/sultan-agent-gateway/service";
 
 export const dynamic = "force-dynamic";
@@ -25,7 +27,8 @@ export async function POST(request: Request) {
     let body: unknown;
     try { body = JSON.parse(raw); } catch { throw new SultanAgentGatewayError("INVALID_COMMAND_PREPARATION", "The command preparation body must be valid JSON."); }
     const call = parseCommandPreparationEnvelope(body);
-    const preparation = await new SultanAgentGatewayService(new PostgresSultanAgentGatewayStore()).prepare({ actor, call });
+    const pool = databasePool();
+    const preparation = await new SultanAgentGatewayService(new PostgresSultanAgentGatewayStore(pool), undefined, undefined, new ConfiguredEffectAdmissionGate(new PostgresEffectKillStateReader(pool))).prepare({ actor, call });
     status = 201;
     logRequestCompletion({ method: "POST", requestIdentity: identity, route: "/api/v1/sultan/commands/prepare", status, startedAt });
     return apiResponse({ ok: true, preparation }, { requestIdentity: identity, status, startedAt });

@@ -35,7 +35,7 @@ The durable outbox permits one provider attempt. A transport or acknowledgement 
 Activation is an external, reviewed operational decision—not part of schema deployment. It requires all of these independent conditions:
 
 1. Deploy the API migration and provider worker candidate.
-2. Configure `SULTAN_RFQ_CANARY_SENDER` and API/worker-owned `GMAIL_SULTAN_RFQ_ACCESS_TOKEN` outside Sultan and UI.
+2. Configure the sender and an API-owned opaque tenant/provider/destination credential binding. The provider worker resolves credential material only after a fresh `luzione-effect-admission/v1` decision; no raw global Gmail-token environment variable is an authority path.
 3. Enable the existing live-provider controls only for tenant `luzione` and destination `gmail.sultan-rfq-canary`.
 4. Create one reviewed `public.sultan_agent_policy_envelopes` record bound to the exact synthetic case, steward/tool versions, sender, recipient, prefix, activation time, expiry, and daily maximum.
 5. Enable Sultan's separate fixed-case canary gate.
