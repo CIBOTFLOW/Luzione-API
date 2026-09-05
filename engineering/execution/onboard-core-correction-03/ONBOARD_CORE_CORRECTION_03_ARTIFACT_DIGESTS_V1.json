@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "ONBOARD-CORE-CORRECTION-03/Artifact-Digests/v1",
+  "projectId": "ONBOARD-CORE-CORRECTION-03",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "controllerAuthority": "e698099e8b4b2de8abf3a9373fa7521fab0556ff",
+  "branch": "codex/onboard-core-correction-03-g0-e698099",
+  "baseSha": "c7a0b46dbc3b776f49fd8d151c221c9d023a85d8",
+  "implementationSha": "fb6b71510acbe9a14ef1d03bd4dfe617cd2744a1",
+  "generatedAt": "2026-09-05T17:32:11Z",
+  "algorithm": "SHA-256",
+  "artifacts": {
+    "contracts/onboard-core/luzione-tenant-pack-draft-v1.schema.json": "c94dd71d93d72b048ceaa77b1ba08cb84e1f610393f139060f49ead684d28eb4",
+    "src/modules/onboard-core/contracts.ts": "73e62060ea3cd287c1be0b78a242b4e908d7f4c4e0c278710bb3088fbe25f15c",
+    "src/modules/onboard-core/sourceBinding.ts": "36538e262f23e98c3a9f1fad1671c78e1c15396182c3cc15596031a17607ce22",
+    "src/modules/onboard-core/importContracts.ts": "28aa8a9b9265ca19e615bca5733c1dfdcaaf907d5cec8b988bc1485e0df1e4de",
+    "src/modules/onboard-core/connectorContracts.ts": "fc85fd051d4717aa5b685ac147c468dacb737b4bcbca22e5b04c2d37bb8c1b4f",
+    "src/modules/onboard-core/routeSupport.ts": "1abaa7164c959fc8cbdf5b3f87149576e20897f927eb807450c1228a3b85e1ef",
+    "src/app/api/v1/onboarding/imports/dry-runs/route.ts": "c6da499bc90d409649e6886768386caaffb955abb2bdcc439fff170c20d979c9",
+    "src/app/api/v1/onboarding/imports/[batchId]/route.ts": "a24d5b6830dbdb6ade492da9793ca9c734ee671626fccacb0470fa586d82284b",
+    "supabase/migrations/20260905050000_onboard_core_correction_01.sql": "6b5e94bd5fa4b94e98055a3b7817b8296da68891e7751055b04b56c257096afd",
+    "scripts/validation/rollback-onboard-core-correction-01.sql": "364f09b332ffddce42ad6e8ce9dcab8d56e6a7b62cba99f287efef64c20328b9",
+    "scripts/validation/run-onboard-core-correction-02-reverse-proof.sh": "162dcd28c96019609f2d39d4415d75fee0728b2678a3eeac7f51bf1faab3ef1f",
+    "scripts/validation/onboard-core-correction-02-reverse-fixture.sql": "664176ccddb2b6b6784e5629f7fca2127ea54798e0e86eea4d9c52f89f198858",
+    "scripts/validation/onboard-core-correction-03-reverse-base-v1.sql": "65e289e8b6e08d6abc718fd89057899d5110f3e4f1d8d15df1525eff3cf67b55",
+    "scripts/validation/onboard-core-correction-03-reverse-blueprint-source-binding.sql": "a9e1c6ae7d05081ac9a25760f16d066e2597af7f1f2d168dd586265837c07d02",
+    "scripts/validation/onboard-core-correction-03-reverse-approval-human-auth.sql": "e81c25ad3fbdb84bd162740176eb558f8b66c5aae8bacfe1dd225a2722e5c5d1",
+    "scripts/validation/onboard-core-correction-03-reverse-mandate-source-binding.sql": "60d9e76e733d0ca7d8cfd2429f8d3b816465999968178a5171cbd37cab10e8c0",
+    "scripts/validation/onboard-core-correction-03-reverse-import-batch-source-binding.sql": "6b30c61dd1823f0cbb811338013e7f5e0367749e7274b47bd617b69e177f8505",
+    "scripts/validation/onboard-core-correction-03-reverse-import-row-match-key.sql": "68f05f118c835e7b0cd6fb4b169ea38232128244babfa2a311558b46f1b22b04",
+    "scripts/validation/onboard-core-correction-03-reverse-receipt-runtime.sql": "ad3129046cc75ee4f58a47a59b18b186aa41559ea15dc2bffb2e012e8bba17c9",
+    "src/modules/onboard-core/tests/import-dry-run.test.ts": "a551c45e110d985777cfe85da37423fb6c536289ecac982392a347765945a61a",
+    "src/modules/onboard-core/tests/connector-validation.test.ts": "2c55331437d1c20f2e7160555a7d2cae036f632d8e11d5fcc560e108020800ef",
+    "package.json": "5fc6d9581161148af7bb7a42b16d2e838dc2b717511d650860b5901c5daac8c6",
+    "architecture/production-convergence/ONBOARD_CORE_CORRECTION_03_WORKING_CONTRACT.md": "38803ce991caa7b08fc92740f3c9e8b42ee113b709bdb08bb98ecfa1281f811f"
+  },
+  "frozenTrees": {
+    "contracts/core": "d57ccc4cccd97b37acd1a1575b1e07ede5787349",
+    "src/modules/luzione-core-contracts": "d594fa014d7020fdf8386c7a6926ff9b573ac355",
+    "src/modules/effect-admission": "b14044b0da3d0eb7c1a2fa855ddf24da13797239",
+    "src/modules/connector-revocation": "1573bdadcadfd16b01beac46fea863abe571e29c",
+    "contracts/operations-evidence/v1": "c0e4a96c26d25f2c1994e05fa2fe1da07f4f7838",
+    "contracts/operations-evidence/v2": "ae9d356484ced3f547059ae74a9ad92a8c00f6c3",
+    "contracts/operations-evidence/v3": "469c2658c76dd54ba5b6232df20de531cf9142d8",
+    "src/modules/operations-evidence-contracts/v2": "a503d433bcc2249924773b550622d9794d2969d5",
+    "src/modules/operations-evidence-contracts/v3": "13ebdbd44bb6cf9bfaa419c964b088f829f287c2",
+    "contracts/onboard-core": "b01a9e3bbb418440ef2550b1136f5fbc2278f37b"
+  },
+  "sourceFingerprints": {
+    "onboardCoreCorrectionAssure02": "0133e77b326c26c670a562442e07b12baa952e007a82ea1573cfba9df702a2d0",
+    "onboardConsumerL2V2PinMap01": "228027003e10cb2cfa6a9140daebc47eecf687f86deecd21fbb458548c9537b7"
+  },
+  "effectAuthority": "NO_EFFECT"
+}

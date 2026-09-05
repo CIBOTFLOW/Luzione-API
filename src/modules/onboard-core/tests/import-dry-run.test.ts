@@ -6,7 +6,7 @@ import type { SetupMandateV1 } from "@/modules/luzione-core-contracts/contracts"
 import { sha256 } from "@/modules/platform-guarantees/eventContract";
 import { ONBOARD_CORE_API_VERSION, OnboardCoreContractError } from "../contracts";
 import {
-  ONBOARD_IMPORT_MAPPING_VERSION_V2, assertImportStatusFinality, importReservation, importSourceDigest,
+  ONBOARD_IMPORT_MAPPING_VERSION, ONBOARD_IMPORT_MAPPING_VERSION_V2, assertImportStatusFinality, importReservation, importSourceDigest,
   issueImportEvidence, parseImportDryRunRequest,
 } from "../importContracts";
 import { assertRuntimeWithinMandate } from "../runtimeLimit";
@@ -57,12 +57,47 @@ test("missing match key is server-derived rejection and caller-declared outcome 
 });
 
 test("mapping, source, binding and mandate limits fail closed", () => {
+  assert.equal(ONBOARD_IMPORT_MAPPING_VERSION, "CRMImportDryRunMap/v1", "v1 remains named only for compatibility fixtures");
   expectCode(() => parseImportDryRunRequest({ ...request(), mappingVersion: "CRMImportDryRunMap/v1" }), "WRONG_MAPPING_VERSION");
+  expectCode(() => parseImportDryRunRequest({ ...request(), contractVersion: "LuzioneOnboardCoreApi/v1" }), "WRONG_VERSION");
   expectCode(() => parseImportDryRunRequest({ ...request(), sourceBindingDigest: "bad" }), "INVALID_REQUEST");
   const malformed = request();
   expectCode(() => parseImportDryRunRequest({ ...malformed, source: { ...malformed.source, digest: "a".repeat(64) } }), "SOURCE_DIGEST_MISMATCH");
   const overLimit = parseImportDryRunRequest(request([...rows, { matchKeyDigest: sha256({ key: "c" }), payloadDigest: sha256({ value: 4 }), sourceRowId: "row-5" }]));
   expectCode(() => issueImportEvidence({ mandate, request: overLimit, tenantId: mandate.tenantId }), "MANDATE_LIMIT_EXCEEDED");
+});
+
+test("import stable identifiers reject original-byte overflow, Unicode, whitespace and raw/canonical collisions", () => {
+  for (const dedupeKey of ["a".repeat(201), "import-é", " customer-zero-import-1", "customer-zero-import-1 "]) {
+    expectCode(() => parseImportDryRunRequest(request(rows, { dedupeKey })), "INVALID_REQUEST");
+  }
+  for (const expectedMandateObjectVersion of ["v".repeat(201), "setup-mandate:é@v2", " setup-mandate:proof@v2"]) {
+    expectCode(() => parseImportDryRunRequest(request(rows, { expectedMandateObjectVersion })), "INVALID_REQUEST");
+  }
+  for (const sourceRowId of ["r".repeat(201), "row-é", " row-1"]) {
+    expectCode(() => parseImportDryRunRequest(request([{ ...rows[0], sourceRowId }])), "INVALID_REQUEST");
+  }
+  for (const field of ["consentRef", "provenanceRef"] as const) {
+    const invalid = request();
+    invalid.source = { ...invalid.source, [field]: field === "consentRef" ? " consent:import-proof" : "provenance-é" };
+    invalid.source.digest = importSourceDigest(invalid as never);
+    expectCode(() => parseImportDryRunRequest(invalid), "INVALID_REQUEST");
+  }
+  const raw = " customer-zero-import-1";
+  assert.notEqual(sha256({ dedupeKey: raw }), sha256({ dedupeKey: raw.trim() }));
+  expectCode(() => parseImportDryRunRequest(request(rows, { dedupeKey: raw })), "INVALID_REQUEST");
+  expectCode(() => parseImportDryRunRequest({ ...request(), sourceBindingDigest: ` ${bindingDigest}` }), "INVALID_REQUEST");
+  const routeSupport = readFileSync("src/modules/onboard-core/routeSupport.ts", "utf8");
+  assert.match(routeSupport, /typeof value !== "string" \|\| !UUID\.test\(value\)/);
+  assert.doesNotMatch(routeSupport, /value\?\.trim/);
+});
+
+test("POST and GET route identity advertises only the already-required v2 mapping", () => {
+  const post = readFileSync("src/app/api/v1/onboarding/imports/dry-runs/route.ts", "utf8");
+  const get = readFileSync("src/app/api/v1/onboarding/imports/[batchId]/route.ts", "utf8");
+  assert.match(post, /sourceVersionRefs: \[ONBOARD_CORE_API_VERSION, ONBOARD_IMPORT_MAPPING_VERSION_V2,/);
+  assert.match(get, /sourceVersionRefs: \[ONBOARD_CORE_API_VERSION, ONBOARD_IMPORT_MAPPING_VERSION_V2\]/);
+  assert.doesNotMatch(`${post}\n${get}`, /ONBOARD_IMPORT_MAPPING_VERSION[,\]}]/);
 });
 
 test("reservation replay is tenant/key stable while changed digest conflicts at P110", () => {

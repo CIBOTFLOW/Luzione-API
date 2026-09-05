@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "ONBOARD-CORE-CORRECTION-03/Assurance-Matrix/v1",
+  "implementationSha": "fb6b71510acbe9a14ef1d03bd4dfe617cd2744a1",
+  "decision": "BOUNDED_LOCAL_G0_PASS_PENDING_INDEPENDENT_ASSURANCE_AND_L2_REPIN",
+  "cases": [
+    {"id":"R00_EMPTY_REVERSE_REAPPLY","result":"PASS","evidence":"reverse removed the revocation relation and all 10 v2 columns; reapply restored them"},
+    {"id":"R01_APPEND_ONLY_REVOCATION","result":"PASS","snapshotSha256":"1a333f4858f5cfff251f07668ebf79ec948f8e3ba975f42e1e04fbd4c70d0062"},
+    {"id":"R02_BLUEPRINT_SOURCE_BINDING","result":"PASS","snapshotSha256":"f9edffdd32cce17dcaf3160afc0628cd7d82fb59d3bb4556013d5144cb758d2f"},
+    {"id":"R03_APPROVAL_ACTOR_HUMAN_AUTHENTICATION","result":"PASS","snapshotSha256":"49f51cda322a233c18bc83148be81165b700ad6c536f66a9cc190eabcf7fc829"},
+    {"id":"R04_MANDATE_SOURCE_BINDING_DIGEST","result":"PASS","snapshotSha256":"22f253f75a319a25c22b31788173215cb5215ebb287a8bdf2723eda9eb839572"},
+    {"id":"R05_IMPORT_MAPPING_BATCH_SOURCE_BINDING","result":"PASS","snapshotSha256":"f95851e5e2194f2622c989d6eedcc6d72bb5f0c92d4c2acd28d27d0b09fc49e2"},
+    {"id":"R06_IMPORT_ROW_MATCH_KEY_DIGEST","result":"PASS","snapshotSha256":"65eb37e9e31ac5530bde449ded205e2201b12b77ab521cae2dbe7016af11899a"},
+    {"id":"R07_RECEIPT_SOURCE_RUNTIME_DEADLINE","result":"PASS","snapshotSha256":"e92031a30a64837a70a075220ac4057114cc2c9e97a69ea69ffb7c2bca1d12f7"},
+    {"id":"I01_POST_GET_V2_IDENTITY_AND_MIXED_VERSION_DENIAL","result":"PASS"},
+    {"id":"I02_IMPORT_ORIGINAL_BYTE_201_UNICODE_WHITESPACE_COLLISION","result":"PASS"},
+    {"id":"I03_CONNECTOR_ORIGINAL_BYTE_201_UNICODE_WHITESPACE_COLLISION","result":"PASS"},
+    {"id":"P01_FROZEN_CORE_EFFECT_REVOCATION_OPERATIONS_AND_MIGRATION_BYTES","result":"PASS"},
+    {"id":"Z01_DEFAULT_EMPTY_L2_BINDING_SANDBOX_ECHO_ONLY_NO_EFFECT","result":"PASS"}
+  ],
+  "reverseLaw": "Every populated case runs in a fresh disposable database. The reverse fails in its first executable preflight block before DDL, and a SHA-256 snapshot of onboarding relations, columns, constraints, triggers, policies and row JSON is identical before and after.",
+  "credit": {"g1":0,"g2":0,"production":0}
+}

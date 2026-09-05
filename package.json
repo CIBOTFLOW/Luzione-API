@@ -28,6 +28,7 @@
     "proof:onboard-core-imports": "bash scripts/validation/run-onboard-core-import-proof.sh",
     "proof:onboard-core-connector": "bash scripts/validation/run-onboard-core-connector-proof.sh",
     "proof:onboard-core-correction-02": "bash scripts/validation/run-onboard-core-correction-02-reverse-proof.sh",
+    "proof:onboard-core-correction-03": "bash scripts/validation/run-onboard-core-correction-02-reverse-proof.sh",
     "proof:effect-admission": "bash scripts/validation/run-effect-admission-proof.sh",
     "proof:connector-revocation": "bash scripts/validation/run-connector-revocation-proof.sh",
     "proof:connector-revocation-v2": "bash scripts/validation/run-connector-revocation-l1-correction-01-proof.sh",

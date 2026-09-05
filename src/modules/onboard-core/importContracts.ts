@@ -19,6 +19,7 @@ export const ONBOARD_IMPORT_MAPPING_VERSION = "CRMImportDryRunMap/v1";
 export const ONBOARD_IMPORT_MAPPING_VERSION_V2 = "CRMImportDryRunMap/v2";
 
 const ID = /^[A-Za-z0-9][A-Za-z0-9._:-]{2,199}$/;
+const OBJECT_VERSION = /^[A-Za-z0-9][A-Za-z0-9._:@-]{2,199}$/;
 const DIGEST = /^[a-f0-9]{64}$/;
 
 export type ImportDryRunRow = {
@@ -66,31 +67,42 @@ function exact(input: Record<string, unknown>, keys: readonly string[], field: s
   return input;
 }
 
-function text(value: unknown, field: string, max = 500) {
-  if (typeof value !== "string" || !value.trim() || value.trim().length > max) {
-    throw new OnboardCoreContractError("INVALID_REQUEST", `${field} must be a bounded non-empty string.`);
+function exceedsCodePointLimit(value: string, max: number) {
+  let length = 0;
+  const characters = value[Symbol.iterator]();
+  while (!characters.next().done) {
+    length += 1;
+    if (length > max) return true;
   }
-  return value.trim();
+  return false;
 }
 
 function id(value: unknown, field: string) {
-  const parsed = text(value, field, 200);
-  if (!ID.test(parsed)) throw new OnboardCoreContractError("INVALID_REQUEST", `${field} must be a stable identifier.`);
-  return parsed;
+  if (typeof value !== "string" || exceedsCodePointLimit(value, 200) || !ID.test(value)) {
+    throw new OnboardCoreContractError("INVALID_REQUEST", `${field} must be an exact stable identifier.`);
+  }
+  return value;
+}
+
+function objectVersion(value: unknown, field: string) {
+  if (typeof value !== "string" || exceedsCodePointLimit(value, 200) || !OBJECT_VERSION.test(value)) {
+    throw new OnboardCoreContractError("INVALID_REQUEST", `${field} must be an exact stable object version.`);
+  }
+  return value;
 }
 
 function uuid(value: unknown, field: string) {
-  const parsed = text(value, field, 36);
-  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(parsed)) {
+  if (typeof value !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(value)) {
     throw new OnboardCoreContractError("INVALID_REQUEST", `${field} must be a UUID.`);
   }
-  return parsed;
+  return value;
 }
 
 function digest(value: unknown, field: string) {
-  const parsed = text(value, field, 64);
-  if (!DIGEST.test(parsed)) throw new OnboardCoreContractError("INVALID_REQUEST", `${field} must be a lowercase SHA-256 digest.`);
-  return parsed;
+  if (typeof value !== "string" || !DIGEST.test(value)) {
+    throw new OnboardCoreContractError("INVALID_REQUEST", `${field} must be an exact lowercase SHA-256 digest.`);
+  }
+  return value;
 }
 
 export function importSourceDigest(input: Pick<ImportDryRunRequest, "mappingVersion" | "rows" | "source" | "sourceBindingDigest">) {
@@ -138,7 +150,7 @@ export function parseImportDryRunRequest(value: unknown): ImportDryRunRequest {
   const parsed: ImportDryRunRequest = {
     contractVersion: ONBOARD_CORE_API_VERSION,
     dedupeKey: id(input.dedupeKey, "dedupeKey"),
-    expectedMandateObjectVersion: text(input.expectedMandateObjectVersion, "expectedMandateObjectVersion", 300),
+    expectedMandateObjectVersion: objectVersion(input.expectedMandateObjectVersion, "expectedMandateObjectVersion"),
     mandateId: uuid(input.mandateId, "mandateId"),
     mappingVersion: ONBOARD_IMPORT_MAPPING_VERSION_V2,
     rows,

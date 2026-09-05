@@ -20,6 +20,7 @@ export const CONNECTOR_VALIDATION_OUTCOME_VERSION = "ConnectorValidationOutcome/
 export const CONNECTOR_SANDBOX_DESTINATION = "sandbox.echo";
 
 const ID = /^[A-Za-z0-9][A-Za-z0-9._:-]{2,199}$/;
+const OBJECT_VERSION = /^[A-Za-z0-9][A-Za-z0-9._:@-]{2,199}$/;
 const DIGEST = /^[a-f0-9]{64}$/;
 const SCENARIOS = ["ambiguous", "matched", "source_unavailable", "version_mismatch"] as const;
 
@@ -55,10 +56,49 @@ function exact(input: Record<string, unknown>, keys: readonly string[], field: s
 }
 
 function id(value: unknown, field: string) {
-  if (typeof value !== "string" || !value.trim() || value.trim().length > 200 || !ID.test(value.trim())) {
-    throw new OnboardCoreContractError("INVALID_REQUEST", `${field} must be a stable identifier.`);
+  if (typeof value !== "string" || value.length > 200 || !ID.test(value)) {
+    throw new OnboardCoreContractError("INVALID_REQUEST", `${field} must be an exact stable identifier.`);
   }
-  return value.trim();
+  return value;
+}
+
+function objectVersion(value: unknown, field: string) {
+  if (typeof value !== "string" || value.length > 200 || !OBJECT_VERSION.test(value)) {
+    throw new OnboardCoreContractError("INVALID_REQUEST", `${field} must be an exact stable object version.`);
+  }
+  return value;
+}
+
+function uuid(value: unknown, field: string) {
+  if (typeof value !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(value)) {
+    throw new OnboardCoreContractError("INVALID_REQUEST", `${field} must be a UUID.`);
+  }
+  return value;
+}
+
+function digest(value: unknown, field: string) {
+  if (typeof value !== "string" || !DIGEST.test(value)) {
+    throw new OnboardCoreContractError("INVALID_REQUEST", `${field} must be an exact lowercase SHA-256 digest.`);
+  }
+  return value;
+}
+
+function validateBindingOriginalStableIds(value: unknown) {
+  const binding = object(value, "binding");
+  uuid(binding.bindingId, "binding.bindingId");
+  id(binding.tenantId, "binding.tenantId");
+  id(binding.consentRef, "binding.consentRef");
+  const credentialReference = id(binding.credentialReference, "binding.credentialReference");
+  if (!/^secret-ref:[A-Za-z0-9][A-Za-z0-9._:-]{2,188}$/.test(credentialReference)) {
+    throw new OnboardCoreContractError("CREDENTIAL_REFERENCE_INVALID", "credentialReference must be an exact opaque secret-ref identifier; secret values are forbidden.", 403);
+  }
+  if (binding.cursor !== null) id(binding.cursor, "binding.cursor");
+  const revocation = exact(object(binding.revocation, "binding.revocation"), ["revocationRef", "revokedAt"], "binding.revocation");
+  if (revocation.revocationRef !== null) id(revocation.revocationRef, "binding.revocation.revocationRef");
+  if (!Array.isArray(binding.scopes) || binding.scopes.length === 0) {
+    throw new OnboardCoreContractError("INVALID_REQUEST", "binding.scopes must be a non-empty stable identifier array.");
+  }
+  binding.scopes.forEach((scope, index) => id(scope, `binding.scopes[${index}]`));
 }
 
 function count(value: unknown, field: string) {
@@ -87,15 +127,13 @@ export function parseConnectorSyncValidationRequest(value: unknown): ConnectorSy
   if (input.contractVersion !== ONBOARD_CORE_API_VERSION) {
     throw new OnboardCoreContractError("WRONG_VERSION", `contractVersion must be ${ONBOARD_CORE_API_VERSION}.`);
   }
+  validateBindingOriginalStableIds(input.binding);
   const binding = parseConnectorBindingV1(input.binding);
   if (binding.status !== "DRAFT") {
     throw new OnboardCoreContractError("CONNECTOR_STATUS_DENIED", "Sandbox validation accepts only a DRAFT binding and never a live or revoked binding.", 403);
   }
   if (binding.provider !== "GOOGLE_WORKSPACE" && binding.provider !== "QUICKBOOKS_ONLINE") {
     throw new OnboardCoreContractError("CONNECTOR_PROVIDER_DENIED", "Only approved Google Workspace and QuickBooks sandbox mappings are admitted.", 403);
-  }
-  if (!/^secret-ref:[A-Za-z0-9][A-Za-z0-9._:-]{2,190}$/.test(binding.credentialReference)) {
-    throw new OnboardCoreContractError("CREDENTIAL_REFERENCE_INVALID", "credentialReference must be an opaque secret-ref identifier; secret values are forbidden.", 403);
   }
   const validationInput = exact(object(input.validation, "validation"), ["changes", "cursorAfter", "scenario"], "validation");
   if (!(SCENARIOS as readonly unknown[]).includes(validationInput.scenario)) {
@@ -112,16 +150,11 @@ export function parseConnectorSyncValidationRequest(value: unknown): ConnectorSy
     cursorAfter: validationInput.cursorAfter === null ? null : id(validationInput.cursorAfter, "validation.cursorAfter"),
     scenario: validationInput.scenario as ConnectorSyncValidationRequest["validation"]["scenario"],
   };
-  const payloadDigest = id(input.payloadDigest, "payloadDigest");
-  const expectedMandateObjectVersion = typeof input.expectedMandateObjectVersion === "string" && input.expectedMandateObjectVersion.trim().length >= 3 && input.expectedMandateObjectVersion.length <= 300
-    ? input.expectedMandateObjectVersion.trim()
-    : (() => { throw new OnboardCoreContractError("INVALID_REQUEST", "expectedMandateObjectVersion must be bounded."); })();
-  const mandateId = typeof input.mandateId === "string" && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(input.mandateId)
-    ? input.mandateId
-    : (() => { throw new OnboardCoreContractError("INVALID_REQUEST", "mandateId must be a UUID."); })();
-  const sourceBindingDigest = id(input.sourceBindingDigest, "sourceBindingDigest");
-  if (!DIGEST.test(sourceBindingDigest)) throw new OnboardCoreContractError("INVALID_REQUEST", "sourceBindingDigest must be a lowercase SHA-256 digest.");
-  if (!DIGEST.test(payloadDigest) || payloadDigest !== connectorValidationPayloadDigest({ binding, expectedMandateObjectVersion, mandateId, sourceBindingDigest, validation })) {
+  const payloadDigest = digest(input.payloadDigest, "payloadDigest");
+  const expectedMandateObjectVersion = objectVersion(input.expectedMandateObjectVersion, "expectedMandateObjectVersion");
+  const mandateId = uuid(input.mandateId, "mandateId");
+  const sourceBindingDigest = digest(input.sourceBindingDigest, "sourceBindingDigest");
+  if (payloadDigest !== connectorValidationPayloadDigest({ binding, expectedMandateObjectVersion, mandateId, sourceBindingDigest, validation })) {
     throw new OnboardCoreContractError("PAYLOAD_DIGEST_MISMATCH", "payloadDigest must match the exact canonical Binding and validation payload.", 409);
   }
   return {

@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "ONBOARD-CORE-CORRECTION-03/L2-Consumer-Packet/v1",
+  "producerRepository": "CIBOTFLOW/Luzione-API",
+  "producerBranch": "codex/onboard-core-correction-03-g0-e698099",
+  "producerBaseSha": "c7a0b46dbc3b776f49fd8d151c221c9d023a85d8",
+  "producerImplementationSha": "fb6b71510acbe9a14ef1d03bd4dfe617cd2744a1",
+  "producerFinalEvidenceBinding": {"mode":"DETACHED_ANNOTATED_TAG","tag":"onboard-core-correction-03-g0-exact-final"},
+  "repinRequired": true,
+  "contractIdentifiersChanged": false,
+  "decisionBearingVersions": [
+    "LuzioneOnboardCoreApi/v2",
+    "TenantBlueprintMap/v2",
+    "TenantPackSourceBinding/v1",
+    "LuzioneHumanApprovalSubject/v1",
+    "SetupMandateRevocation/v1",
+    "CRMImportDryRunMap/v2",
+    "ConnectorSyncValidation/v2",
+    "ConnectorValidationOutcome/v1"
+  ],
+  "frozenCoreVersions": ["LuzioneTenantPackDraft/v1","TenantBlueprint/v1","SetupMandate/v1","ImportBatch/v1","ImportReceipt/v1","ConnectorBinding/v1","SyncReceipt/v1"],
+  "legacyCompatibilityOnly": {
+    "version": "CRMImportDryRunMap/v1",
+    "allowedUse": ["legacy fixture parsing outside the decision-bearing v2 POST/GET boundary", "disposable reverse compatibility prerequisites"],
+    "prohibitedUse": ["POST /api/v1/onboarding/imports/dry-runs", "GET /api/v1/onboarding/imports/{batchId}", "v2 consumer sourceVersionRefs", "authority, receipt or finality decisions"]
+  },
+  "pins": {
+    "tenantPackSchema":{"path":"contracts/onboard-core/luzione-tenant-pack-draft-v1.schema.json","sha256":"c94dd71d93d72b048ceaa77b1ba08cb84e1f610393f139060f49ead684d28eb4"},
+    "tenantPackParser":{"path":"src/modules/onboard-core/contracts.ts","sha256":"73e62060ea3cd287c1be0b78a242b4e908d7f4c4e0c278710bb3088fbe25f15c"},
+    "sourceBinding":{"path":"src/modules/onboard-core/sourceBinding.ts","sha256":"36538e262f23e98c3a9f1fad1671c78e1c15396182c3cc15596031a17607ce22"},
+    "importParser":{"path":"src/modules/onboard-core/importContracts.ts","sha256":"28aa8a9b9265ca19e615bca5733c1dfdcaaf907d5cec8b988bc1485e0df1e4de"},
+    "connectorParser":{"path":"src/modules/onboard-core/connectorContracts.ts","sha256":"fc85fd051d4717aa5b685ac147c468dacb737b4bcbca22e5b04c2d37bb8c1b4f"},
+    "importPostRoute":{"path":"src/app/api/v1/onboarding/imports/dry-runs/route.ts","sha256":"c6da499bc90d409649e6886768386caaffb955abb2bdcc439fff170c20d979c9"},
+    "importGetRoute":{"path":"src/app/api/v1/onboarding/imports/[batchId]/route.ts","sha256":"a24d5b6830dbdb6ade492da9793ca9c734ee671626fccacb0470fa586d82284b"},
+    "coreTypesTree":"d594fa014d7020fdf8386c7a6926ff9b573ac355",
+    "coreSchemaTree":"d57ccc4cccd97b37acd1a1575b1e07ede5787349"
+  },
+  "endpointPins": ["POST /api/v1/onboarding/tenant-blueprints","GET /api/v1/onboarding/tenant-blueprints","POST /api/v1/onboarding/tenant-blueprints/approvals","POST /api/v1/onboarding/setup-mandates","GET /api/v1/onboarding/setup-mandates","POST /api/v1/onboarding/setup-mandates/revocations","POST /api/v1/onboarding/imports/dry-runs","GET /api/v1/onboarding/imports/{batchId}","POST /api/v1/connectors/sync-validations"],
+  "packagePin":{"name":"luzione-api","version":"0.1.0","node":">=20","next":"16.3.4","pg":"8.20.0"},
+  "consumerRequirements": [
+    "Pin the exact producer implementation plus the detached tag's peeled final and every listed digest; a moving branch or Correction-02 pin is insufficient.",
+    "Construct only CRMImportDryRunMap/v2 requests and require both import POST and GET sourceVersionRefs to contain v2. Reject any v1/v2 mixture before SDK construction.",
+    "Validate every import and connector stable identifier against its original bytes: ASCII canonical pattern, maximum 200 code points/characters, no trimming, no Unicode substitution and no raw/canonical collision.",
+    "Preserve the exact admitted Tenant Pack schema and source-binding tuple. Default-empty admission stays deny-all; L2 cannot mint tenant, actor, approval, mandate, replay, receipt, readback or finality truth.",
+    "Keep consumers route-disconnected and effect-free until independent assurance and controller G1. SandboxEcho, provider ACK, VALIDATED_NO_EFFECT and local projection state are not production or source finality."
+  ],
+  "runtimeTruth":{"effectAuthority":"NO_EFFECT","sourceBindingsDefault":"EMPTY_DENY_ALL","adapter":"SandboxEchoProviderAdapter_ONLY","productionQueryOrMutation":false,"credentialOrProviderEffect":false},
+  "strongestClaim":"BOUNDED_G0_PRODUCER_CORRECTION_NOT_INTEGRATED_NOT_PRODUCTION_READY"
+}

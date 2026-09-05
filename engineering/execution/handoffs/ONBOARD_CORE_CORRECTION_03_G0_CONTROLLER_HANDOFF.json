@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "ONBOARD_CORE_CORRECTION_03_G0_CONTROLLER_HANDOFF/v1",
+  "projectId": "ONBOARD-CORE-CORRECTION-03",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "controllerAuthority": "CIBOTFLOW/Luzione-platform-program@e698099e8b4b2de8abf3a9373fa7521fab0556ff",
+  "branch": "codex/onboard-core-correction-03-g0-e698099",
+  "baseSha": "c7a0b46dbc3b776f49fd8d151c221c9d023a85d8",
+  "implementationSha": "fb6b71510acbe9a14ef1d03bd4dfe617cd2744a1",
+  "finalEvidenceBinding": {"mode":"DETACHED_ANNOTATED_TAG","tag":"onboard-core-correction-03-g0-exact-final"},
+  "contractVersions": ["LuzioneOnboardCoreApi/v2","TenantBlueprintMap/v2","TenantPackSourceBinding/v1","LuzioneHumanApprovalSubject/v1","SetupMandateRevocation/v1","CRMImportDryRunMap/v2","ConnectorSyncValidation/v2","ConnectorValidationOutcome/v1"],
+  "legacyCompatibilityOnly": ["CRMImportDryRunMap/v1"],
+  "artifactDigests": {
+    "manifest":"08c54665ff6759dc75c9502df25d9afd215328fcb73cafa193e63f8a83ccb7c7",
+    "assuranceMatrix":"b7a68f4e7c9d4601b0cf0e85df21fde7e97c78eecf334cc2f03dcaedc5b4b6c0",
+    "l2ConsumerPacket":"4a38e0535cdeff27bf6170410833493eaecea4a94cd048532e653580c79ae14c",
+    "tenantPackSchema":"c94dd71d93d72b048ceaa77b1ba08cb84e1f610393f139060f49ead684d28eb4",
+    "importParser":"28aa8a9b9265ca19e615bca5733c1dfdcaaf907d5cec8b988bc1485e0df1e4de",
+    "connectorParser":"fc85fd051d4717aa5b685ac147c468dacb737b4bcbca22e5b04c2d37bb8c1b4f",
+    "forwardMigration":"6b5e94bd5fa4b94e98055a3b7817b8296da68891e7751055b04b56c257096afd",
+    "reverseSql":"364f09b332ffddce42ad6e8ce9dcab8d56e6a7b62cba99f287efef64c20328b9"
+  },
+  "changedPaths": {
+    "runtime": ["src/modules/onboard-core/importContracts.ts","src/modules/onboard-core/connectorContracts.ts","src/modules/onboard-core/routeSupport.ts","src/app/api/v1/onboarding/imports/dry-runs/route.ts","src/app/api/v1/onboarding/imports/[batchId]/route.ts"],
+    "testsAndProof": ["src/modules/onboard-core/tests/import-dry-run.test.ts","src/modules/onboard-core/tests/connector-validation.test.ts","scripts/validation/run-onboard-core-correction-02-reverse-proof.sh","scripts/validation/onboard-core-correction-03-reverse-base-v1.sql","scripts/validation/onboard-core-correction-03-reverse-blueprint-source-binding.sql","scripts/validation/onboard-core-correction-03-reverse-approval-human-auth.sql","scripts/validation/onboard-core-correction-03-reverse-mandate-source-binding.sql","scripts/validation/onboard-core-correction-03-reverse-import-batch-source-binding.sql","scripts/validation/onboard-core-correction-03-reverse-import-row-match-key.sql","scripts/validation/onboard-core-correction-03-reverse-receipt-runtime.sql"],
+    "metadata": ["package.json","architecture/production-convergence/ONBOARD_CORE_CORRECTION_03_WORKING_CONTRACT.md","engineering/execution/NEXT_WORK.json","engineering/execution/CURRENT_HANDOFF.json","engineering/execution/SYSTEMS_ENGINEERING_FAILURE_LEDGER.json","engineering/execution/SYSTEMS_ENGINEERING_PROOF_LEDGER.json","engineering/execution/onboard-core-correction-03","engineering/execution/handoffs/ONBOARD_CORE_CORRECTION_03_G0_CONTROLLER_HANDOFF.json","evidence/ONBOARD_CORE_CORRECTION_03_G0_20260905.md"]
+  },
+  "localVerification": ["onboarding focused 20/20","full repository 447/447","compliance 7/7","typecheck pass","lint pass with zero warnings","Next.js webpack build pass","Blueprint/Mandate disposable proof pass","Import disposable proof pass","Connector SandboxEcho disposable proof pass","empty reverse/reapply pass","seven populated pre-DDL refusals 7/7 with unchanged schema and rows"],
+  "ci": "NOT_OBSERVED_AT_LOCAL_EVIDENCE_SEAL",
+  "preview": "NOT_OBSERVED_AT_LOCAL_EVIDENCE_SEAL_NO_DEPLOYMENT_OR_PRODUCTION_POLLING",
+  "reverseProof": "EMPTY_PRE_ACTIVATION_DISPOSABLE_REVERSE_REAPPLY_PASS; POPULATED_REVERSE_REFUSAL_7_OF_7_PRE_DDL; BASE_TO_IMPLEMENTATION_GIT_APPLY_REVERSE_CHECK_EXIT_0",
+  "forwardRecoveryBoundary": "Preserve v2 schema and append-only evidence when any guarded provenance exists; only forward-compatible repair is allowed. No destructive or production rollback is authorized.",
+  "effectAuthority": "NO_EFFECT",
+  "engineeringState": "BOUNDED_PASS",
+  "releaseEvidence": "LOCAL_PROVEN",
+  "finality": "BOUNDED_CLAIM",
+  "remainingRisks": ["independent assurance absent","exact L2 corrected-v2 consumer absent","authenticated exact-SHA application readback absent","managed backup/PITR and production migration recovery absent","all G1/G2 production prerequisites remain held"],
+  "nextAction": "Independent assurance must rerun all seven isolated populated pre-DDL refusals and verify the exact implementation/final/tag tuple before L2 returns one route-disconnected corrected-v2 consumer pin."
+}

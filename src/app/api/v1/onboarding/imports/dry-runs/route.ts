@@ -3,7 +3,7 @@ import { onboardingCoreEnabledForTenant } from "@/lib/api/config";
 import { apiResponse, createRequestIdentity } from "@/lib/api/http";
 import { ONBOARD_CORE_API_VERSION } from "@/modules/onboard-core/contracts";
 import {
-  ONBOARD_IMPORT_MAPPING_VERSION,
+  ONBOARD_IMPORT_MAPPING_VERSION_V2,
   importReservation,
   parseImportDryRunRequest,
 } from "@/modules/onboard-core/importContracts";
@@ -31,7 +31,7 @@ export async function POST(request: Request) {
       capability: "onboarding.import.dry_run",
       idempotencyKey: reservation.idempotencyKey,
       purpose: "stage-and-validate-import-digests-without-crm-commit",
-      sourceVersionRefs: [ONBOARD_CORE_API_VERSION, ONBOARD_IMPORT_MAPPING_VERSION, dryRun.expectedMandateObjectVersion],
+      sourceVersionRefs: [ONBOARD_CORE_API_VERSION, ONBOARD_IMPORT_MAPPING_VERSION_V2, dryRun.expectedMandateObjectVersion],
     });
     const result = await new OnboardImportStore().executeDryRun({
       actor,
