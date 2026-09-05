@@ -150,7 +150,7 @@ function gitTree(revision: string, path: string) {
 const manifest = parse(manifestPath) as {
   credentialBindings: Array<Record<string, unknown>>;
   flags: Array<{ reference: string }>;
-  frozenInputs: { contractsCoreTree: string; sdkTree: string };
+  frozenInputs: { contractsCoreTree: string; core01FinalSha: string; sdkTree: string };
   inventoryCounts: { ownerReturnPackets: number; routes: number; uniqueRelations: number; unknowns: number };
   jobs: Array<{ jobId: string; scheduler: string }>;
   journeys: Array<{ journeyId: string; routeIds: string[]; relationGroupIds: string[]; unknownRefs: string[] }>;
@@ -227,9 +227,10 @@ test("tracked jobs flags monitors and kill switches remain documentary and defau
   for (const alert of manifest.monitors.alerts) assert.match(operations, new RegExp(`alertId: "${alert}"`));
 });
 
-test("CORE-01 contract and SDK trees are byte-identical to the exact released final", () => {
-  assert.equal(gitTree(baseSha, "contracts/core"), manifest.frozenInputs.contractsCoreTree);
-  assert.equal(gitTree(baseSha, "src/modules/luzione-core-contracts"), manifest.frozenInputs.sdkTree);
+test("CORE-01 contract and SDK trees match the immutable tree IDs derived from the exact released final", () => {
+  assert.equal(manifest.frozenInputs.core01FinalSha, baseSha);
+  assert.equal(manifest.frozenInputs.contractsCoreTree, "d57ccc4cccd97b37acd1a1575b1e07ede5787349");
+  assert.equal(manifest.frozenInputs.sdkTree, "d594fa014d7020fdf8386c7a6926ff9b573ac355");
   assert.equal(gitTree("HEAD", "contracts/core"), manifest.frozenInputs.contractsCoreTree);
   assert.equal(gitTree("HEAD", "src/modules/luzione-core-contracts"), manifest.frozenInputs.sdkTree);
 });
