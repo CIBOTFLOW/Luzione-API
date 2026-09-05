@@ -28,7 +28,7 @@ import {
 import { objectiveScore, type NormalizedQuoteEconomics } from "@/modules/seed-procurement/model";
 import { API_HTTP_RESPONSE_VERSION, PROJECT_SPECIFICATION_SCHEDULE_CONTRACT_PRODUCER_SHA, SEED_PRODUCT_CONTRACT_PRODUCER_SHA } from "@/modules/seed-project-publication/readModel";
 
-export const SEED_PROCUREMENT_CONTRACT_PRODUCER_SHA = "d6d1c98e42ddc168e3b2eac629e74214f3102ba0";
+export const SEED_PROCUREMENT_CONTRACT_PRODUCER_SHA = "c7f28cc068c45997c620747768fba3fc7e7dddc2";
 export const PROCUREMENT_SELECTION_DECISION_VERSION = "ProcurementSelectionDecision/v1";
 
 export const SEED_PROCUREMENT_HTTP_ROUTES = Object.freeze({

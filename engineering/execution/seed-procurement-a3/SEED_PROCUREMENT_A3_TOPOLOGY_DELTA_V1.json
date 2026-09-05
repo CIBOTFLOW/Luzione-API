@@ -7,7 +7,7 @@
   "base_proof_sha": "70828af4c10cd180d332c4b1e5771d719d1ab579",
   "seed_product_contract_producer_sha": "e14b405d58a293c002f5676984a95e55372b3bd2",
   "schedule_contract_producer_sha": "265724e528502b44a1250efea551539d74cb0bbd",
-  "procurement_contract_producer_sha": "d6d1c98e42ddc168e3b2eac629e74214f3102ba0",
+  "procurement_contract_producer_sha": "c7f28cc068c45997c620747768fba3fc7e7dddc2",
   "effect_authority": "NO_EFFECT",
   "http_surfaces": [
     {
@@ -34,10 +34,10 @@
     {"name":"seed_procurement_evidence_artifacts","state":"DEFAULT_OFF_API_OWNER","write":"INSERT_ONLY","effect":"NO_EFFECT"},
     {"name":"seed_product_sources","state":"DEFAULT_OFF_API_OWNER","write":"INSERT_ONLY","effect":"NO_EFFECT"},
     {"name":"seed_product_candidates","state":"DEFAULT_OFF_API_OWNER","write":"INSERT_ONLY","effect":"NO_EFFECT"},
-    {"name":"seed_rfq_drafts","state":"DATABASE_DEPENDENCY_HELD","missing_dependency":"CanonicalSupplierEligibility/v1"},
-    {"name":"seed_supplier_quotes","state":"DATABASE_DEPENDENCY_HELD","missing_dependency":"CanonicalSupplierEligibility/v1"},
-    {"name":"seed_bid_comparisons","state":"DATABASE_DEPENDENCY_HELD","missing_dependency":"CanonicalSupplierEligibility/v1"},
-    {"name":"seed_procurement_selection_decisions","state":"DATABASE_DEPENDENCY_HELD","missing_dependency":"CanonicalSupplierEligibility/v1"},
+    {"name":"seed_rfq_drafts","state":"DATABASE_DEPENDENCY_HELD","missing_dependency":"SupplierProfile/v1"},
+    {"name":"seed_supplier_quotes","state":"DATABASE_DEPENDENCY_HELD","missing_dependency":"SupplierProfile/v1"},
+    {"name":"seed_bid_comparisons","state":"DATABASE_DEPENDENCY_HELD","missing_dependency":"SupplierProfile/v1"},
+    {"name":"seed_procurement_selection_decisions","state":"DATABASE_DEPENDENCY_HELD","missing_dependency":"SupplierProfile/v1"},
     {"name":"seed_purchase_order_drafts","state":"DATABASE_DEPENDENCY_HELD","missing_dependency":"ProposalVersion/v1 canonical API readback"},
     {"name":"seed_purchase_order_acknowledgements","state":"DATABASE_DEPENDENCY_HELD","missing_dependency":"exact canonical PurchaseOrder/v1 draft"}
   ],
