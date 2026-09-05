@@ -12,6 +12,7 @@
     "test": "node --import tsx --test src/lib/tests/*.test.ts src/modules/*/tests/*.test.ts",
     "test:a02-contracts": "node --import tsx --test src/modules/shared-contract-drafts/tests/*.test.ts",
     "test:core-contracts": "node --import tsx --test src/modules/luzione-core-contracts/tests/*.test.ts",
+    "test:core02-inventory": "node --import tsx --test src/modules/core-02-inventory/tests/*.test.ts",
     "test:security-posture": "node --import tsx --test src/lib/tests/*.test.ts src/modules/security-posture/tests/*.test.ts",
     "proof:a01-readiness": "bash scripts/validation/run-a01-readiness-rehearsal.sh",
     "proof:a02-contracts": "bash scripts/validation/run-a02-contract-draft-rehearsal.sh",

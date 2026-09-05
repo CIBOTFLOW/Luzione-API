@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "CORE-02/Owner-Return/v1",
+  "packetId": "CORE02-OWNER-RELEASE-RECOVERY/v1",
+  "projectId": "CORE-02",
+  "controllerAuthority": "CIBOTFLOW/Luzione-platform-program@7713b02201e5abb84a92bb0d2af91514d33c84d5",
+  "inventoryRef": "engineering/execution/core-02/CORE_02_API_ACTIVATION_CONE_MANIFEST_V1.json",
+  "requiredHumanFunction": "Release observability and recovery owner",
+  "unknownIds": ["CORE02-U011", "CORE02-U012", "CORE02-U013", "CORE02-U014", "CORE02-U015", "CORE02-U019"],
+  "allowedDecisions": ["CONFIRM", "CORRECT", "NOT_OWNER", "UNKNOWN"],
+  "answers": [
+    {"unknownId":"CORE02-U011","values":{"environmentFlagStates":null,"authorityFunction":null,"changeAuditRefs":[],"contractToRuntimeMapping":null,"failClosedPrecedence":null,"evidenceRefs":[]}},
+    {"unknownId":"CORE02-U012","values":{"monitorDeploymentRefs":[],"dataSourceMap":null,"environmentShaBinding":null,"alertDestinations":null,"onCallFunction":null,"testSignalReceipts":[],"coverageWindow":null}},
+    {"unknownId":"CORE02-U013","values":{"projectRef":null,"backupOrPitrReceiptRef":null,"recoveryWindow":null,"restorePointRef":null,"restoreExecutionRef":null,"integrityReadbackRef":null,"measuredRpoMinutes":null,"measuredRtoMinutes":null,"restoreOwnerFunction":null}},
+    {"unknownId":"CORE02-U014","values":{"candidateSha":null,"deploymentRef":null,"rollbackTrigger":null,"priorReleaseRef":null,"trafficRollback":null,"dataRollback":null,"workerRollback":null,"providerReconciliation":null,"rehearsedAt":null,"postRollbackReadbackRefs":[]}},
+    {"unknownId":"CORE02-U015","values":{"switchOwnerMap":null,"activationAuthority":null,"auditPath":null,"propagationObjectiveSeconds":null,"lastNegativeExerciseRef":null,"affectedSurfaceMap":null,"recoveryAuthority":null}},
+    {"unknownId":"CORE02-U019","values":{"apiSha":null,"uiSha":null,"sultanSha":null,"authenticatedEntrypoint":null,"tenantActorBinding":null,"exercisedRoutes":null,"receiptFinalityReadback":null,"negativePaths":null,"observedAt":null,"evidenceRefs":[]}}
+  ],
+  "return": {"decision":null,"observedAt":null,"environmentRef":null,"secretValuesIncluded":false,"productionMutationPerformed":false,"notes":null},
+  "signer": {"name":null,"function":"Release observability and recovery owner","authorityRef":null,"signedAt":null,"signatureRef":null}
+}

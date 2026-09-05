@@ -8,6 +8,12 @@
   "canonical_program": "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md",
   "program_extensions": [
     {
+      "extension_id": "LUZIONE_CRM_OS_CORE_02_G0",
+      "source": "CIBOTFLOW/Luzione-platform-program@7713b02201e5abb84a92bb0d2af91514d33c84d5",
+      "repository_program": "architecture/production-convergence/CORE_02_WORKING_CONTRACT.md",
+      "admitted_at": "2026-09-05T01:36:47Z"
+    },
+    {
       "extension_id": "LUZIONE_API_PRODUCTION_CONVERGENCE_V1",
       "source": "Luzione_Production_Convergence_Implementation_Charter_2026-08-30.md Section 20",
       "repository_program": "architecture/production-convergence/PROGRAM.md",
@@ -35,6 +41,22 @@
     "S4_QUEUE_EXHAUSTED": "Stop when every admitted project is complete, quarantined or removed and no dependency-ready work remains."
   },
   "queue": [
+    {
+      "project_id": "CORE-02",
+      "platform_project": "LUZIONE_CRM_OS_WAVE_1",
+      "title": "API-Owned CRM Activation Cone Inventory and Owner Packets",
+      "priority": 510,
+      "status": "PLANNED",
+      "depends_on": [],
+      "starting_sha": "bb5eb395af0873f4483ba2dc10c76f9941051dde",
+      "controller_authority": "CIBOTFLOW/Luzione-platform-program@7713b02201e5abb84a92bb0d2af91514d33c84d5",
+      "mutation_cone": ["documentation", "execution-metadata", "tests"],
+      "core_outcome": "Inventory only API-owned dependencies reachable from GJ-1, GJ-2 and GJ-3 and route every unknown to an exact-field signed owner-return packet without changing frozen Core contracts or activating effects.",
+      "published_artifacts": ["activation-cone manifest", "unknown-owner ledger", "owner-return packets", "mechanical manifest checks"],
+      "required_evidence": ["exact route and migration source checks", "unknown-to-packet coverage", "opaque credential safety", "frozen CORE-01 tree identity", "local/full CI and rollback proof"],
+      "irreversible_effects": [],
+      "completion_evidence_ref": null
+    },
     {
       "project_id": "API_SE_001",
       "platform_project": "PLAT_SE_001",

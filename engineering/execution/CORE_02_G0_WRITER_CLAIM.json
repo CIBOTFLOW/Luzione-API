@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "CORE-02/API-Writer-Claim/v1",
+  "projectId": "CORE-02",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "branch": "codex/core-02-api-activation-inventory-g0-7713b02",
+  "baseSha": "bb5eb395af0873f4483ba2dc10c76f9941051dde",
+  "controllerAuthority": "CIBOTFLOW/Luzione-platform-program@7713b02201e5abb84a92bb0d2af91514d33c84d5",
+  "writer": {
+    "lane": "L1",
+    "threadId": "01a063d3-a21c-7e60-a257-9ef6d89cad4c",
+    "claimedAt": "2026-09-05T01:36:47Z",
+    "releasedAt": null,
+    "state": "CLAIMED"
+  },
+  "scope": "Documentation-and-test-only API-owned dependency inventory for GJ-1, GJ-2, and GJ-3",
+  "effectAuthority": "NO_EFFECT",
+  "prohibitedEffects": [
+    "production query or mutation",
+    "credential or secret access/change",
+    "migration application or creation",
+    "runtime effect activation",
+    "default-branch mutation",
+    "merge, deploy, promotion, or production rollback"
+  ]
+}
