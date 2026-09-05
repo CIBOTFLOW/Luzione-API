@@ -5,8 +5,12 @@
   "producer_repository": "CIBOTFLOW/Luzione-API",
   "producer_branch": "codex/seed-project-publication-a2",
   "base_sha": "e14b405d58a293c002f5676984a95e55372b3bd2",
+  "implementation_sha": "a654c1d26dd6f93be15fa02cbd6aba344f7acb7a",
+  "correction_sha": "96712c157e04c6fd36a4a1bb9bf549f5b35efa1a",
   "producer_contract_sha": "a654c1d26dd6f93be15fa02cbd6aba344f7acb7a",
-  "exact_candidate_sha": "a654c1d26dd6f93be15fa02cbd6aba344f7acb7a",
+  "seed_product_contract_producer_sha": "e14b405d58a293c002f5676984a95e55372b3bd2",
+  "schedule_contract_producer_sha": "a654c1d26dd6f93be15fa02cbd6aba344f7acb7a",
+  "exact_candidate_sha": "96712c157e04c6fd36a4a1bb9bf549f5b35efa1a",
   "engineering_state": "BOUNDED_PASS",
   "release_evidence": "LOCAL_PROVEN",
   "effect_authority": "NO_EFFECT",
@@ -66,7 +70,7 @@
     "Deferred foreign keys bind every owner insert to its P110 receipt at transaction commit.",
     "Every accepted command appends exactly one receipt, event and NO_EFFECT outbox message; replay returns the same receipt.",
     "The rollback script refuses destructive rollback after any owner row or matching P110 receipt exists.",
-    "Schedule metadata keeps producer contract SHA separate from runtime deploy/release SHA."
+    "Schedule metadata independently keeps the inherited A1 seed-product contract SHA, composed A2 schedule contract SHA and runtime deploy/release SHA."
     ,"Historical V1 topology and CORE-02/onboarding digest manifests remain byte-identical to the base; A2 current-tree topology is an independently digested additive delta."
   ],
   "local_verification": {
@@ -75,8 +79,8 @@
     "migration_created_by_cli": "PASS_20260905083212_seed_project_publication_a2.sql",
     "typecheck": "PASS",
     "lint": "PASS_ZERO_WARNINGS",
-    "focused_tests": "PASS_9_OF_9",
-    "full_tests": "PASS_522_OF_522",
+    "focused_tests": "PASS_10_OF_10",
+    "full_tests": "PASS_523_OF_523",
     "disposable_postgres": "PASS_RLS_ROLLBACK_REAPPLY_ATOMICITY_REPLAY_STALE_CONCURRENCY_READBACK",
     "production_build": "PASS_NEXTJS_16_3_4_WEBPACK"
   },

@@ -39,7 +39,7 @@ Successful routes retain the established API envelope:
 }
 ```
 
-The temporary UI-owned top-level `schedule` or `projects` envelope is not canonical. Exact list, schedule and revision positive fixtures are exported by `src/modules/seed-project-publication/fixtures.ts`. The schedule metadata records `seedContractProducerSha` separately from runtime `releaseIdentity.exactSha`; clients must validate both and must not promote an unbound deployment.
+The temporary UI-owned top-level `schedule` or `projects` envelope is not canonical. Exact list, schedule and revision positive fixtures are exported by `src/modules/seed-project-publication/fixtures.ts`. Schedule metadata independently records `seedProductContractProducerSha` for inherited A1 resource contracts, `scheduleContractProducerSha` for the composed A2 read model, and runtime `releaseIdentity.exactSha`; clients must validate all three and must not promote an unbound deployment.
 
 ## Mutation boundary
 

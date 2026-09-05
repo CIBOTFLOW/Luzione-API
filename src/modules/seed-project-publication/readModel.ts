@@ -21,7 +21,8 @@ import {
 import type { DeterministicDiffEntry } from "@/modules/seed-project-publication/model";
 
 export const PROJECT_SPECIFICATION_SCHEDULE_READ_MODEL_VERSION = "ProjectSpecificationScheduleReadModel/v1";
-export const PROJECT_SPECIFICATION_SCHEDULE_SEED_CONTRACT_SHA = "a654c1d26dd6f93be15fa02cbd6aba344f7acb7a";
+export const SEED_PRODUCT_CONTRACT_PRODUCER_SHA = "e14b405d58a293c002f5676984a95e55372b3bd2";
+export const PROJECT_SPECIFICATION_SCHEDULE_CONTRACT_PRODUCER_SHA = "a654c1d26dd6f93be15fa02cbd6aba344f7acb7a";
 export const API_HTTP_RESPONSE_VERSION = "api-http-response/1.0";
 
 export const SEED_PROJECT_PUBLICATION_HTTP_ROUTES = Object.freeze({
@@ -62,7 +63,8 @@ export type ProjectSpecificationScheduleReadModelV1 = ProjectSpecificationSchedu
     observedAt: string;
     producerRepository: "CIBOTFLOW/Luzione-API";
     releaseIdentity: ReleaseIdentity;
-    seedContractProducerSha: typeof PROJECT_SPECIFICATION_SCHEDULE_SEED_CONTRACT_SHA;
+    scheduleContractProducerSha: typeof PROJECT_SPECIFICATION_SCHEDULE_CONTRACT_PRODUCER_SHA;
+    seedProductContractProducerSha: typeof SEED_PRODUCT_CONTRACT_PRODUCER_SHA;
     tenantId: string;
   };
 };
@@ -133,11 +135,12 @@ export function parseProjectSpecificationScheduleReadModel(value: unknown): Proj
   }
   const metadata = exact(input.metadata, [
     "apiResponseContractVersion", "observedAt", "producerRepository", "releaseIdentity",
-    "seedContractProducerSha", "tenantId",
+    "scheduleContractProducerSha", "seedProductContractProducerSha", "tenantId",
   ], "schedule.metadata");
   if (metadata.apiResponseContractVersion !== API_HTTP_RESPONSE_VERSION) fail("RESPONSE_ENVELOPE_MISMATCH", "Unexpected API response envelope version.");
   if (metadata.producerRepository !== "CIBOTFLOW/Luzione-API") fail("PRODUCER_MISMATCH", "Schedule producer must be Luzione API.");
-  if (metadata.seedContractProducerSha !== PROJECT_SPECIFICATION_SCHEDULE_SEED_CONTRACT_SHA) fail("PRODUCER_MISMATCH", "Schedule does not pin the admitted seed-contract producer SHA.");
+  if (metadata.seedProductContractProducerSha !== SEED_PRODUCT_CONTRACT_PRODUCER_SHA) fail("PRODUCER_MISMATCH", "Schedule does not pin the admitted seed-product resource contract producer SHA.");
+  if (metadata.scheduleContractProducerSha !== PROJECT_SPECIFICATION_SCHEDULE_CONTRACT_PRODUCER_SHA) fail("PRODUCER_MISMATCH", "Schedule does not pin the composed A2 schedule contract producer SHA.");
   const observedAt = bounded(metadata.observedAt, "schedule.metadata.observedAt");
   if (!Number.isFinite(Date.parse(observedAt))) fail("INVALID_VALUE", "schedule.metadata.observedAt must be an ISO timestamp.");
   const tenantId = bounded(metadata.tenantId, "schedule.metadata.tenantId");
@@ -221,7 +224,8 @@ export function parseProjectSpecificationScheduleReadModel(value: unknown): Proj
       observedAt,
       producerRepository: "CIBOTFLOW/Luzione-API",
       releaseIdentity,
-      seedContractProducerSha: PROJECT_SPECIFICATION_SCHEDULE_SEED_CONTRACT_SHA,
+      scheduleContractProducerSha: PROJECT_SPECIFICATION_SCHEDULE_CONTRACT_PRODUCER_SHA,
+      seedProductContractProducerSha: SEED_PRODUCT_CONTRACT_PRODUCER_SHA,
       tenantId,
     },
     packages,
@@ -245,7 +249,8 @@ export function createProjectSpecificationScheduleReadModel(
       observedAt: input.observedAt,
       producerRepository: "CIBOTFLOW/Luzione-API",
       releaseIdentity: input.releaseIdentity,
-      seedContractProducerSha: PROJECT_SPECIFICATION_SCHEDULE_SEED_CONTRACT_SHA,
+      scheduleContractProducerSha: PROJECT_SPECIFICATION_SCHEDULE_CONTRACT_PRODUCER_SHA,
+      seedProductContractProducerSha: SEED_PRODUCT_CONTRACT_PRODUCER_SHA,
       tenantId: input.tenantId,
     },
   });

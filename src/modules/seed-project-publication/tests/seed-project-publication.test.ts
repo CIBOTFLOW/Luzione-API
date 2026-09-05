@@ -164,8 +164,12 @@ test("consumer fixtures pin established apiResponse envelopes, routes, and separ
   assert.equal(SEED_PROJECT_PUBLICATION_HTTP_ROUTES.specificationSchedule, "/api/v1/projects/:projectId/specification-schedule");
   assert.equal(SEED_PROJECT_PUBLICATION_HTTP_ROUTES.specificationRevisionCollection, "/api/v1/projects/:projectId/specification-revisions");
   assert.notEqual(
-    projectScheduleHttpResponsePositiveFixture.result.metadata.seedContractProducerSha,
+    projectScheduleHttpResponsePositiveFixture.result.metadata.scheduleContractProducerSha,
     projectScheduleHttpResponsePositiveFixture.result.metadata.releaseIdentity.exactSha,
+  );
+  assert.notEqual(
+    projectScheduleHttpResponsePositiveFixture.result.metadata.seedProductContractProducerSha,
+    projectScheduleHttpResponsePositiveFixture.result.metadata.scheduleContractProducerSha,
   );
 });
 
@@ -207,12 +211,20 @@ test("ProjectSpecificationScheduleReadModel/v1 binds exact fields, tenant graph 
     () => parseProjectSpecificationScheduleReadModel(falseDeployment),
     (error: unknown) => error instanceof ProjectSpecificationScheduleContractError && error.code === "DEPLOYMENT_IDENTITY_INVALID",
   );
-  const wrongProducerSha = {
+  const wrongScheduleProducerSha = {
     ...structuredClone(projectSpecificationSchedulePositiveFixture),
-    metadata: { ...projectSpecificationSchedulePositiveFixture.metadata, seedContractProducerSha: "0000000000000000000000000000000000000000" },
+    metadata: { ...projectSpecificationSchedulePositiveFixture.metadata, scheduleContractProducerSha: "0000000000000000000000000000000000000000" },
   };
   assert.throws(
-    () => parseProjectSpecificationScheduleReadModel(wrongProducerSha),
+    () => parseProjectSpecificationScheduleReadModel(wrongScheduleProducerSha),
+    (error: unknown) => error instanceof ProjectSpecificationScheduleContractError && error.code === "PRODUCER_MISMATCH",
+  );
+  const wrongSeedProductProducerSha = {
+    ...structuredClone(projectSpecificationSchedulePositiveFixture),
+    metadata: { ...projectSpecificationSchedulePositiveFixture.metadata, seedProductContractProducerSha: "0000000000000000000000000000000000000000" },
+  };
+  assert.throws(
+    () => parseProjectSpecificationScheduleReadModel(wrongSeedProductProducerSha),
     (error: unknown) => error instanceof ProjectSpecificationScheduleContractError && error.code === "PRODUCER_MISMATCH",
   );
 });
