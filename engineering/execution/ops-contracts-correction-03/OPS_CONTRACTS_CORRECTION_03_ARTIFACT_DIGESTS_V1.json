@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "OPS_CONTRACTS_CORRECTION_03_ARTIFACT_DIGESTS/v1",
+  "controllerAuthority": "b20899aa38b3e57aa809924266d9f68a94495468",
+  "implementationSha": "f801ebfee1668ec822a4e41d5aedc7cd62b876c5",
+  "algorithm": "SHA-256",
+  "artifacts": {
+    "contracts/operations-evidence/v3/luzione-operations-evidence-ledger-v3.schema.json": "9614f1f783833cc4b021e322920bbea90ffdd386b4c1715bd4aaac19f95396d7",
+    "contracts/operations-evidence/v3/operations-evidence-append-state-v1.schema.json": "86e5d92c4a8a491c1be61e8de02ac3289bacf68ce8e2c3ac927fe14852ea45a7",
+    "contracts/operations-evidence/v3/operations-evidence-canonical-source-attestation-v1.schema.json": "33db35ed25a4f140ae0c65adb65d17be845861e3a92814b3f7f865ae8f6d7815",
+    "contracts/operations-evidence/v3/operations-evidence-canonical-source-objects-v1.schema.json": "271b8017c6f5f925195c15c99290bb72aa53f877fa75c60d335aedc6094ebf51",
+    "contracts/operations-evidence/v3/ops-contracts-correction-03-adverse-fixtures.json": "fe75550ff621f5d1a12dd604d0e37c3e57824a9c4ad1ea7be226c33ea6355aa7",
+    "contracts/operations-evidence/luzione-operations-evidence-ledger-v3.manifest.json": "63ff1d729a995bd9dc20a9849d239d6f4df11fd7e38783a723b0d9967c3ef156",
+    "contracts/operations-evidence/consumer-mappings/l2-ops-ledger-v3.json": "4780dea9c79e67c100812a17412a94417256d62a8e6521777f48af2346f50b39",
+    "contracts/operations-evidence/consumer-mappings/l3-ops-ledger-v3.json": "24c0e5f1b70a5005b0e59afcc47734025938cad24aaa97c39aae1c51246e94de",
+    "src/modules/operations-evidence-contracts/v3/contracts.ts": "5492ff5f6bca1bd760ad62e06214c62c54047f9082bdacd4b629a4f1d264d3de",
+    "src/modules/operations-evidence-contracts/v3/rules.ts": "82ce5fd89957616bcdc24ed3132f82554af0b1e6c18e79798f654730b8cfff3b",
+    "src/modules/operations-evidence-contracts/v3/sdk.ts": "e5ebfc4baf4ebf277c4d6ee03de0eac899192e8b48ef75900ef6bccef3066b73",
+    "src/modules/operations-evidence-contracts/v3/generatedSdk.ts": "a3b2c0c522fd85d1f7fa3722a34b36bf254b72301d152e4da54c0c2300b8f07e",
+    "src/modules/operations-evidence-contracts/v3/index.ts": "c769fea0fb97dd94cabd78ea456f82ba65e05746c7f4fd44c9d47e8058ebea51",
+    "src/modules/operations-evidence-contracts/v3/fixtures.ts": "c68974378cdac03f58c1da04f2f76ce4e5c83c3f0cc60d61e44ac8851ba9b335",
+    "src/modules/operations-evidence-contracts/tests/operations-evidence-ledger-v3.test.ts": "808b2690891365de6cf0c4c3584ca81b02ee5105d1d5bc9ac04147cd670d3049"
+  },
+  "assuranceInputs": {
+    "canonicalJsonSha256": "02c7b353f9fbc43cd78f0af096c55a9622a68158794f1735924a29aa036af4a8",
+    "rawPacketSha256": "e33687257cf0b8e1c8d8061b793c456e11d7e28c16e04f41b8fb40b83131ffe8"
+  },
+  "credit": { "proofDays": 0, "g2": 0, "production": 0 },
+  "effectAuthority": "NO_EFFECT"
+}

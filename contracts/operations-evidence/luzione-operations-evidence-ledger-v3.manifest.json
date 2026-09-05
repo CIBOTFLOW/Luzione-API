@@ -2,9 +2,9 @@
   "schemaVersion": "LuzioneOperationsEvidenceLedgerManifest/v3",
   "ledgerVersion": "LuzioneOperationsEvidenceLedger/v3",
   "baseLedgerVersion": "LuzioneOperationsEvidenceLedger/v2",
-  "candidateSha": "38fea3da919b7632607dbf2439696747cec5217b",
-  "controllerAuthority": "65dcf041236133af9c3c3cdf2a7d27789b8ee9b2",
-  "assuranceFingerprintSha256": "b11f3cb5b9901a37a36c2543aba3542ef8e4b7349f62d14bac16e9813faa103f",
+  "candidateSha": "f801ebfee1668ec822a4e41d5aedc7cd62b876c5",
+  "controllerAuthority": "b20899aa38b3e57aa809924266d9f68a94495468",
+  "assuranceFingerprintSha256": "02c7b353f9fbc43cd78f0af096c55a9622a68158794f1735924a29aa036af4a8",
   "sourceMapFingerprintSha256": "66ca2ccbaca70ef60b407be7ac9230184b55cdeccbd9c50fdc67566802d72959",
   "effectAuthority": "NO_EFFECT",
   "runtimeActivation": "NOT_IMPLEMENTED",
@@ -16,17 +16,23 @@
     "resolvedVerifiedIncident": "ABSENT"
   },
   "artifacts": {
+    "appendStateSchema": "contracts/operations-evidence/v3/operations-evidence-append-state-v1.schema.json",
+    "canonicalSourceObjectsSchema": "contracts/operations-evidence/v3/operations-evidence-canonical-source-objects-v1.schema.json",
     "l2SourcePacket": "contracts/operations-evidence/consumer-mappings/l2-ops-ledger-v3.json",
     "l3SourcePacket": "contracts/operations-evidence/consumer-mappings/l3-ops-ledger-v3.json",
     "ruleSource": "src/modules/operations-evidence-contracts/v3/rules.ts",
     "schemaBundle": "contracts/operations-evidence/v3/luzione-operations-evidence-ledger-v3.schema.json",
     "semanticFixtures": "src/modules/operations-evidence-contracts/v3/fixtures.ts",
+    "sourceAttestationSchema": "contracts/operations-evidence/v3/operations-evidence-canonical-source-attestation-v1.schema.json",
     "strictConsumerSdk": "src/modules/operations-evidence-contracts/v3/index.ts"
   },
   "compatibility": {
+    "appendStateRequired": true,
+    "canonicalSourceBytesAuthenticated": true,
     "decisionBearingV1UseProhibited": true,
     "decisionBearingV2UseProhibited": true,
     "exactFieldSets": true,
+    "resetCalendarDayExcluded": true,
     "sourceBindingsRequired": true,
     "unknownVersionsRejected": true
   }

@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "OPS_CONTRACTS_CORRECTION_03_G0_CONTROLLER_HANDOFF/v1",
+  "projectId": "OPS-CONTRACTS-CORRECTION-03",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "controllerAuthority": "CIBOTFLOW/Luzione-platform-program@b20899aa38b3e57aa809924266d9f68a94495468",
+  "branch": "codex/ops-contracts-correction-03-g0-b20899a",
+  "baseSha": "1607fd10720922a0ce04da1e79db3c60dc8835b3",
+  "implementationSha": "f801ebfee1668ec822a4e41d5aedc7cd62b876c5",
+  "finalEvidenceBinding": { "mode": "DETACHED_ANNOTATED_TAG", "tag": "ops-contracts-correction-03-g0-exact-final" },
+  "versions": [
+    "LuzioneOperationsEvidenceLedger/v3",
+    "OperationsEvidenceAppendState/v1",
+    "OperationsEvidenceCanonicalSourceAttestation/v1",
+    "OperationsEvidenceCanonicalSourceReadback/v1",
+    "OperationsEvidenceAuthorityRecoverySourceSnapshot/v2"
+  ],
+  "sourcePins": {
+    "assuranceCanonicalJsonSha256": "02c7b353f9fbc43cd78f0af096c55a9622a68158794f1735924a29aa036af4a8",
+    "assuranceRawPacketSha256": "e33687257cf0b8e1c8d8061b793c456e11d7e28c16e04f41b8fb40b83131ffe8"
+  },
+  "localVerification": ["focused 10/10", "operations evidence 46/46", "full repository 444/444", "compliance 7/7", "typecheck pass", "lint pass with zero warnings", "Next.js webpack build pass"],
+  "ci": "NOT_OBSERVED_AT_LOCAL_EVIDENCE_SEAL",
+  "preview": "NOT_OBSERVED_DOCUMENTATION_SCHEMA_SDK_TEST_ONLY_NO_ROUTE",
+  "reverseProof": "PASS_GIT_DIFF_BASE_TO_IMPLEMENTATION_APPLY_REVERSE_CHECK_EXIT_0_NO_MIGRATION_OR_EXTERNAL_STATE",
+  "frozenTrees": {
+    "contracts/core": "d57ccc4cccd97b37acd1a1575b1e07ede5787349",
+    "src/modules/luzione-core-contracts": "d594fa014d7020fdf8386c7a6926ff9b573ac355",
+    "contracts/onboard-core": "b01a9e3bbb418440ef2550b1136f5fbc2278f37b",
+    "src/modules/onboard-core": "47887264d7888c8c0092550f576519bb8f4fd504",
+    "contracts/effect-admission": "ed1f28a742c5ea3e1bf20a95f11ea9e8dc5af29a",
+    "src/modules/effect-admission": "b14044b0da3d0eb7c1a2fa855ddf24da13797239",
+    "contracts/connector-revocation": "18c697f98b3171914fe5f7830c7159852712c673",
+    "src/modules/connector-revocation": "1573bdadcadfd16b01beac46fea863abe571e29c",
+    "contracts/operations-evidence/v1": "c0e4a96c26d25f2c1994e05fa2fe1da07f4f7838",
+    "contracts/operations-evidence/v2": "ae9d356484ced3f547059ae74a9ad92a8c00f6c3",
+    "src/modules/operations-evidence-contracts/v2": "a503d433bcc2249924773b550622d9794d2969d5"
+  },
+  "credit": { "proofDays": 0, "g2": 0, "production": 0 },
+  "effectAuthority": "NO_EFFECT",
+  "engineeringState": "BOUNDED_PASS",
+  "releaseEvidence": "LOCAL_PROVEN",
+  "finality": "BOUNDED_CLAIM",
+  "remainingStops": ["independent OPS-CONTRACTS-ASSURE-04", "exact L2 and L3 consumer repins", "real canonical source authority", "exact-head CI until observed", "authenticated Git-bound readback", "all G1/G2 and production prerequisites"],
+  "nextAction": "OPS-CONTRACTS-ASSURE-04 independently verifies the exact implementation/final/tag tuple; L2 and L3 keep source packets ABSENT unless an exact immutable source return exists."
+}

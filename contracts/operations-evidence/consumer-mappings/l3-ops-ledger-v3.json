@@ -3,7 +3,7 @@
   "consumer": "CIBOTFLOW/Sultan-OS",
   "consumerLane": "L3",
   "producerRepository": "CIBOTFLOW/Luzione-API",
-  "producerCandidateSha": "38fea3da919b7632607dbf2439696747cec5217b",
+  "producerCandidateSha": "f801ebfee1668ec822a4e41d5aedc7cd62b876c5",
   "ledgerVersion": "LuzioneOperationsEvidenceLedger/v3",
   "sourceStatus": "ABSENT",
   "mayMintAuthority": false,
@@ -12,7 +12,7 @@
     "strict structural compatibility result pinned to exact producer implementation",
     "explicit confirmation that Sultan does not mint human owner, G2 grant, incident, recovery or epoch truth"
   ],
-  "decisionBearingUse": "PROHIBITED_PENDING_OPS_CONTRACTS_ASSURE_03_AND_EXACT_SOURCE_RETURN",
+  "decisionBearingUse": "PROHIBITED_UNTIL_OPS_CONTRACTS_ASSURE_04_AND_EXACT_SOURCE_RETURN",
   "effectAuthority": "NO_EFFECT",
   "proofDayCredit": 0,
   "g2Credit": 0,
