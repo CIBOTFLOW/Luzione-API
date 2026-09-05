@@ -10,6 +10,7 @@ import { createLifecycleCommandRequest, LifecycleCommandKernel } from "@/modules
 import { ProviderAdapterRegistry } from "@/modules/provider-runtime/registry";
 import { ProviderWorkerRuntime } from "@/modules/provider-runtime/runtime";
 import { SandboxEchoProviderAdapter } from "@/modules/provider-runtime/sandboxEchoAdapter";
+import { ConfiguredEffectAdmissionGate, PostgresEffectKillStateReader } from "@/modules/effect-admission/gate";
 import { ONBOARD_CORE_POLICY_VERSION } from "./contracts";
 import {
   CONNECTOR_SANDBOX_DESTINATION,
@@ -26,6 +27,8 @@ function defaultRuntime(store: PostgresWorkflowDeliveryStore) {
   return new ProviderWorkerRuntime(
     store,
     new ProviderAdapterRegistry([new SandboxEchoProviderAdapter()]),
+    undefined,
+    new ConfiguredEffectAdmissionGate(new PostgresEffectKillStateReader(databasePool())),
   );
 }
 

@@ -4,6 +4,8 @@ import { bindAuthenticatedRequestIdentity } from "@/modules/platform-contracts/r
 import { SultanAgentGatewayError } from "@/modules/sultan-agent-gateway/contracts";
 import { parseToolCallEnvelope } from "@/modules/sultan-agent-gateway/parser";
 import { PostgresSultanAgentGatewayStore } from "@/modules/sultan-agent-gateway/postgresStore";
+import { databasePool } from "@/lib/db";
+import { ConfiguredEffectAdmissionGate, PostgresEffectKillStateReader } from "@/modules/effect-admission/gate";
 import { SultanAgentGatewayService } from "@/modules/sultan-agent-gateway/service";
 
 export const dynamic = "force-dynamic";
@@ -35,7 +37,8 @@ export async function POST(request: Request) {
       throw new SultanAgentGatewayError("INVALID_TOOL_CALL", "The tool call body must be valid JSON.");
     }
     const call = parseToolCallEnvelope(body);
-    const toolResult = await new SultanAgentGatewayService(new PostgresSultanAgentGatewayStore()).invoke({ actor, call });
+    const pool = databasePool();
+    const toolResult = await new SultanAgentGatewayService(new PostgresSultanAgentGatewayStore(pool), undefined, undefined, new ConfiguredEffectAdmissionGate(new PostgresEffectKillStateReader(pool))).invoke({ actor, call });
     logRequestCompletion({ method: "POST", requestIdentity: identity, route: "/api/v1/sultan/tool-invocations", status, startedAt });
     return apiResponse({ ok: true, toolResult }, { requestIdentity: identity, status, startedAt });
   } catch (error) {

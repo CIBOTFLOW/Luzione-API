@@ -6,6 +6,8 @@ import { assertObservation, providerMessageFromRow, PROVIDER_ADAPTER_CONTRACT_VE
 import { ProviderAdapterRegistry } from "@/modules/provider-runtime/registry";
 import { ProviderWorkerRuntime } from "@/modules/provider-runtime/runtime";
 import { SandboxEchoProviderAdapter } from "@/modules/provider-runtime/sandboxEchoAdapter";
+import { configuredEffectAdmissionPolicy, effectBindingKey } from "@/modules/effect-admission/contracts";
+import { ConfiguredEffectAdmissionGate, PostgresEffectKillStateReader } from "@/modules/effect-admission/gate";
 
 const connectionString = process.env.DATABASE_URL?.trim();
 if (!connectionString) throw new Error("DATABASE_URL is required.");
@@ -13,7 +15,13 @@ const tenantId = "api-pc-011-a";
 const pool = new Pool({ connectionString });
 const store = new PostgresWorkflowDeliveryStore(pool);
 const adapter = new SandboxEchoProviderAdapter();
-const runtime = new ProviderWorkerRuntime(store, new ProviderAdapterRegistry([adapter]));
+const effectPolicy = {
+  ...configuredEffectAdmissionPolicy(),
+  enabled: true,
+  admittedBindings: new Set([effectBindingKey({ actor: { actorId: "proof-service", actorType: "service" }, credentialBindingId: adapter.credentialBindingId, destination: adapter.destination, provider: adapter.provider, tenantId })]),
+};
+const admission = new ConfiguredEffectAdmissionGate(new PostgresEffectKillStateReader(pool), () => effectPolicy);
+const runtime = new ProviderWorkerRuntime(store, new ProviderAdapterRegistry([adapter]), () => true, admission);
 
 async function seed(label: string, scenario: string, destination = "sandbox.echo", payloadHashOverride?: string) {
   const payload = { scenario };
@@ -82,8 +90,10 @@ async function main() {
 
     await seed("crash", "matched");
     const crashClaim = await store.claimDueOutbox({ limit: 1, tenantId, workerId: "worker-crashed" }); assert.equal(crashClaim.length, 1);
-    const crashMessage = providerMessageFromRow(crashClaim[0]); const crashPrepared = await adapter.prepare(crashMessage);
-    await store.recordDispatchStarted({ adapterContractVersion: PROVIDER_ADAPTER_CONTRACT_VERSION, outboxMessageId: crashMessage.outboxMessageId, providerMode: adapter.mode, providerRequestRef: crashPrepared.providerRequestRef, tenantId, workerId: "worker-crashed" });
+    const crashMessage = providerMessageFromRow(crashClaim[0]);
+    const crashAdmission = await admission.decide({ actor: crashMessage.actor, authorityRef: crashMessage.authorizationRef!, checkpoint: "PROVIDER_PRE_DISPATCH", credentialBindingId: adapter.credentialBindingId, destination: adapter.destination, effectClass: crashMessage.effectClass, operationKey: crashMessage.idempotencyKey, payloadHash: crashMessage.payloadHash, provider: adapter.provider, tenantId });
+    const crashPrepared = await adapter.prepare({ ...crashMessage, effectAdmissionRef: crashAdmission.decisionRef });
+    await store.recordDispatchStarted({ adapterContractVersion: PROVIDER_ADAPTER_CONTRACT_VERSION, credentialBindingId: adapter.credentialBindingId, effectAdmissionDigest: crashAdmission.bindingDigest, effectAdmissionKillVersion: crashAdmission.killVersion, effectAdmissionRef: crashAdmission.decisionRef, outboxMessageId: crashMessage.outboxMessageId, providerMode: adapter.mode, providerRequestRef: crashPrepared.providerRequestRef, tenantId, workerId: "worker-crashed" });
     await pool.query(`update public.p110_outbox_messages set locked_at=now()-interval '2 minutes',heartbeat_at=now()-interval '90 seconds',request_deadline_at=now()-interval '70 seconds',lease_expires_at=now()-interval '60 seconds' where tenant_id=$1 and outbox_message_id=$2`, [tenantId, crashMessage.outboxMessageId]);
     await runtime.runDeliveryBatch({ limit: 10, tenantId, workerId: "worker-reclaimer" });
     const crashState = await pool.query(`select state,last_error_code from public.p110_outbox_messages where tenant_id=$1 and outbox_message_id=$2`, [tenantId, crashMessage.outboxMessageId]);

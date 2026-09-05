@@ -599,8 +599,26 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
     name: "Typed provider adapter, restart-safe dispatch and exact source reconciliation boundary",
     ownerRepository: "CIBOTFLOW/Luzione-API",
     pendingChangeRefs: [],
-    sourcePaths: ["src/modules/provider-runtime/contracts.ts", "src/modules/provider-runtime/runtime.ts", "src/lib/platform-guarantees/postgresWorkflowDeliveryStore.ts", "src/app/api/v1/provider-operations/route.ts", "supabase/migrations/20260831080000_provider_worker_runtime.sql"],
-    version: "luzione-provider-adapter/v0.1",
+    sourcePaths: ["src/modules/provider-runtime/contracts.ts", "src/modules/provider-runtime/runtime.ts", "src/lib/platform-guarantees/postgresWorkflowDeliveryStore.ts", "src/app/api/v1/provider-operations/route.ts", "supabase/migrations/20260831080000_provider_worker_runtime.sql", "supabase/migrations/20260905090000_effect_admission_evidence.sql"],
+    version: "luzione-provider-adapter/v0.2",
+  },
+  {
+    compatibility: "EXACT_VERSION",
+    consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
+    contractId: "effect-admission",
+    currentRuntime: false,
+    maturity: "IMPLEMENTED_TRANSITIONAL",
+    name: "Default-off content-bound effect admission and opaque credential binding",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: [],
+    sourcePaths: [
+      "contracts/effect-admission/luzione-effect-admission-v1.schema.json",
+      "src/modules/effect-admission/contracts.ts",
+      "src/modules/effect-admission/gate.ts",
+      "src/modules/provider-runtime/runtime.ts",
+      "src/modules/sultan-agent-gateway/service.ts"
+    ],
+    version: "luzione-effect-admission/v1",
   },
   {
     compatibility: "NEW_MAJOR_FOR_BREAKING",

@@ -24,6 +24,7 @@ apply() {
 apply supabase/migrations/20260831022000_p110_command_ledger_baseline.sql
 apply supabase/migrations/20260831030000_p110_p111_workflow_delivery_baseline.sql
 apply supabase/migrations/20260831080000_provider_worker_runtime.sql
+apply supabase/migrations/20260905090000_effect_admission_evidence.sql
 docker exec "${container_name}" psql -v ON_ERROR_STOP=1 -U postgres -d "${database}" -c "grant usage on schema public to ${role}; grant select,insert,update,delete on all tables in schema public to ${role}" >/dev/null
 
 NODE_PATH=scripts/validation/node-stubs \
@@ -35,6 +36,8 @@ LUZIONE_API_CONNECTOR_SYNC_VALIDATION_TENANTS=onboard-connector-proof-a \
 LUZIONE_API_PROVIDER_SANDBOX_ENABLED=true \
 LUZIONE_API_PROVIDER_SANDBOX_TENANTS=onboard-connector-proof-a \
 LUZIONE_API_PROVIDER_SANDBOX_DESTINATIONS=sandbox.echo \
+LUZIONE_API_EFFECT_ADMISSION_ENABLED=true \
+LUZIONE_API_EFFECT_ADMISSION_BINDINGS='onboard-connector-proof-a|service:onboard-connector-proof|luzione-deterministic-simulator|sandbox.echo|credential-binding:none:sandbox-echo/v1' \
 node --import tsx scripts/validation/onboard-core-connector-proof.ts
 
 schema_delta="$(docker exec "${container_name}" psql -At -v ON_ERROR_STOP=1 -U postgres -d "${database}" -c "select count(*) from pg_class where relnamespace='public'::regnamespace and relname like 'onboarding_%'")"

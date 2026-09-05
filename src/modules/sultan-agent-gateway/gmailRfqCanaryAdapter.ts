@@ -13,17 +13,32 @@ import {
   SULTAN_RFQ_CANARY_SUBJECT_PREFIX,
 } from "@/modules/sultan-agent-gateway/registry";
 
-type EnvLike = Record<string, string | undefined>;
+export type OpaqueCredentialResolver = (input: {
+  credentialBindingId: string;
+  destination: string;
+  effectAdmissionRef: string;
+  provider: string;
+  tenantId: string;
+}) => Promise<string | null>;
+
+export type GmailRfqCanaryBinding = {
+  credentialBindingId: string;
+  resolveCredential: OpaqueCredentialResolver;
+  sender: string;
+};
 
 export class GmailRfqCanaryAdapter implements ProviderAdapter {
+  readonly credentialBindingId: string;
   readonly destination = SULTAN_RFQ_CANARY_DESTINATION;
   readonly mode = "LIVE" as const;
   readonly provider = "gmail";
 
   constructor(
-    private readonly env: EnvLike = process.env,
+    private readonly binding: GmailRfqCanaryBinding,
     private readonly providerFetch: typeof fetch = fetch,
-  ) {}
+  ) {
+    this.credentialBindingId = binding.credentialBindingId;
+  }
 
   async prepare(message: ProviderMessage): Promise<PreparedProviderRequest> {
     if (message.destination !== this.destination
@@ -32,7 +47,7 @@ export class GmailRfqCanaryAdapter implements ProviderAdapter {
       throw new ProviderContractError("RFQ_CANARY_AUTHORITY_INVALID", "The Gmail RFQ adapter requires an exact durable policy-envelope reference.");
     }
     const payload = parsePayload(message.payload);
-    const configuredSender = this.env.SULTAN_RFQ_CANARY_SENDER?.trim().toLowerCase();
+    const configuredSender = this.binding.sender.trim().toLowerCase();
     if (!configuredSender || !emailAddress(configuredSender) || payload.sender.toLowerCase() !== configuredSender) {
       throw new ProviderContractError("RFQ_CANARY_SENDER_DENIED", "The RFQ canary sender does not match the configured Luzione sender.");
     }
@@ -40,7 +55,9 @@ export class GmailRfqCanaryAdapter implements ProviderAdapter {
     const rfc822MessageId = stableMessageId(payload.operationId);
     return {
       contractVersion: PROVIDER_ADAPTER_CONTRACT_VERSION,
+      credentialBindingId: this.credentialBindingId,
       destination: this.destination,
+      effectAdmissionRef: requiredAdmission(message.effectAdmissionRef),
       idempotencyKey: message.idempotencyKey,
       objectRef: `${message.objectType}:${message.objectId}`,
       payload: {
@@ -52,13 +69,15 @@ export class GmailRfqCanaryAdapter implements ProviderAdapter {
         subject: payload.subject,
       },
       payloadHash: sha256({ raw, operationId: payload.operationId, rfc822MessageId, sender: payload.sender }),
+      provider: this.provider,
       providerRequestRef: `gmail:send:${sha256([message.idempotencyKey, payload.operationId]).slice(0, 32)}`,
       resultingObjectVersion: message.resultingObjectVersion,
+      tenantId: message.tenantId,
     };
   }
 
   async execute(request: PreparedProviderRequest) {
-    const token = this.env.GMAIL_SULTAN_RFQ_ACCESS_TOKEN?.trim();
+    const token = await this.resolveCredential(request);
     const sender = required(request.payload.sender, "sender", 320);
     const raw = required(request.payload.raw, "raw", 20_000);
     if (!token) {
@@ -122,7 +141,7 @@ export class GmailRfqCanaryAdapter implements ProviderAdapter {
   }
 
   async reconcile(request: PreparedProviderRequest): Promise<ProviderObservationResult> {
-    const token = this.env.GMAIL_SULTAN_RFQ_ACCESS_TOKEN?.trim();
+    const token = await this.resolveCredential(request);
     const sender = required(request.payload.sender, "sender", 320);
     const operationId = required(request.payload.operationId, "operationId", 512);
     if (!token) return { result: "SOURCE_UNAVAILABLE", notes: "The API-owned Gmail canary credential is unavailable." };
@@ -150,7 +169,7 @@ export class GmailRfqCanaryAdapter implements ProviderAdapter {
   }
 
   private async observeMessage(request: PreparedProviderRequest, messageId: string): Promise<ProviderObservationResult> {
-    const token = this.env.GMAIL_SULTAN_RFQ_ACCESS_TOKEN?.trim();
+    const token = await this.resolveCredential(request);
     const sender = required(request.payload.sender, "sender", 320);
     if (!token) return { result: "SOURCE_UNAVAILABLE", notes: "The API-owned Gmail canary credential is unavailable." };
     const query = new URLSearchParams();
@@ -186,6 +205,30 @@ export class GmailRfqCanaryAdapter implements ProviderAdapter {
       notes: "Gmail contains the exact sent-message record. This proves provider acceptance/readback, not recipient delivery.",
     };
   }
+
+  private async resolveCredential(request: PreparedProviderRequest) {
+    if (request.credentialBindingId !== this.credentialBindingId
+      || request.destination !== this.destination
+      || request.provider !== this.provider
+      || !/^effect-admission:[a-f0-9]{64}$/.test(request.effectAdmissionRef)) {
+      return null;
+    }
+    const value = await this.binding.resolveCredential({
+      credentialBindingId: request.credentialBindingId,
+      destination: request.destination,
+      effectAdmissionRef: request.effectAdmissionRef,
+      provider: request.provider,
+      tenantId: request.tenantId,
+    });
+    return typeof value === "string" && value.trim() ? value.trim() : null;
+  }
+}
+
+function requiredAdmission(value: string | null) {
+  if (!value || !/^effect-admission:[a-f0-9]{64}$/.test(value)) {
+    throw new ProviderContractError("EFFECT_ADMISSION_REQUIRED", "The Gmail request requires an exact effect-admission decision reference.");
+  }
+  return value;
 }
 
 function parsePayload(value: Record<string, unknown>) {

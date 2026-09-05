@@ -15,9 +15,11 @@ import {
   type SultanToolCall,
 } from "@/modules/sultan-agent-gateway/contracts";
 import { sha256 } from "@/modules/platform-guarantees/eventContract";
+import { DefaultOffEffectAdmissionGate, type EffectAdmissionGate } from "@/modules/effect-admission/gate";
 import type { Stage5AdmissionReceipt } from "@/modules/sultan-stage5/contracts";
 import {
   SULTAN_AGENT_GATEWAY_POLICY_VERSION,
+  SULTAN_RFQ_CANARY_DESTINATION,
   SULTAN_RFQ_CANARY_RECIPIENT,
   SULTAN_RFQ_CANARY_SUBJECT_PREFIX,
   deriveSultanLogicalAgent,
@@ -104,6 +106,7 @@ export class SultanAgentGatewayService {
     private readonly store: SultanAgentGatewayStore,
     private readonly now: () => Date = () => new Date(),
     private readonly approvalSecret: string | undefined = process.env.LUZIONE_SULTAN_APPROVAL_SECRET,
+    private readonly effectAdmission: EffectAdmissionGate = new DefaultOffEffectAdmissionGate(),
   ) {}
 
   manifest(input: { actor: ApiActor; assertedAgent: SultanLogicalAgent; caseRef: SultanCaseRef }) {
@@ -202,6 +205,15 @@ export class SultanAgentGatewayService {
       critic: input.call.controlEvidence,
       preview,
     });
+    await this.requireEffectAdmission({
+      actor: input.actor,
+      authorityRef: `stage5:${input.call.admissionReceiptId}`,
+      checkpoint: "SULTAN_PREPARE",
+      commandHash,
+      effectClass: descriptor.effectClass,
+      operationKey: input.call.operationId,
+      toolId: input.call.toolId,
+    });
     return await this.store.prepareCommand({
       actor: input.actor,
       call: input.call,
@@ -217,6 +229,15 @@ export class SultanAgentGatewayService {
   async execute(input: { actor: ApiActor; reservationId: string; commandHash: string; approvalAdmission: SultanApprovalAdmission }) {
     assertSultanActor(input.actor, "sultan.command.execute");
     this.verifyApproval(input.reservationId, input.commandHash, input.approvalAdmission);
+    await this.requireEffectAdmission({
+      actor: input.actor,
+      authorityRef: `human-approval:${input.approvalAdmission.approvalId}`,
+      checkpoint: "SULTAN_EXECUTE",
+      commandHash: input.commandHash,
+      effectClass: "A1",
+      operationKey: input.reservationId,
+      toolId: "luzione.internal.command.execute",
+    });
     return await this.store.executeCommand({ ...input, now: this.now().toISOString() });
   }
 
@@ -249,6 +270,36 @@ export class SultanAgentGatewayService {
     const received = Buffer.from(admission.signature, "hex");
     const expectedBytes = Buffer.from(expected, "hex");
     if (received.length !== expectedBytes.length || !timingSafeEqual(received, expectedBytes)) throw new SultanAgentGatewayError("APPROVAL_SIGNATURE_INVALID", "Approval signature is invalid.", 403);
+  }
+
+  private async requireEffectAdmission(input: {
+    actor: ApiActor;
+    authorityRef: string;
+    checkpoint: "SULTAN_EXECUTE" | "SULTAN_PREPARE";
+    commandHash: string;
+    effectClass: "A1" | "A2" | "A3";
+    operationKey: string;
+    toolId: string;
+  }) {
+    const external = input.effectClass !== "A1";
+    const decision = await this.effectAdmission.decide({
+      actor: { actorId: input.actor.actorId, actorType: input.actor.actorType },
+      authorityRef: input.authorityRef,
+      checkpoint: input.checkpoint,
+      credentialBindingId: external
+        ? "credential-binding:gmail:sultan-rfq-canary/v1"
+        : "credential-binding:none:luzione-api-internal/v1",
+      destination: external ? SULTAN_RFQ_CANARY_DESTINATION : "postgres.sultan-internal-action",
+      effectClass: external ? "EXTERNAL_EFFECT" : "REVERSIBLE_INTERNAL",
+      operationKey: input.operationKey,
+      payloadHash: input.commandHash,
+      provider: external ? "gmail" : "luzione-api",
+      tenantId: input.actor.tenantId,
+    });
+    if (!decision.admitted) {
+      throw new SultanAgentGatewayError(`EFFECT_${decision.denialCode}`, `Effect admission denied ${input.toolId} at ${input.checkpoint}.`, 403);
+    }
+    return decision;
   }
 }
 

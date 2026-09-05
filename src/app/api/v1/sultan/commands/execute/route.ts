@@ -4,6 +4,8 @@ import { bindAuthenticatedRequestIdentity } from "@/modules/platform-contracts/r
 import { SultanAgentGatewayError } from "@/modules/sultan-agent-gateway/contracts";
 import { parseCommandExecutionEnvelope } from "@/modules/sultan-agent-gateway/parser";
 import { PostgresSultanAgentGatewayStore } from "@/modules/sultan-agent-gateway/postgresStore";
+import { databasePool } from "@/lib/db";
+import { ConfiguredEffectAdmissionGate, PostgresEffectKillStateReader } from "@/modules/effect-admission/gate";
 import { SultanAgentGatewayService } from "@/modules/sultan-agent-gateway/service";
 
 export const dynamic = "force-dynamic";
@@ -25,7 +27,8 @@ export async function POST(request: Request) {
     let body: unknown;
     try { body = JSON.parse(raw); } catch { throw new SultanAgentGatewayError("INVALID_COMMAND_EXECUTION", "The command execution body must be valid JSON."); }
     const executionRequest = parseCommandExecutionEnvelope(body);
-    const execution = await new SultanAgentGatewayService(new PostgresSultanAgentGatewayStore()).execute({ actor, ...executionRequest });
+    const pool = databasePool();
+    const execution = await new SultanAgentGatewayService(new PostgresSultanAgentGatewayStore(pool), undefined, undefined, new ConfiguredEffectAdmissionGate(new PostgresEffectKillStateReader(pool))).execute({ actor, ...executionRequest });
     status = execution.idempotentReplay ? 200 : 201;
     logRequestCompletion({ method: "POST", requestIdentity: identity, route: "/api/v1/sultan/commands/execute", status, startedAt });
     return apiResponse({ ok: true, execution }, { requestIdentity: identity, status, startedAt });
