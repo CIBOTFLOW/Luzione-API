@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/operations-evidence/v3/operations-evidence-canonical-source-attestation-v1.schema.json",
+  "title": "Operations Evidence Canonical Source Attestation v1",
+  "description": "Synthetic-only signature over exact canonical typed source object and readback bytes. This schema grants no live authority or credit.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "attestationDigest": { "$ref": "#/$defs/Sha256" },
+    "attestationId": { "$ref": "#/$defs/Id" },
+    "contractVersion": { "const": "OperationsEvidenceCanonicalSourceAttestation/v1" },
+    "objectBytes": { "type": "string", "minLength": 2, "maxLength": 32768 },
+    "objectHash": { "$ref": "#/$defs/Sha256" },
+    "objectId": { "$ref": "#/$defs/Id" },
+    "objectType": { "enum": ["G2_APPROVAL", "RECOVERY_RECEIPT", "PROOF_INCIDENT", "TENANT_MEMBERSHIP"] },
+    "objectVersion": { "enum": ["OperationsEvidenceCanonicalG2Approval/v1", "OperationsEvidenceCanonicalIncidentRecovery/v1", "OperationsEvidenceCanonicalProofIncident/v1", "OperationsEvidenceCanonicalTenantMembership/v1"] },
+    "readbackBytes": { "type": "string", "minLength": 2, "maxLength": 32768 },
+    "readbackHash": { "$ref": "#/$defs/Sha256" },
+    "readbackId": { "$ref": "#/$defs/Id" },
+    "signature": { "type": "string", "pattern": "^[A-Za-z0-9+/]{86}==$" },
+    "signingKeyId": { "const": "ops-v3-synthetic-assurance-ed25519-20260905" },
+    "sourceSystem": { "enum": ["LUZIONE_CORE", "LUZIONE_CRM_APP"] },
+    "tenantId": { "$ref": "#/$defs/Id" }
+  },
+  "required": ["attestationDigest", "attestationId", "contractVersion", "objectBytes", "objectHash", "objectId", "objectType", "objectVersion", "readbackBytes", "readbackHash", "readbackId", "signature", "signingKeyId", "sourceSystem", "tenantId"],
+  "$defs": {
+    "Id": { "type": "string", "minLength": 3, "maxLength": 240, "pattern": "^\\S(?:.*\\S)?$" },
+    "Sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+  },
+  "x-luzione-credit": "ZERO_SYNTHETIC_ONLY"
+}

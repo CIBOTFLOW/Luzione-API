@@ -1,270 +1,250 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import test from "node:test";
-import type { ProofIncidentV1 } from "../contracts";
-import {
-  OperationsEvidenceCompatibilityError,
-  type OperationsEvidenceErrorCode,
-} from "../consumerSdk";
+import type { CapabilityWindowLedgerV1, ProofDailyRecordV1 } from "../contracts";
+import { OperationsEvidenceCompatibilityError, type OperationsEvidenceErrorCode } from "../consumerSdk";
 import type { LuzioneOperationsEvidenceLedgerV2 } from "../v2/contracts";
-import { sealOperationsEvidenceLedgerV2 } from "../v2/sdk";
+import { parseOperationsEvidenceLedgerV2, sealOperationsEvidenceLedgerV2 } from "../v2/sdk";
 import {
+  makeBasicOperationsEvidenceLedgerV3Fixture,
   makeSourceBoundReadyOperationsEvidenceLedgerV3Fixture,
   makeVerifiedIncidentResetOperationsEvidenceLedgerV3Fixture,
-  operationsEvidenceLedgerV3Fixture,
-  operationsEvidenceLedgerV3FixtureContext,
+  operationsEvidenceLedgerV3FixtureClock,
 } from "../v3/fixtures";
-import type { LuzioneOperationsEvidenceLedgerV3 } from "../v3/contracts";
+import type { LuzioneOperationsEvidenceLedgerV3, OperationsEvidenceAppendStateV1, OperationsEvidenceAuthorityRecoverySourceSnapshotV1 } from "../v3/contracts";
+import { OPS_CORRECTION_03_ADVERSE_PROBES, OPS_LEDGER_V3_SCHEMA_KEYS } from "../v3/rules";
 import {
-  OPS_CORRECTION_02_ADVERSE_PROBES,
-  OPS_LEDGER_V3_SCHEMA_KEYS,
-} from "../v3/rules";
-import {
+  calculateOperationsEvidenceAppendStateDigest,
+  calculateSourceSnapshotDigest,
+  createInMemoryOperationsEvidenceAppendStateStoreV1,
   parseLuzioneOperationsEvidenceLedgerManifestV3,
+  parseOperationsEvidenceAppendStateV1,
   parseOperationsEvidenceLedgerV3,
   sealOperationsEvidenceLedgerV3,
 } from "../v3/sdk";
 
 const schemaPath = "contracts/operations-evidence/v3/luzione-operations-evidence-ledger-v3.schema.json";
+const appendSchemaPath = "contracts/operations-evidence/v3/operations-evidence-append-state-v1.schema.json";
+const sourceSchemaPath = "contracts/operations-evidence/v3/operations-evidence-canonical-source-attestation-v1.schema.json";
+const sourceObjectsSchemaPath = "contracts/operations-evidence/v3/operations-evidence-canonical-source-objects-v1.schema.json";
 const manifestPath = "contracts/operations-evidence/luzione-operations-evidence-ledger-v3.manifest.json";
-const adverseFixturesPath = "contracts/operations-evidence/v3/ops-contracts-correction-02-adverse-fixtures.json";
+const adverseFixturesPath = "contracts/operations-evidence/v3/ops-contracts-correction-03-adverse-fixtures.json";
 
-test("v3 validates source-bound structural evidence while every decision credit remains zero", () => {
-  const parsed = parseOperationsEvidenceLedgerV3(operationsEvidenceLedgerV3Fixture, operationsEvidenceLedgerV3FixtureContext);
-  assert.equal(parsed.structurallyValidatedBaseVersion, "LuzioneOperationsEvidenceLedger/v2");
-  assert.deepEqual(parsed.decision, {
-    decisionBearingUse: "PROHIBITED_PENDING_ASSURANCE_03_AND_CANONICAL_SOURCES",
-    g2Credit: 0,
-    productionCredit: 0,
-    proofDayCredit: 0,
-  });
-  assert.deepEqual(parsed.ledger.sourcePackets, { l2: "ABSENT", l3: "ABSENT" });
-  assert.equal(parsed.ledger.effectAuthority, "NO_EFFECT");
-});
-
-test("source-bound exact-scope G2 successors validate but cannot grant G2 or production credit", () => {
+test("D01/B07 stable grant identity is append-only across parser invocations and exact replay is idempotent", () => {
   const fixture = makeSourceBoundReadyOperationsEvidenceLedgerV3Fixture();
-  const parsed = parseOperationsEvidenceLedgerV3(fixture.ledger, fixture.context);
-  assert.equal(parsed.ledger.g2EffectAuthorityGrants.length, 4);
-  assert.equal(parsed.decision.g2Credit, 0);
-  assert.equal(parsed.decision.productionCredit, 0);
-  assert.equal(parsed.decision.proofDayCredit, 0);
+  const first = parseOperationsEvidenceLedgerV3(fixture.ledger, fixture.context);
+  assert.equal(first.appendDisposition, "APPENDED");
+  const replay = parseOperationsEvidenceLedgerV3(fixture.ledger, fixture.context);
+  assert.equal(replay.appendDisposition, "EXACT_REPLAY");
+  assert.equal(replay.appendState.stateDigest, first.appendState.stateDigest);
+
+  const changes: Array<(row: OperationsEvidenceAppendStateV1["g2GrantIdentities"][number]) => void> = [
+    (row) => { (row as { approvalSourceDigest: string }).approvalSourceDigest = "f".repeat(64); },
+    (row) => { (row as { issuerSubjectId: string }).issuerSubjectId = "human:alternate"; },
+    (row) => { (row as { actionId: string }).actionId = "g2:changed-action"; },
+    (row) => { (row as { requestedStage: string }).requestedStage = "FORMAL_PROOF"; },
+    (row) => { (row as { effect: string }).effect = "FORMAL_PROOF_OPEN"; },
+    (row) => { (row as { expiresAt: string }).expiresAt = "2026-09-07T12:00:00.000Z"; },
+    (row) => { (row as { grantDigest: string }).grantDigest = "e".repeat(64); },
+  ];
+  for (const change of changes) {
+    const conflicting = structuredClone(first.appendState);
+    change(conflicting.g2GrantIdentities[0]);
+    conflicting.stateDigest = calculateOperationsEvidenceAppendStateDigest(withoutStateDigest(conflicting));
+    const context = { ...fixture.context, appendStateStore: createInMemoryOperationsEvidenceAppendStateStoreV1([conflicting]) };
+    assertOpsError(() => parseOperationsEvidenceLedgerV3(fixture.ledger, context), "OPS_AUTHORITY_DENIED");
+  }
+  const changedState = structuredClone(first.appendState) as unknown as Record<string, unknown>;
+  ((changedState.g2GrantIdentities as Array<Record<string, unknown>>)[0]).state = "REVOKED";
+  changedState.stateDigest = calculateOperationsEvidenceAppendStateDigest(withoutStateDigest(changedState as unknown as OperationsEvidenceAppendStateV1));
+  assertOpsError(() => parseOperationsEvidenceAppendStateV1(changedState), "OPS_VALUE_INVALID");
 });
 
-test("surplus, missing, wrong-version, ledger-digest and source-snapshot drift fail closed", () => {
-  assertOpsError(() => parseOperationsEvidenceLedgerV3({ ...structuredClone(operationsEvidenceLedgerV3Fixture), surplus: true }, operationsEvidenceLedgerV3FixtureContext), "OPS_FIELD_SET_MISMATCH");
-  const missing = structuredClone(operationsEvidenceLedgerV3Fixture) as unknown as Record<string, unknown>;
-  delete missing["baseLedger"];
-  assertOpsError(() => parseOperationsEvidenceLedgerV3(missing, operationsEvidenceLedgerV3FixtureContext), "OPS_FIELD_SET_MISMATCH");
-  assertOpsError(() => parseOperationsEvidenceLedgerV3({ ...structuredClone(operationsEvidenceLedgerV3Fixture), contractVersion: "LuzioneOperationsEvidenceLedger/v2" }, operationsEvidenceLedgerV3FixtureContext), "OPS_WRONG_VERSION");
-  assertOpsError(() => parseOperationsEvidenceLedgerV3({ ...structuredClone(operationsEvidenceLedgerV3Fixture), ledgerDigest: "f".repeat(64) }, operationsEvidenceLedgerV3FixtureContext), "OPS_MANIFEST_DRIFT");
-  const sourceDrift = structuredClone(operationsEvidenceLedgerV3FixtureContext);
-  sourceDrift.sourceSnapshot.snapshotAt = "2026-09-05T12:00:01.000Z";
-  assertOpsError(() => parseOperationsEvidenceLedgerV3(operationsEvidenceLedgerV3Fixture, sourceDrift), "OPS_CLOCK_INVALID");
+test("D02/B08 authenticated canonical bytes reject caller tamper and coherent re-seal", () => {
+  const fixture = makeBasicOperationsEvidenceLedgerV3Fixture();
+  const snapshot = structuredClone(fixture.context.sourceSnapshot);
+  const attestation = snapshot.sourceAttestations[0];
+  const object = JSON.parse(attestation.objectBytes);
+  object.canonicalFunction = "FOUNDER";
+  attestation.objectBytes = canonical(object);
+  attestation.objectHash = sha256(attestation.objectBytes);
+  const readback = JSON.parse(attestation.readbackBytes);
+  readback.objectHash = attestation.objectHash;
+  attestation.readbackBytes = canonical(readback);
+  attestation.readbackHash = sha256(attestation.readbackBytes);
+  attestation.attestationDigest = sha256(canonical(withoutAttestationSeal(attestation)));
+  snapshot.snapshotDigest = calculateSourceSnapshotDigest(withoutSnapshotDigest(snapshot));
+  const context = { ...fixture.context, sourceSnapshot: snapshot };
+  assertOpsError(() => parseOperationsEvidenceLedgerV3(fixture.ledger, context), "OPS_AUTHORITY_DENIED");
 });
 
-test("owner/string reseal and Founder/Irem/Mallory substitution cannot cross the source boundary", () => {
-  const mallory = structuredClone(operationsEvidenceLedgerV3Fixture);
-  mallory.humanAuthoritySourceBindings[1].issuerSubjectId = "human:mallory";
-  mallory.humanAuthoritySourceBindings[1].membershipSource.objectId = "human:mallory";
-  mallory.humanAuthoritySourceBindings[1].membershipSource.readbackObjectId = "human:mallory";
-  assertOpsError(() => parseOperationsEvidenceLedgerV3(reseal(mallory), operationsEvidenceLedgerV3FixtureContext), "OPS_AUTHORITY_DENIED");
-
-  const swapped = structuredClone(operationsEvidenceLedgerV3Fixture);
-  swapped.humanAuthoritySourceBindings[0].issuerSubjectId = "human:founder";
-  swapped.humanAuthoritySourceBindings[0].membershipSource.objectId = "human:founder";
-  swapped.humanAuthoritySourceBindings[0].membershipSource.readbackObjectId = "human:founder";
-  assertOpsError(() => parseOperationsEvidenceLedgerV3(reseal(swapped), operationsEvidenceLedgerV3FixtureContext), "OPS_AUTHORITY_DENIED");
+test("D03/B09 generic recovery bytes cannot be relabeled as typed incident recovery authority", () => {
+  const fixture = makeVerifiedIncidentResetOperationsEvidenceLedgerV3Fixture();
+  const snapshot = structuredClone(fixture.context.sourceSnapshot);
+  const recovery = snapshot.sourceAttestations.find((item) => item.objectType === "RECOVERY_RECEIPT")!;
+  recovery.objectBytes = canonical({ contractVersion: "GenericRecovery/v1", recoveryReceiptId: recovery.objectId, tenantId: recovery.tenantId });
+  recovery.objectHash = sha256(recovery.objectBytes);
+  snapshot.snapshotDigest = calculateSourceSnapshotDigest(withoutSnapshotDigest(snapshot));
+  assertOpsError(() => parseOperationsEvidenceLedgerV3(fixture.ledger, { ...fixture.context, sourceSnapshot: snapshot }), "OPS_FIELD_SET_MISMATCH");
 });
 
-test("valid-enum role/function relabel cannot substitute canonical source meaning", () => {
-  const relabel = structuredClone(operationsEvidenceLedgerV3Fixture);
-  relabel.humanAuthoritySourceBindings[0].canonicalRole = "FOUNDER";
-  relabel.humanAuthoritySourceBindings[0].canonicalFunction = "FOUNDER";
-  assertOpsError(() => parseOperationsEvidenceLedgerV3(reseal(relabel), operationsEvidenceLedgerV3FixtureContext), "OPS_AUTHORITY_DENIED");
+test("D04/B10 a durable prior successor rejects a later cross-ledger fork from the same anchor", () => {
+  const fixture = makeVerifiedIncidentResetOperationsEvidenceLedgerV3Fixture();
+  const first = parseOperationsEvidenceLedgerV3(fixture.ledger, fixture.context);
+  const forkedHistory = structuredClone(first.appendState);
+  forkedHistory.appliedLedgerDigests = ["d".repeat(64)];
+  forkedHistory.epochSuccessors[0].resetId = "reset:already-committed-other-ledger";
+  forkedHistory.epochSuccessors[0].resetDigest = "c".repeat(64);
+  forkedHistory.epochSuccessors[0].newEpochId = "epoch:already-committed-other-ledger";
+  forkedHistory.stateDigest = calculateOperationsEvidenceAppendStateDigest(withoutStateDigest(forkedHistory));
+  const context = { ...fixture.context, appendStateStore: createInMemoryOperationsEvidenceAppendStateStoreV1([forkedHistory]) };
+  const separateLedger = structuredClone(fixture.ledger);
+  separateLedger.ledgerId = "ledger:separate-document-same-tenant";
+  separateLedger.baseLedger = resealV2({ ...separateLedger.baseLedger, ledgerId: separateLedger.ledgerId });
+  assertOpsError(() => parseOperationsEvidenceLedgerV3(reseal(separateLedger), context), "OPS_REFERENCE_MISMATCH");
 });
 
-test("agent, service, workload, dev and test principals cannot be relabeled as human", () => {
-  for (const subject of ["agent:founder", "service:founder", "workload:founder", "dev:founder", "test:founder"]) {
-    const candidate = structuredClone(operationsEvidenceLedgerV3Fixture);
-    candidate.humanAuthoritySourceBindings[1].issuerSubjectId = subject;
-    candidate.humanAuthoritySourceBindings[1].membershipSource.objectId = subject;
-    candidate.humanAuthoritySourceBindings[1].membershipSource.readbackObjectId = subject;
-    assertOpsError(() => parseOperationsEvidenceLedgerV3(reseal(candidate), operationsEvidenceLedgerV3FixtureContext), "OPS_AUTHORITY_DENIED");
+test("D05 reset calendar day is rejected even though frozen v2 admits it", () => {
+  const fixture = makeVerifiedIncidentResetOperationsEvidenceLedgerV3Fixture();
+  const ledger = structuredClone(fixture.ledger);
+  const daily = ledger.baseLedger.entries.find((entry) => entry.document.contractVersion === "ProofDailyRecord/v1")!.document as ProofDailyRecordV1;
+  const capability = ledger.baseLedger.entries.find((entry) => entry.document.contractVersion === "CapabilityWindowLedger/v1")!.document as CapabilityWindowLedgerV1;
+  daily.payload.date = ledger.capabilityEpochResets[0].effectiveAt.slice(0, 10);
+  capability.payload.windowStart = daily.payload.date;
+  ledger.baseLedger = resealV2(ledger.baseLedger);
+  assert.doesNotThrow(() => parseOperationsEvidenceLedgerV2(ledger.baseLedger, { assessmentTime: operationsEvidenceLedgerV3FixtureClock.assessmentTime }));
+  const v3 = reseal(ledger);
+  assertOpsError(() => parseOperationsEvidenceLedgerV3(v3, fixture.context), "OPS_CLOCK_INVALID");
+});
+
+test("B11 object version/hash/readback drift fails before any append", () => {
+  const mutations: Array<{ code: OperationsEvidenceErrorCode; mutate: (snapshot: OperationsEvidenceAuthorityRecoverySourceSnapshotV1) => void }> = [
+    { code: "OPS_REFERENCE_MISMATCH", mutate: (snapshot) => { (snapshot.sourceAttestations[0] as { objectVersion: string }).objectVersion = "OperationsEvidenceCanonicalTenantMembership/v2"; } },
+    { code: "OPS_AUTHORITY_DENIED", mutate: (snapshot) => { (snapshot.sourceAttestations[0] as { objectHash: string }).objectHash = "f".repeat(64); } },
+    { code: "OPS_AUTHORITY_DENIED", mutate: (snapshot) => { (snapshot.sourceAttestations[0] as { readbackHash: string }).readbackHash = "e".repeat(64); } },
+  ];
+  for (const { code, mutate } of mutations) {
+    const fixture = makeBasicOperationsEvidenceLedgerV3Fixture();
+    const snapshot = structuredClone(fixture.context.sourceSnapshot);
+    mutate(snapshot);
+    snapshot.snapshotDigest = calculateSourceSnapshotDigest(withoutSnapshotDigest(snapshot));
+    assertOpsError(() => parseOperationsEvidenceLedgerV3(fixture.ledger, { ...fixture.context, sourceSnapshot: snapshot }), code);
   }
 });
 
-test("cross-tenant, stale, revoked and superseded membership all fail closed", () => {
-  const crossTenant = structuredClone(operationsEvidenceLedgerV3Fixture);
-  crossTenant.humanAuthoritySourceBindings[0].membershipSource.tenantId = "tenant:foreign";
-  assertOpsError(() => parseOperationsEvidenceLedgerV3(reseal(crossTenant), operationsEvidenceLedgerV3FixtureContext), "OPS_REFERENCE_MISMATCH");
-
-  const stale = structuredClone(operationsEvidenceLedgerV3Fixture);
-  stale.humanAuthoritySourceBindings[0].validUntil = "2026-09-05T11:59:59.999Z";
-  assertOpsError(() => parseOperationsEvidenceLedgerV3(reseal(stale), operationsEvidenceLedgerV3FixtureContext), "OPS_AUTHORITY_DENIED");
-
-  const revoked = structuredClone(operationsEvidenceLedgerV3Fixture);
-  revoked.humanAuthoritySourceBindings[0].revokedAt = "2026-09-05T10:00:00.000Z" as never;
-  assertOpsError(() => parseOperationsEvidenceLedgerV3(reseal(revoked), operationsEvidenceLedgerV3FixtureContext), "OPS_AUTHORITY_DENIED");
-
-  const superseded = structuredClone(operationsEvidenceLedgerV3Fixture);
-  superseded.humanAuthoritySourceBindings[0].supersededByBindingId = "human-source-binding:irem:new" as never;
-  assertOpsError(() => parseOperationsEvidenceLedgerV3(reseal(superseded), operationsEvidenceLedgerV3FixtureContext), "OPS_AUTHORITY_DENIED");
-});
-
-test("bundled, mismatched, reused, cross-tenant and expired G2 grants fail closed", () => {
-  const fixture = makeSourceBoundReadyOperationsEvidenceLedgerV3Fixture();
-  const mismatched = structuredClone(fixture.ledger);
-  mismatched.g2EffectAuthorityGrants[0].effect = "FORMAL_PROOF_OPEN";
-  assertOpsError(() => parseOperationsEvidenceLedgerV3(reseal(mismatched), fixture.context), "OPS_AUTHORITY_DENIED");
-
-  const bundled = structuredClone(fixture.ledger) as unknown as { g2EffectAuthorityGrants: Array<Record<string, unknown>> } & LuzioneOperationsEvidenceLedgerV3;
-  bundled.g2EffectAuthorityGrants[0]["effects"] = ["TENANT_LIVE_READ", "TENANT_REVERSIBLE_WRITE"];
-  assertOpsError(() => parseOperationsEvidenceLedgerV3(reseal(bundled), fixture.context), "OPS_FIELD_SET_MISMATCH");
-
-  const reused = structuredClone(fixture.ledger);
-  const firstSource = structuredClone(reused.g2EffectAuthorityGrants[0].approvalSource);
-  reused.g2EffectAuthorityGrants[1].approvalSource = firstSource;
-  assertOpsError(() => parseOperationsEvidenceLedgerV3(reseal(reused), fixture.context), "OPS_AUTHORITY_DENIED");
-
-  const crossTenant = structuredClone(fixture.ledger);
-  crossTenant.g2EffectAuthorityGrants[0].approvalSource.tenantId = "tenant:foreign";
-  assertOpsError(() => parseOperationsEvidenceLedgerV3(reseal(crossTenant), fixture.context), "OPS_REFERENCE_MISMATCH");
-
-  const expired = structuredClone(fixture.ledger);
-  expired.g2EffectAuthorityGrants[0].expiresAt = "2026-09-05T11:59:59.999Z";
-  assertOpsError(() => parseOperationsEvidenceLedgerV3(reseal(expired), fixture.context), "OPS_AUTHORITY_DENIED");
-});
-
-test("open/unverified incident and orphan recovery cannot reset a capability epoch", () => {
+test("gap, cycle, duplicate successor and reused new epoch fail in durable state", () => {
   const fixture = makeVerifiedIncidentResetOperationsEvidenceLedgerV3Fixture();
-  const open = structuredClone(fixture.ledger);
-  open.incidentRecoverySourceBindings[0].incidentState = "OPEN" as never;
-  assertOpsError(() => parseOperationsEvidenceLedgerV3(reseal(open), fixture.context), "OPS_STATE_INVALID");
-
-  const unverified = structuredClone(fixture.ledger);
-  unverified.incidentRecoverySourceBindings[0].recoveryState = "PENDING" as never;
-  assertOpsError(() => parseOperationsEvidenceLedgerV3(reseal(unverified), fixture.context), "OPS_STATE_INVALID");
-
-  const orphan = structuredClone(fixture.ledger);
-  orphan.capabilityEpochResets[0].incidentRecoveryBindingId = "incident-recovery-binding:missing";
-  assertOpsError(() => parseOperationsEvidenceLedgerV3(reseal(orphan), fixture.context), "OPS_REFERENCE_MISMATCH");
-
-  const wrongIncident = structuredClone(fixture.ledger);
-  wrongIncident.incidentRecoverySourceBindings[0].recoveryIncidentRecordId = "record:proof-incident:foreign";
-  assertOpsError(() => parseOperationsEvidenceLedgerV3(reseal(wrongIncident), fixture.context), "OPS_REFERENCE_MISMATCH");
+  const first = parseOperationsEvidenceLedgerV3(fixture.ledger, fixture.context);
+  const mutations: Array<(state: OperationsEvidenceAppendStateV1) => void> = [
+    (state) => { (state.epochSuccessors[0] as { newEpochSequence: number }).newEpochSequence = 3; },
+    (state) => { (state.epochSuccessors[0] as { newEpochId: string }).newEpochId = state.epochSuccessors[0].priorEpochId; },
+    (state) => { state.epochSuccessors = [...state.epochSuccessors, structuredClone(state.epochSuccessors[0])] as never; },
+  ];
+  for (const mutate of mutations) {
+    const state = structuredClone(first.appendState);
+    mutate(state);
+    state.stateDigest = calculateOperationsEvidenceAppendStateDigest(withoutStateDigest(state));
+    assertOpsError(() => parseOperationsEvidenceAppendStateV1(state), "OPS_REFERENCE_MISMATCH");
+  }
 });
 
-test("resolved-verified incident reset is deterministic and requires acknowledgement/readback/recovery ordering", () => {
-  const fixture = makeVerifiedIncidentResetOperationsEvidenceLedgerV3Fixture();
-  const parsed = parseOperationsEvidenceLedgerV3(fixture.ledger, fixture.context);
-  assert.equal(parsed.ledger.capabilityEpochResets.length, 1);
-  assert.equal(parsed.ledger.capabilityEpochResets[0].priorEpochSequence, 1);
-  assert.equal(parsed.ledger.capabilityEpochResets[0].newEpochSequence, 2);
-  assert.equal(parsed.decision.proofDayCredit, 0);
-
-  const unordered = structuredClone(fixture.ledger);
-  unordered.incidentRecoverySourceBindings[0].acknowledgedAt = "2026-09-05T03:05:00.000Z";
-  assertOpsError(() => parseOperationsEvidenceLedgerV3(reseal(unordered), fixture.context), "OPS_CLOCK_INVALID");
-});
-
-test("epoch gap, fork/cycle and reused successor/recovery binding fail closed", () => {
-  const fixture = makeVerifiedIncidentResetOperationsEvidenceLedgerV3Fixture();
-  const gap = structuredClone(fixture.ledger);
-  gap.capabilityEpochResets[0].priorEpochSequence = 9;
-  assertOpsError(() => parseOperationsEvidenceLedgerV3(reseal(gap), fixture.context), "OPS_REFERENCE_MISMATCH");
-
-  const cycle = structuredClone(fixture.ledger);
-  cycle.capabilityEpochResets[0].newEpochId = cycle.capabilityEpochResets[0].priorEpochId;
-  assertOpsError(() => parseOperationsEvidenceLedgerV3(reseal(cycle), fixture.context), "OPS_REFERENCE_MISMATCH");
-
-  const reused = structuredClone(fixture.ledger);
-  const duplicate = structuredClone(reused.capabilityEpochResets[0]);
-  duplicate.resetId = "reset:duplicate-recovery-binding";
-  reused.capabilityEpochResets = [...reused.capabilityEpochResets, duplicate];
-  assertOpsError(() => parseOperationsEvidenceLedgerV3(reseal(reused), fixture.context), "OPS_REFERENCE_MISMATCH");
-
-  const fork = structuredClone(fixture.ledger);
-  fork.capabilityEpochResets[0].newEpochSequence = 3;
-  assertOpsError(() => parseOperationsEvidenceLedgerV3(reseal(fork), fixture.context), "OPS_REFERENCE_MISMATCH");
-});
-
-test("base incident cannot be open while a source binding claims resolved verification", () => {
-  const fixture = makeVerifiedIncidentResetOperationsEvidenceLedgerV3Fixture();
-  const candidate = structuredClone(fixture.ledger);
-  const incident = candidate.baseLedger.entries.find((entry) => entry.document.contractVersion === "ProofIncident/v1")!.document as ProofIncidentV1;
-  incident.payload.state = "OPEN";
-  incident.payload.resolvedAt = null;
-  candidate.baseLedger = resealV2(candidate.baseLedger);
-  assertOpsError(() => parseOperationsEvidenceLedgerV3(reseal(candidate), fixture.context), "OPS_REFERENCE_MISMATCH");
-});
-
-test("schema/parser parity and manifest prohibition/absence pins are exact", () => {
+test("schema/SDK parity exposes exact append/source field sets and all D01-D06/B07-B11 probes", () => {
   const schema = JSON.parse(readFileSync(schemaPath, "utf8"));
+  const appendSchema = JSON.parse(readFileSync(appendSchemaPath, "utf8"));
+  const sourceSchema = JSON.parse(readFileSync(sourceSchemaPath, "utf8"));
+  const sourceObjectsSchema = JSON.parse(readFileSync(sourceObjectsSchemaPath, "utf8"));
   assert.deepEqual([...schema.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.ledger].sort());
-  assert.deepEqual([...schema.$defs.ExactSourceReadback.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.sourceReadback].sort());
-  assert.deepEqual([...schema.$defs.HumanAuthoritySourceBinding.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.humanBinding].sort());
-  assert.deepEqual([...schema.$defs.G2EffectAuthorityGrant.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.g2Grant].sort());
-  assert.deepEqual([...schema.$defs.IncidentRecoverySourceBinding.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.incidentBinding].sort());
-  assert.deepEqual([...schema.$defs.CapabilityEpochReset.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.epochReset].sort());
-  assert.deepEqual([...schema.$defs.CapabilityEpochAnchor.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.epochAnchor].sort());
   assert.deepEqual([...schema.$defs.SourceSnapshot.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.sourceSnapshot].sort());
-  assert.deepEqual([...schema.$defs.CreditCeiling.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.creditCeiling].sort());
-  assert.deepEqual([...schema.$defs.SourcePackets.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.sourcePackets].sort());
+  assert.deepEqual([...appendSchema.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.appendState].sort());
+  assert.deepEqual([...appendSchema.$defs.EpochSuccessor.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.epochSuccessorIdentity].sort());
+  assert.deepEqual([...appendSchema.$defs.G2GrantIdentity.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.g2GrantIdentity].sort());
+  assert.deepEqual([...sourceSchema.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.canonicalSourceAttestation].sort());
+  assert.deepEqual([...sourceObjectsSchema.$defs.TenantMembership.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.canonicalTenantMembership].sort());
+  assert.deepEqual([...sourceObjectsSchema.$defs.G2Approval.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.canonicalG2Approval].sort());
+  assert.deepEqual([...sourceObjectsSchema.$defs.ProofIncident.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.canonicalProofIncident].sort());
+  assert.deepEqual([...sourceObjectsSchema.$defs.IncidentRecovery.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.canonicalIncidentRecovery].sort());
+  assert.deepEqual([...sourceObjectsSchema.$defs.CanonicalReadback.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.canonicalSourceReadback].sort());
+  assert.equal(schema.properties.decisionPolicy.const, "ZERO_CREDIT_PENDING_ASSURANCE_04");
   assert.equal(schema["x-luzione-semanticRules"].proofDayCreditCeiling, 0);
-  assert.equal(OPS_CORRECTION_02_ADVERSE_PROBES.length, 11);
   const adverseFixtures = JSON.parse(readFileSync(adverseFixturesPath, "utf8"));
-  assert.deepEqual(adverseFixtures.fixtures.map((fixture: { id: string }) => fixture.id), [...OPS_CORRECTION_02_ADVERSE_PROBES]);
+  assert.deepEqual(adverseFixtures.fixtures.map((fixture: { id: string }) => fixture.id), [...OPS_CORRECTION_03_ADVERSE_PROBES]);
   assert.deepEqual(adverseFixtures.creditCeiling, { proofDays: 0, g2: 0, production: 0 });
+});
 
-  const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
-  const parsed = parseLuzioneOperationsEvidenceLedgerManifestV3(manifest);
-  assert.equal(parsed.compatibility.decisionBearingV1UseProhibited, true);
-  assert.equal(parsed.compatibility.decisionBearingV2UseProhibited, true);
-  assert.deepEqual(parsed.sourceAvailability, {
-    canonicalG2Approval: "ABSENT",
-    canonicalHumanMembership: "ABSENT",
-    incidentBoundRecovery: "ABSENT",
-    resolvedVerifiedIncident: "ABSENT",
+test("D06 manifest and immutable handoff contain exact truthful evidence modes without self-hash placeholders", () => {
+  const manifest = parseLuzioneOperationsEvidenceLedgerManifestV3(JSON.parse(readFileSync(manifestPath, "utf8")));
+  assert.equal(manifest.controllerAuthority, "b20899aa38b3e57aa809924266d9f68a94495468");
+  assert.equal(manifest.assuranceFingerprintSha256, "02c7b353f9fbc43cd78f0af096c55a9622a68158794f1735924a29aa036af4a8");
+  assert.deepEqual(manifest.sourceAvailability, {
+    canonicalG2Approval: "ABSENT", canonicalHumanMembership: "ABSENT", incidentBoundRecovery: "ABSENT", resolvedVerifiedIncident: "ABSENT",
   });
-  assert.equal(parsed.effectAuthority, "NO_EFFECT");
-  assert.equal(parsed.productionReady, false);
+  assert.equal(manifest.effectAuthority, "NO_EFFECT");
+  assert.equal(manifest.productionReady, false);
+  const handoff = readFileSync("architecture/production-convergence/OPS_CONTRACTS_CORRECTION_03_IMMUTABLE_HANDOFF.md", "utf8");
+  assert.doesNotMatch(handoff, /\b(?:PENDING|PLACEHOLDER|PEEL_SHA|TO_BE_FILLED)\b/);
+  assert.match(handoff, /DETACHED_ANNOTATED_TAG/);
+  assert.match(handoff, /NOT_OBSERVED/);
+});
+
+test("the bounded parser always returns zero credit and prohibits v1/v2 decision-bearing use", () => {
+  for (const fixture of [makeBasicOperationsEvidenceLedgerV3Fixture(), makeSourceBoundReadyOperationsEvidenceLedgerV3Fixture(), makeVerifiedIncidentResetOperationsEvidenceLedgerV3Fixture()]) {
+    const parsed = parseOperationsEvidenceLedgerV3(fixture.ledger, fixture.context);
+    assert.deepEqual(parsed.decision, {
+      decisionBearingUse: "PROHIBITED_PENDING_ASSURANCE_04_AND_CANONICAL_SOURCES",
+      g2Credit: 0, productionCredit: 0, proofDayCredit: 0,
+    });
+    assert.deepEqual(parsed.ledger.sourcePackets, { l2: "ABSENT", l3: "ABSENT" });
+    assert.equal(parsed.ledger.effectAuthority, "NO_EFFECT");
+  }
 });
 
 function reseal(ledger: LuzioneOperationsEvidenceLedgerV3): LuzioneOperationsEvidenceLedgerV3 {
   return sealOperationsEvidenceLedgerV3({
-    assessmentTime: ledger.assessmentTime,
-    baseLedger: ledger.baseLedger,
-    capabilityEpochResets: ledger.capabilityEpochResets,
-    contractVersion: ledger.contractVersion,
-    creditCeiling: ledger.creditCeiling,
-    decisionPolicy: ledger.decisionPolicy,
-    effectAuthority: ledger.effectAuthority,
-    g2EffectAuthorityGrants: ledger.g2EffectAuthorityGrants,
-    humanAuthoritySourceBindings: ledger.humanAuthoritySourceBindings,
-    incidentRecoverySourceBindings: ledger.incidentRecoverySourceBindings,
-    ledgerId: ledger.ledgerId,
-    sourcePackets: ledger.sourcePackets,
-    tenantId: ledger.tenantId,
+    assessmentTime: ledger.assessmentTime, baseLedger: ledger.baseLedger, capabilityEpochResets: ledger.capabilityEpochResets,
+    contractVersion: ledger.contractVersion, creditCeiling: ledger.creditCeiling, decisionPolicy: ledger.decisionPolicy,
+    effectAuthority: ledger.effectAuthority, g2EffectAuthorityGrants: ledger.g2EffectAuthorityGrants,
+    humanAuthoritySourceBindings: ledger.humanAuthoritySourceBindings, incidentRecoverySourceBindings: ledger.incidentRecoverySourceBindings,
+    ledgerId: ledger.ledgerId, sourcePackets: ledger.sourcePackets, tenantId: ledger.tenantId,
   });
 }
 
 function resealV2(ledger: LuzioneOperationsEvidenceLedgerV2): LuzioneOperationsEvidenceLedgerV2 {
   return sealOperationsEvidenceLedgerV2({
-    assessmentTime: ledger.assessmentTime,
-    authorityGrants: ledger.authorityGrants,
-    capabilityEpochResets: ledger.capabilityEpochResets,
-    contractVersion: ledger.contractVersion,
-    dailyMetricBindings: ledger.dailyMetricBindings,
-    effectAuthority: ledger.effectAuthority,
-    entries: ledger.entries,
-    ledgerId: ledger.ledgerId,
-    ownerContexts: ledger.ownerContexts,
-    priorRecordSetDigest: ledger.priorRecordSetDigest,
+    assessmentTime: ledger.assessmentTime, authorityGrants: ledger.authorityGrants,
+    capabilityEpochResets: ledger.capabilityEpochResets, contractVersion: ledger.contractVersion,
+    dailyMetricBindings: ledger.dailyMetricBindings, effectAuthority: ledger.effectAuthority, entries: ledger.entries,
+    ledgerId: ledger.ledgerId, ownerContexts: ledger.ownerContexts, priorRecordSetDigest: ledger.priorRecordSetDigest,
     tenantId: ledger.tenantId,
   });
 }
 
+function withoutStateDigest(state: OperationsEvidenceAppendStateV1): Omit<OperationsEvidenceAppendStateV1, "stateDigest"> {
+  const copy = structuredClone(state) as unknown as Record<string, unknown>;
+  delete copy.stateDigest;
+  return copy as Omit<OperationsEvidenceAppendStateV1, "stateDigest">;
+}
+
+function withoutSnapshotDigest(snapshot: OperationsEvidenceAuthorityRecoverySourceSnapshotV1): Omit<OperationsEvidenceAuthorityRecoverySourceSnapshotV1, "snapshotDigest"> {
+  const copy = structuredClone(snapshot) as unknown as Record<string, unknown>;
+  delete copy.snapshotDigest;
+  return copy as Omit<OperationsEvidenceAuthorityRecoverySourceSnapshotV1, "snapshotDigest">;
+}
+
+function withoutAttestationSeal(attestation: Record<string, unknown>): Record<string, unknown> {
+  const copy = structuredClone(attestation);
+  delete copy.attestationDigest;
+  delete copy.signature;
+  return copy;
+}
+
+function canonical(value: unknown): string { return JSON.stringify(canonicalize(value)); }
+function canonicalize(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(canonicalize);
+  if (value !== null && typeof value === "object") return Object.fromEntries(Object.entries(value as Record<string, unknown>).sort(([a], [b]) => a.localeCompare(b)).map(([key, item]) => [key, canonicalize(item)]));
+  return value;
+}
+function sha256(value: string): string { return createHash("sha256").update(value).digest("hex"); }
 function assertOpsError(run: () => unknown, code: OperationsEvidenceErrorCode): void {
   assert.throws(run, (error) => error instanceof OperationsEvidenceCompatibilityError && error.code === code);
 }

@@ -1,0 +1,21 @@
+{
+  "packetId": "OPS-CONTRACTS-CORRECTION-03/v1",
+  "controllerAuthority": "b20899aa38b3e57aa809924266d9f68a94495468",
+  "assuranceCanonicalJsonSha256": "02c7b353f9fbc43cd78f0af096c55a9622a68158794f1735924a29aa036af4a8",
+  "assuranceRawPacketSha256": "e33687257cf0b8e1c8d8061b793c456e11d7e28c16e04f41b8fb40b83131ffe8",
+  "effectAuthority": "NO_EFFECT",
+  "creditCeiling": { "proofDays": 0, "g2": 0, "production": 0 },
+  "fixtures": [
+    { "id": "D01_CHANGED_G2_GRANT_CROSS_PARSE", "expected": "OPS_AUTHORITY_DENIED" },
+    { "id": "D02_TYPED_SOURCE_BYTES_HASH_AUTH", "expected": "OPS_AUTHORITY_DENIED" },
+    { "id": "D03_GENERIC_RECOVERY_RELABEL", "expected": "OPS_FIELD_SET_MISMATCH" },
+    { "id": "D04_CROSS_LEDGER_EPOCH_FORK", "expected": "OPS_REFERENCE_MISMATCH" },
+    { "id": "D05_RESET_DAY_CAPABILITY_CREDIT", "expected": "OPS_CLOCK_INVALID" },
+    { "id": "D06_IMMUTABLE_EVIDENCE_TRUTH", "expected": "EXACT_DETACHED_ATTESTATION" },
+    { "id": "B07_G2_STABLE_ID_REPLAY_CONFLICT", "expected": "OPS_AUTHORITY_DENIED" },
+    { "id": "B08_CALLER_SOURCE_PROVENANCE_RESEAL", "expected": "OPS_AUTHORITY_DENIED" },
+    { "id": "B09_INCIDENT_RECOVERY_TYPED_BINDING", "expected": "OPS_AUTHORITY_DENIED" },
+    { "id": "B10_EPOCH_CROSS_LEDGER_CONTINUITY", "expected": "OPS_REFERENCE_MISMATCH" },
+    { "id": "B11_SOURCE_VERSION_HASH_READBACK_DRIFT", "expected": "OPS_AUTHORITY_DENIED" }
+  ]
+}
