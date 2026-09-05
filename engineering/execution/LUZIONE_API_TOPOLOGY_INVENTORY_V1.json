@@ -3,12 +3,12 @@
   "inventory_id": "luzione-api-topology/v1",
   "project_id": "API_SE_001",
   "repository": "CIBOTFLOW/Luzione-API",
-  "observed_ref": "codex/onboard-core-correction-01-g0-e1b8bc5",
-  "observed_sha": "0b7f2a968065c34283805db44940b95e5319fb02",
-  "observed_at": "2026-09-05T04:54:13Z",
+  "observed_ref": "codex/connector-revocation-l1-g0-6ea7045",
+  "observed_sha": "a1329b669262b2abbffc8e9ec501e866429c0d55",
+  "observed_at": "2026-09-05T13:30:00Z",
   "scope": {
     "included": [
-      "tracked ONBOARD-CORE-01 candidate runtime, routes, migrations, tests, deployment configuration and published architecture",
+      "tracked CONNECTOR-REVOCATION-L1-G0 candidate runtime, routes, migrations, tests, deployment configuration and published architecture",
       "open Luzione API pull requests as pending, non-runtime evidence",
       "published cross-system ownership contracts in this repository"
     ],
@@ -383,6 +383,25 @@
       "external_effect_authorized": false
     },
     {
+      "route_id": "connector-revocation-write",
+      "method": "POST",
+      "path": "/api/v1/connectors/revocations",
+      "source_path": "src/app/api/v1/connectors/revocations/route.ts",
+      "authentication": "credential-bound service actor plus distinct signed same-tenant human subject with exact revocation capability and default-off emulator admission",
+      "canonical_readback": "P110 receipt/outbox plus append-only ConnectorRevocationReceipt/v1 with independent remote finality, local disposition and recovery state",
+      "effect": "DEFAULT_OFF_SANDBOX_NO_EFFECT_REVOCATION",
+      "external_effect_authorized": false
+    },
+    {
+      "route_id": "connector-revocation-read",
+      "method": "GET",
+      "path": "/api/v1/connectors/revocations/{receiptId}",
+      "source_path": "src/app/api/v1/connectors/revocations/[receiptId]/route.ts",
+      "authentication": "credential-bound same-tenant service actor with connector.revocation.read capability",
+      "canonical_readback": "tenant-scoped append-only ConnectorRevocationReceipt/v1",
+      "effect": "NO_EFFECT"
+    },
+    {
       "route_id": "governance-evaluate",
       "method": "POST",
       "path": "/api/v1/governance/evaluate",
@@ -718,6 +737,7 @@
     "DATABASE_POOL_MAX",
     "DATABASE_POOL_MAX_USES",
     "DATABASE_URL",
+    "LUZIONE_API_CONNECTOR_REVOCATIONS_ENABLED",
     "LUZIONE_API_CONNECTOR_SYNC_VALIDATIONS_ENABLED",
     "LUZIONE_API_CONNECTOR_SYNC_VALIDATION_TENANTS",
     "LUZIONE_API_DOMAIN_COMMAND_TENANTS",

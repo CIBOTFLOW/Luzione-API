@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "EFFECT-ADMISSION-L1-CORRECTION-02-CONSUMER-PACKET/v1",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "branch": "codex/connector-revocation-l1-g0-6ea7045",
+  "baseSha": "5786d9d6f1d38e730e404cade4dd466dbb709367",
+  "semanticPin": "86809a9243c594a2898d31d14bbeda3324cacd7b",
+  "pins": {
+    "effectAdmission": "luzione-effect-admission/v2",
+    "effectExecutionEnvelope": "luzione-effect-execution-envelope/v1",
+    "providerAdapter": "luzione-provider-adapter/v0.3",
+    "preparedProviderDispatch": "luzione-prepared-provider-dispatch/v1",
+    "providerCredentialRelease": "luzione-provider-credential-release/v1",
+    "migration": "supabase/migrations/20260905131000_effect_admission_l1_correction_02.sql"
+  },
+  "authoritativeSources": [
+    "contracts/effect-admission/luzione-prepared-provider-dispatch-v1.schema.json",
+    "src/modules/effect-admission/contracts.ts",
+    "src/modules/provider-runtime/contracts.ts",
+    "src/modules/provider-runtime/runtime.ts",
+    "src/lib/platform-guarantees/postgresWorkflowDeliveryStore.ts"
+  ],
+  "consumerRules": [
+    "Strict-parse the API-issued decision and preserve its exact subject/prior chain; a consumer may not mint or repair admission evidence.",
+    "Treat the second post-STARTED PROVIDER_PRE_EXECUTE check as required and unchanged relative to the durable envelope.",
+    "Bind reconciliation to checkpoint.originating_delivery_attempt_id and originating_delivery_attempt_number plus tenant and outbox; never select mutable outbox attempt_count.",
+    "Register only exact luzione-provider-adapter/v0.3 SANDBOX adapters with exact untrimmed destination length at most 190.",
+    "Do not infer live effect, credential or deployment authority from this synthetic G0 pin."
+  ],
+  "requiredReturn": "Independent exact-pin compatibility evidence for the relevant L2/L3/provider-worker consumer; no API-owned identity, admission, receipt, attempt or finality field may be redefined."
+}

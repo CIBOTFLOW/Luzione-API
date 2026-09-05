@@ -2436,6 +2436,116 @@
       "next_proof_needed": [
         "Push the exact final, bind automated CI and detached tag evidence, then wait for controller acceptance before the fresh CONNECTOR-REVOCATION-L1-G0 successor."
       ]
+    },
+    {
+      "proof_id": "EFFECT_ADMISSION_L1_CORRECTION_02_G0_20260905",
+      "project_id": "EFFECT-ADMISSION-L1-CORRECTION-02",
+      "recorded_at": "2026-09-05T06:32:09Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "86809a9243c594a2898d31d14bbeda3324cacd7b",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "SANDBOX_ONLY",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "EFFECT-ADMISSION-L1-CORRECTION-02 strict-parses and binds every gate decision to its exact subject/prior, adds a fresh unchanged post-STARTED pre-execute decision, binds reconciliation to an immutable tenant/outbox/delivery-attempt tuple, enforces exact destination grammar and rejects live or wrong-version v0.3 registrations without authorizing a live effect.",
+      "exercised_boundaries": [
+        "Foreign and malformed admitted decisions failed before credential release; each decision matched the exact tenant, actor, authority, operation, source/prepared payload, provider, destination, opaque binding, origin and required prior.",
+        "A kill introduced after STARTED denied the fresh immediately-pre-execute decision; no adapter execute call occurred.",
+        "The post-STARTED decision had to preserve decision reference, kill version, execution identity and execution-envelope identity from the durable STARTED record.",
+        "P110 reconciliation checkpoint insertion and subsequent admission/completion joined the immutable tenant, outbox message, delivery-attempt ID and attempt number; a foreign attempt ID failed the composite foreign key.",
+        "Whitespace and over-190 destinations failed exact parser/schema checks; non-SANDBOX and wrong-version adapters failed during v0.3 registry construction.",
+        "Focused effect/provider/Sultan tests passed 23/23; the combined disposable proof reversed both additive correction columns and connector objects to zero, reapplied to four and cleaned up.",
+        "Frozen contracts/core and src/modules/luzione-core-contracts tree IDs remained d57ccc4cccd97b37acd1a1575b1e07ede5787349 and d594fa014d7020fdf8386c7a6926ff9b573ac355."
+      ],
+      "untested_boundaries": [
+        "exact-final automated CI, CodeQL and authenticated Git-bound application readback",
+        "independent L2/L3/provider-worker exact-SHA compatibility",
+        "managed migration, backup/PITR and recovery",
+        "credential release against a real resolver, live provider execution or hosted worker lifecycle",
+        "G1, G2, merge, default-branch, deployment, activation, rollback or production readiness"
+      ],
+      "evidence_refs": [
+        "commit:86809a9243c594a2898d31d14bbeda3324cacd7b",
+        "architecture/production-convergence/EFFECT_ADMISSION_L1_CORRECTION_02_WORKING_CONTRACT.md",
+        "engineering/execution/connector-revocation-l1-g0/EFFECT_ADMISSION_L1_CORRECTION_02_ARTIFACT_DIGESTS_V1.json",
+        "engineering/execution/connector-revocation-l1-g0/EFFECT_ADMISSION_L1_CORRECTION_02_CONSUMER_PACKET_V1.json",
+        "supabase/migrations/20260905131000_effect_admission_l1_correction_02.sql",
+        "scripts/validation/rollback-effect-admission-l1-correction-02.sql"
+      ],
+      "failure_refs": [
+        "CONNECTOR_REVOCATION_L1_G0_SUPABASE_CLI_UNAVAILABLE_20260905",
+        "CONNECTOR_REVOCATION_L1_G0_EXHAUSTIVE_METADATA_20260905"
+      ],
+      "cross_repo_handoffs": [
+        "L2/L3 may preserve API-issued decision and attempt references but may not mint, repair or select effect authority, kill versions, execution envelopes, credentials, receipts or finality.",
+        "Any provider worker consumer must pin v0.3, register only SANDBOX adapters and reconcile from the immutable originating-attempt tuple."
+      ],
+      "deferred_external_infra": ["exact-head CI", "authenticated preview readback", "independent consumers", "managed recovery and every live-effect authority"],
+      "remaining_uncertainty": [
+        "Synthetic tests and disposable Postgres do not prove hosted concurrency, managed migration or provider behavior.",
+        "No live adapter or credential resolver is admitted by this candidate."
+      ],
+      "next_proof_needed": [
+        "Bind the combined exact final to automated CI and an immutable tag, then obtain independent exact-pin consumer evidence before any integration claim."
+      ]
+    },
+    {
+      "proof_id": "CONNECTOR_REVOCATION_L1_G0_20260905",
+      "project_id": "CONNECTOR-REVOCATION-L1-G0",
+      "recorded_at": "2026-09-05T06:32:09Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "a1329b669262b2abbffc8e9ec501e866429c0d55",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "SANDBOX_ONLY",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "CONNECTOR-REVOCATION-L1-G0 publishes a strict default-off service-plus-human POST and same-tenant GET around append-only ConnectorRevocationReceipt/v1 evidence, P110 reservation/reconciliation and one credential-free NO_EFFECT emulator while keeping remote finality, local credential disposition and recovery authority independent.",
+      "exercised_boundaries": [
+        "ConnectorRevocationRequest/v1 recomputed the exact digest and bound a BOUND ConnectorBinding/v1, same tenant, provider account, versioned opaque credential reference, operation and deterministic scenario.",
+        "A distinct signed human capability was required in addition to the service transport; client authority, cross-tenant binding, provider account, binding ID and credential-version drift failed closed.",
+        "P110 reserved by tenant plus operation key; exact replay returned the original receipt and changed payload recorded a conflict without a second accepted operation.",
+        "REVOKED required MATCHED source readback. ACK, pending, source unavailable, ambiguity exhaustion, version mismatch and failed remote revoke remained typed non-success and retained the local credential.",
+        "A genuine-human forward-recovery append could record ERASURE_AUTHORIZED_NO_EFFECT while preserving the prior terminal non-success remote finality; no credential was resolved or erased.",
+        "Only ConnectorRevocationEmulatorAdapter v0.3/SANDBOX/NO_EFFECT was registered; three disposable P110 outboxes were NO_EFFECT and addressed only sandbox.connector-revocation.",
+        "Disposable Postgres proved forced RLS, cross-tenant invisibility, append-only update/delete denial, impossible-finality denial, active-kill denial and rollback/reapply from zero to four combined objects with cleanup.",
+        "Focused revocation tests passed 9/9; combined focused tests passed 32/32; compliance passed 7/7; TypeScript, zero-warning lint, all 400 repository tests and the Next.js 16.3.4 webpack build passed.",
+        "Frozen ConnectorBinding/v1 meaning and Core tree IDs d57ccc4cccd97b37acd1a1575b1e07ede5787349 and d594fa014d7020fdf8386c7a6926ff9b573ac355 remained unchanged."
+      ],
+      "untested_boundaries": [
+        "exact-final automated CI, CodeQL and authenticated Git-bound application readback",
+        "independent L2/L3 exact-SHA consumption",
+        "managed migration, backup/PITR, rollback and recovery",
+        "real provider revocation, credential lookup/erasure, hosted polling or production worker lifecycle",
+        "G1, G2, merge, default-branch, deployment, activation, production rollback or production readiness"
+      ],
+      "evidence_refs": [
+        "commit:a1329b669262b2abbffc8e9ec501e866429c0d55",
+        "architecture/production-convergence/CONNECTOR_REVOCATION_L1_G0_WORKING_CONTRACT.md",
+        "engineering/execution/connector-revocation-l1-g0/CONNECTOR_REVOCATION_L1_G0_ARTIFACT_DIGESTS_V1.json",
+        "engineering/execution/connector-revocation-l1-g0/CONNECTOR_REVOCATION_L1_G0_CONSUMER_PACKET_V1.json",
+        "engineering/execution/connector-revocation-l1-g0/COMBINED_ASSURANCE_MATRIX_V1.json",
+        "engineering/execution/handoffs/CONNECTOR_REVOCATION_L1_G0_CONTROLLER_HANDOFF.json",
+        "supabase/migrations/20260905130000_connector_revocation_receipts.sql",
+        "scripts/validation/rollback-connector-revocation-l1-g0.sql"
+      ],
+      "failure_refs": [
+        "CONNECTOR_REVOCATION_L1_G0_SUPABASE_CLI_UNAVAILABLE_20260905",
+        "CONNECTOR_REVOCATION_L1_G0_PRIOR_READ_LOCK_20260905",
+        "CONNECTOR_REVOCATION_L1_G0_EXHAUSTIVE_METADATA_20260905"
+      ],
+      "cross_repo_handoffs": [
+        "L2 may render exact API-owned receipt/readback outcomes but cannot supply identity, tenant, human authority, kill versions, credential disposition or finality.",
+        "L3 may call the API as service transport after distinct human approval but cannot become the revocation, credential, receipt or remote-finality writer."
+      ],
+      "deferred_external_infra": ["exact-head CI", "authenticated preview access", "independent consumers", "managed recovery and every real credential/provider action"],
+      "remaining_uncertainty": [
+        "The emulator proves deterministic state separation only and is not evidence of provider revocation.",
+        "The append-only local disposition is evidence only; no system that performs credential erasure was introduced or exercised.",
+        "Controller and consumer acceptance are not inferred."
+      ],
+      "next_proof_needed": [
+        "Push and tag the combined exact final, bind exact-head automated CI, then require controller acceptance before OPS-CONTRACTS-CORRECTION-01 starts on a fresh non-default branch."
+      ]
     }
   ]
 }
