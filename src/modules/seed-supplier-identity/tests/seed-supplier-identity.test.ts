@@ -134,6 +134,16 @@ test("known-bad tenant, stale and self-approval controls are detected", () => {
   assert.deepEqual(supplierIdentityKnownBadDefects({ actualVersion: "supplier:v1", expectedVersion: "supplier:v1", humanActorId: "user-b", proposalActorId: "user-a", query: "select * from seed_supplier_profile_versions where tenant_id=$1 and supplier_profile_id=$2" }), []);
 });
 
+test("human tenant mismatch is a typed 403 domain denial at the HTTP owner boundary", () => {
+  const routeSupport = readFileSync("src/modules/seed-supplier-identity/routeSupport.ts", "utf8");
+  const profileRoute = readFileSync("src/app/api/v1/supplier-profiles/commands/route.ts", "utf8");
+  const portalRoute = readFileSync("src/app/api/v1/supplier-portal-account-bindings/commands/route.ts", "utf8");
+  assert.match(routeSupport, /HUMAN_TENANT_MISMATCH[\s\S]*403/);
+  assert.match(profileRoute, /requireSameTenantHumanSubject\(human\.tenantId, actor\.tenantId\)/);
+  assert.match(portalRoute, /requireSameTenantHumanSubject\(human\.tenantId, actor\.tenantId\)/);
+  assert.doesNotMatch(`${profileRoute}\n${portalRoute}`, /throw new Error\([^\n]*tenant/i);
+});
+
 test("read-model Timeline projection rejects wrong receipt, source, actor, timestamp and padded tenant", () => {
   for (const mutate of [
     (value: typeof supplierProfileReadModelFixture) => { value.timelineEvent.receipt.receiptId = "receipt-other"; },

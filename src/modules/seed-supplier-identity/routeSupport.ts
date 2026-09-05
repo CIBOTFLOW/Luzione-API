@@ -12,6 +12,16 @@ export function supplierProfileRouteId(value: string, field: string) {
   return value;
 }
 
+export function requireSameTenantHumanSubject(humanTenantId: string, transportTenantId: string) {
+  if (humanTenantId !== transportTenantId) {
+    throw new SeedSupplierIdentityDomainError(
+      "HUMAN_TENANT_MISMATCH",
+      "The signed human subject and authenticated service transport must belong to the same tenant.",
+      403,
+    );
+  }
+}
+
 export function seedSupplierIdentityRouteFailure(error: unknown, identity: RequestIdentityEnvelope) {
   if (error instanceof SeedSupplierIdentityContractError || error instanceof SeedSupplierIdentityDomainError || error instanceof OnboardCoreContractError) {
     return apiResponse({ ok: false, code: error.code, message: error.message, ...(error instanceof SeedSupplierIdentityDomainError && error.recovery ? { recovery: error.recovery } : {}) }, { requestIdentity: identity, status: error.status });

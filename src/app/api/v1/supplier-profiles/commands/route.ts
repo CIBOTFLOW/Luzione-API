@@ -4,7 +4,7 @@ import { apiResponse, createRequestIdentity } from "@/lib/api/http";
 import { HUMAN_APPROVAL_SUBJECT_VERSION, requireHumanApprovalSubject } from "@/modules/onboard-core/humanApproval";
 import { bindAuthenticatedRequestIdentity } from "@/modules/platform-contracts/requestIdentity";
 import { SUPPLIER_PROFILE_COMMAND_VERSION, parseSeedSupplierIdentityCommand } from "@/modules/seed-supplier-identity/contracts";
-import { seedSupplierIdentityRouteFailure } from "@/modules/seed-supplier-identity/routeSupport";
+import { requireSameTenantHumanSubject, seedSupplierIdentityRouteFailure } from "@/modules/seed-supplier-identity/routeSupport";
 import { SeedSupplierIdentityStore } from "@/modules/seed-supplier-identity/store";
 import { API_HTTP_RESPONSE_VERSION } from "@/modules/seed-project-publication/readModel";
 
@@ -23,7 +23,7 @@ export async function POST(request: Request) {
         ? "supplier.profile.propose"
         : "supplier.profile.revise";
     const human = await requireHumanApprovalSubject(request.headers, requiredHumanCapability);
-    if (human.tenantId !== actor.tenantId) throw new Error("Human subject tenant does not match the authenticated transport tenant.");
+    requireSameTenantHumanSubject(human.tenantId, actor.tenantId);
     identity = bindAuthenticatedRequestIdentity(identity, actor, {
       authorityClass: command.commandType === "supplier_profile.transition" ? "A2_HUMAN_APPROVAL_NO_EFFECT" : "A1_HUMAN_PROPOSAL_NO_EFFECT",
       capability: "supplier.profile.command",
