@@ -8,6 +8,24 @@
   "canonical_program": "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md",
   "program_extensions": [
     {
+      "extension_id": "LUZIONE_CRM_OS_OPS_CONTRACTS_CORRECTION_01_G0",
+      "source": "CIBOTFLOW/Luzione-platform-program@f7fd111",
+      "repository_program": "PENDING_EFFECT_ADMISSION_L1_CLOSEOUT",
+      "admitted_at": "2026-09-05T03:42:58Z"
+    },
+    {
+      "extension_id": "LUZIONE_CRM_OS_EFFECT_ADMISSION_L1_G0",
+      "source": "CIBOTFLOW/Luzione-platform-program@fb92205",
+      "repository_program": "PENDING_ONBOARD_CORE_01_CLOSEOUT",
+      "admitted_at": "2026-09-05T03:42:58Z"
+    },
+    {
+      "extension_id": "LUZIONE_CRM_OS_ONBOARD_CORE_01_G0",
+      "source": "CIBOTFLOW/Luzione-platform-program@47dbdf6b5ba26b2898abd8dd1eaa0419bfcbbfcf",
+      "repository_program": "architecture/production-convergence/ONBOARD_CORE_01_WORKING_CONTRACT.md",
+      "admitted_at": "2026-09-05T03:42:58Z"
+    },
+    {
       "extension_id": "LUZIONE_CRM_OS_CORE_CORRECTION_01_G0",
       "source": "CIBOTFLOW/Luzione-platform-program@8543a3eab0a969f213bc192391bd7ca657bbf087",
       "repository_program": "engineering/execution/core-02/CORE_CORRECTION_01_REMEDIATION_V1.json",
@@ -53,6 +71,65 @@
     "S4_QUEUE_EXHAUSTED": "Stop when every admitted project is complete, quarantined or removed and no dependency-ready work remains."
   },
   "queue": [
+    {
+      "project_id": "EFFECT-ADMISSION-L1",
+      "platform_project": "LUZIONE_CRM_OS_EFFECT_ADMISSION",
+      "title": "Shared Default-Off Effect Admission and Opaque Credential Binding",
+      "priority": 540,
+      "status": "READY",
+      "depends_on": ["ONBOARD-CORE-01"],
+      "starting_sha": "FINAL_ONBOARD_CORE_01_SHA",
+      "controller_authority": "CIBOTFLOW/Luzione-platform-program@f7fd111",
+      "source_fingerprint": "b7a73c98c741f0d258bada5297b59092adb5ce3ae6fbdb8e01ed09758d3f155d",
+      "mutation_cone": ["contracts", "authority", "provider-runtime", "credentials", "tests", "execution-metadata"],
+      "core_outcome": "Publish and use one exact default-off EffectAdmission decision for Sultan prepare/execute and provider-worker claim/dispatch/reconcile, with immediate pre-credential/dispatch re-read and opaque tenant/provider/destination credential binding.",
+      "published_artifacts": ["EffectAdmission contract and evaluator", "shared Sultan/provider-worker enforcement", "opaque credential-binding boundary", "negative and reconciliation fixtures"],
+      "required_evidence": ["unset/false denial", "tenant/destination/credential mismatch", "changed payload", "kill between claim and dispatch", "ambiguous acknowledgement", "reconciliation without redispatch", "full local and exact-SHA CI"],
+      "irreversible_effects": [],
+      "completion_evidence_ref": null,
+      "release_evidence": "NOT_ASSESSED",
+      "effect_authority": "NO_EFFECT",
+      "finality": "NOT_FINAL"
+    },
+    {
+      "project_id": "OPS-CONTRACTS-CORRECTION-01",
+      "platform_project": "LUZIONE_CRM_OS_OPERATIONS_EVIDENCE_ASSURANCE",
+      "title": "Content-Bound Operations Evidence and Authority Correction",
+      "priority": 535,
+      "status": "BLOCKED_DEPENDENCY",
+      "depends_on": ["EFFECT-ADMISSION-L1"],
+      "starting_sha": "FINAL_EFFECT_ADMISSION_L1_SHA",
+      "controller_authority": "CIBOTFLOW/Luzione-platform-program@f7fd111",
+      "source_fingerprint": "80ae6a53c8ff28259389b1175f7029bf920013e03c7e5419b145c9c2a569decf",
+      "mutation_cone": ["documentation", "contracts", "generated-sdk", "fixtures", "tests", "execution-metadata"],
+      "core_outcome": "Publish a successor or compatible append-ledger envelope that content-binds operations records, validates prior-set supersession and typed references, calculates proof epochs/resets and derives human authority while rejecting agents and bundled G2.",
+      "published_artifacts": ["versioned operations-evidence correction", "strict SDK/schema parity", "eleven adverse assurance probes"],
+      "required_evidence": ["content binding", "same-tenant prior-set supersession", "typed reference resolution", "proof day/epoch/reset calculations", "hard-zero completeness binding", "canonical human owner derivation", "per-effect exact-action G2 authority", "eleven adverse probes"],
+      "irreversible_effects": [],
+      "completion_evidence_ref": null,
+      "release_evidence": "NOT_ASSESSED",
+      "effect_authority": "NO_EFFECT",
+      "finality": "NOT_FINAL"
+    },
+    {
+      "project_id": "ONBOARD-CORE-01",
+      "platform_project": "LUZIONE_CRM_OS_ONBOARDING_CORE",
+      "title": "Tenant Blueprint, Setup Mandate, Dry-Run Import and Sandbox Connector Validation",
+      "priority": 530,
+      "status": "COMPLETE",
+      "depends_on": ["OPS-CONTRACTS-01"],
+      "starting_sha": "a21ec6e3f888dff5aef5d7612ed7b22ef44cbc80",
+      "controller_authority": "CIBOTFLOW/Luzione-platform-program@47dbdf6b5ba26b2898abd8dd1eaa0419bfcbbfcf",
+      "mutation_cone": ["contracts", "onboarding-routes", "tenant-scoped-database", "provider-sandbox", "tests", "execution-metadata"],
+      "core_outcome": "Implement API-issued tenant Blueprint/Mandate, no-effect staged import and one exact sandbox connector validation path while retaining default-off authority and frozen Core semantics.",
+      "published_artifacts": ["separately pinned Blueprint/Mandate, import and connector slices", "two reversible migrations", "strict parser and route tests", "L2 consumer packet"],
+      "required_evidence": ["strict field/version/digest parsing", "tenant/actor/approval/expiry/finality negatives", "same-key replay and changed-payload conflict", "ambiguous acknowledgement reconciliation without redispatch", "isolated migration rollback/reapply", "full local and exact-SHA CI"],
+      "irreversible_effects": [],
+      "completion_evidence_ref": "ONBOARD_CORE_01_G0_20260905",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM"
+    },
     {
       "project_id": "OPS-CONTRACTS-01",
       "platform_project": "LUZIONE_CRM_OS_OPERATIONS_EVIDENCE",

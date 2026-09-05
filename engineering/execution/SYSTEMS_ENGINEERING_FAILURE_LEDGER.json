@@ -1457,6 +1457,78 @@
       "resolution_ref": "commit:f5a62923e52510cdd40fbef41dc86266e33ab05e",
       "remaining_uncertainty": [],
       "next_action": "Keep topology coverage mechanically sensitive to every future runtime configuration key."
+    },
+    {
+      "failure_id": "ONBOARD_CORE_01_FULL_SUITE_INVENTORY_DRIFT_20260905",
+      "project_id": "ONBOARD-CORE-01",
+      "observed_at": "2026-09-05T03:34:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "7f937c515960cb522215ae7e928b3075049477fe",
+      "environment": "local",
+      "layer": "test-taxonomy-topology-release-manifest",
+      "symptom": "The first full repository suite passed 381/385 and rejected three unregistered onboarding suites, six route files, four runtime keys and six OpenAPI paths; the first registry repair then passed 384/385 and correctly rejected the changed shared topology checksum in the CORE-02 digest set.",
+      "expected": "Every new suite, route, runtime key and published OpenAPI path is mechanically inventoried, and every checksum-sensitive shared evidence declaration is refreshed after an intentional change.",
+      "actual": "The three implementation commits deliberately preserved reviewable semantic pins before the broad repository registries and dependent topology digest were reconciled.",
+      "classification": {
+        "domain": "PLATFORM",
+        "class": "INVALID",
+        "retry": "NEVER",
+        "severity": "INFO"
+      },
+      "evidence_refs": [
+        "npm-test:PASS_381_OF_385",
+        "npm-test:PASS_384_OF_385",
+        "commit:cd5a9c091c61e1891112c94282c0f8882bf343ee",
+        "engineering/execution/LUZIONE_API_TOPOLOGY_INVENTORY_V1.json",
+        "engineering/execution/core-02/CORE_02_ARTIFACT_DIGESTS_V1.json"
+      ],
+      "repair_attempts": [
+        "Registered all three suites, eight HTTP method surfaces, four configuration keys and six OpenAPI paths without changing any semantic slice source.",
+        "Published all eleven onboarding contract identifiers in the existing additive contract manifest.",
+        "Refreshed the exact shared topology SHA-256 declaration and reran compliance, typecheck, zero-warning lint, all 385 tests and the Next.js build successfully."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "commit:cd5a9c091c61e1891112c94282c0f8882bf343ee",
+      "remaining_uncertainty": [],
+      "next_action": "Keep future implementation checkpoints separately reviewable, then reconcile every global registry before sealing the candidate."
+    },
+    {
+      "failure_id": "ONBOARD_CORE_01_DOCKER_SOCKET_SANDBOX_20260905",
+      "project_id": "ONBOARD-CORE-01",
+      "observed_at": "2026-09-05T03:39:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "cd5a9c091c61e1891112c94282c0f8882bf343ee",
+      "environment": "local-sandbox",
+      "layer": "disposable-postgres-proof-harness",
+      "symptom": "The first Blueprint/Mandate proof invocation could not access the local Docker socket from the restricted command sandbox.",
+      "expected": "The repository harness starts an isolated disposable Postgres container, applies only candidate migrations, executes negative/readback tests, verifies rollback/reapply and removes the container.",
+      "actual": "No container, database or repository state was changed by the denied invocation.",
+      "classification": {
+        "domain": "INFRASTRUCTURE",
+        "class": "DEPENDENCY_UNAVAILABLE",
+        "retry": "SAFE_RETRY",
+        "severity": "INFO"
+      },
+      "evidence_refs": [
+        "permission-denied:local-docker-socket",
+        "npm-script:proof:onboard-core-blueprints",
+        "npm-script:proof:onboard-core-imports",
+        "npm-script:proof:onboard-core-connector"
+      ],
+      "repair_attempts": [
+        "Reran the exact isolated proof scripts with approved access to the local Docker runtime; no remote or production endpoint was used.",
+        "All three disposable proofs passed and scheduled container cleanup."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "local-proof:PASS_BLUEPRINT_MANDATE_IMPORT_CONNECTOR_20260905",
+      "remaining_uncertainty": [],
+      "next_action": "Retain disposable local-only proof boundaries for every future migration rehearsal."
     }
   ]
 }

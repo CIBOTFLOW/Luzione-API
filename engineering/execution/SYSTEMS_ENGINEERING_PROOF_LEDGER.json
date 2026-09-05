@@ -2191,6 +2191,71 @@
       "next_proof_needed": [
         "Publish and verify exact-final CI plus the detached content-addressed attestation, then release the API writer for ONBOARD-SPINE-L1-G0/v1 without starting it in this branch."
       ]
+    },
+    {
+      "proof_id": "ONBOARD_CORE_01_G0_20260905",
+      "project_id": "ONBOARD-CORE-01",
+      "recorded_at": "2026-09-05T03:42:58Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "7f937c515960cb522215ae7e928b3075049477fe",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "ONBOARD-CORE-01 implements separately pinned API-owned Blueprint/Mandate, no-effect dry-run import and sandbox connector-validation slices behind exact default-off gates, with tenant-scoped append-only storage, P110 reservation/finality and reversible isolated migration proof while preserving frozen LuzioneCoreContracts/v1.",
+      "exercised_boundaries": [
+        "L2 DRAFT input mapped deterministically into L1-issued TenantBlueprint/v1 identity, canonical references and a stable tenant/sourcePackId/sourcePackVersion/sourceDigest/mappingVersion reservation.",
+        "Credential-bound human approval/supersession was append-only; client authority, stale object versions, cross-tenant reads, superseded Blueprints and expired/revoked Mandates failed closed.",
+        "Import dry-run required a current same-tenant SetupMandate allowing DRY_RUN_IMPORT, recomputed the exact source digest, enforced mandate counts and produced closed ImportBatch/v1 and ImportReceipt/v1 no-effect status/finality pairs.",
+        "Rejected/conflicted rows retained durable exception and reconciliation references; exact replay returned original P110 evidence and changed digest conflicted without a second mutation.",
+        "Connector validation admitted only an exact service actor, DRAFT same-tenant ConnectorBinding/v1, approved provider, opaque secret-ref identifier and sandbox.echo destination behind global, endpoint, tenant and provider-sandbox gates.",
+        "Matched, exact replay, changed-payload conflict, tenant/actor denial, ambiguous acknowledgement and source-unavailable reconciliation paths were exercised; ambiguity reconciled with one dispatch and L1 alone issued SyncReceipt/v1 finality.",
+        "Disposable Blueprint/Mandate proof produced 2 drafts, 2 approvals, 1 supersession, 1 mandate and 5 receipts; rollback removed 3 new relations while preserving P110 and reapply restored 3.",
+        "Disposable import proof produced 1 batch, 3 rows, 1 import receipt, 4 command receipts and 1 conflict; rollback removed only the 3 import relations, preserved SetupMandate and reapply restored 3.",
+        "Disposable connector proof produced 3 receipts, 1 conflict, 3 outbox rows, 3 delivery attempts, 3 reconciliations and 3 NO_EFFECT outcomes with zero schema delta.",
+        "Focused onboarding/provider suites passed 25/25; registry reconciliation passed 15/15; full compliance, typecheck, zero-warning lint, all 385 tests and Next.js 16.3.4 webpack build passed.",
+        "Frozen contracts/core and src/modules/luzione-core-contracts tree IDs remained d57ccc4cccd97b37acd1a1575b1e07ede5787349 and d594fa014d7020fdf8386c7a6926ff9b573ac355."
+      ],
+      "untested_boundaries": [
+        "exact-final automated CI and CodeQL",
+        "independent L2 exact-pin consumer compatibility",
+        "authenticated Git-bound application preview/readback",
+        "managed migration, backup/PITR and recovery",
+        "any production adapter, credential resolution, provider/customer effect, scheduler or hosted activation",
+        "G1, G2, merge, default-branch or production readiness"
+      ],
+      "evidence_refs": [
+        "commit:27b50a89658fe1572bfefe6ef6e02d993deaceb7",
+        "commit:46a14c3a499d57c8699395d714bb44e9a4576ab6",
+        "commit:7f937c515960cb522215ae7e928b3075049477fe",
+        "commit:cd5a9c091c61e1891112c94282c0f8882bf343ee",
+        "pull-request:CIBOTFLOW/Luzione-API#69",
+        "architecture/production-convergence/ONBOARD_CORE_01_WORKING_CONTRACT.md",
+        "engineering/execution/onboard-core-01/ONBOARD_CORE_01_ARTIFACT_DIGESTS_V1.json",
+        "engineering/execution/onboard-core-01/ONBOARD_CORE_01_L2_CONSUMER_PACKET_V1.json"
+      ],
+      "failure_refs": [
+        "ONBOARD_CORE_01_FULL_SUITE_INVENTORY_DRIFT_20260905",
+        "ONBOARD_CORE_01_DOCKER_SOCKET_SANDBOX_20260905"
+      ],
+      "cross_repo_handoffs": [
+        "L2 must pin the smallest exact semantic commit, keep Tenant Pack proposal-only and return independent strict fixture/HTTP consumer evidence without redefining L1-owned identity, approval, reservation, receipt or finality.",
+        "Sultan and provider workers may not consume this onboarding branch as general effect authority; the next EFFECT-ADMISSION-L1 cell owns that shared decision separately."
+      ],
+      "deferred_external_infra": [
+        "exact-final automated CI and protected preview",
+        "independent L2 consumption",
+        "authenticated deployed readback",
+        "managed recovery and every G1/G2 action"
+      ],
+      "remaining_uncertainty": [
+        "Local disposable Postgres evidence does not prove managed migration or hosted runtime behavior.",
+        "The sandbox echo adapter proves deterministic acknowledgement/reconciliation semantics only and does not prove any real provider integration.",
+        "No consumer, controller or production acceptance is inferred from producer evidence."
+      ],
+      "next_proof_needed": [
+        "Run exact-final automated CI on draft PR #69, record any protected Git-bound preview truthfully, then dispatch EFFECT-ADMISSION-L1 from the exact ONBOARD final on a fresh non-default branch."
+      ]
     }
   ]
 }

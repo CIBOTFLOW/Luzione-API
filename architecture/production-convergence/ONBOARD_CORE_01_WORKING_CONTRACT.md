@@ -1,25 +1,35 @@
 # ONBOARD-CORE-01 G0 Working Contract
 
-Status: implementation in progress on a non-default branch. This is not G1, integrated, deployed, activated, or production-ready.
+Status: bounded local pass on a non-default branch. This is not G1, integrated, deployed, activated, or production-ready.
 
 ## Outcome and authority
 
-The authenticated entrypoints are the default-off `/api/v1/onboarding/tenant-blueprints` and `/api/v1/onboarding/setup-mandates` boundaries. Luzione API is the sole canonical writer and derives tenant, actor, request identity, Blueprint/Mandate identity, policy references, approval evidence, expiry, limits, prohibitions, rollback reference, idempotency and object versions. L2 Tenant Pack is proposal-only and may submit only exact `LuzioneTenantPackDraft/v1` DRAFT content plus immutable source/schema digests.
+Luzione API is the sole canonical writer for the onboarding boundaries. It derives tenant, actor, request identity, Blueprint/Mandate/Batch identity, policy references, approval evidence, expiry, limits, prohibitions, rollback reference, idempotency and object versions. L2 Tenant Pack is proposal-only and may submit only exact `LuzioneTenantPackDraft/v1` DRAFT content plus immutable source/schema digests.
 
-The first independently reviewable slice ends at an approved, append-only `TenantBlueprint/v1` and an immutable expiring `SetupMandate/v1`. It uses P110 reservation/receipt/event/outbox evidence with `NO_EFFECT`; GET reads are tenant-bound Postgres readbacks. The current slice never connects a UI writer, resolves credentials, invokes a provider, schedules work, changes a Core schema, or enables a hosted effect.
+The default-off boundaries are:
 
-## Required mapping boundary
+- GET/POST `/api/v1/onboarding/tenant-blueprints`
+- POST `/api/v1/onboarding/tenant-blueprints/approvals`
+- GET/POST `/api/v1/onboarding/setup-mandates`
+- POST `/api/v1/onboarding/imports/dry-runs`
+- GET `/api/v1/onboarding/imports/{batchId}`
+- POST `/api/v1/connectors/sync-validations`
 
-- Mapping version is exactly `TenantBlueprintMap/v1`.
-- Reservation identity is derived from authenticated tenant + `sourcePackId` + `sourcePackVersion` + canonical source digest + mapping version.
-- The API recomputes the canonical draft digest. A mismatch is rejected.
-- Replaying the exact tuple returns its original P110 receipt. Changed content under the same source pack version conflicts through the append-only unique source identity.
-- L1 namespaces and issues required field, connector, retention and AI-policy references plus all other Core Blueprint section references.
-- Only a credential-bound `user` may append approval/supersession. Approved records are never updated or deleted. Supersession appends explicit lineage and preserves the prior approval document.
-- A Mandate pins an approved, unsuperseded, same-tenant Blueprint; L1 issues a 24-hour expiry, bounded limits, the exact no-effect action set, all Core prohibitions and rollback authority.
+All writes reuse P110 reservation/receipt/event/outbox evidence. Blueprint, Mandate and dry-run import records are tenant-scoped, forced-RLS and append-only. Connector validation uses the existing provider runtime and `SandboxEchoProviderAdapter`, adds no relation or migration, and returns only L1-issued `SyncReceipt/v1` sandbox finality. No route resolves a credential value, schedules work, invokes a production adapter, commits CRM imports, enables a hosted effect or changes the frozen Core schema/SDK.
+
+## Mapping and replay boundaries
+
+- Blueprint mapping is exactly `TenantBlueprintMap/v1`; reservation identity is authenticated tenant + `sourcePackId` + `sourcePackVersion` + canonical source digest + mapping version.
+- L1 recomputes every draft/source/connector payload digest. Digest mismatch fails closed.
+- Exact replays return the original P110 receipt. Changed content under the same tenant/key conflicts and does not create a second canonical mutation or provider dispatch.
+- Only a credential-bound human may append approval/supersession. Approved records are never updated or deleted. A Mandate pins an approved, unsuperseded, active same-tenant Blueprint and expires after 24 hours.
+- Import mapping is exactly `CRMImportDryRunMap/v1`. The Mandate must explicitly allow `DRY_RUN_IMPORT`; Batch effect mode equals Receipt effect mode; status/finality pairs are closed; rejected/conflicted rows retain durable exception/reconciliation references; `VALIDATED_NO_EFFECT` is never CRM commit finality.
+- Connector validation is exactly `ConnectorSyncValidation/v1`; only an exact service actor, DRAFT `ConnectorBinding/v1`, approved provider, opaque `secret-ref:` binding, tenant/key reservation and `sandbox.echo` destination are admitted. Ambiguous acknowledgement reconciles without redispatch. L1 alone issues `SyncReceipt/v1` finality.
 
 ## Mutation cone and acceptance proof
 
-New relations are limited to `onboarding_tenant_blueprint_drafts`, `onboarding_tenant_blueprint_approvals`, and `onboarding_setup_mandates`. They are tenant-RLS, append-only, and reuse the existing P110 command ledger. Acceptance requires strict parser tests; client-authority, wrong/surplus/digest/tenant/stale/supersession/expiry/revocation negatives; exact replay and changed-content conflict; cross-tenant absence; migration apply/readback/rollback/reapply reconciliation; frozen Core contract/SDK tree equality; and full compliance/typecheck/lint/test/build.
+New relations are limited to `onboarding_tenant_blueprint_drafts`, `onboarding_tenant_blueprint_approvals`, `onboarding_setup_mandates`, `onboarding_import_batches`, `onboarding_import_rows` and `onboarding_import_receipts`. The first three belong to migration `20260905040000`; the latter three belong to separately reversible migration `20260905041000`; connector validation has zero schema delta.
 
-The later separately reviewable slices add staged ImportBatch/ImportReceipt persistence and exactly one sandbox connector validation endpoint. They may not expand this slice's authority.
+Acceptance requires strict field/version parsing; client-authority, wrong/surplus/digest/tenant/stale/expired/revoked/superseded, cross-tenant and finality negatives; exact replay and changed-content conflict; ambiguous acknowledgement without redispatch; tenant-bound readback; migration apply/readback/rollback/reapply reconciliation; frozen Core tree equality; focused tests; and full compliance/typecheck/lint/test/build.
+
+The immutable semantic pins are `27b50a89658fe1572bfefe6ef6e02d993deaceb7` for Blueprint/Mandate, `46a14c3a499d57c8699395d714bb44e9a4576ab6` for import dry-run and `7f937c515960cb522215ae7e928b3075049477fe` for connector validation. The later registry-only reconciliation at `cd5a9c091c61e1891112c94282c0f8882bf343ee` does not change those slice artifacts.
