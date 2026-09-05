@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "OnboardCoreCorrectionWriterClaim/v1",
+  "projectId": "ONBOARD-CORE-CORRECTION-02",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "branch": "codex/onboard-core-correction-02-g0-4cd6e14",
+  "baseSha": "221d2b96b970a8036923b28a1e3ebc7fe489db34",
+  "controllerAuthority": "4cd6e143c05d9318006b033d5331bba9bb7d5e6a",
+  "assuranceFingerprintSha256": "9e1e2f515f8445e17a9168261676de4697182d903689e7c7e1f330c9cda54352",
+  "effectAuthority": "NO_EFFECT",
+  "productionCredit": 0,
+  "writer": "L1",
+  "writerLock": "ACQUIRED",
+  "claimedAt": "2026-09-05T09:10:16.000Z",
+  "implementationSha": null,
+  "finalSha": null,
+  "releasedAt": null
+}
