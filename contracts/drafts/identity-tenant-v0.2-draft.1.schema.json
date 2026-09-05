@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/drafts/identity-tenant-v0.2-draft.1.schema.json",
+  "title": "Luzione Identity and Tenant v0.2 draft 1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contractVersion", "serverDerived", "request", "credentialActor", "logicalActor", "tenant", "authority", "sourceVersionRefs"],
+  "properties": {
+    "contractVersion": { "const": "luzione-identity-tenant/v0.2-draft.1" },
+    "serverDerived": { "const": true },
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requestId", "correlationId", "traceId", "spanId", "requestedAt"],
+      "properties": {
+        "requestId": { "type": "string", "minLength": 2, "maxLength": 512 },
+        "correlationId": { "type": "string", "minLength": 2, "maxLength": 512 },
+        "traceId": { "type": "string", "pattern": "^[a-f0-9]{32}$" },
+        "spanId": { "type": "string", "pattern": "^[a-f0-9]{16}$" },
+        "requestedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "credentialActor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actorId", "actorType", "credentialSource"],
+      "properties": {
+        "actorId": { "type": "string", "minLength": 2, "maxLength": 512 },
+        "actorType": { "enum": ["agent", "service", "user"] },
+        "credentialSource": { "enum": ["service-token", "vercel-oidc"] }
+      }
+    },
+    "logicalActor": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["actorId", "actorType", "definitionVersion", "delegationEvidenceRef"],
+          "properties": {
+            "actorId": { "type": "string", "minLength": 2, "maxLength": 512 },
+            "actorType": { "const": "agent" },
+            "definitionVersion": { "type": "string", "minLength": 2, "maxLength": 512 },
+            "delegationEvidenceRef": { "type": "string", "minLength": 2, "maxLength": 512 }
+          }
+        }
+      ]
+    },
+    "tenant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tenantId", "source", "boundary"],
+      "properties": {
+        "tenantId": { "type": "string", "minLength": 2, "maxLength": 512 },
+        "source": { "const": "VERIFIED_CREDENTIAL" },
+        "boundary": { "const": "EXACT" }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authorityClass", "capability", "purpose"],
+      "properties": {
+        "authorityClass": { "type": "string", "minLength": 2, "maxLength": 512 },
+        "capability": { "type": "string", "minLength": 2, "maxLength": 512 },
+        "purpose": { "type": "string", "minLength": 2, "maxLength": 512 }
+      }
+    },
+    "sourceVersionRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 2, "maxLength": 512 }
+    }
+  }
+}

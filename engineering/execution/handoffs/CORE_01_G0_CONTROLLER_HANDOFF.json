@@ -1,0 +1,121 @@
+{
+  "schema_version": "CORE-01-G0-CONTROLLER-HANDOFF/v1",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "controller_authority": "b19a4d858c0c90dba8600facbf329b7de7c322ad",
+  "support_packet_authority": "c5a26960970091d9fe664460fa32be190a50ccb9",
+  "runtime_mapping_authority": "ebf74443e7f83e5eb859570142b57ce23d9fa404",
+  "base_sha": "7ee5a0a53a3434c3e00969dc626a4daad33f9dc0",
+  "branch": "codex/core-01-contract-spine-g0-b19a4d8",
+  "implementation_sha": "828de754e4104cd860e3f47adbf2e84c576e5c10",
+  "evidence_head": "COMMIT_CONTAINING_THIS_HANDOFF",
+  "state": {
+    "engineering": "BOUNDED_PASS",
+    "release_evidence": "LOCAL_PROVEN",
+    "effect_authority": "NO_EFFECT",
+    "finality": "BOUNDED_CLAIM",
+    "runtime_activation": "DARK_ONLY",
+    "production_ready": false,
+    "g1": false,
+    "g2": false
+  },
+  "preserved_a02": {
+    "implementation_sha": "12685f46a60edea23aaa0a5403e300bf8858066b",
+    "final_sha": "bc43d5db8fe58230d6c3d35e32a73e1e8618b71e",
+    "versions": [
+      "luzione-shared-contracts/v0.2-draft.1",
+      "luzione-identity-tenant/v0.2-draft.1",
+      "luzione-command-envelope/v0.2-draft.1",
+      "luzione-receipt-envelope/v0.2-draft.1",
+      "luzione-readback-envelope/v0.2-draft.1"
+    ]
+  },
+  "core_versions": [
+    "LuzioneCoreContracts/v1",
+    "SultanOperation/v1",
+    "SultanReceipt/v1",
+    "SultanReadback/v1",
+    "TenantBlueprint/v1",
+    "SetupMandate/v1",
+    "ImportBatch/v1",
+    "ImportReceipt/v1",
+    "ConnectorBinding/v1",
+    "SyncReceipt/v1",
+    "SupportCase/v1",
+    "SupportAction/v1",
+    "CustomerReply/v1",
+    "LuzioneCoreFeatureFlags/v1",
+    "LuzioneCoreReleaseManifest/v1"
+  ],
+  "immutable_artifacts": [
+    { "path": "contracts/core/v1/luzione-core-contracts-v1.schema.json", "sha256": "13edcb0d5ec3509e21bc4a299e442c81072426772e7419a1b56160697b05be2d" },
+    { "path": "contracts/core/luzione-core-v1.manifest.json", "sha256": "a3bf790b2c75bcba1023aa8f5d87abb01e638a4d56a8c626a58f78c26a4232dc" },
+    { "path": "contracts/core/consumer-mappings/sultan-runtime-01-v1.json", "sha256": "8fc90bd21ed0af2f5f247dd104972eb6fc1954bd0214c2f87ae82c1b1725346b" },
+    { "path": "src/modules/luzione-core-contracts/contracts.ts", "sha256": "a62c71cbf7e23e5dbae8df227b7f69cd29f327beb9b342646eab69a0bbddef6f" },
+    { "path": "src/modules/luzione-core-contracts/consumerSdk.ts", "sha256": "5e1b61f8083d222bb3e38adecdf12347447753b5d448fbe36cffba93cdc27630" },
+    { "path": "src/modules/luzione-core-contracts/fixtures.ts", "sha256": "2d2c9d71d156bf57b6a1e26967dde8101e920aeeecafdf5c481081e5e95b74d0" },
+    { "path": "engineering/execution/handoffs/CORE_01_CRM_ACTIVATION_CONE_INVENTORY_REQUEST.json", "sha256": "6632821c340355b3f7d3249389df76b3d36abeb2ec97477120eddc1dfb85830a" }
+  ],
+  "consumer_pin_guidance": {
+    "git_pin": "CIBOTFLOW/Luzione-API@828de754e4104cd860e3f47adbf2e84c576e5c10",
+    "sdk_entrypoint": "src/modules/luzione-core-contracts/index.ts",
+    "schema": "contracts/core/v1/luzione-core-contracts-v1.schema.json",
+    "fixtures": "src/modules/luzione-core-contracts/fixtures.ts",
+    "rule": "Pin the exact Git SHA and all exact version identifiers. Consume through a repository-local adapter. Do not copy, rename, relax, extend, or redefine identity, tenant, authority, effect, receipt, finality or readback meaning. Unknown fields and versions fail closed."
+  },
+  "sultan_runtime_mapping": {
+    "consumer_final_sha": "e2b95ab71e5a604dcdd8ff6ab75b50a32ba4d838",
+    "binding": "FROZEN_L1_G0_IMPLEMENTATION",
+    "capability_ids": [
+      "crm.growth-research",
+      "crm.opportunity-assistance",
+      "crm.proposal-preparation",
+      "crm.procurement-coordination",
+      "crm.onboarding-assistance",
+      "crm.support_investigation"
+    ]
+  },
+  "changed_path_groups": {
+    "core_contracts": ["contracts/core", "src/modules/luzione-core-contracts"],
+    "registry_and_ci_integration": ["package.json", "src/modules/platform-contracts/registry.ts", "src/modules/platform-testing/taxonomy.ts"],
+    "working_contract_and_inventory": ["architecture/production-convergence/CORE_01_WORKING_CONTRACT.md", "engineering/execution/handoffs/CORE_01_CRM_ACTIVATION_CONE_INVENTORY_REQUEST.json"],
+    "preserved_a02_semantics": ["contracts/drafts", "src/modules/shared-contract-drafts"],
+    "evidence_and_writer_state": ["engineering/execution/A02_CURRENT_MAIN_G0_WRITER_CLAIM.json", "engineering/execution/CORE_01_G0_WRITER_CLAIM.json", "engineering/execution/SYSTEMS_ENGINEERING_PROOF_LEDGER.json", "engineering/execution/CURRENT_HANDOFF.json"]
+  },
+  "exact_tests": {
+    "focused": "PASS 52/52",
+    "full": "PASS 337/337",
+    "compliance": "PASS 7/7",
+    "typecheck": "PASS",
+    "lint": "PASS zero warnings",
+    "build": "PASS Next.js 16.3.4 webpack",
+    "negative_scope": [
+      "surplus/missing/wrong-version for all 14 interfaces",
+      "tenant/reference/actor derivation and revoked membership/entitlement",
+      "same-key exact replay and changed-payload conflict",
+      "stale object/evidence versions and ambiguity",
+      "severity decrease, illegal SLA pause and unverified close",
+      "disallowed approval, missing reservation/readback and false finality",
+      "credential literal, import limit/count and feature-flag activation denial"
+    ]
+  },
+  "rollback_proof": {
+    "scope": "7ee5a0a53a3434c3e00969dc626a4daad33f9dc0..828de754e4104cd860e3f47adbf2e84c576e5c10",
+    "method": "binary patch generated from exact base to implementation, then git apply --reverse --check in a clean detached temporary clone at the implementation SHA",
+    "result": "PASS",
+    "executed": false,
+    "production_rollback": false
+  },
+  "ci_and_preview": {
+    "exact_head_actions": "PENDING_PUSH",
+    "preview": "NOT_REQUESTED_OR_OBSERVED",
+    "application_readback": "NOT_RUN_NO_ROUTE_OR_EFFECT_ADDED"
+  },
+  "risks_and_stops": [
+    "No independent L2 consumer SHA exists for this frozen SDK.",
+    "Sultan RUNTIME-01 still needs to repin and execute this exact fixture chain.",
+    "CRM activation-cone owner, job, credential-reference and managed recovery returns are unknown.",
+    "Authenticated Git-bound preview readback is absent.",
+    "A01/D01, managed recovery, controller acceptance and every G2 production/effect gate remain stops."
+  ],
+  "one_next_action": "L2 and L3 pin CIBOTFLOW/Luzione-API@828de754e4104cd860e3f47adbf2e84c576e5c10, run the strict fixtures through repository-local adapters, and return exact consumer SHAs plus raw artifact digests without activating effects."
+}

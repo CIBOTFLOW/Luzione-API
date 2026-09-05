@@ -1939,6 +1939,66 @@
         "promote exact candidate 0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a and record production readbacks",
         "exercise the approved rollback path and submit the resulting evidence to the controller"
       ]
+    },
+    {
+      "proof_id": "CORE_01_G0_CONTRACT_SPINE_20260905",
+      "project_id": "CORE-01",
+      "recorded_at": "2026-09-05T01:24:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "828de754e4104cd860e3f47adbf2e84c576e5c10",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "CORE-01 publishes a strict dark-only v1 contract/SDK candidate for Core operation, receipt, readback, onboarding, import, connector and SUPPORT-01 interfaces, preserves the exact five A02 draft pins, and maps all six Sultan RUNTIME-01 CRM capabilities without granting runtime, provider or production authority.",
+      "exercised_boundaries": [
+        "Fourteen positive semantic fixtures passed through exact-field SDK parsers.",
+        "All fourteen document boundaries rejected surplus, missing and wrong-version inputs for 42 sensitivity checks.",
+        "Operation, owner receipt and source readback kept request-time, committed and observed versions distinct while preserving the A02 causal chain.",
+        "Onboarding/import/connector tests rejected expired mandates, missing prohibitions, over-limit imports, inconsistent counts, credential literals and false source finality.",
+        "SUPPORT-01 tests rejected revoked membership/entitlement, stale evidence/version, illegal SLA pause, unverified auto-close, changed-payload replay, unapproved severity decrease, ambiguous finality, missing readback, disallowed reply delivery and broken append-only audit links.",
+        "The data-only RUNTIME-01 map matched all six exact Sultan capability IDs at consumer final e2b95ab71e5a604dcdd8ff6ab75b50a32ba4d838 and referenced only API-owned v1 contracts.",
+        "Focused compatibility passed 52/52; full repository tests passed 337/337; compliance 7/7, TypeScript, ESLint with zero warnings and the Next.js 16.3.4 webpack production build passed.",
+        "No HTTP route, database object, migration, provider adapter, credential access or production/default-branch mutation was introduced."
+      ],
+      "untested_boundaries": [
+        "independent exact-SHA L2 and L3 consumption of the frozen SDK and fixture digests",
+        "authenticated Git-bound preview HTTP readback",
+        "managed database/provider activation inventory and recovery evidence",
+        "any production command, connector, import, onboarding, support or communication effect",
+        "controller acceptance or G1/G2 authorization"
+      ],
+      "evidence_refs": [
+        "commit:828de754e4104cd860e3f47adbf2e84c576e5c10",
+        "contracts/core/luzione-core-v1.manifest.json",
+        "contracts/core/v1/luzione-core-contracts-v1.schema.json",
+        "contracts/core/consumer-mappings/sultan-runtime-01-v1.json",
+        "src/modules/luzione-core-contracts/consumerSdk.ts",
+        "src/modules/luzione-core-contracts/fixtures.ts",
+        "src/modules/luzione-core-contracts/tests/core-contracts.test.ts",
+        "architecture/production-convergence/CORE_01_WORKING_CONTRACT.md",
+        "engineering/execution/handoffs/CORE_01_CRM_ACTIVATION_CONE_INVENTORY_REQUEST.json"
+      ],
+      "failure_refs": [],
+      "cross_repo_handoffs": [
+        "RUNTIME-01 six-capability mapping for CIBOTFLOW/Sultan-OS@e2b95ab71e5a604dcdd8ff6ab75b50a32ba4d838",
+        "CORE-01 CRM activation-cone inventory request for L2/L3/L4/L5 and named database/recovery functions"
+      ],
+      "deferred_external_infra": [
+        "exact-head GitHub Actions",
+        "Git-bound preview and authenticated readback",
+        "managed recovery and production activation authority"
+      ],
+      "remaining_uncertainty": [
+        "Local strict parsing and build evidence do not prove an independent consumer or deployed transport boundary.",
+        "The CRM activation cone is a request with unknown ownership and recovery fields until named humans return signed evidence.",
+        "All feature flags are false and this candidate is not integrated, G1, production-ready or authorized for effects."
+      ],
+      "next_proof_needed": [
+        "push the final evidence head and obtain exact-head automated CI",
+        "have L2 and L3 pin the immutable SDK implementation and return independent compatibility evidence",
+        "keep activation blocked until the inventory, managed recovery, authenticated preview and controller gates pass"
+      ]
     }
   ]
 }

@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "LuzioneCoreSultanRuntimeMapping/v1",
+  "controllerAuthority": "ebf74443e7f83e5eb859570142b57ce23d9fa404",
+  "consumerRepository": "CIBOTFLOW/Sultan-OS",
+  "consumerFinalSha": "e2b95ab71e5a604dcdd8ff6ab75b50a32ba4d838",
+  "consumerRegistry": {
+    "schemaVersion": "sultan.crm-capability-registry.v1",
+    "rawSha256": "7066ae822831fe008527a1beafeba1105ab736860f2634116f40d76cd79efccc",
+    "semanticSha256": "42d0834b8bf55b2f213d73fd1788519cbe9a7e776fbe0cd01f741f14810336b7",
+    "gitBlob": "73a961ea725b64fa89234dbfe078aff698d29be1"
+  },
+  "sdkBundle": "LuzioneCoreContracts/v1",
+  "sdkManifestCandidateSha": "828de754e4104cd860e3f47adbf2e84c576e5c10",
+  "bindingState": "FROZEN_L1_G0_IMPLEMENTATION",
+  "effectAuthority": "NO_EFFECT",
+  "capabilityMappings": [
+    {
+      "capabilityId": "crm.growth-research",
+      "requiredContracts": ["SultanOperation/v1", "SultanReceipt/v1", "SultanReadback/v1"],
+      "allowedUse": "READ_AND_DRAFT_ONLY"
+    },
+    {
+      "capabilityId": "crm.opportunity-assistance",
+      "requiredContracts": ["SultanOperation/v1", "SultanReceipt/v1", "SultanReadback/v1"],
+      "allowedUse": "READ_AND_DRAFT_ONLY"
+    },
+    {
+      "capabilityId": "crm.proposal-preparation",
+      "requiredContracts": ["SultanOperation/v1", "SultanReceipt/v1", "SultanReadback/v1"],
+      "allowedUse": "READ_AND_DRAFT_ONLY"
+    },
+    {
+      "capabilityId": "crm.procurement-coordination",
+      "requiredContracts": ["SultanOperation/v1", "SultanReceipt/v1", "SultanReadback/v1"],
+      "allowedUse": "READ_AND_DRAFT_ONLY"
+    },
+    {
+      "capabilityId": "crm.onboarding-assistance",
+      "requiredContracts": ["SultanOperation/v1", "SultanReceipt/v1", "SultanReadback/v1", "TenantBlueprint/v1", "SetupMandate/v1", "ImportBatch/v1", "ImportReceipt/v1", "ConnectorBinding/v1", "SyncReceipt/v1"],
+      "allowedUse": "READ_DRAFT_AND_NO_EFFECT_VALIDATION_ONLY"
+    },
+    {
+      "capabilityId": "crm.support_investigation",
+      "requiredContracts": ["SultanOperation/v1", "SultanReceipt/v1", "SultanReadback/v1", "SupportCase/v1", "SupportAction/v1", "CustomerReply/v1"],
+      "allowedUse": "READ_AND_DRAFT_ONLY"
+    }
+  ],
+  "prohibited": ["CRM_RECORD_WRITE", "PROVIDER_DISPATCH", "CREDENTIAL_ACCESS", "FEP_CAPABILITY", "PRODUCTION_ACTIVATION"]
+}
