@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/connector-revocation/connector-revocation-receipt-v1.schema.json",
+  "title": "ConnectorRevocationReceipt/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["acknowledgement", "actor", "binding", "commandReceiptRef", "containmentKillVersion", "contractVersion", "localCredentialDisposition", "normalKillVersion", "operation", "priorReceiptId", "receiptDigest", "receiptId", "reconciliation", "recordedAt", "recoveryState", "remoteFinality", "tenantId", "zeroEffect"],
+  "properties": {
+    "acknowledgement": {
+      "type": "object", "additionalProperties": false,
+      "required": ["providerAcknowledgementRef", "sourceReadbackRef"],
+      "properties": { "providerAcknowledgementRef": { "type": ["string", "null"] }, "sourceReadbackRef": { "type": ["string", "null"] } }
+    },
+    "actor": {
+      "type": "object", "additionalProperties": false,
+      "required": ["humanActorId", "humanAuthenticationRef", "requestActorClass", "requestActorId"],
+      "properties": { "humanActorId": { "type": "string" }, "humanAuthenticationRef": { "type": "string" }, "requestActorClass": { "const": "service" }, "requestActorId": { "type": "string" } }
+    },
+    "binding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["bindingContractVersion", "bindingId", "connectorProvider", "credentialHandle", "providerAccountRef"],
+      "properties": {
+        "bindingContractVersion": { "const": "ConnectorBinding/v1" },
+        "bindingId": { "type": "string", "format": "uuid" },
+        "connectorProvider": { "enum": ["GOOGLE_WORKSPACE", "MICROSOFT_365", "QUICKBOOKS_ONLINE"] },
+        "credentialHandle": {
+          "type": "object", "additionalProperties": false,
+          "required": ["contractVersion", "reference", "version"],
+          "properties": { "contractVersion": { "const": "ConnectorCredentialHandle/v1" }, "reference": { "type": "string", "pattern": "^secret-ref:" }, "version": { "type": "string" } }
+        },
+        "providerAccountRef": { "type": "string" }
+      }
+    },
+    "commandReceiptRef": { "type": "string" },
+    "containmentKillVersion": { "type": "string", "pattern": "^kill:[a-f0-9]{64}$" },
+    "contractVersion": { "const": "ConnectorRevocationReceipt/v1" },
+    "localCredentialDisposition": { "enum": ["ERASURE_AUTHORIZED_NO_EFFECT", "RETAINED"] },
+    "normalKillVersion": { "type": "string", "pattern": "^kill:[a-f0-9]{64}$" },
+    "operation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["key", "kind", "payloadDigest"],
+      "properties": { "key": { "type": "string" }, "kind": { "enum": ["AUTHORIZE_FORWARD_RECOVERY_ERASURE", "REQUEST_REMOTE_REVOCATION"] }, "payloadDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" } }
+    },
+    "priorReceiptId": { "type": ["string", "null"], "pattern": "^connector-revocation-receipt:[a-f0-9]{64}$" },
+    "receiptDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "receiptId": { "type": "string", "pattern": "^connector-revocation-receipt:[a-f0-9]{64}$" },
+    "reconciliation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["reconciliationRef", "result"],
+      "properties": { "reconciliationRef": { "type": ["string", "null"] }, "result": { "enum": ["AMBIGUOUS", "MATCHED", "NOT_ATTEMPTED", "NOT_FOUND", "PENDING", "SOURCE_UNAVAILABLE", "VERSION_MISMATCH"] } }
+    },
+    "recordedAt": { "type": "string", "format": "date-time" },
+    "recoveryState": { "enum": ["FORWARD_RECOVERY_AUTHORIZED_NO_EFFECT", "NORMAL"] },
+    "remoteFinality": { "enum": ["ACKNOWLEDGED", "AMBIGUITY_EXHAUSTED", "BLOCKED", "REMOTE_REVOKE_FAILED", "REQUESTED", "RECONCILING", "REVOKED", "SOURCE_UNAVAILABLE", "VERSION_MISMATCH"] },
+    "tenantId": { "type": "string" },
+    "zeroEffect": { "const": true }
+  }
+}

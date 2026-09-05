@@ -68,6 +68,13 @@ export function connectorSyncValidationEnabledForTenant(tenantId: string) {
     && providerAdapterEnabled({ destination: "sandbox.echo", mode: "SANDBOX", tenantId });
 }
 
+export function connectorRevocationEnabledForTenant(tenantId: string) {
+  return runtimeConfig().mutationsEnabled
+    && process.env.LUZIONE_API_CONNECTOR_REVOCATIONS_ENABLED === "true"
+    && allowlist("LUZIONE_API_CONNECTOR_REVOCATION_TENANTS").has(tenantId)
+    && providerAdapterEnabled({ destination: "sandbox.connector-revocation", mode: "SANDBOX", tenantId });
+}
+
 export function providerAdapterEnabled(input: { destination: string; mode: "LIVE" | "SANDBOX"; tenantId: string }) {
   const prefix = input.mode === "LIVE" ? "LUZIONE_API_PROVIDER_LIVE" : "LUZIONE_API_PROVIDER_SANDBOX";
   return runtimeConfig().mutationsEnabled
