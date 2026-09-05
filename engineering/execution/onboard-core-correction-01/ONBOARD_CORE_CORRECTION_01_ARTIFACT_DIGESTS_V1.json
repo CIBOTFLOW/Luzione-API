@@ -35,8 +35,8 @@
     {"path":"src/modules/onboard-core/tests/blueprint-mandate.test.ts","digest":"2ee4eb929e9373350d8f4f228cd8f38bddbd266481b519cc5f4bcf8e85a0996c"},
     {"path":"src/modules/onboard-core/tests/import-dry-run.test.ts","digest":"c02ba381b269033fd92d6acbbbfa78efcefab9ee174e9846f97152f0f72a7fbf"},
     {"path":"src/modules/onboard-core/tests/connector-validation.test.ts","digest":"56a0818a0468f59ec888c28bd480a8b60aa7bd31f46527d7a67c671a3ae021c8"},
-    {"path":"engineering/execution/LUZIONE_API_TOPOLOGY_INVENTORY_V1.json","digest":"d9d30e780abb43927257a03e259fe5d1fa250f120242300b72952f6a02bfc7cc"},
-    {"path":"engineering/execution/core-02/CORE_02_ARTIFACT_DIGESTS_V1.json","digest":"3a18dd993335aebf8bb349ef6edc6f48a48ee5b50591577ba30dae2fb38a081a"}
+    {"path":"engineering/execution/LUZIONE_API_TOPOLOGY_INVENTORY_V1.json","digest":"299ffca3f9b6a0c2b714036deede82bb5d128c9d8a6f0a6a4326cd5275c6bfe1"},
+    {"path":"engineering/execution/core-02/CORE_02_ARTIFACT_DIGESTS_V1.json","digest":"e9ed072226a37c09afcb0faeea8d08d81b93641fe504c62e510122cce4c5b22a"}
   ],
   "frozenTrees": {
     "contracts/core": "d57ccc4cccd97b37acd1a1575b1e07ede5787349",

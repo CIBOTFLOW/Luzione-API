@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "artifact_id": "SEED_PROJECT_PUBLICATION_A2_ARTIFACT_DIGESTS_V1",
+  "project_id": "SEED-PROJECT-PUBLICATION-A2",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "producer_contract_sha": "a654c1d26dd6f93be15fa02cbd6aba344f7acb7a",
+  "algorithm": "sha256",
+  "artifacts": [
+    {
+      "path": "engineering/execution/seed-project-publication-a2/SEED_PROJECT_PUBLICATION_A2_TOPOLOGY_DELTA_V1.json",
+      "digest": "328c47e6c38e535f8f9975a9e3f6882ace017e6341295bf5191c31a5b4ba25b6"
+    }
+  ],
+  "historical_evidence_disposition": "The V1 topology and CORE-02/onboarding digest manifests retain their exact base bytes. Current exhaustive topology proof composes this A2-owned delta without retroactively resealing historical bundles."
+}

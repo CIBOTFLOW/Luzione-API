@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "artifact_id": "SEED_PROJECT_PUBLICATION_A2_TOPOLOGY_DELTA_V1",
+  "project_id": "SEED-PROJECT-PUBLICATION-A2",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "base_topology": "engineering/execution/LUZIONE_API_TOPOLOGY_INVENTORY_V1.json",
+  "producer_contract_sha": "a654c1d26dd6f93be15fa02cbd6aba344f7acb7a",
+  "effect_authority": "NO_EFFECT",
+  "http_surfaces": [
+    {"route_id":"project-list-read","method":"GET","path":"/api/v1/projects","source_path":"src/app/api/v1/projects/route.ts","authentication":"credential-bound same-tenant actor with project.read capability","canonical_readback":"tenant-scoped Project/v1 rows joined to exact P110 owner-commit receipts","effect":"NO_EFFECT"},
+    {"route_id":"project-create-from-opportunity","method":"POST","path":"/api/v1/projects","source_path":"src/app/api/v1/projects/route.ts","authentication":"credential-bound same-tenant actor with project.command capability plus exact default-off tenant admission","canonical_readback":"atomic P110 receipt plus Project/v1 readback from exact canonical Opportunity version","effect":"DEFAULT_OFF_NO_EFFECT_INTERNAL_MUTATION","external_effect_authorized":false},
+    {"route_id":"project-graph-read","method":"GET","path":"/api/v1/projects/{projectId}","source_path":"src/app/api/v1/projects/[projectId]/route.ts","authentication":"credential-bound same-tenant actor with project.read capability","canonical_readback":"ProjectSpecificationScheduleReadModel/v1 with explicit deployment identity","effect":"NO_EFFECT"},
+    {"route_id":"project-specification-schedule-read","method":"GET","path":"/api/v1/projects/{projectId}/specification-schedule","source_path":"src/app/api/v1/projects/[projectId]/specification-schedule/route.ts","authentication":"credential-bound same-tenant actor with specification_schedule.read capability","canonical_readback":"ProjectSpecificationScheduleReadModel/v1 with Project, Spaces, Packages, active Specifications, Lines, pending revisions and TimelineEvent/v1","effect":"NO_EFFECT"},
+    {"route_id":"project-package-read","method":"GET","path":"/api/v1/projects/{projectId}/project-packages","source_path":"src/app/api/v1/projects/[projectId]/project-packages/route.ts","authentication":"credential-bound same-tenant actor with project.read capability","canonical_readback":"immutable ProjectPackage/v1 joined to exact P110 owner-commit receipt","effect":"NO_EFFECT"},
+    {"route_id":"project-package-publish","method":"POST","path":"/api/v1/projects/{projectId}/project-packages","source_path":"src/app/api/v1/projects/[projectId]/project-packages/route.ts","authentication":"credential-bound same-tenant actor with project_package.publish capability plus exact default-off tenant admission","canonical_readback":"atomic P110 receipt and immutable ProjectPackage/v1 with stable Space, Specification and Line IDs","effect":"DEFAULT_OFF_NO_EFFECT_INTERNAL_MUTATION","external_effect_authorized":false},
+    {"route_id":"specification-revision-propose","method":"POST","path":"/api/v1/projects/{projectId}/specification-revisions","source_path":"src/app/api/v1/projects/[projectId]/specification-revisions/route.ts","authentication":"credential-bound same-tenant actor with specification.revision.propose capability plus exact default-off tenant admission","canonical_readback":"atomic P110 receipt and pending Specification/v1 revision with deterministic before/after diff; active procurement remains unchanged","effect":"DEFAULT_OFF_NO_EFFECT_INTERNAL_MUTATION","external_effect_authorized":false}
+  ],
+  "runtime_configuration_keys": [
+    "LUZIONE_API_SEED_PROJECT_PUBLICATION_ENABLED",
+    "LUZIONE_API_SEED_PROJECT_PUBLICATION_TENANTS"
+  ]
+}

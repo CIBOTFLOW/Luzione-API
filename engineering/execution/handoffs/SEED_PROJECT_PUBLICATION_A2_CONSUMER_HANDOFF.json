@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "handoff_id": "SEED_PROJECT_PUBLICATION_A2_CONSUMER_HANDOFF",
+  "project_id": "SEED-PROJECT-PUBLICATION-A2",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_branch": "codex/seed-project-publication-a2",
+  "base_sha": "e14b405d58a293c002f5676984a95e55372b3bd2",
+  "producer_contract_sha": "a654c1d26dd6f93be15fa02cbd6aba344f7acb7a",
+  "exact_candidate_sha": "a654c1d26dd6f93be15fa02cbd6aba344f7acb7a",
+  "engineering_state": "BOUNDED_PASS",
+  "release_evidence": "LOCAL_PROVEN",
+  "effect_authority": "NO_EFFECT",
+  "finality": "BOUNDED_CLAIM",
+  "runtime_activation": "DEFAULT_OFF_NOT_DEPLOYED",
+  "contracts": {
+    "command": "SeedProjectPublicationCommand/v1",
+    "schedule": "ProjectSpecificationScheduleReadModel/v1",
+    "response_envelope": "api-http-response/1.0",
+    "core_seed_product_base": "LuzioneSeedProductContracts/v1"
+  },
+  "routes": [
+    {"method":"GET","path":"/api/v1/projects","result":"{ projects: Project/v1[] }"},
+    {"method":"POST","path":"/api/v1/projects","result":"receipt + Project/v1 readback"},
+    {"method":"GET","path":"/api/v1/projects/:projectId","result":"ProjectSpecificationScheduleReadModel/v1"},
+    {"method":"GET","path":"/api/v1/projects/:projectId/specification-schedule","result":"ProjectSpecificationScheduleReadModel/v1"},
+    {"method":"GET","path":"/api/v1/projects/:projectId/project-packages?packageId=...","result":"ProjectPackage/v1"},
+    {"method":"POST","path":"/api/v1/projects/:projectId/project-packages","result":"receipt + canonical IDs + ProjectPackage/v1 readback"},
+    {"method":"POST","path":"/api/v1/projects/:projectId/specification-revisions","result":"receipt + canonical IDs + pending revision diff/readback"}
+  ],
+  "success_envelope_fields": [
+    "ok",
+    "responseContractVersion",
+    "result",
+    "requestId",
+    "correlationId",
+    "requestIdentityContractVersion",
+    "traceId"
+  ],
+  "artifacts": {
+    "working_contract": "architecture/production-convergence/SEED_PROJECT_PUBLICATION_A2_WORKING_CONTRACT.md",
+    "commands": "src/modules/seed-project-publication/contracts.ts",
+    "read_model_parser": "src/modules/seed-project-publication/readModel.ts",
+    "consumer_fixtures": "src/modules/seed-project-publication/fixtures.ts",
+    "store": "src/modules/seed-project-publication/store.ts",
+    "migration": "supabase/migrations/20260905083212_seed_project_publication_a2.sql",
+    "rollback_guard": "scripts/validation/rollback-seed-project-publication-a2.sql",
+    "disposable_proof": "scripts/validation/run-seed-project-publication-a2-proof.sh"
+    ,"topology_delta": "engineering/execution/seed-project-publication-a2/SEED_PROJECT_PUBLICATION_A2_TOPOLOGY_DELTA_V1.json"
+    ,"artifact_digests": "engineering/execution/seed-project-publication-a2/SEED_PROJECT_PUBLICATION_A2_ARTIFACT_DIGESTS_V1.json"
+  },
+  "consumer_actions": [
+    {
+      "repository": "CIBOTFLOW/Luzione-UI",
+      "action": "Replace the temporary local schedule migration/repository writer and top-level schedule/projects envelope with the exact API routes, apiResponse envelope and fixtures pinned to producer contract SHA a654c1d26dd6f93be15fa02cbd6aba344f7acb7a."
+    },
+    {
+      "repository": "CIBOTFLOW/Luzione-Room-Planner-MVP",
+      "action": "Retain mutable draft ownership, construct the strict body-only ProjectPackage publication or Specification revision command, and do not supply tenant, actor or authority. Keep dispatch disabled until controller acceptance."
+    }
+  ],
+  "invariants": [
+    "CRM Opportunity is referenced by exact tenant-bound ID/version and is not copied into a second canonical Opportunity table.",
+    "All body parsers reject surplus tenant, actor and authority claims; authenticated service identity supplies those values.",
+    "Project Package publication activates immutable version-1 Space/Specification/Line facts; later Planner changes append pending revisions without overwriting procurement.",
+    "A future additive disposition/activation contract is required to accept/reject a revision and append a new canonical Specification version.",
+    "Deferred foreign keys bind every owner insert to its P110 receipt at transaction commit.",
+    "Every accepted command appends exactly one receipt, event and NO_EFFECT outbox message; replay returns the same receipt.",
+    "The rollback script refuses destructive rollback after any owner row or matching P110 receipt exists.",
+    "Schedule metadata keeps producer contract SHA separate from runtime deploy/release SHA."
+    ,"Historical V1 topology and CORE-02/onboarding digest manifests remain byte-identical to the base; A2 current-tree topology is an independently digested additive delta."
+  ],
+  "local_verification": {
+    "supabase_cli_help": "PASS_2.116.0",
+    "supabase_migration_new_help": "PASS_2.116.0",
+    "migration_created_by_cli": "PASS_20260905083212_seed_project_publication_a2.sql",
+    "typecheck": "PASS",
+    "lint": "PASS_ZERO_WARNINGS",
+    "focused_tests": "PASS_9_OF_9",
+    "full_tests": "PASS_522_OF_522",
+    "disposable_postgres": "PASS_RLS_ROLLBACK_REAPPLY_ATOMICITY_REPLAY_STALE_CONCURRENCY_READBACK",
+    "production_build": "PASS_NEXTJS_16_3_4_WEBPACK"
+  },
+  "untested_boundaries": [
+    "independent UI and Room Planner exact-SHA consumption",
+    "managed Supabase migration, backup restore and forward recovery",
+    "authenticated preview and production deployment",
+    "revision disposition/activation, any provider delivery and every live effect"
+  ],
+  "next_proof_needed": [
+    "Controller accepts an exact API producer SHA and independently authored consumer fixtures before any cross-repository activation.",
+    "UI removes its competing writer and proves authenticated list/schedule/revision proxy behavior against this contract.",
+    "Room Planner proves strict package hashing, exact replay/conflict behavior and default-off publication against this contract.",
+    "A future additive slice defines human-governed revision disposition and canonical version advancement."
+  ]
+}

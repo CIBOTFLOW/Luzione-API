@@ -21,7 +21,7 @@ import {
 import type { DeterministicDiffEntry } from "@/modules/seed-project-publication/model";
 
 export const PROJECT_SPECIFICATION_SCHEDULE_READ_MODEL_VERSION = "ProjectSpecificationScheduleReadModel/v1";
-export const PROJECT_SPECIFICATION_SCHEDULE_SEED_CONTRACT_SHA = "e14b405d58a293c002f5676984a95e55372b3bd2";
+export const PROJECT_SPECIFICATION_SCHEDULE_SEED_CONTRACT_SHA = "a654c1d26dd6f93be15fa02cbd6aba344f7acb7a";
 export const API_HTTP_RESPONSE_VERSION = "api-http-response/1.0";
 
 export const SEED_PROJECT_PUBLICATION_HTTP_ROUTES = Object.freeze({

@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
@@ -277,4 +278,18 @@ test("all project surfaces are protected, tenant-derived, default-off and expose
   for (const path of paths.filter((path) => path.endsWith("projects/route.ts") || /project-packages|specification-revisions/.test(path))) {
     assert.match(readFileSync(path, "utf8"), /seedProjectPublicationEnabledForTenant/);
   }
+});
+
+test("A2 topology is an independently digested delta and historical evidence bytes remain pinned", () => {
+  const deltaPath = "engineering/execution/seed-project-publication-a2/SEED_PROJECT_PUBLICATION_A2_TOPOLOGY_DELTA_V1.json";
+  const digestManifest = JSON.parse(readFileSync("engineering/execution/seed-project-publication-a2/SEED_PROJECT_PUBLICATION_A2_ARTIFACT_DIGESTS_V1.json", "utf8")) as {
+    artifacts: Array<{ digest: string; path: string }>;
+    historical_evidence_disposition: string;
+    producer_contract_sha: string;
+  };
+  assert.equal(digestManifest.producer_contract_sha, "a654c1d26dd6f93be15fa02cbd6aba344f7acb7a");
+  assert.equal(digestManifest.artifacts[0].path, deltaPath);
+  assert.equal(createHash("sha256").update(readFileSync(deltaPath)).digest("hex"), digestManifest.artifacts[0].digest);
+  assert.match(digestManifest.historical_evidence_disposition, /retain their exact base bytes/);
+  assert.equal(createHash("sha256").update(readFileSync("engineering/execution/LUZIONE_API_TOPOLOGY_INVENTORY_V1.json")).digest("hex"), "299ffca3f9b6a0c2b714036deede82bb5d128c9d8a6f0a6a4326cd5275c6bfe1");
 });

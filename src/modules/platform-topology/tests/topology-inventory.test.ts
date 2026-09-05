@@ -31,7 +31,16 @@ type Inventory = {
 };
 
 const inventoryPath = "engineering/execution/LUZIONE_API_TOPOLOGY_INVENTORY_V1.json";
-const inventory = JSON.parse(readFileSync(inventoryPath, "utf8")) as Inventory;
+const topologyDeltaPaths = [
+  "engineering/execution/seed-project-publication-a2/SEED_PROJECT_PUBLICATION_A2_TOPOLOGY_DELTA_V1.json",
+] as const;
+const baseInventory = JSON.parse(readFileSync(inventoryPath, "utf8")) as Inventory;
+const topologyDeltas = topologyDeltaPaths.map((path) => JSON.parse(readFileSync(path, "utf8")) as Pick<Inventory, "http_surfaces" | "runtime_configuration_keys">);
+const inventory: Inventory = {
+  ...baseInventory,
+  http_surfaces: [...baseInventory.http_surfaces, ...topologyDeltas.flatMap((delta) => delta.http_surfaces)],
+  runtime_configuration_keys: [...baseInventory.runtime_configuration_keys, ...topologyDeltas.flatMap((delta) => delta.runtime_configuration_keys)],
+};
 
 function filesBelow(directory: string): string[] {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
