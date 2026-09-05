@@ -102,7 +102,7 @@
       "platform_project": "LUZIONE_CRM_OS_OPERATIONS_EVIDENCE_ASSURANCE",
       "title": "Source-Bound Human Authority and Verified Capability Recovery",
       "priority": 534,
-      "status": "IN_PROGRESS",
+      "status": "COMPLETE",
       "depends_on": ["OPS-CONTRACTS-CORRECTION-01", "CONNECTOR-REVOCATION-L1-CORRECTION-01"],
       "starting_sha": "ef4d69145192da627184c73ac170a623ab6dc72e",
       "controller_authority": "CIBOTFLOW/Luzione-platform-program@65dcf041236133af9c3c3cdf2a7d27789b8ee9b2",
@@ -112,7 +112,11 @@
       "core_outcome": "Publish an additive v3 operations ledger whose human owners, G2 grants and capability resets are bound to exact canonical source readback while v1/v2 remain prohibited for decision-bearing use.",
       "published_artifacts": ["source-bound authority contracts", "incident recovery and deterministic epoch reset contracts", "strict SDK/schema parity", "L2/L3 ABSENT-capable source packets"],
       "required_evidence": ["identity and role/function substitution denial", "agent and cross-tenant denial", "stale/revoked/superseded membership denial", "one-scope grant denial", "resolved-verified incident and recovery binding", "continuous epoch lineage", "zero decision credit", "full local and exact-SHA CI"],
-      "irreversible_effects": []
+      "irreversible_effects": [],
+      "completion_evidence_ref": "OPS_CONTRACTS_CORRECTION_02_G0_20260905",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM"
     },
     {
       "project_id": "EFFECT-ADMISSION-L1",

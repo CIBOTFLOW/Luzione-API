@@ -3,7 +3,7 @@
   "consumer": "CIBOTFLOW/Luzione-UI",
   "consumerLane": "L2",
   "producerRepository": "CIBOTFLOW/Luzione-API",
-  "producerCandidateSha": "0000000000000000000000000000000000000000",
+  "producerCandidateSha": "38fea3da919b7632607dbf2439696747cec5217b",
   "ledgerVersion": "LuzioneOperationsEvidenceLedger/v3",
   "sourceStatus": "ABSENT",
   "mayMintAuthority": false,

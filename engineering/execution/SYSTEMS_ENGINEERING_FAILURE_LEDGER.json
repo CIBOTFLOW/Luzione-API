@@ -1859,6 +1859,28 @@
       "resolution_ref": "commit:9edbedfa37020b3710090abe57a899cf0bc880eb",
       "remaining_uncertainty": [],
       "next_action": "Register future suites in the closed taxonomy before the first complete gate."
+    },
+    {
+      "failure_id": "OPS_CONTRACTS_CORRECTION_02_TYPE_EXPORT_20260905",
+      "project_id": "OPS-CONTRACTS-CORRECTION-02",
+      "observed_at": "2026-09-05T08:35:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "38fea3da919b7632607dbf2439696747cec5217b",
+      "environment": "local",
+      "layer": "typescript-contract-export",
+      "symptom": "The first typecheck rejected a v3 rule import because G2Effect was imported internally from the frozen v2 contract but was not re-exported from the additive v3 contract module.",
+      "expected": "The v3 rule source can consume the frozen G2Effect union without changing v2 bytes or duplicating its meaning.",
+      "actual": "No semantic test, route, database, credential, provider or production boundary ran on the failing check.",
+      "classification": {"domain":"PLATFORM","class":"INVALID","retry":"NEVER","severity":"INFO"},
+      "evidence_refs": ["src/modules/operations-evidence-contracts/v3/contracts.ts", "npm-run:typecheck"],
+      "repair_attempts": ["Re-exported the frozen G2Effect type from the additive v3 facade without modifying v2.", "Reran typecheck, focused, combined, lint, full suite and build successfully."],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "commit:38fea3da919b7632607dbf2439696747cec5217b",
+      "remaining_uncertainty": [],
+      "next_action": "Keep additive version facades explicit about reused frozen type exports."
     }
   ]
 }

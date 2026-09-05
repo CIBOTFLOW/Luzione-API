@@ -2648,6 +2648,59 @@
         "This candidate is not integrated, G1 or production-ready."
       ],
       "next_proof_needed": ["L5 independently assures the exact v2 implementation/final pair and its fail-closed owner-adapter boundary before L2 may pin it."]
+    },
+    {
+      "proof_id": "OPS_CONTRACTS_CORRECTION_02_G0_20260905",
+      "project_id": "OPS-CONTRACTS-CORRECTION-02",
+      "recorded_at": "2026-09-05T08:52:13Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "38fea3da919b7632607dbf2439696747cec5217b",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "OPS-CONTRACTS-CORRECTION-02 publishes additive v3 source-bound human authority, one-scope G2 approval, resolved-verified incident recovery and deterministic continuous epoch-reset contracts while v1/v2 remain structural-only and every proof-day, G2 and production decision credit is exactly zero.",
+      "exercised_boundaries": [
+        "HumanAuthoritySourceBinding/v1 binds tenant, genuine-human issuer subject, active membership, canonical role/function, exact source object/version/hash/readback, validity, revocation and supersession state.",
+        "G2EffectAuthorityGrant/v2 binds one exact action/stage/effect to one append-only source approval receipt and rejects bundled, mismatched, reused, cross-tenant or expired authority.",
+        "IncidentRecoverySourceBinding/v1 requires an acknowledged RESOLVED_VERIFIED incident, exact source readback, incident-bound VERIFIED recovery and strict time ordering.",
+        "CapabilityEpochReset/v2 is derived from the exact recovery binding and server anchor and rejects gap, fork, cycle, orphan and reused successors.",
+        "All eleven OPS-CONTRACTS-ASSURE-02 counterexamples denied, including owner reseal, Founder/Irem/Mallory substitution, valid-enum relabel and agent/service/workload/dev/test-as-human.",
+        "Schema/parser required field sets and exact versions matched; frozen v2 validation remained structural and v1/v2 decision-bearing use remained prohibited.",
+        "L2/L3 source packets were explicit ABSENT/disconnected and the SDK returned exactly zero proof-day, G2 and production credit even for synthetic valid structures.",
+        "Focused v3 passed 13/13, v1+v2+v3 passed 49/49, taxonomy 4/4, compliance 7/7, typecheck, zero-warning lint, full 446/446 and Next.js 16.3.4 webpack build passed.",
+        "Frozen Core, onboarding, effect-admission, connector-revocation and operations v1/v2 tree IDs remained exact; no route, database object, migration or runtime effect was added."
+      ],
+      "untested_boundaries": [
+        "canonical source-owner integration for active membership, per-effect G2 approval and incident-bound recovery",
+        "independent OPS-CONTRACTS-ASSURE-03 and exact L2/L3 consumer pins",
+        "exact-final automated CI and any authenticated Git-bound application readback",
+        "hosted persistence, proof instrumentation, production monitoring or proof window",
+        "G1, G2, merge, default branch, deployment, activation, migration, rollback or production readiness"
+      ],
+      "evidence_refs": [
+        "commit:38fea3da919b7632607dbf2439696747cec5217b",
+        "contracts/operations-evidence/luzione-operations-evidence-ledger-v3.manifest.json",
+        "contracts/operations-evidence/v3/luzione-operations-evidence-ledger-v3.schema.json",
+        "contracts/operations-evidence/v3/ops-contracts-correction-02-adverse-fixtures.json",
+        "contracts/operations-evidence/consumer-mappings/l2-ops-ledger-v3.json",
+        "contracts/operations-evidence/consumer-mappings/l3-ops-ledger-v3.json",
+        "engineering/execution/ops-contracts-correction-02/OPS_CONTRACTS_CORRECTION_02_ARTIFACT_DIGESTS_V1.json",
+        "engineering/execution/ops-contracts-correction-02/OPS_CONTRACTS_CORRECTION_02_ASSURANCE_MATRIX_V1.json",
+        "engineering/execution/handoffs/OPS_CONTRACTS_CORRECTION_02_G0_CONTROLLER_HANDOFF.json"
+      ],
+      "failure_refs": ["OPS_CONTRACTS_CORRECTION_02_TYPE_EXPORT_20260905"],
+      "cross_repo_handoffs": [
+        "L2 may pin v3 and return an exact canonical membership/G2 source mapping or explicit ABSENT, but cannot mint authority, owner truth, proof credit, stage or finality.",
+        "L3 may pin v3 and return exact incident/recovery sources or explicit ABSENT; agents, services and workloads cannot become genuine-human issuers or decision owners."
+      ],
+      "deferred_external_infra": ["exact-head CI", "independent assurance and consumers", "canonical authority/recovery sources", "every production and G2 boundary"],
+      "remaining_uncertainty": [
+        "No canonical source tuple exists for the synthetic positive fixtures; those fixtures prove parsing only.",
+        "Producer-local tests cannot clear decision-bearing use or independent source ownership.",
+        "The v3 candidate is not integrated, G1 or production-ready."
+      ],
+      "next_proof_needed": ["L5 runs OPS-CONTRACTS-ASSURE-03 against the exact implementation/final pair while L2/L3 return exact canonical source pins or explicit ABSENT; decision-bearing use remains prohibited until both pass."]
     }
   ]
 }

@@ -10,6 +10,9 @@
   "effectAuthority": "NO_EFFECT",
   "productionCredit": 0,
   "writer": "L1",
-  "writerLock": "ACQUIRED",
-  "claimedAt": "2026-09-05T07:05:00.000Z"
+  "writerLock": "RELEASED",
+  "claimedAt": "2026-09-05T07:05:00.000Z",
+  "implementationSha": "38fea3da919b7632607dbf2439696747cec5217b",
+  "finalSha": "PEEL_DETACHED_ANNOTATED_TAG_OPS_CONTRACTS_CORRECTION_02_EXACT_FINAL",
+  "releasedAt": "2026-09-05T08:52:13.000Z"
 }
