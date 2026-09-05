@@ -854,6 +854,45 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
   },
   {
     compatibility: "EXACT_VERSION",
+    consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS", "CIBOTFLOW/Supplier-Designer-Portal"],
+    contractId: "seed-supplier-profile-command-and-read-model",
+    currentRuntime: true,
+    maturity: "IMPLEMENTED",
+    name: "Account-backed SupplierProfile eligibility command, exact readback and Timeline boundary",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: ["controller:SEED-SUPPLIER-IDENTITY-A2S:G0_CANDIDATE"],
+    sourcePaths: [
+      "src/modules/seed-supplier-identity/contracts.ts",
+      "src/modules/seed-supplier-identity/store.ts",
+      "src/modules/seed-supplier-identity/readModel.ts",
+      "src/modules/seed-supplier-identity/fixtures.ts",
+      "src/app/api/v1/supplier-profiles/commands/route.ts",
+      "src/app/api/v1/supplier-profiles/[supplierProfileId]/route.ts",
+      "src/app/api/v1/accounts/[accountId]/supplier-profile/route.ts",
+      "supabase/migrations/20260905171927_seed_supplier_identity_a2s.sql"
+    ],
+    version: "SupplierProfile/v1",
+  },
+  {
+    compatibility: "EXACT_VERSION",
+    consumers: ["CIBOTFLOW/Supplier-Designer-Portal"],
+    contractId: "portal-organization-account-access-binding",
+    currentRuntime: true,
+    maturity: "IMPLEMENTED",
+    name: "Human-approved Portal organization, membership and object-grant projection onto a canonical Account",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: ["controller:SEED-SUPPLIER-IDENTITY-A2S:G0_CANDIDATE", "controller:PORTAL_CREDENTIAL_MAPPING:BLOCKED_DEPENDENCY"],
+    sourcePaths: [
+      "src/modules/seed-supplier-identity/portalAccessContracts.ts",
+      "src/modules/seed-supplier-identity/portalAccessBinding.ts",
+      "src/app/api/v1/supplier-portal-account-bindings/commands/route.ts",
+      "src/app/api/v1/supplier-portal-account-bindings/[bindingId]/route.ts",
+      "supabase/migrations/20260905171927_seed_supplier_identity_a2s.sql"
+    ],
+    version: "PortalOrganizationAccountAccessBinding/v1",
+  },
+  {
+    compatibility: "EXACT_VERSION",
     consumers: [
       "CIBOTFLOW/Luzione-UI",
       "CIBOTFLOW/Sultan-OS",

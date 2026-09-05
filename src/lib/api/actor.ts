@@ -63,6 +63,8 @@ const PRODUCTION_VERCEL_CALLERS: readonly VercelCaller[] = Object.freeze([
       "security.rls.read",
       "specification.revision.propose",
       "specification_schedule.read",
+      "supplier.profile.command",
+      "supplier.profile.read",
       "sultan.canonical.readback.read",
       "sultan.outcome.observe",
     ]),

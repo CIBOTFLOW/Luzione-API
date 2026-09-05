@@ -87,6 +87,19 @@ export function seedProcurementEnabledForTenant(tenantId: string) {
     && allowlist("LUZIONE_API_SEED_PROCUREMENT_TENANTS").has(tenantId);
 }
 
+export function seedSupplierIdentityCommandsEnabledForTenant(tenantId: string) {
+  return runtimeConfig().mutationsEnabled
+    && process.env.LUZIONE_API_SEED_SUPPLIER_IDENTITY_COMMANDS_ENABLED === "true"
+    && allowlist("LUZIONE_API_SEED_SUPPLIER_IDENTITY_COMMAND_TENANTS").has(tenantId);
+}
+
+export function seedSupplierIdentityReadsEnabledForTenant(tenantId: string) {
+  const config = runtimeConfig();
+  return config.databaseConfigured
+    && process.env.LUZIONE_API_SEED_SUPPLIER_IDENTITY_READS_ENABLED === "true"
+    && allowlist("LUZIONE_API_SEED_SUPPLIER_IDENTITY_READ_TENANTS").has(tenantId);
+}
+
 export function providerAdapterEnabled(input: { destination: string; mode: "LIVE" | "SANDBOX"; tenantId: string }) {
   const prefix = input.mode === "LIVE" ? "LUZIONE_API_PROVIDER_LIVE" : "LUZIONE_API_PROVIDER_SANDBOX";
   return runtimeConfig().mutationsEnabled
