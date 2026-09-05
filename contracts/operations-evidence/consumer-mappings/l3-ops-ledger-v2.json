@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "L3OperationsEvidenceLedgerConsumerPacket/v2",
+  "producerRepository": "CIBOTFLOW/Luzione-API",
+  "producerBaseSha": "e6dce8c92f8cee9102af341615c0fa31345ca77d",
+  "producerImplementationSha": "ff44ffa5f78abe20402a31bc34af8d178d20bf26",
+  "ledgerVersion": "LuzioneOperationsEvidenceLedger/v2",
+  "baseRecordBundleVersion": "LuzioneOperationsEvidence/v1",
+  "assuranceFingerprintSha256": "80ae6a53c8ff28259389b1175f7029bf920013e03c7e5419b145c9c2a569decf",
+  "consumerRepository": "CIBOTFLOW/Sultan-OS",
+  "allowedUse": "LOCAL_ADAPTER_AND_SYNTHETIC_EVALUATION_ONLY_PENDING_OPS_CONTRACTS_ASSURE_02",
+  "requiredPaths": {
+    "schema": "contracts/operations-evidence/v2/luzione-operations-evidence-ledger-v2.schema.json",
+    "manifest": "contracts/operations-evidence/luzione-operations-evidence-ledger-v2.manifest.json",
+    "sdk": "src/modules/operations-evidence-contracts/v2/index.ts",
+    "rules": "src/modules/operations-evidence-contracts/v2/rules.ts",
+    "fixtures": "src/modules/operations-evidence-contracts/v2/fixtures.ts"
+  },
+  "consumerSequence": [
+    "pin exact implementation and final evidence SHAs plus raw artifact digests",
+    "strict-parse the manifest and full content-addressed v2 ledger",
+    "supply the exact explicit assessment clock and prior set after genesis",
+    "treat SDK-derived decisions as bounded read-only evaluation inputs",
+    "retain originating record evidence owner authority and epoch lineage unchanged"
+  ],
+  "prohibitions": [
+    "Sultan and every agent are prohibited accountable owners signers approvers or authority sources",
+    "do not create evidence refs authority grants owner contexts supersession finality proof credit or stage decisions",
+    "do not use v1 records directly for decision-bearing evaluation",
+    "do not activate tools providers credentials production writes migrations deployments or a proof window"
+  ],
+  "effectAuthority": "NO_EFFECT",
+  "productionReady": false,
+  "nextGate": "OPS-CONTRACTS-ASSURE-02"
+}

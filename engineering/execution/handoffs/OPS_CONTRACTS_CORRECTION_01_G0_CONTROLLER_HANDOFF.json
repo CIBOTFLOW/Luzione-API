@@ -1,0 +1,103 @@
+{
+  "schemaVersion": "OPS-CONTRACTS-CORRECTION-01/Controller-Handoff/v1",
+  "status": "BOUNDED_G0_NO_EFFECT_NOT_G1_NOT_INTEGRATED_NOT_PRODUCTION_READY",
+  "controllerAuthority": "CIBOTFLOW/Luzione-platform-program@b3977b5879557b0cabc1c18792cf9a868489f8e2",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "branch": "codex/ops-contracts-correction-01-g0-b3977b5",
+  "baseSha": "e6dce8c92f8cee9102af341615c0fa31345ca77d",
+  "implementationSha": "ff44ffa5f78abe20402a31bc34af8d178d20bf26",
+  "finalSha": "PEEL_DETACHED_ANNOTATED_TAG_OPS_CONTRACTS_CORRECTION_01_EXACT_FINAL",
+  "assuranceFingerprintSha256": "80ae6a53c8ff28259389b1175f7029bf920013e03c7e5419b145c9c2a569decf",
+  "versions": [
+    "LuzioneOperationsEvidenceLedger/v2",
+    "LuzioneOperationsEvidenceLedgerManifest/v2",
+    "CanonicalHumanOwnerContext/v1",
+    "G2EffectAuthorityGrant/v1",
+    "CapabilityEpochReset/v1",
+    "DailyMetricEvidenceBinding/v1"
+  ],
+  "changedPaths": [
+    "architecture/production-convergence/OPS_CONTRACTS_CORRECTION_01_WORKING_CONTRACT.md",
+    "contracts/operations-evidence/consumer-mappings/l2-ops-ledger-v2.json",
+    "contracts/operations-evidence/consumer-mappings/l3-ops-ledger-v2.json",
+    "contracts/operations-evidence/luzione-operations-evidence-ledger-v2.manifest.json",
+    "contracts/operations-evidence/v2/luzione-operations-evidence-ledger-v2.schema.json",
+    "engineering/execution/OPS_CONTRACTS_CORRECTION_01_G0_WRITER_CLAIM.json",
+    "engineering/execution/NEXT_WORK.json",
+    "engineering/execution/CURRENT_HANDOFF.json",
+    "engineering/execution/SYSTEMS_ENGINEERING_FAILURE_LEDGER.json",
+    "engineering/execution/SYSTEMS_ENGINEERING_PROOF_LEDGER.json",
+    "engineering/execution/handoffs/OPS_CONTRACTS_CORRECTION_01_G0_CONTROLLER_HANDOFF.json",
+    "engineering/execution/ops-contracts-correction-01/OPS_CONTRACTS_CORRECTION_01_ARTIFACT_DIGESTS_V1.json",
+    "engineering/execution/ops-contracts-correction-01/OPS_CONTRACTS_CORRECTION_01_ASSURANCE_MATRIX_V1.json",
+    "package.json",
+    "src/modules/operations-evidence-contracts/index.ts",
+    "src/modules/operations-evidence-contracts/tests/operations-evidence-ledger-v2.test.ts",
+    "src/modules/operations-evidence-contracts/v2/contracts.ts",
+    "src/modules/operations-evidence-contracts/v2/fixtures.ts",
+    "src/modules/operations-evidence-contracts/v2/generatedSdk.ts",
+    "src/modules/operations-evidence-contracts/v2/index.ts",
+    "src/modules/operations-evidence-contracts/v2/rules.ts",
+    "src/modules/operations-evidence-contracts/v2/sdk.ts",
+    "src/modules/platform-testing/taxonomy.ts"
+  ],
+  "semanticEvidence": {
+    "assuranceMatrix": "PASS_11_OF_11_BOUNDED_LOCAL_NO_EFFECT",
+    "contentBinding": "PASS_CANONICAL_DOCUMENT_RECORD_SET_AND_LEDGER_SHA256",
+    "priorSet": "PASS_APPEND_OVERWRITE_NONEXISTENT_CYCLE_FORK_AND_SAME_TENANT_CONTRACT",
+    "typedReferences": "PASS_EVIDENCE_RECORD_DAILY_WEEKLY_CAPABILITY_EXIT_AND_RESET",
+    "humanOwner": "PASS_ACTIVE_CANONICAL_CONTEXT_AGENT_DENIED",
+    "g2": "PASS_FOUR_DISTINCT_EXACT_ACTION_STAGE_EFFECT_AUTHORITY_GRANTS_FOR_READY",
+    "hardZeros": "PASS_EIGHT_INCLUDING_P0_P1_AUTO_CLOSE",
+    "parity": "PASS_BIDIRECTIONAL_SCHEMA_SDK_ZERO_DENOMINATOR_AND_30_RECORD_MAXIMUM"
+  },
+  "localVerification": {
+    "focused": "PASS_17_OF_17",
+    "combinedV1V2": "PASS_36_OF_36",
+    "taxonomy": "PASS_4_OF_4",
+    "full": "PASS_417_OF_417",
+    "compliance": "PASS_7_OF_7",
+    "typecheck": "PASS",
+    "lint": "PASS_ZERO_WARNINGS",
+    "build": "PASS_NEXTJS_16_3_4_WEBPACK"
+  },
+  "automation": {
+    "exactHeadCi": "PENDING_FINAL_PUSH_AND_DRAFT_PR",
+    "preview": "NOT_REQUESTED_DOCUMENTATION_SCHEMA_SDK_TEST_ONLY_NO_DEPLOYMENT_ACTION",
+    "applicationReadback": "NOT_APPLICABLE_NO_ROUTE_OR_RUNTIME_ADDED"
+  },
+  "reverseProof": {
+    "baseTree": "509743a2d2a1c2a966532bc342234c16894625d5",
+    "implementationTree": "191768b87e5cb55a89e402530f35781d3f590d45",
+    "result": "PASS_GIT_REVERSE_APPLY_CHECK",
+    "productionRollbackPerformed": false
+  },
+  "preservedTrees": {
+    "coreSchema": "d57ccc4cccd97b37acd1a1575b1e07ede5787349",
+    "coreSdk": "d594fa014d7020fdf8386c7a6926ff9b573ac355",
+    "onboardingContracts": "b01a9e3bbb418440ef2550b1136f5fbc2278f37b",
+    "onboardingSdk": "1b95d20469236a3b31494d6013008d0cb4d4c9dd",
+    "effectAdmissionContracts": "ed1f28a742c5ea3e1bf20a95f11ea9e8dc5af29a",
+    "effectAdmissionSdk": "b14044b0da3d0eb7c1a2fa855ddf24da13797239",
+    "connectorRevocationContracts": "8d3cdb481376bcac6c42272ea0b209a1d59ac0c8",
+    "connectorRevocationSdk": "6f2e4c82dfa1b37d7b341a070dcace303b03f592"
+  },
+  "effects": {
+    "routesAdded": 0,
+    "databaseObjectsAdded": 0,
+    "migrationsAddedOrRun": 0,
+    "credentialReadsOrChanges": 0,
+    "providerCalls": 0,
+    "deploymentsOrPromotions": 0,
+    "productionQueriesOrWrites": 0,
+    "liveProofDaysOpened": 0
+  },
+  "risks": [
+    "Producer-local evidence is not independent assurance and cannot clear OPS-CONTRACTS-ASSURE-02.",
+    "No L2/L3 exact-pin return or hosted persistence/readback exists.",
+    "Existing v1 records remain structural-only and prohibited for decision-bearing consumption.",
+    "All G1/G2, proof-window, deployment and production stops remain."
+  ],
+  "writerLock": "RELEASED_AFTER_FINAL_COMMIT_PUSH_TAG_AND_HANDOFF",
+  "nextAction": "L5 independently runs OPS-CONTRACTS-ASSURE-02 against the exact implementation/final pair before any decision-bearing L2/L3 repin."
+}

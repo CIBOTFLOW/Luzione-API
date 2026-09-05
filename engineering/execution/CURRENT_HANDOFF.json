@@ -2,66 +2,49 @@
   "schema_version": 2,
   "queue_id": "LUZIONE_API_SYSTEMS_ENGINEERING_V1",
   "repository": "CIBOTFLOW/Luzione-API",
-  "program_state": "CONNECTOR_REVOCATION_L1_G0_AND_EFFECT_ADMISSION_CORRECTION_02_BOUNDED_PASS_LOCAL_PROVEN_SANDBOX_ONLY_EXACT_FINAL_CI_PENDING",
-  "current_project": "CONNECTOR-REVOCATION-L1-G0",
-  "absorbed_project": "EFFECT-ADMISSION-L1-CORRECTION-02",
-  "next_projects": ["OPS-CONTRACTS-CORRECTION-01"],
-  "next_action": "Validate the detached exact-final tag and exact-head CI, then authorize OPS-CONTRACTS-CORRECTION-01 from the peeled final on one fresh non-default branch without overlapping API writers.",
+  "program_state": "OPS_CONTRACTS_CORRECTION_01_BOUNDED_PASS_LOCAL_PROVEN_NO_EFFECT_EXACT_FINAL_CI_PENDING",
+  "current_project": "OPS-CONTRACTS-CORRECTION-01",
+  "next_projects": ["OPS-CONTRACTS-ASSURE-02"],
+  "next_action": "L5 independently audits the exact OPS correction implementation/final pair before L2/L3 may repin for decision-bearing use.",
   "canonical_program": "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md",
   "failure_ledger": "engineering/execution/SYSTEMS_ENGINEERING_FAILURE_LEDGER.json",
   "proof_ledger": "engineering/execution/SYSTEMS_ENGINEERING_PROOF_LEDGER.json",
-  "handoff": "engineering/execution/handoffs/CONNECTOR_REVOCATION_L1_G0_CONTROLLER_HANDOFF.json",
+  "handoff": "engineering/execution/handoffs/OPS_CONTRACTS_CORRECTION_01_G0_CONTROLLER_HANDOFF.json",
   "consumer_packets": [
-    "engineering/execution/connector-revocation-l1-g0/CONNECTOR_REVOCATION_L1_G0_CONSUMER_PACKET_V1.json",
-    "engineering/execution/connector-revocation-l1-g0/EFFECT_ADMISSION_L1_CORRECTION_02_CONSUMER_PACKET_V1.json"
+    "contracts/operations-evidence/consumer-mappings/l2-ops-ledger-v2.json",
+    "contracts/operations-evidence/consumer-mappings/l3-ops-ledger-v2.json"
   ],
-  "base_sha": "5786d9d6f1d38e730e404cade4dd466dbb709367",
-  "implementation_shas": {
-    "effect_admission_correction_02": "86809a9243c594a2898d31d14bbeda3324cacd7b",
-    "connector_revocation": "a1329b669262b2abbffc8e9ec501e866429c0d55"
-  },
-  "evidence_head": "PEEL_DETACHED_ANNOTATED_TAG_CONNECTOR_REVOCATION_L1_G0_EXACT_FINAL",
-  "branch": "codex/connector-revocation-l1-g0-6ea7045",
+  "base_sha": "e6dce8c92f8cee9102af341615c0fa31345ca77d",
+  "implementation_shas": {"ops_contracts_correction_01":"ff44ffa5f78abe20402a31bc34af8d178d20bf26"},
+  "evidence_head": "PEEL_DETACHED_ANNOTATED_TAG_OPS_CONTRACTS_CORRECTION_01_EXACT_FINAL",
+  "branch": "codex/ops-contracts-correction-01-g0-b3977b5",
   "contract_versions": [
-    "ConnectorRevocationRequest/v1",
-    "ConnectorRevocationReceipt/v1",
-    "ConnectorCredentialHandle/v1",
-    "CONNECTOR-REVOCATION-L1-G0/policy-v1",
-    "ConnectorBinding/v1",
-    "luzione-effect-admission/v2",
-    "luzione-effect-execution-envelope/v1",
-    "luzione-provider-adapter/v0.3",
-    "luzione-prepared-provider-dispatch/v1",
-    "luzione-provider-credential-release/v1"
+    "LuzioneOperationsEvidenceLedger/v2",
+    "LuzioneOperationsEvidenceLedgerManifest/v2",
+    "CanonicalHumanOwnerContext/v1",
+    "G2EffectAuthorityGrant/v1",
+    "CapabilityEpochReset/v1",
+    "DailyMetricEvidenceBinding/v1"
   ],
   "engineering_state": "BOUNDED_PASS",
   "release_evidence": "LOCAL_PROVEN",
-  "effect_authority": "SANDBOX_ONLY",
+  "effect_authority": "NO_EFFECT",
   "finality": "BOUNDED_CLAIM",
-  "local_verification": "PASS_COMPLIANCE_7_OF_7_TYPECHECK_LINT_ZERO_WARNINGS_FOCUSED_32_OF_32_FULL_400_OF_400_NEXTJS_16_3_4_WEBPACK_BUILD_DISPOSABLE_REVERSE_REAPPLY",
-  "database_reverse_proof": "PASS_FORCED_RLS_APPEND_ONLY_ORIGINATING_ATTEMPT_FK_REVERSE_TO_0_REAPPLY_TO_4_WITH_CLEANUP",
-  "runtime_activation": "NOT_PERFORMED_DEFAULT_OFF_SANDBOX_ONLY",
-  "credential_resolution_or_erasure": "NOT_PERFORMED",
-  "provider_effects": "NOT_PERFORMED",
+  "local_verification": "PASS_COMPLIANCE_7_OF_7_TYPECHECK_LINT_ZERO_WARNINGS_FOCUSED_17_OF_17_COMBINED_36_OF_36_FULL_417_OF_417_NEXTJS_16_3_4_WEBPACK_BUILD",
+  "reverse_proof": "PASS_GIT_REVERSE_APPLY_TO_EXACT_BASE_TREE",
+  "runtime_activation": "NOT_IMPLEMENTED",
   "production_query_or_mutation": "NOT_PERFORMED",
   "exact_head_automation": "PENDING_FINAL_PUSH_AND_DRAFT_PR",
-  "preview": "NOT_REQUESTED_NO_DEPLOYMENT_ACTION",
-  "writer_lock": "RELEASE_AFTER_FINAL_PUSH_TAG_CI_AND_CONTROLLER_HANDOFF",
+  "preview": "NOT_REQUESTED_NO_ROUTE_OR_RUNTIME_CHANGE",
+  "writer_lock": "RELEASED_AFTER_FINAL_COMMIT_PUSH_TAG_AND_HANDOFF",
   "open_quarantines": [
-    "A01/D01 G1 prerequisites, managed backup/PITR and production recovery remain unresolved.",
-    "Authenticated Git-bound exact-SHA application readback is absent.",
-    "Independent L2/L3 exact-pin consumer evidence is absent.",
-    "No current contract authorizes a real credential, live provider revocation, local erasure or production effect."
+    "OPS-CONTRACTS-ASSURE-02 and exact L2/L3 consumer evidence are absent.",
+    "Existing v1 decision-bearing use remains prohibited.",
+    "A01/D01, authenticated exact-SHA readback and every G1/G2 production prerequisite remain unresolved."
   ],
-  "deferred_external_infra": [
-    "exact-final automated CI and protected preview",
-    "independent consumer evidence",
-    "managed migration/recovery",
-    "every G1/G2, credential, live-provider, merge, default-branch and production action"
-  ],
+  "deferred_external_infra": ["exact-final CI", "independent assurance and consumers", "hosted persistence/readback", "every production and G2 boundary"],
   "remaining_uncertainty": [
-    "Local synthetic and disposable evidence does not prove hosted, managed or provider behavior.",
-    "ERASURE_AUTHORIZED_NO_EFFECT is an evidence state only; no credential value was read, resolved or erased.",
-    "Controller and consumer acceptance are not inferred from producer evidence."
+    "Producer-local evidence cannot independently clear the correction.",
+    "No proof window, hosted consumer, provider or production boundary was exercised."
   ]
 }

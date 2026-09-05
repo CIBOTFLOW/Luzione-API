@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "OPS-CONTRACTS-CORRECTION-01/Artifact-Digests/v1",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "branch": "codex/ops-contracts-correction-01-g0-b3977b5",
+  "baseSha": "e6dce8c92f8cee9102af341615c0fa31345ca77d",
+  "implementationSha": "ff44ffa5f78abe20402a31bc34af8d178d20bf26",
+  "finalSha": "PEEL_DETACHED_ANNOTATED_TAG_OPS_CONTRACTS_CORRECTION_01_EXACT_FINAL",
+  "controllerAuthority": "b3977b5879557b0cabc1c18792cf9a868489f8e2",
+  "assuranceFingerprintSha256": "80ae6a53c8ff28259389b1175f7029bf920013e03c7e5419b145c9c2a569decf",
+  "probeSourceSha256": "6d370c6ca70405f93bf91b1fa24c53a4d4d73e0936bbb85cd6bb66ab8c0f56ad",
+  "versions": [
+    "LuzioneOperationsEvidenceLedger/v2",
+    "LuzioneOperationsEvidenceLedgerManifest/v2",
+    "CanonicalHumanOwnerContext/v1",
+    "G2EffectAuthorityGrant/v1",
+    "CapabilityEpochReset/v1",
+    "DailyMetricEvidenceBinding/v1"
+  ],
+  "rawSha256": {
+    "schema": "09bde2864dc2e9e46335c17f8fd3227b3e102cc1a5b96941a50efddc22cf59be",
+    "manifest": "dec588ae2d0725469569fb4baee4db05e18102443dc86ea91e3adf5c44ece22d",
+    "l2ConsumerPacket": "75d09a91a2325bfd3393d8eb200e378ca8d47e78d5039e90903b18fb8d689df9",
+    "l3ConsumerPacket": "4cb4dcb35a80e996b1ab07ef3954aa0a060eb6368887328761a6758013b6f6cc",
+    "contracts": "816bdd4cc5a801001859106ac6213f216f05a62935d4401784a65a06c66053ce",
+    "rules": "57d89caee2f97780af5b731af292eebde5e5c3ca55f364b9ea0ff35fe705fa98",
+    "strictSdk": "d99564542730f4053126f0eadb3502877d5382a2392464d7e38509dda1f7871c",
+    "fixtures": "07a77bffc23387a2c729e3ceed885c8e2362821168cbfc3caf7f35de50075b01",
+    "generatedSdk": "5602e67cb4cbcfc889af6cf5630bd106588309e4aba030de0f5943ba96e65a1b",
+    "focusedSuite": "8fcdefde5c4eb6263bd93518c79e0e6a599d195a8d04d502f0f5aa41c41e5c8a"
+  },
+  "fixtureDigests": {
+    "blockedLedger": "72b15b5fd4ba97ad5e31217f82cc9bd08bfec092953a8a199a8dea6c44edf9c2",
+    "blockedRecordSet": "2592a0debd5250cbd4adcf4c3ef412f3d1f1e6387d98038ac82f13693ab69e7b",
+    "readyLedger": "4c40aec87e5d4ad3f66ed81e5011a62d6ffe5c6c1c225647fc2f5e1252b4dc53",
+    "readyRecordSet": "7b850e2349a5a024f47d33f8b00bff1f5decf88f6c41978fbd637d789b9be509"
+  },
+  "frozenTrees": {
+    "coreSchema": "d57ccc4cccd97b37acd1a1575b1e07ede5787349",
+    "coreSdk": "d594fa014d7020fdf8386c7a6926ff9b573ac355",
+    "onboardingContracts": "b01a9e3bbb418440ef2550b1136f5fbc2278f37b",
+    "onboardingSdk": "1b95d20469236a3b31494d6013008d0cb4d4c9dd",
+    "effectAdmissionContracts": "ed1f28a742c5ea3e1bf20a95f11ea9e8dc5af29a",
+    "effectAdmissionSdk": "b14044b0da3d0eb7c1a2fa855ddf24da13797239",
+    "connectorRevocationContracts": "8d3cdb481376bcac6c42272ea0b209a1d59ac0c8",
+    "connectorRevocationSdk": "6f2e4c82dfa1b37d7b341a070dcace303b03f592"
+  },
+  "treeProof": {
+    "baseTree": "509743a2d2a1c2a966532bc342234c16894625d5",
+    "implementationTree": "191768b87e5cb55a89e402530f35781d3f590d45",
+    "reverseCheck": "PASS_GIT_REVERSE_APPLY_TO_EXACT_BASE_TREE"
+  },
+  "localVerification": {
+    "focusedV2": "PASS_17_OF_17",
+    "combinedV1V2": "PASS_36_OF_36",
+    "taxonomy": "PASS_4_OF_4",
+    "full": "PASS_417_OF_417",
+    "compliance": "PASS_7_OF_7",
+    "typecheck": "PASS",
+    "lint": "PASS_ZERO_WARNINGS",
+    "build": "PASS_NEXTJS_16_3_4_WEBPACK"
+  },
+  "effectAuthority": "NO_EFFECT",
+  "runtimeActivation": "NOT_IMPLEMENTED",
+  "productionReady": false
+}

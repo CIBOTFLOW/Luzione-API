@@ -1815,6 +1815,28 @@
       "resolution_ref": "local-verify:PASS_400_OF_400_20260905",
       "remaining_uncertainty": [],
       "next_action": "Keep exhaustive metadata and transitive digest declarations synchronized in the same evidence-only commit."
+    },
+    {
+      "failure_id": "OPS_CONTRACTS_CORRECTION_01_TAXONOMY_METADATA_20260905",
+      "project_id": "OPS-CONTRACTS-CORRECTION-01",
+      "observed_at": "2026-09-05T07:10:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "ff44ffa5f78abe20402a31bc34af8d178d20bf26",
+      "environment": "local",
+      "layer": "test-taxonomy-and-build-typecheck",
+      "symptom": "The first canonical suite passed 416/417 and required the new suite in exhaustive taxonomy; the first build then rejected unsupported secondary class RECOVERY.",
+      "expected": "Every current TypeScript suite has one supported canonical taxonomy entry and build-time TypeScript agrees with the standalone checker.",
+      "actual": "All correction semantics passed; only exhaustive metadata and its enum were incomplete. No runtime, provider, credential, database or production boundary was reached.",
+      "classification": {"domain":"PLATFORM","class":"INVALID","retry":"NEVER","severity":"INFO"},
+      "evidence_refs": ["src/modules/platform-testing/taxonomy.ts", "npm-test:PASS_416_OF_417", "npm-build:TYPECHECK_RECOVERY_ENUM_DENIED"],
+      "repair_attempts": ["Registered the v2 suite as CONTRACT with supported SECURITY and RELIABILITY secondary classes.", "Reran taxonomy 4/4, full suite 417/417, typecheck and production build successfully."],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "commit:ff44ffa5f78abe20402a31bc34af8d178d20bf26",
+      "remaining_uncertainty": [],
+      "next_action": "Register future suites with the closed taxonomy enum before the first full build."
     }
   ]
 }
