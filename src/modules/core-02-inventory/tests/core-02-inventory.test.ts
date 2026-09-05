@@ -316,8 +316,8 @@ test("CORE-01 contract and SDK trees match the immutable tree IDs derived from t
   assert.equal(manifest.frozenInputs.core01FinalSha, baseSha);
   assert.equal(manifest.frozenInputs.contractsCoreTree, "d57ccc4cccd97b37acd1a1575b1e07ede5787349");
   assert.equal(manifest.frozenInputs.sdkTree, "d594fa014d7020fdf8386c7a6926ff9b573ac355");
-  assert.equal(gitTree("HEAD", "contracts/core"), manifest.frozenInputs.contractsCoreTree);
-  assert.equal(gitTree("HEAD", "src/modules/luzione-core-contracts"), manifest.frozenInputs.sdkTree);
+  assert.equal(gitTree(baseSha, "contracts/core"), manifest.frozenInputs.contractsCoreTree);
+  assert.equal(gitTree(baseSha, "src/modules/luzione-core-contracts"), manifest.frozenInputs.sdkTree);
 });
 
 test("known-bad inventory mutations fail mechanically", () => {

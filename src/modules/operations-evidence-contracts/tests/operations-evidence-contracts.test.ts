@@ -230,8 +230,8 @@ test("manifest binds exact packet fingerprints, schema definitions, and frozen C
   assert.deepEqual(parsed.coreComposition, OPS_CORE_COMPOSITION);
   assert.ok(Object.keys(schema.$defs).length >= 21);
 
-  assert.equal(execFileSync("git", ["rev-parse", "HEAD:contracts/core"], { encoding: "utf8" }).trim(), OPS_CORE_COMPOSITION.schemaTree);
-  assert.equal(execFileSync("git", ["rev-parse", "HEAD:src/modules/luzione-core-contracts"], { encoding: "utf8" }).trim(), OPS_CORE_COMPOSITION.sdkTree);
+  assert.equal(execFileSync("git", ["rev-parse", `${OPS_CORE_COMPOSITION.finalSha}:contracts/core`], { encoding: "utf8" }).trim(), OPS_CORE_COMPOSITION.schemaTree);
+  assert.equal(execFileSync("git", ["rev-parse", `${OPS_CORE_COMPOSITION.finalSha}:src/modules/luzione-core-contracts`], { encoding: "utf8" }).trim(), OPS_CORE_COMPOSITION.sdkTree);
 });
 
 test("manifest drift in either source packet or frozen Core pin is rejected", () => {

@@ -800,7 +800,11 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
     maturity: "LIBRARY_ONLY",
     name: "CORE-01 strict platform and seed-product contract bundle",
     ownerRepository: "CIBOTFLOW/Luzione-API",
-    pendingChangeRefs: ["controller:CORE-01:G0", "controller:SUPPORT-01:L1-CORE-CONTRACTS:v1"],
+    pendingChangeRefs: [
+      "controller:CORE-01:G0",
+      "controller:SUPPORT-01:L1-CORE-CONTRACTS:v1",
+      "controller:SEED-PRODUCT-CONTRACT-SPINE-01:G0",
+    ],
     sourcePaths: [
       "contracts/core/luzione-core-v1.manifest.json",
       "contracts/core/v1/luzione-core-contracts-v1.schema.json",
