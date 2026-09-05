@@ -23,17 +23,19 @@ apply() {
 
 apply supabase/migrations/20260831022000_p110_command_ledger_baseline.sql
 apply supabase/migrations/20260905040000_onboard_core_blueprints_mandates.sql
-docker exec "${container_name}" psql -v ON_ERROR_STOP=1 -U postgres -d "${database}" -c "grant usage on schema public to ${role}; grant select,insert,update,delete on all tables in schema public to ${role}" >/dev/null
+apply supabase/migrations/20260905041000_onboard_core_import_dry_runs.sql
+apply supabase/migrations/20260905050000_onboard_core_correction_01.sql
 
+apply scripts/validation/rollback-onboard-core-correction-01.sql
+correction_reverse="$(docker exec "${container_name}" psql -At -v ON_ERROR_STOP=1 -U postgres -d "${database}" -c "select json_build_object('revocations',to_regclass('public.onboarding_setup_mandate_revocations'),'binding_column',(select count(*) from information_schema.columns where table_schema='public' and table_name='onboarding_tenant_blueprint_drafts' and column_name='source_binding'))")"
+test "${correction_reverse}" = '{"revocations" : null, "binding_column" : 0}'
+echo "correction_rollback=${correction_reverse}"
+apply supabase/migrations/20260905050000_onboard_core_correction_01.sql
+correction_reapply="$(docker exec "${container_name}" psql -At -v ON_ERROR_STOP=1 -U postgres -d "${database}" -c "select count(*) from pg_class where oid='public.onboarding_setup_mandate_revocations'::regclass")"
+test "${correction_reapply}" = "1"
+echo "correction_reapply_relations=${correction_reapply}"
+
+docker exec "${container_name}" psql -v ON_ERROR_STOP=1 -U postgres -d "${database}" -c "grant usage on schema public to ${role}; grant select,insert,update,delete on all tables in schema public to ${role}" >/dev/null
 NODE_PATH=scripts/validation/node-stubs DATABASE_URL="postgres://${role}:${password}@127.0.0.1:${host_port}/${database}" node --import tsx scripts/validation/onboard-core-blueprint-mandate-proof.ts
 
-apply scripts/validation/rollback-onboard-core-blueprints-mandates.sql
-reverse_state="$(docker exec "${container_name}" psql -At -v ON_ERROR_STOP=1 -U postgres -d "${database}" -c "select json_build_object('drafts',to_regclass('public.onboarding_tenant_blueprint_drafts'),'approvals',to_regclass('public.onboarding_tenant_blueprint_approvals'),'mandates',to_regclass('public.onboarding_setup_mandates'),'p110',to_regclass('public.p110_command_receipts'))")"
-test "${reverse_state}" = '{"drafts" : null, "approvals" : null, "mandates" : null, "p110" : "p110_command_receipts"}'
-echo "rollback=${reverse_state}"
-
-apply supabase/migrations/20260905040000_onboard_core_blueprints_mandates.sql
-reapply_count="$(docker exec "${container_name}" psql -At -v ON_ERROR_STOP=1 -U postgres -d "${database}" -c "select count(*) from pg_class where oid in ('public.onboarding_tenant_blueprint_drafts'::regclass,'public.onboarding_tenant_blueprint_approvals'::regclass,'public.onboarding_setup_mandates'::regclass)")"
-test "${reapply_count}" = "3"
-echo "reapply_relations=${reapply_count}"
 echo "cleanup=scheduled"

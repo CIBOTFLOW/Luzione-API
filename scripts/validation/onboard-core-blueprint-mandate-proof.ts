@@ -12,6 +12,8 @@ import {
 } from "@/modules/onboard-core/contracts";
 import { OnboardCoreDomainError, OnboardCoreStore } from "@/modules/onboard-core/store";
 import { sha256 } from "@/modules/platform-guarantees/eventContract";
+import { TENANT_PACK_DRAFT_SCHEMA_DIGEST, TENANT_PACK_DRAFT_SCHEMA_PATH, TENANT_PACK_SOURCE_BINDING_VERSION } from "@/modules/onboard-core/sourceBinding";
+import type { HumanApprovalSubject } from "@/modules/onboard-core/humanApproval";
 
 const connectionString = process.env.DATABASE_URL?.trim();
 if (!connectionString) throw new Error("DATABASE_URL is required.");
@@ -24,11 +26,21 @@ const serviceActor: ApiActor = {
   source: "service-token",
   tenantId: tenant,
 };
-const humanActor: ApiActor = {
-  ...serviceActor,
-  actorId: "user:onboard-approver",
+const humanActor: HumanApprovalSubject = {
+  actorId: "user_onboard_approver",
   actorType: "user",
   capabilities: ["onboarding.blueprint.approve", "onboarding.blueprint.read"],
+  authenticationRef: "supabase-session:proof-human",
+  authenticatedAt: new Date().toISOString(),
+  contractVersion: "LuzioneHumanApprovalSubject/v1",
+  source: "supabase-user-jwt",
+  tenantId: tenant,
+};
+const sourceBinding = {
+  consumerEvidenceSha: "1".repeat(40), consumerImplementationSha: "2".repeat(40), consumerRepository: "CIBOTFLOW/Luzione-UI" as const,
+  contractVersion: TENANT_PACK_SOURCE_BINDING_VERSION, evidenceDigest: "3".repeat(64), evidencePath: "evidence/onboard-proof.json",
+  mapperDigest: "4".repeat(64), mapperPath: "src/onboarding/mapper.ts", sourceSchemaDigest: TENANT_PACK_DRAFT_SCHEMA_DIGEST,
+  sourceSchemaPath: TENANT_PACK_DRAFT_SCHEMA_PATH,
 };
 
 function draft(version: string, field = "company name") {
@@ -58,12 +70,17 @@ function proposal(version: string, field?: string) {
     contractVersion: ONBOARD_CORE_API_VERSION,
     draft: proposedDraft,
     mappingVersion: TENANT_BLUEPRINT_MAPPING_VERSION,
+    sourceBinding,
     sourceDigest: sha256(proposedDraft),
-    sourceSchemaDigest: "a".repeat(64),
+    sourceSchemaDigest: TENANT_PACK_DRAFT_SCHEMA_DIGEST,
   });
 }
 
 async function main() {
+  process.env.LUZIONE_API_ONBOARDING_L2_BINDINGS = JSON.stringify([
+    { ...sourceBinding, sourcePackId: "tenant-pack-customer-zero", sourcePackVersion: "1.0.0", tenantId: tenant },
+    { ...sourceBinding, sourcePackId: "tenant-pack-customer-zero", sourcePackVersion: "2.0.0", tenantId: tenant },
+  ]);
   const pool = new Pool({ connectionString });
   const store = new OnboardCoreStore(pool);
   const now = new Date();
@@ -109,13 +126,14 @@ async function main() {
           supersedesApprovalRef: null,
         }),
         correlationId: "correlation-client-approval-denied",
+        human: { ...humanActor, tenantId: "onboard-proof-b" },
         requestedAt: new Date(now.getTime() + 3_000).toISOString(),
       }),
       (error: unknown) => error instanceof OnboardCoreDomainError && error.code === "HUMAN_APPROVAL_REQUIRED",
     );
 
     const approved = await store.approveBlueprint({
-      actor: humanActor,
+      actor: serviceActor,
       approval: parseTenantBlueprintApprovalRequest({
         blueprintId: first.readback.blueprint.blueprintId,
         contractVersion: ONBOARD_CORE_API_VERSION,
@@ -124,6 +142,7 @@ async function main() {
         supersedesApprovalRef: null,
       }),
       correlationId: "correlation-human-approval-1",
+      human: humanActor,
       requestedAt: new Date(now.getTime() + 4_000).toISOString(),
     });
     assert.equal(approved.readback.blueprint.approval.state, "APPROVED");
@@ -137,7 +156,7 @@ async function main() {
     });
     await assert.rejects(
       () => store.approveBlueprint({
-        actor: humanActor,
+        actor: serviceActor,
         approval: parseTenantBlueprintApprovalRequest({
           blueprintId: second.readback.blueprint.blueprintId,
           contractVersion: ONBOARD_CORE_API_VERSION,
@@ -146,12 +165,13 @@ async function main() {
           supersedesApprovalRef: approved.readback.blueprint.approval.approvalRef,
         }),
         correlationId: "correlation-stale-approval",
+        human: humanActor,
         requestedAt: new Date(now.getTime() + 6_000).toISOString(),
       }),
       (error: unknown) => error instanceof OnboardCoreDomainError && error.code === "STALE_BLUEPRINT",
     );
     const superseding = await store.approveBlueprint({
-      actor: humanActor,
+      actor: serviceActor,
       approval: parseTenantBlueprintApprovalRequest({
         blueprintId: second.readback.blueprint.blueprintId,
         contractVersion: ONBOARD_CORE_API_VERSION,
@@ -160,6 +180,7 @@ async function main() {
         supersedesApprovalRef: approved.readback.blueprint.approval.approvalRef,
       }),
       correlationId: "correlation-human-approval-2",
+      human: humanActor,
       requestedAt: new Date(now.getTime() + 7_000).toISOString(),
     });
     assert.equal(superseding.readback.blueprint.approval.state, "APPROVED");

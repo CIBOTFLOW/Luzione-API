@@ -26,6 +26,7 @@ import {
   type ImportDryRunRequest,
 } from "./importContracts";
 import { OnboardCoreDomainError } from "./store";
+import { assertRuntimeWithinMandate } from "./runtimeLimit";
 
 async function readOne(pool: Pool, tenantId: string, batchId: string) {
   const client = await pool.connect();
@@ -33,9 +34,11 @@ async function readOne(pool: Pool, tenantId: string, batchId: string) {
     await client.query("begin read only");
     await client.query("select set_config('app.tenant_id', $1, true)", [tenantId]);
     const result = await client.query(
-      `select batch.canonical_batch, batch.object_version, receipt.canonical_receipt,
+      `select batch.canonical_batch, batch.object_version, batch.source_binding_digest,
+              receipt.canonical_receipt, receipt.deadline_at, receipt.measured_runtime_ms,
               coalesce(jsonb_agg(jsonb_build_object(
                 'sourceRowId', row.source_row_id,
+                'matchKeyDigest', row.match_key_digest,
                 'payloadDigest', row.payload_digest,
                 'outcome', row.outcome,
                 'reasonCode', row.reason_code,
@@ -48,7 +51,8 @@ async function readOne(pool: Pool, tenantId: string, batchId: string) {
          left join public.onboarding_import_rows row
            on row.tenant_id = batch.tenant_id and row.batch_id = batch.batch_id
         where batch.tenant_id = $1 and batch.batch_id = $2::uuid
-        group by batch.canonical_batch, batch.object_version, receipt.canonical_receipt
+        group by batch.canonical_batch, batch.object_version, batch.source_binding_digest,
+                 receipt.canonical_receipt, receipt.deadline_at, receipt.measured_runtime_ms
         limit 1`,
       [tenantId, batchId],
     );
@@ -69,15 +73,17 @@ function readback(row: Record<string, unknown>) {
   return {
     batch,
     objectVersion: String(row.object_version),
+    runtime: { deadlineAt: new Date(String(row.deadline_at)).toISOString(), elapsedMs: Number(row.measured_runtime_ms), measuredBy: "server-monotonic-clock" as const },
     receipt,
     rows: row.rows as Array<Record<string, unknown>>,
+    sourceBindingDigest: String(row.source_binding_digest),
   };
 }
 
 export class OnboardImportStore {
   private readonly kernel: LifecycleCommandKernel<CommandTransaction>;
 
-  constructor(private readonly pool: Pool = databasePool()) {
+  constructor(private readonly pool: Pool = databasePool(), private readonly monotonicNow: () => number = () => performance.now()) {
     this.kernel = new LifecycleCommandKernel(new PostgresAtomicCommandStore(pool));
   }
 
@@ -93,6 +99,7 @@ export class OnboardImportStore {
     requestedAt: string;
   }) {
     const reservation = importReservation(input.actor.tenantId, input.request);
+    const jobStarted = this.monotonicNow();
     const command = createLifecycleCommandRequest({
       actor: { actorId: input.actor.actorId, actorType: input.actor.actorType, roles: [] },
       causationId: null,
@@ -122,10 +129,16 @@ export class OnboardImportStore {
     const receipt = await this.kernel.execute(command, async (transaction) => {
       const mandateResult = await transaction.client.query(
         `select mandate.canonical_mandate, mandate.object_version, mandate.expires_at,
-                mandate.revoked_at, mandate.approval_ref
+                mandate.approval_ref, mandate.source_binding_digest,
+                revocation.revocation_ref
            from public.onboarding_setup_mandates mandate
+           left join lateral (
+             select event.revocation_ref from public.onboarding_setup_mandate_revocations event
+              where event.tenant_id=mandate.tenant_id and event.mandate_id=mandate.mandate_id
+              limit 1
+           ) revocation on true
           where mandate.tenant_id = $1 and mandate.mandate_id = $2::uuid
-          for update`,
+          for update of mandate`,
         [input.actor.tenantId, input.request.mandateId],
       );
       const mandateRow = mandateResult.rows[0] as Record<string, unknown> | undefined;
@@ -135,12 +148,16 @@ export class OnboardImportStore {
       }
       const mandate = mandateRow.canonical_mandate as SetupMandateV1;
       const requestedAt = Date.parse(input.requestedAt);
-      if (!mandate.active || mandateRow.revoked_at !== null || Date.parse(String(mandateRow.expires_at)) <= requestedAt) {
+      if (!mandate.active || mandateRow.revocation_ref !== null || Date.parse(String(mandateRow.expires_at)) <= requestedAt) {
         throw new OnboardCoreDomainError("MANDATE_INACTIVE", "Import requires an active, unexpired, unrevoked Setup Mandate.", 403);
       }
       if (!mandate.allowedActions.includes("DRY_RUN_IMPORT") || mandate.effectCeiling !== "NO_EFFECT") {
         throw new OnboardCoreDomainError("MANDATE_AUTHORITY_DENIED", "Setup Mandate does not authorize a NO_EFFECT dry run.", 403);
       }
+      if (String(mandateRow.source_binding_digest) !== input.request.sourceBindingDigest) {
+        throw new OnboardCoreDomainError("L2_BINDING_MISMATCH", "Import does not bind the exact L2 mapper/evidence digest inherited by its Setup Mandate.", 409);
+      }
+      await transaction.client.query("select set_config('statement_timeout', $1, true)", [`${mandate.limits.maxRuntimeMinutes * 60_000}ms`]);
       const approval = await transaction.client.query(
         `select 1
            from public.onboarding_tenant_blueprint_approvals approved
@@ -160,13 +177,14 @@ export class OnboardImportStore {
       }
       const evidence = issueImportEvidence({ mandate, request: input.request, tenantId: input.actor.tenantId });
       assertImportStatusFinality(evidence.batch, evidence.receipt);
+      const runtime = assertRuntimeWithinMandate({ elapsedMs: this.monotonicNow() - jobStarted, maxRuntimeMinutes: mandate.limits.maxRuntimeMinutes, startedAt: input.requestedAt });
       const objectVersion = `import-batch:${evidence.batch.batchId}@${sha256({ batch: evidence.batch, receipt: evidence.receipt })}`;
       await transaction.client.query(
         `insert into public.onboarding_import_batches
           (tenant_id, batch_id, mandate_id, expected_mandate_object_version, dedupe_key,
-           source_digest, mapping_version, canonical_batch, object_version,
+           source_digest, source_binding_digest, mapping_version, canonical_batch, object_version,
            created_by, created_by_type, created_at)
-         values ($1,$2::uuid,$3::uuid,$4,$5,$6,$7,$8::jsonb,$9,$10,$11,$12)`,
+         values ($1,$2::uuid,$3::uuid,$4,$5,$6,$7,$8,$9::jsonb,$10,$11,$12,$13)`,
         [
           input.actor.tenantId,
           evidence.batch.batchId,
@@ -174,6 +192,7 @@ export class OnboardImportStore {
           input.request.expectedMandateObjectVersion,
           input.request.dedupeKey,
           input.request.source.digest,
+          input.request.sourceBindingDigest,
           input.request.mappingVersion,
           JSON.stringify(evidence.batch),
           objectVersion,
@@ -185,13 +204,14 @@ export class OnboardImportStore {
       for (const row of evidence.rows) {
         await transaction.client.query(
           `insert into public.onboarding_import_rows
-            (tenant_id, batch_id, source_row_id, payload_digest, outcome, reason_code,
+            (tenant_id, batch_id, source_row_id, match_key_digest, payload_digest, outcome, reason_code,
              exception_ref, reconciliation_ref, created_at)
-           values ($1,$2::uuid,$3,$4,$5,$6,$7,$8,$9)`,
+           values ($1,$2::uuid,$3,$4,$5,$6,$7,$8,$9,$10)`,
           [
             input.actor.tenantId,
             evidence.batch.batchId,
             row.sourceRowId,
+            row.matchKeyDigest,
             row.payloadDigest,
             row.outcome,
             row.reasonCode,
@@ -204,8 +224,8 @@ export class OnboardImportStore {
       await transaction.client.query(
         `insert into public.onboarding_import_receipts
           (tenant_id, batch_id, canonical_receipt, finality, reconciliation_ref,
-           object_version, created_at)
-         values ($1,$2::uuid,$3::jsonb,$4,$5,$6,$7)`,
+           object_version, source_binding_digest, measured_runtime_ms, deadline_at, created_at)
+         values ($1,$2::uuid,$3::jsonb,$4,$5,$6,$7,$8,$9,$10)`,
         [
           input.actor.tenantId,
           evidence.batch.batchId,
@@ -213,6 +233,9 @@ export class OnboardImportStore {
           evidence.receipt.finality,
           evidence.receipt.reconciliationRef,
           objectVersion,
+          input.request.sourceBindingDigest,
+          runtime.elapsedMs,
+          runtime.deadlineAt,
           input.requestedAt,
         ],
       );

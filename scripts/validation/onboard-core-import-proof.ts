@@ -11,7 +11,7 @@ import {
   parseTenantBlueprintProposal,
 } from "@/modules/onboard-core/contracts";
 import {
-  ONBOARD_IMPORT_MAPPING_VERSION,
+  ONBOARD_IMPORT_MAPPING_VERSION_V2,
   importSourceDigest,
   parseImportDryRunRequest,
 } from "@/modules/onboard-core/importContracts";
@@ -19,6 +19,9 @@ import { OnboardImportStore } from "@/modules/onboard-core/importStore";
 import { OnboardCoreDomainError, OnboardCoreStore } from "@/modules/onboard-core/store";
 import { IdempotencyConflictError } from "@/modules/platform-guarantees/commandKernel";
 import { sha256 } from "@/modules/platform-guarantees/eventContract";
+import { TENANT_PACK_DRAFT_SCHEMA_DIGEST, TENANT_PACK_DRAFT_SCHEMA_PATH, TENANT_PACK_SOURCE_BINDING_VERSION, tenantPackSourceBindingDigest } from "@/modules/onboard-core/sourceBinding";
+import type { HumanApprovalSubject } from "@/modules/onboard-core/humanApproval";
+import type { TenantPackSourceBindingV1 } from "@/modules/onboard-core/sourceBinding";
 
 const connectionString = process.env.DATABASE_URL?.trim();
 if (!connectionString) throw new Error("DATABASE_URL is required.");
@@ -31,7 +34,14 @@ const serviceActor: ApiActor = {
   source: "service-token",
   tenantId: tenant,
 };
-const humanActor: ApiActor = { ...serviceActor, actorId: "user:onboard-import-approver", actorType: "user" };
+const humanActor: HumanApprovalSubject = { actorId: "user_onboard_import_approver", actorType: "user", authenticationRef: "supabase-session:proof-import", authenticatedAt: new Date().toISOString(), capabilities: ["onboarding.blueprint.approve", "onboarding.mandate.revoke"], contractVersion: "LuzioneHumanApprovalSubject/v1", source: "supabase-user-jwt", tenantId: tenant };
+const sourceBinding = {
+  consumerEvidenceSha: "1".repeat(40), consumerImplementationSha: "2".repeat(40), consumerRepository: "CIBOTFLOW/Luzione-UI" as const,
+  contractVersion: TENANT_PACK_SOURCE_BINDING_VERSION, evidenceDigest: "3".repeat(64), evidencePath: "evidence/import-proof.json",
+  mapperDigest: "4".repeat(64), mapperPath: "src/onboarding/import-mapper.ts", sourceSchemaDigest: TENANT_PACK_DRAFT_SCHEMA_DIGEST,
+  sourceSchemaPath: TENANT_PACK_DRAFT_SCHEMA_PATH,
+} satisfies TenantPackSourceBindingV1;
+const sourceBindingDigest = tenantPackSourceBindingDigest(sourceBinding);
 
 function blueprintProposal() {
   const draft = {
@@ -49,16 +59,18 @@ function blueprintProposal() {
     contractVersion: ONBOARD_CORE_API_VERSION,
     draft,
     mappingVersion: TENANT_BLUEPRINT_MAPPING_VERSION,
+    sourceBinding,
     sourceDigest: sha256(draft),
-    sourceSchemaDigest: "a".repeat(64),
+    sourceSchemaDigest: TENANT_PACK_DRAFT_SCHEMA_DIGEST,
   });
 }
 
 function dryRun(input: { dedupeKey: string; mandateId: string; mandateVersion: string; changed?: boolean }) {
   const rows = [
-    { outcome: "ACCEPTED", payloadDigest: sha256({ company: input.changed ? "Changed" : "A" }), reasonCode: null, sourceRowId: "row-1" },
-    { outcome: "REJECTED", payloadDigest: sha256({ company: "B" }), reasonCode: "INVALID_EMAIL", sourceRowId: "row-2" },
-    { outcome: "CONFLICT", payloadDigest: sha256({ company: "C" }), reasonCode: "DUPLICATE_EXTERNAL_ID", sourceRowId: "row-3" },
+    { matchKeyDigest: sha256({ key: "a" }), payloadDigest: sha256({ company: input.changed ? "Changed" : "A" }), sourceRowId: "row-1" },
+    { matchKeyDigest: null, payloadDigest: sha256({ company: "B" }), sourceRowId: "row-2" },
+    { matchKeyDigest: sha256({ key: "conflict" }), payloadDigest: sha256({ company: "C" }), sourceRowId: "row-3" },
+    { matchKeyDigest: sha256({ key: "conflict" }), payloadDigest: sha256({ company: "D" }), sourceRowId: "row-4" },
   ] as const;
   const source = { consentRef: "consent:import-proof", digest: "pending", kind: "CSV" as const, provenanceRef: "synthetic:import-proof" };
   return parseImportDryRunRequest({
@@ -66,13 +78,15 @@ function dryRun(input: { dedupeKey: string; mandateId: string; mandateVersion: s
     dedupeKey: input.dedupeKey,
     expectedMandateObjectVersion: input.mandateVersion,
     mandateId: input.mandateId,
-    mappingVersion: ONBOARD_IMPORT_MAPPING_VERSION,
+    mappingVersion: ONBOARD_IMPORT_MAPPING_VERSION_V2,
     rows,
-    source: { ...source, digest: importSourceDigest({ mappingVersion: ONBOARD_IMPORT_MAPPING_VERSION, rows, source }) },
+    sourceBindingDigest,
+    source: { ...source, digest: importSourceDigest({ mappingVersion: ONBOARD_IMPORT_MAPPING_VERSION_V2, rows, source, sourceBindingDigest }) },
   });
 }
 
 async function main() {
+  process.env.LUZIONE_API_ONBOARDING_L2_BINDINGS = JSON.stringify([{ ...sourceBinding, sourcePackId: "tenant-pack-import-proof", sourcePackVersion: "1.0.0", tenantId: tenant }]);
   const pool = new Pool({ connectionString });
   const core = new OnboardCoreStore(pool);
   const imports = new OnboardImportStore(pool);
@@ -80,7 +94,7 @@ async function main() {
   try {
     const draft = await core.proposeBlueprint({ actor: serviceActor, correlationId: "correlation-import-blueprint", proposal: blueprintProposal(), requestedAt: now.toISOString() });
     const approved = await core.approveBlueprint({
-      actor: humanActor,
+      actor: serviceActor,
       approval: parseTenantBlueprintApprovalRequest({
         blueprintId: draft.readback.blueprint.blueprintId,
         contractVersion: ONBOARD_CORE_API_VERSION,
@@ -89,6 +103,7 @@ async function main() {
         supersedesApprovalRef: null,
       }),
       correlationId: "correlation-import-approval",
+      human: humanActor,
       requestedAt: new Date(now.getTime() + 1_000).toISOString(),
     });
     const mandate = await core.issueMandate({
@@ -108,9 +123,9 @@ async function main() {
     assert.equal(result.readback.batch.status, "RECONCILIATION_REQUIRED");
     assert.equal(result.readback.receipt.finality, "RECONCILIATION_REQUIRED");
     assert.equal(result.readback.receipt.effectMode, result.readback.batch.effectMode);
-    assert.equal(result.readback.rows.length, 3);
-    assert.equal(result.readback.rows.filter((row) => row.exceptionRef).length, 2);
-    assert.equal(result.readback.rows.filter((row) => row.reconciliationRef).length, 1);
+    assert.equal(result.readback.rows.length, 4);
+    assert.equal(result.readback.rows.filter((row) => row.exceptionRef).length, 3);
+    assert.equal(result.readback.rows.filter((row) => row.reconciliationRef).length, 2);
 
     const replay = await imports.executeDryRun({ actor: serviceActor, correlationId: "correlation-import-replay", request, requestedAt: new Date(now.getTime() + 4_000).toISOString() });
     assert.equal(replay.receipt.idempotentReplay, true);
@@ -142,34 +157,14 @@ async function main() {
       }),
       (error: unknown) => error instanceof OnboardCoreDomainError && error.code === "MANDATE_INACTIVE",
     );
-    const revokedMandateId = "99999999-9999-4999-8999-999999999999";
-    const revokedMandate = { ...mandate.readback.mandate, mandateId: revokedMandateId };
-    await pool.query(
-      `insert into public.onboarding_setup_mandates
-        (tenant_id, mandate_id, blueprint_id, blueprint_version, approval_ref,
-         canonical_mandate, object_version, expires_at, revoked_at, revocation_ref,
-         created_by, created_by_type, created_at)
-       values ($1,$2::uuid,$3::uuid,$4,$5,$6::jsonb,'setup-mandate:revoked-proof',
-         $7,$8,'revocation:proof',$9,'service',$10)`,
-      [
-        tenant,
-        revokedMandateId,
-        revokedMandate.blueprintRef.blueprintId,
-        revokedMandate.blueprintRef.version,
-        revokedMandate.approvalRef,
-        JSON.stringify(revokedMandate),
-        revokedMandate.expiresAt,
-        new Date(now.getTime() + 7_000).toISOString(),
-        serviceActor.actorId,
-        new Date(now.getTime() + 2_000).toISOString(),
-      ],
-    );
+    const revokedMandateId = mandate.readback.mandate.mandateId;
+    await core.revokeMandate({ actor: serviceActor, correlationId: "correlation-import-revocation", human: humanActor, requestedAt: new Date(now.getTime() + 7_000).toISOString(), revocation: { contractVersion: ONBOARD_CORE_API_VERSION, expectedMandateObjectVersion: mandate.readback.objectVersion, mandateId: revokedMandateId, reasonCode: "SECURITY_HOLD", revocationVersion: "SetupMandateRevocation/v1" } });
     assert.equal((await core.readMandate(serviceActor, revokedMandateId))?.mandate.active, false);
     await assert.rejects(
       () => imports.executeDryRun({
         actor: serviceActor,
         correlationId: "correlation-import-revoked",
-        request: dryRun({ dedupeKey: "import-proof-revoked", mandateId: revokedMandateId, mandateVersion: "setup-mandate:revoked-proof" }),
+        request: dryRun({ dedupeKey: "import-proof-revoked", mandateId: revokedMandateId, mandateVersion: mandate.readback.objectVersion }),
         requestedAt: new Date(now.getTime() + 8_000).toISOString(),
       }),
       (error: unknown) => error instanceof OnboardCoreDomainError && error.code === "MANDATE_INACTIVE",
@@ -189,9 +184,9 @@ async function main() {
         (select count(*)::int from public.p110_idempotency_conflicts where tenant_id=$1) conflicts`,
       [tenant],
     )).rows[0];
-    assert.deepEqual(evidence, { batches: 1, command_receipts: 4, conflicts: 1, import_receipts: 1, rows: 3 });
+    assert.deepEqual(evidence, { batches: 1, command_receipts: 5, conflicts: 1, import_receipts: 1, rows: 4 });
     process.stdout.write(`${JSON.stringify({
-      contractVersions: ["ImportBatch/v1", "ImportReceipt/v1", ONBOARD_IMPORT_MAPPING_VERSION],
+      contractVersions: ["ImportBatch/v1", "ImportReceipt/v1", ONBOARD_IMPORT_MAPPING_VERSION_V2],
       evidence,
       result: "PASS",
     })}\n`);
