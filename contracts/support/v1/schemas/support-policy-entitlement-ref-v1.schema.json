@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.luzione.ai/support/v1/schemas/support-policy-entitlement-ref-v1.schema.json",
+  "title": "SupportPolicyEntitlementRef/v1",
+  "allOf": [
+    {
+      "$ref": "./internal-definitions.schema.json#/$defs/DocumentEnvelope"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "SupportPolicyEntitlementRef/v1"
+        },
+        "payload": {
+          "$ref": "./internal-definitions.schema.json#/$defs/SupportPolicyEntitlementRefV1Payload"
+        }
+      }
+    }
+  ],
+  "unevaluatedProperties": false
+}

@@ -1,0 +1,7 @@
+{
+  "expectedOwner": "CIBOTFLOW/Luzione-API",
+  "expectedType": "LuzioneOperationsEvidenceLedger",
+  "expectedVersion": "LuzioneOperationsEvidenceLedger/v3",
+  "reason": "AWAITING_OPS_CONTRACTS_ASSURE_04",
+  "observedAt": "2026-09-05T18:30:00.000Z"
+}

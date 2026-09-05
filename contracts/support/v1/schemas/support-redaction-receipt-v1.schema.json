@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.luzione.ai/support/v1/schemas/support-redaction-receipt-v1.schema.json",
+  "title": "SupportRedactionReceipt/v1",
+  "allOf": [
+    {
+      "$ref": "./internal-definitions.schema.json#/$defs/DocumentEnvelope"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "SupportRedactionReceipt/v1"
+        },
+        "payload": {
+          "$ref": "./internal-definitions.schema.json#/$defs/SupportRedactionReceiptV1Payload"
+        }
+      }
+    }
+  ],
+  "unevaluatedProperties": false
+}

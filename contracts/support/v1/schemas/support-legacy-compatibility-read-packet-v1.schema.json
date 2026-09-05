@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.luzione.ai/support/v1/schemas/support-legacy-compatibility-read-packet-v1.schema.json",
+  "title": "SupportLegacyCompatibilityReadPacket/v1",
+  "allOf": [
+    {
+      "$ref": "./internal-definitions.schema.json#/$defs/ReadPacketEnvelope"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "SupportLegacyCompatibilityReadPacket/v1"
+        },
+        "payload": {
+          "$ref": "./internal-definitions.schema.json#/$defs/SupportLegacyCompatibilityReadPacketV1Payload"
+        }
+      }
+    }
+  ],
+  "unevaluatedProperties": false
+}

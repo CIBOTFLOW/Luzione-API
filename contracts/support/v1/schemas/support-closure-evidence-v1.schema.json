@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.luzione.ai/support/v1/schemas/support-closure-evidence-v1.schema.json",
+  "title": "SupportClosureEvidence/v1",
+  "allOf": [
+    {
+      "$ref": "./internal-definitions.schema.json#/$defs/DocumentEnvelope"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "SupportClosureEvidence/v1"
+        },
+        "payload": {
+          "$ref": "./internal-definitions.schema.json#/$defs/SupportClosureEvidenceV1Payload"
+        }
+      }
+    }
+  ],
+  "unevaluatedProperties": false
+}

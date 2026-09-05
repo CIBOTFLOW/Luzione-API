@@ -1,0 +1,19 @@
+{
+  "fixtureVersion": "LuzioneSupportAdverseCases/v1",
+  "groups": [
+    { "group": "qualified-ref-integrity", "cases": ["cross-tenant", "stale-validity", "fork", "cycle", "unknown-field"] },
+    { "group": "p110-replay", "cases": ["exact-replay", "changed-document-id", "changed-idempotency-key", "supersession-fork"] },
+    { "group": "privacy-redaction", "cases": ["raw-private-escape", "fabricated-redaction-pass", "secret-shaped-value"] },
+    { "group": "absent-human-authority", "cases": ["absent-carries-hash", "agent-as-human", "founder-irem-fabrication"] },
+    { "group": "policy-kill", "cases": ["missing-stage-read", "expired-policy", "missing-kill"] },
+    { "group": "sla-time", "cases": ["lossy-severity", "past-due-event", "ack-as-clock-stop"] },
+    { "group": "customer-reply-delivery", "cases": ["sent-draft", "provider-ack-finality", "reserved-effect"] },
+    { "group": "closure", "cases": ["status-only-close", "ack-only-close", "missing-owner", "dual-reply-exception"] },
+    { "group": "reopen", "cases": ["same-version", "same-watermark", "missing-closure", "fork"] },
+    { "group": "absent-incident-recovery", "cases": ["open-incident", "orphan-recovery", "agent-acknowledgement"] },
+    { "group": "disposition", "cases": ["local-delete-as-final", "active-hold", "residual-copy"] },
+    { "group": "legacy-cutover", "cases": ["customer-values", "tenant-defaulting", "reverse-after-pin"] },
+    { "group": "output-handoff", "cases": ["partial-core-document", "authoritative-severity", "effectful-action", "delivered-reply", "unqualified-source"] },
+    { "group": "export-surface", "cases": ["duplicate-contract", "eliminated-contract", "builder", "store", "resolver", "provider", "writer", "migration", "scheduler", "finalizer"] }
+  ]
+}
