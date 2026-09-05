@@ -8,6 +8,12 @@
   "canonical_program": "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md",
   "program_extensions": [
     {
+      "extension_id": "LUZIONE_CRM_OS_OPS_CONTRACTS_01_G0",
+      "source": "CIBOTFLOW/Luzione-platform-program@6a6d710a1e35774ef544bf0c770a92481fb09dcb",
+      "repository_program": "architecture/production-convergence/OPS_CONTRACTS_01_WORKING_CONTRACT.md",
+      "admitted_at": "2026-09-05T02:14:33Z"
+    },
+    {
       "extension_id": "LUZIONE_CRM_OS_CORE_02_G0",
       "source": "CIBOTFLOW/Luzione-platform-program@7713b02201e5abb84a92bb0d2af91514d33c84d5",
       "repository_program": "architecture/production-convergence/CORE_02_WORKING_CONTRACT.md",
@@ -41,6 +47,25 @@
     "S4_QUEUE_EXHAUSTED": "Stop when every admitted project is complete, quarantined or removed and no dependency-ready work remains."
   },
   "queue": [
+    {
+      "project_id": "OPS-CONTRACTS-01",
+      "platform_project": "LUZIONE_CRM_OS_OPERATIONS_EVIDENCE",
+      "title": "Strict Proof and Customer-Zero Operations Evidence Contracts",
+      "priority": 520,
+      "status": "IN_PROGRESS",
+      "depends_on": ["CORE-02"],
+      "starting_sha": "c981a13cbef1cf41fac4cd07a5d9992d61fd3288",
+      "controller_authority": "CIBOTFLOW/Luzione-platform-program@6a6d710a1e35774ef544bf0c770a92481fb09dcb",
+      "mutation_cone": ["documentation", "contracts", "generated-sdk", "fixtures", "tests", "execution-metadata"],
+      "core_outcome": "Publish a separate strict operations-evidence bundle for proof-window and customer-zero operation records while preserving frozen LuzioneCoreContracts/v1 and every no-effect/production hold.",
+      "published_artifacts": ["operations-evidence manifest and schema", "strict consumer SDK", "semantic fixtures", "L2/L3 consumer packets"],
+      "required_evidence": ["seventeen exact-field/version positives", "formula/state/clock validation", "owner/evidence/coverage and G2 negatives", "frozen Core tree identity", "local/full CI and rollback proof"],
+      "irreversible_effects": [],
+      "completion_evidence_ref": null,
+      "release_evidence": "NOT_ASSESSED",
+      "effect_authority": "NO_EFFECT",
+      "finality": "NOT_FINAL"
+    },
     {
       "project_id": "CORE-02",
       "platform_project": "LUZIONE_CRM_OS_WAVE_1",

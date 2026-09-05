@@ -1,0 +1,79 @@
+{
+  "schemaVersion": "OPS-CONTRACTS-01/L2-CRM-App-Consumer-Packet/v1",
+  "producerRepository": "CIBOTFLOW/Luzione-API",
+  "producerBaseSha": "c981a13cbef1cf41fac4cd07a5d9992d61fd3288",
+  "producerImplementationSha": "PENDING_IMPLEMENTATION_COMMIT",
+  "producerFinalEvidenceSha": "PENDING_EVIDENCE_COMMIT",
+  "producerBranch": "codex/ops-contracts-01-g0-6a6d710",
+  "bundleVersion": "LuzioneOperationsEvidence/v1",
+  "sourcePacketPins": {
+    "PROOF-OPS-01/v1": "b2c79f6a580267adfcac1745047518979070ee3f18d90df478dc4b6ec511cb8b",
+    "CUSTOMER-ZERO-OPS-01/v1": "ae1c5225f8bb1c45420572433ac659ff054a1fd2bfad1cb2bf740e5ae008e57c"
+  },
+  "coreComposition": {
+    "bundleVersion": "LuzioneCoreContracts/v1",
+    "implementationSha": "828de754e4104cd860e3f47adbf2e84c576e5c10",
+    "finalSha": "bb5eb395af0873f4483ba2dc10c76f9941051dde"
+  },
+  "authoritativePaths": {
+    "manifest": "contracts/operations-evidence/luzione-operations-evidence-v1.manifest.json",
+    "schema": "contracts/operations-evidence/v1/luzione-operations-evidence-v1.schema.json",
+    "sdk": "src/modules/operations-evidence-contracts/generatedSdk.ts",
+    "fixtures": "src/modules/operations-evidence-contracts/fixtures.ts",
+    "tests": "src/modules/operations-evidence-contracts/tests/operations-evidence-contracts.test.ts"
+  },
+  "contractVersions": [
+    "EvidenceRef/v1",
+    "MetricCatalog/v1",
+    "ProofWindowEntry/v1",
+    "ProofDailyRecord/v1",
+    "ProofWeeklySignoff/v1",
+    "CapabilityWindowLedger/v1",
+    "EvidenceCompletenessReport/v1",
+    "ProofException/v1",
+    "ProofIncident/v1",
+    "ProofExitDecision/v1",
+    "CustomerZeroCadence/v1",
+    "CaseHandoff/v1",
+    "TrainingAttestation/v1",
+    "FeedbackRecord/v1",
+    "ChangeFreeze/v1",
+    "CapacityObservation/v1",
+    "StageReadiness/v1"
+  ],
+  "effectAuthority": "NO_EFFECT",
+  "strongestClaim": "BOUNDED_G0_CONTRACT_CANDIDATE_NOT_INTEGRATED_NOT_PRODUCTION_READY",
+  "consumerRepository": "CIBOTFLOW/Luzione-UI",
+  "consumerRole": "Luzione CRM App",
+  "requiredConsumerBehavior": [
+    "Pin the exact producer implementation SHA and import or mechanically mirror only the authoritative SDK/schema paths.",
+    "Render observed evidence, missing coverage, exceptions, incidents, capacity, training currency and stage blockers without deriving broader finality.",
+    "Never turn StageReadiness/v1 into authority: a parsed ADVANCE decision is documentary evidence and does not execute a stage.",
+    "Keep case handoff, training, feedback, cadence and change-freeze payloads free of customer content, direct PII and secret material.",
+    "Preserve append-only supersession; do not update an existing evidence record in place.",
+    "Keep all effects disabled until separate controller and exact-action G2 authority exists."
+  ],
+  "acceptanceProof": [
+    "all seventeen positive fixtures through the exact SDK",
+    "surplus, missing and wrong-version rejection for every document",
+    "unaccepted handoff and stale training hold stage advance",
+    "capacity overrun, telemetry gap, hard-zero breach and missing coverage block credit/readiness",
+    "bundled G2, unsafe agent authority, overwrite, secret and PII references are rejected"
+  ],
+  "prohibitedLocalRedefinitions": [
+    "EvidenceRef or MetricCatalog meaning",
+    "proof credit/completeness/capacity formulas",
+    "stage transition law",
+    "hard-zero waiver semantics",
+    "human owner or approval semantics",
+    "Core operation/receipt/readback semantics"
+  ],
+  "remainingExternalProof": [
+    "exact L2 implementation and CI SHA",
+    "authenticated Git-bound preview/readback",
+    "activation-cone clearance",
+    "live proof-window evidence",
+    "managed recovery evidence",
+    "G1/G2 decisions"
+  ]
+}
