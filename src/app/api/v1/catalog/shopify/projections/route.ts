@@ -1,6 +1,6 @@
 import { apiResponse, createRequestIdentity } from "@/lib/api/http";
 import { requireServiceActor } from "@/lib/api/actor";
-import { runtimeConfig } from "@/lib/api/config";
+import { internalProjectionsEnabledFor } from "@/lib/api/config";
 import {
   P113ContractError,
   P113_INGEST_CONTRACT_VERSION,
@@ -98,8 +98,7 @@ export async function POST(request: Request) {
   let identity = createRequestIdentity(request.headers);
   try {
     const actor = await requireServiceActor(request.headers, "catalog.projection.ingest");
-    const config = runtimeConfig();
-    if (!config.internalProjectionsEnabled) {
+    if (!internalProjectionsEnabledFor({ source: "SHOPIFY", tenantId: actor.tenantId })) {
       return apiResponse(
         {
           ok: false,

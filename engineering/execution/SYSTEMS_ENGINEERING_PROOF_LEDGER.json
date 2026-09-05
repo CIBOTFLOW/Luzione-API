@@ -2067,6 +2067,130 @@
       "next_proof_needed": [
         "The controller routes the seven unsigned exact-field packets to their named human functions and admits only signature-verifiable returns that preserve all NO_EFFECT holds."
       ]
+    },
+    {
+      "proof_id": "OPS_CONTRACTS_01_G0_OPERATIONS_EVIDENCE_20260905",
+      "project_id": "OPS-CONTRACTS-01",
+      "recorded_at": "2026-09-05T02:31:34Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "cf9fee8fbefa1dbda013788795b068477fa8535b",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "OPS-CONTRACTS-01 publishes a separate strict v1 schema, parser, generated SDK and fixture bundle for PROOF-OPS-01 and CUSTOMER-ZERO-OPS-01 operations evidence, composes with byte-identical LuzioneCoreContracts/v1 trees, and authorizes no route, persistence, provider, deployment, proof-window, stage or production effect.",
+      "exercised_boundaries": [
+        "All seventeen EvidenceRef, MetricCatalog, proof-entry/daily/weekly/capability/completeness/exception/incident/exit and customer-zero cadence/handoff/training/feedback/freeze/capacity/stage fixtures passed the same generated SDK boundary.",
+        "Every document rejected surplus, missing and wrong-version fields through the discriminated strict parser.",
+        "Missing accountable owner, capability coverage and record evidence failed closed; agent/Sultan owner, signer, approver and trainee identities were denied.",
+        "Completeness, proof-day credit and capacity utilization formulas were deterministic and mismatch-sensitive; a telemetry gap, hard-zero breach or capacity overrun could not earn credit or admission.",
+        "Unaccepted handoff, stale training, false stage jump/advance and bundled G2 evidence failed closed under an explicit assessment clock.",
+        "Corrections used append-only supersession; self-supersession and overwrite fields failed, and secret/direct-PII keys or values were rejected before compatibility evaluation.",
+        "The manifest pinned PROOF-OPS-01/v1 fingerprint b2c79f6a580267adfcac1745047518979070ee3f18d90df478dc4b6ec511cb8b and CUSTOMER-ZERO-OPS-01/v1 fingerprint ae1c5225f8bb1c45420572433ac659ff054a1fd2bfad1cb2bf740e5ae008e57c; drift in either packet or Core composition failed.",
+        "The checked-out contracts/core and src/modules/luzione-core-contracts trees remained d57ccc4cccd97b37acd1a1575b1e07ede5787349 and d594fa014d7020fdf8386c7a6926ff9b573ac355.",
+        "Focused tests passed 19/19; full repository tests passed 362/362; seven compliance documents, TypeScript, ESLint with zero warnings and the Next.js 16.3.4 webpack build passed.",
+        "No route, database object, migration, credential, provider call, runtime flag, deployment, default branch, production query/mutation, activation or rollback was introduced or exercised."
+      ],
+      "untested_boundaries": [
+        "independent L2 and L3 exact-SHA consumption of the generated SDK and fixtures",
+        "authenticated Git-bound deployed readback or any persisted operations-evidence record",
+        "activation-cone clearance, proof-window entry, live proof days or customer-zero production operations",
+        "managed recovery, exact-action G2 authority, controller acceptance or G1",
+        "any runtime, provider, customer, database, migration or production effect"
+      ],
+      "evidence_refs": [
+        "commit:cf9fee8fbefa1dbda013788795b068477fa8535b",
+        "contracts/operations-evidence/luzione-operations-evidence-v1.manifest.json",
+        "contracts/operations-evidence/v1/luzione-operations-evidence-v1.schema.json",
+        "contracts/operations-evidence/consumer-mappings/l2-crm-app-v1.json",
+        "contracts/operations-evidence/consumer-mappings/l3-sultan-runtime-v1.json",
+        "src/modules/operations-evidence-contracts/generatedSdk.ts",
+        "src/modules/operations-evidence-contracts/tests/operations-evidence-contracts.test.ts",
+        "engineering/execution/ops-contracts-01/OPS_CONTRACTS_01_ARTIFACT_DIGESTS_V1.json"
+      ],
+      "failure_refs": [
+        "OPS_CONTRACTS_01_INITIAL_CLOCK_VALIDATION_20260905",
+        "OPS_CONTRACTS_01_LINT_UNUSED_INDEX_20260905"
+      ],
+      "cross_repo_handoffs": [
+        "L2 CRM App consumer packet pins the exact implementation and prohibits local evidence/finality/authority redefinition.",
+        "L3 Sultan Runtime consumer packet permits evidence preparation only and prohibits agent accountability, approval, stage and exit authority."
+      ],
+      "deferred_external_infra": [
+        "exact-head automated CI",
+        "independent exact-SHA L2/L3 consumption",
+        "authenticated deployed application readback",
+        "activation-cone, managed recovery and all G1/G2 authority"
+      ],
+      "remaining_uncertainty": [
+        "The SDK is proven only against synthetic local documents and does not establish a truth store or deployed transport boundary.",
+        "The source packets are specification-complete but no proof window or customer-zero production operation has started.",
+        "A parsed readiness or exit record is evidence only and cannot authorize or execute an operational transition."
+      ],
+      "next_proof_needed": [
+        "L2 and L3 independently pin cf9fee8fbefa1dbda013788795b068477fa8535b, execute the published positive/negative fixtures without semantic forks, and return immutable zero-effect consumer evidence."
+      ]
+    },
+    {
+      "proof_id": "OPS_CONTRACTS_01_CORE_CORRECTION_01_G0_20260905",
+      "project_id": "OPS-CONTRACTS-01+CORE-CORRECTION-01",
+      "recorded_at": "2026-09-05T02:45:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "f5a62923e52510cdd40fbef41dc86266e33ab05e",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The unchanged OPS-CONTRACTS-01 v1 semantics at cf9fee8fbefa1dbda013788795b068477fa8535b are composed with bounded CORE-CORRECTION-01 fail-closed projection admission, bidirectionally complete three-journey inventory mappings, complete-evidence standard secret scanning and a detached exact-final attestation protocol without changing frozen LuzioneCoreContracts/v1.",
+      "exercised_boundaries": [
+        "Internal projections require exact true, exact global mutation enablement, configured database and service authentication, a non-empty tenant/source admission policy, the authenticated tenant and fixed SHOPIFY source.",
+        "The environment example sets the projection flag false and both admission lists empty, so no correction path enables a runtime effect.",
+        "Every journey route, relation-group, job and unknown list equals its reverse edge set; GJ-1 includes service-token identity unknown CORE02-U008.",
+        "All fifteen dedicated CORE-02 evidence paths are scanned byte-for-byte for standard connection URL, private key, bearer, GitHub, Stripe, OpenAI, Slack, Google, AWS, Shopify, Supabase, JWT, Vercel, npm, SendGrid and assigned-secret value classes.",
+        "All seven owner-return packets remain unsigned, all nineteen answers remain UNKNOWN, and no production fact is inferred.",
+        "Detached final evidence is constrained to a content-addressed annotated Git tag created after final commit; same-commit self-hash and a tracked final-SHA placeholder are prohibited.",
+        "Focused CORE-02 7/7, OPS-CONTRACTS-01 19/19, catalog projection 8/8 and topology 7/7 passed; full tests passed 364/364; compliance 7/7, TypeScript, zero-warning ESLint and Next.js 16.3.4 webpack build passed.",
+        "The frozen contracts/core and src/modules/luzione-core-contracts trees remain d57ccc4cccd97b37acd1a1575b1e07ede5787349 and d594fa014d7020fdf8386c7a6926ff9b573ac355."
+      ],
+      "untested_boundaries": [
+        "independent exact-SHA L2/L3 operations-evidence consumption",
+        "authenticated Git-bound application readback",
+        "signed human resolution of any CORE-02 owner unknown",
+        "managed recovery, deployment, activation, proof days, customer-zero operations, G1 or G2",
+        "any production database, provider, credential, migration or customer effect"
+      ],
+      "evidence_refs": [
+        "commit:cf9fee8fbefa1dbda013788795b068477fa8535b",
+        "commit:6873eedce7070064a624f6838edbea610e3143ae",
+        "commit:f5a62923e52510cdd40fbef41dc86266e33ab05e",
+        "pull-request:CIBOTFLOW/Luzione-API#68",
+        "engineering/execution/core-02/CORE_CORRECTION_01_REMEDIATION_V1.json",
+        "engineering/execution/core-02/CORE_02_EVIDENCE_SET_V1.json",
+        "src/lib/api/config.ts",
+        "src/app/api/v1/catalog/shopify/projections/route.ts",
+        "src/modules/core-02-inventory/tests/core-02-inventory.test.ts",
+        "src/modules/catalog-projection/tests/p113-catalog-projection.test.ts"
+      ],
+      "failure_refs": [
+        "CORE_CORRECTION_01_ASSURANCE_GAPS_20260905",
+        "CORE_CORRECTION_01_TOPOLOGY_ENV_INVENTORY_20260905"
+      ],
+      "cross_repo_handoffs": [
+        "L2 and L3 continue to pin operations implementation cf9fee8fbefa1dbda013788795b068477fa8535b because CORE-CORRECTION-01 does not change LuzioneOperationsEvidence/v1 semantics."
+      ],
+      "deferred_external_infra": [
+        "exact-final automated CI and detached attestation",
+        "independent consumers",
+        "authenticated deployed readback",
+        "signed ownership and managed recovery evidence"
+      ],
+      "remaining_uncertainty": [
+        "The controller audit remains NOT_CLEARED beyond the bounded repository defects; partial and unknown rows requiring external evidence are not promoted.",
+        "A parsed operations record is evidence only and the corrected projection path remains default-off."
+      ],
+      "next_proof_needed": [
+        "Publish and verify exact-final CI plus the detached content-addressed attestation, then release the API writer for ONBOARD-SPINE-L1-G0/v1 without starting it in this branch."
+      ]
     }
   ]
 }

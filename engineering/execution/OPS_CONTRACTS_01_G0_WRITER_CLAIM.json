@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "OPS-CONTRACTS-01/API-Writer-Claim/v1",
+  "projectId": "OPS-CONTRACTS-01",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "branch": "codex/ops-contracts-01-g0-6a6d710",
+  "baseSha": "c981a13cbef1cf41fac4cd07a5d9992d61fd3288",
+  "controllerAuthority": "CIBOTFLOW/Luzione-platform-program@6a6d710a1e35774ef544bf0c770a92481fb09dcb",
+  "materialCorrectionAuthority": "CIBOTFLOW/Luzione-platform-program@8543a3eab0a969f213bc192391bd7ca657bbf087",
+  "queuedSuccessorAuthority": "CIBOTFLOW/Luzione-platform-program@1e77028",
+  "queuedConnectorSuccessorAuthority": "CIBOTFLOW/Luzione-platform-program@b3dbea8",
+  "writer": {
+    "lane": "L1",
+    "threadId": "01a063d3-a21c-7e60-a257-9ef6d89cad4c",
+    "claimedAt": "2026-09-05T02:14:33Z",
+    "releasedAt": "2026-09-05T02:47:19Z",
+    "state": "RELEASED_AFTER_FINAL_COMMIT_AND_DETACHED_ATTESTATION"
+  },
+  "scope": "Documentation, schema, generated SDK, fixtures, and tests for the versioned Luzione operations-evidence bundle, plus the bounded fail-closed CORE-CORRECTION-01 projection guard and inventory assurance repair",
+  "effectAuthority": "NO_EFFECT",
+  "prohibitedEffects": [
+    "route or runtime activation beyond the default-off fail-closed admission guard",
+    "database object or migration creation",
+    "credential or secret access/change",
+    "provider call or external communication",
+    "deployment or promotion",
+    "default-branch mutation or merge",
+    "production query, mutation, or rollback"
+  ]
+}

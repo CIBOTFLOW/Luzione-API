@@ -3,19 +3,23 @@
   "projectId": "CORE-02",
   "repository": "CIBOTFLOW/Luzione-API",
   "controllerAuthority": "CIBOTFLOW/Luzione-platform-program@7713b02201e5abb84a92bb0d2af91514d33c84d5",
+  "correctionAuthority": "CIBOTFLOW/Luzione-platform-program@8543a3eab0a969f213bc192391bd7ca657bbf087",
+  "correctionAuditFingerprint": "3fdc9ddf470509ec9c115656a431f414b9796dda14ec0aaaf9133fbaab796968",
   "baseSha": "bb5eb395af0873f4483ba2dc10c76f9941051dde",
   "implementationSha": "2e62ceba046192769148017b4f624846b6fa71c4",
   "ciPortableEvidenceSha": "c9e11c4d2ceb062678b3146ba6e8601ba7846761",
+  "correctionImplementationSha": "f5a62923e52510cdd40fbef41dc86266e33ab05e",
   "generatedAt": "2026-09-05T01:58:29Z",
+  "correctedAt": "2026-09-05T02:45:00Z",
   "algorithm": "sha256",
   "artifacts": [
     {
       "path": "engineering/execution/core-02/CORE_02_API_ACTIVATION_CONE_MANIFEST_V1.json",
-      "digest": "9f5c35947b6b427394b24568376bedf70b13a442a068187a9979d3c6af69556e"
+      "digest": "ebaf1c40e4c1b479dc0453fc4919125a31ef4ac71d5b684d8199b775e1d22397"
     },
     {
       "path": "engineering/execution/core-02/CORE_02_UNKNOWN_OWNER_LEDGER_V1.json",
-      "digest": "64f8bee4e3413f90164a645466430d86d8f6dc278cd0668053446a6a055e6d13"
+      "digest": "51153235664a921e8c73cd6038a0f24e7fb158ab4dd9224833b6650991bb2533"
     },
     {
       "path": "engineering/execution/core-02/owner-returns/CORE_02_OWNER_CONNECTOR_RUNTIME_V1.json",
@@ -46,17 +50,29 @@
       "digest": "188a6d9347ebd2734b22535011ace8b47e687e811ceb3907e77c7726d05f2b6f"
     },
     {
+      "path": "engineering/execution/core-02/CORE_02_EVIDENCE_SET_V1.json",
+      "digest": "05bb4a5cadacc6ad51d8badc4417c768d9aafc373bcdd342ee3b3b8d85475cef"
+    },
+    {
+      "path": "engineering/execution/core-02/CORE_CORRECTION_01_REMEDIATION_V1.json",
+      "digest": "d0dd3803e3a762a61e57f9faaf1959cb35d0b98656e76b33f3a0ce955aa44499"
+    },
+    {
       "path": "src/modules/core-02-inventory/tests/core-02-inventory.test.ts",
-      "digest": "9d2bc802d84e3519a2feaf5f061500378c550fe246c012b8937705c651fc230b"
+      "digest": "fd9bf9353bdf0d82d28ebb8091f1f2d465870ffe6a16464a118347a3d9252b13"
     },
     {
       "path": "architecture/production-convergence/CORE_02_WORKING_CONTRACT.md",
-      "digest": "f2c44e2225e5880e48f638d361d069624c4869e946f046083825bdd3a49765ba"
+      "digest": "3ef522e36356928c110d030ae685450ef464a775ea9dd7b26dc2f90145d47e15"
+    },
+    {
+      "path": "engineering/execution/LUZIONE_API_TOPOLOGY_INVENTORY_V1.json",
+      "digest": "b0fdcff8bd8beb5bd02b2dbed89ab3587a7e78ea1ee2431e4a848e8cddc49105"
     }
   ],
   "frozenTrees": {
     "contracts/core": "d57ccc4cccd97b37acd1a1575b1e07ede5787349",
     "src/modules/luzione-core-contracts": "d594fa014d7020fdf8386c7a6926ff9b573ac355"
   },
-  "strongestClaim": "The listed artifacts are immutable inputs to a bounded, local and CI-proven NO_EFFECT inventory; they do not prove activation, integration, production readiness, deployed application readback or owner confirmation."
+  "strongestClaim": "The original CORE-02 candidate remains bounded local/CI NO_EFFECT evidence. CORE-CORRECTION-01 adds repository-local fail-closed projection admission, bidirectional inventory and complete evidence-set scanning only; it does not prove activation, integration, production readiness, deployed application readback or owner confirmation."
 }

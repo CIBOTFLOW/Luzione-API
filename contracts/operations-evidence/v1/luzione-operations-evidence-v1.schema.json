@@ -1,0 +1,1861 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/operations-evidence/v1/luzione-operations-evidence-v1.schema.json",
+  "title": "Luzione Operations Evidence Contracts v1",
+  "description": "Strict offline evidence contracts. Semantic formulas, state transitions, clock rules, supersession and authority are enforced by the generated TypeScript SDK.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/EvidenceRef"
+    },
+    {
+      "$ref": "#/$defs/MetricCatalog"
+    },
+    {
+      "$ref": "#/$defs/ProofWindowEntry"
+    },
+    {
+      "$ref": "#/$defs/ProofDailyRecord"
+    },
+    {
+      "$ref": "#/$defs/ProofWeeklySignoff"
+    },
+    {
+      "$ref": "#/$defs/CapabilityWindowLedger"
+    },
+    {
+      "$ref": "#/$defs/EvidenceCompletenessReport"
+    },
+    {
+      "$ref": "#/$defs/ProofException"
+    },
+    {
+      "$ref": "#/$defs/ProofIncident"
+    },
+    {
+      "$ref": "#/$defs/ProofExitDecision"
+    },
+    {
+      "$ref": "#/$defs/CustomerZeroCadence"
+    },
+    {
+      "$ref": "#/$defs/CaseHandoff"
+    },
+    {
+      "$ref": "#/$defs/TrainingAttestation"
+    },
+    {
+      "$ref": "#/$defs/FeedbackRecord"
+    },
+    {
+      "$ref": "#/$defs/ChangeFreeze"
+    },
+    {
+      "$ref": "#/$defs/CapacityObservation"
+    },
+    {
+      "$ref": "#/$defs/StageReadiness"
+    }
+  ],
+  "$defs": {
+    "EvidenceRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "artifactKind": {
+          "enum": [
+            "AUTHORITY",
+            "HANDOFF",
+            "INCIDENT",
+            "METRIC",
+            "RECOVERY",
+            "RELEASE",
+            "SOURCE_READBACK",
+            "TRAINING"
+          ]
+        },
+        "artifactVersion": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 240
+        },
+        "containsSecretOrPii": {
+          "const": false
+        },
+        "contractVersion": {
+          "const": "EvidenceRef/v1"
+        },
+        "dataClassification": {
+          "const": "NON_SENSITIVE_METADATA"
+        },
+        "evidenceRefId": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 240
+        },
+        "immutable": {
+          "const": true
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "releaseSha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "tenantId": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 240
+        },
+        "verifierId": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 240
+        }
+      },
+      "required": [
+        "artifactKind",
+        "artifactVersion",
+        "containsSecretOrPii",
+        "contractVersion",
+        "dataClassification",
+        "evidenceRefId",
+        "immutable",
+        "observedAt",
+        "releaseSha",
+        "sha256",
+        "tenantId",
+        "verifierId"
+      ]
+    },
+    "AccountableOwner": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "function": {
+          "enum": [
+            "FOUNDER",
+            "PLATFORM_OPERATIONS",
+            "SUPPORT_OPERATIONS"
+          ]
+        },
+        "ownerId": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 240
+        },
+        "ownerType": {
+          "const": "HUMAN"
+        }
+      },
+      "required": [
+        "function",
+        "ownerId",
+        "ownerType"
+      ]
+    },
+    "SourcePacket": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "fingerprintSha256": {
+              "const": "b2c79f6a580267adfcac1745047518979070ee3f18d90df478dc4b6ec511cb8b"
+            },
+            "packetId": {
+              "const": "PROOF-OPS-01/v1"
+            }
+          },
+          "required": [
+            "fingerprintSha256",
+            "packetId"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "fingerprintSha256": {
+              "const": "ae1c5225f8bb1c45420572433ac659ff054a1fd2bfad1cb2bf740e5ae008e57c"
+            },
+            "packetId": {
+              "const": "CUSTOMER-ZERO-OPS-01/v1"
+            }
+          },
+          "required": [
+            "fingerprintSha256",
+            "packetId"
+          ]
+        }
+      ]
+    },
+    "G2ApprovalRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "actionId": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 240
+        },
+        "evidenceRefId": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 240
+        }
+      },
+      "required": [
+        "actionId",
+        "evidenceRefId"
+      ]
+    },
+    "RecordBase": {
+      "type": "object",
+      "properties": {
+        "accountableOwner": {
+          "$ref": "#/$defs/AccountableOwner"
+        },
+        "contractVersion": {
+          "enum": [
+            "MetricCatalog/v1",
+            "ProofWindowEntry/v1",
+            "ProofDailyRecord/v1",
+            "ProofWeeklySignoff/v1",
+            "CapabilityWindowLedger/v1",
+            "EvidenceCompletenessReport/v1",
+            "ProofException/v1",
+            "ProofIncident/v1",
+            "ProofExitDecision/v1",
+            "CustomerZeroCadence/v1",
+            "CaseHandoff/v1",
+            "TrainingAttestation/v1",
+            "FeedbackRecord/v1",
+            "ChangeFreeze/v1",
+            "CapacityObservation/v1",
+            "StageReadiness/v1"
+          ]
+        },
+        "effectAuthority": {
+          "const": "NO_EFFECT"
+        },
+        "evidenceRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EvidenceRef"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "immutable": {
+          "const": true
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "payload": {
+          "type": "object"
+        },
+        "recordedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "recordId": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 240
+        },
+        "sourcePacket": {
+          "$ref": "#/$defs/SourcePacket"
+        },
+        "supersedesRecordId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 240
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tenantId": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 240
+        }
+      },
+      "required": [
+        "accountableOwner",
+        "contractVersion",
+        "effectAuthority",
+        "evidenceRefs",
+        "immutable",
+        "observedAt",
+        "payload",
+        "recordedAt",
+        "recordId",
+        "sourcePacket",
+        "supersedesRecordId",
+        "tenantId"
+      ]
+    },
+    "MetricCatalog": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/RecordBase"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "MetricCatalog/v1"
+            },
+            "payload": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "catalogId": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 240
+                },
+                "catalogVersion": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 240
+                },
+                "effectiveAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "Z$"
+                },
+                "metrics": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "denominatorEvidenceClass": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 240
+                      },
+                      "formula": {
+                        "enum": [
+                          "COUNT",
+                          "HARD_ZERO",
+                          "RATIO_BPS",
+                          "SUM"
+                        ]
+                      },
+                      "hardZero": {
+                        "type": "boolean"
+                      },
+                      "metricId": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 240
+                      },
+                      "missingDataRule": {
+                        "const": "NO_CREDIT"
+                      },
+                      "numeratorEvidenceClass": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 240
+                      },
+                      "ownerId": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 240
+                      },
+                      "unit": {
+                        "enum": [
+                          "BASIS_POINTS",
+                          "COUNT",
+                          "DAYS",
+                          "MILLISECONDS",
+                          "MINUTES"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "denominatorEvidenceClass",
+                      "formula",
+                      "hardZero",
+                      "metricId",
+                      "missingDataRule",
+                      "numeratorEvidenceClass",
+                      "ownerId",
+                      "unit"
+                    ]
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true
+                },
+                "retiredMetricIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 240
+                  },
+                  "minItems": 0,
+                  "uniqueItems": true
+                }
+              },
+              "required": [
+                "catalogId",
+                "catalogVersion",
+                "effectiveAt",
+                "metrics",
+                "retiredMetricIds"
+              ]
+            }
+          },
+          "required": [
+            "contractVersion",
+            "payload"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "ProofWindowEntry": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/RecordBase"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "ProofWindowEntry/v1"
+            },
+            "payload": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "activationConeCleared": {
+                  "type": "boolean"
+                },
+                "blockingIncidentCount": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "capabilityCount": {
+                  "const": 40
+                },
+                "clearedCapabilityCount": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 40
+                },
+                "coreContractVersion": {
+                  "const": "LuzioneCoreContracts/v1"
+                },
+                "entryState": {
+                  "enum": [
+                    "BLOCKED",
+                    "READY"
+                  ]
+                },
+                "g1ReleaseShas": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{40}$"
+                  },
+                  "uniqueItems": true
+                },
+                "g2Approvals": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/G2ApprovalRef"
+                  },
+                  "uniqueItems": true
+                }
+              },
+              "required": [
+                "activationConeCleared",
+                "blockingIncidentCount",
+                "capabilityCount",
+                "clearedCapabilityCount",
+                "coreContractVersion",
+                "entryState",
+                "g1ReleaseShas",
+                "g2Approvals"
+              ]
+            }
+          },
+          "required": [
+            "contractVersion",
+            "payload"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "ProofDailyRecord": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/RecordBase"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "ProofDailyRecord/v1"
+            },
+            "payload": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "blockingIncidentCount": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "calculatedCredit": {
+                  "enum": [
+                    0,
+                    1
+                  ]
+                },
+                "capabilityCoverage": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "capabilityId": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 240
+                      },
+                      "evidenceRefIds": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 3,
+                          "maxLength": 240
+                        },
+                        "minItems": 1,
+                        "uniqueItems": true
+                      },
+                      "ownerId": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 240
+                      }
+                    },
+                    "required": [
+                      "capabilityId",
+                      "evidenceRefIds",
+                      "ownerId"
+                    ]
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true
+                },
+                "claimedCredit": {
+                  "enum": [
+                    0,
+                    1
+                  ]
+                },
+                "completenessBps": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 10000
+                },
+                "date": {
+                  "type": "string",
+                  "format": "date",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                },
+                "hardZeroCounters": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "duplicateEffect": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "falseFinality": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "secretExposure": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "unauthorizedCrossTenantSuccess": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "unauthorizedEffect": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "unapprovedProviderDispatch": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "unverifiedClosure": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "duplicateEffect",
+                    "falseFinality",
+                    "secretExposure",
+                    "unauthorizedCrossTenantSuccess",
+                    "unauthorizedEffect",
+                    "unapprovedProviderDispatch",
+                    "unverifiedClosure"
+                  ]
+                },
+                "requiredCapabilities": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 240
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true
+                },
+                "telemetryCoverageBps": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 10000
+                }
+              },
+              "required": [
+                "blockingIncidentCount",
+                "calculatedCredit",
+                "capabilityCoverage",
+                "claimedCredit",
+                "completenessBps",
+                "date",
+                "hardZeroCounters",
+                "requiredCapabilities",
+                "telemetryCoverageBps"
+              ]
+            }
+          },
+          "required": [
+            "contractVersion",
+            "payload"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "ProofWeeklySignoff": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/RecordBase"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "ProofWeeklySignoff/v1"
+            },
+            "payload": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "creditedDays": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 7
+                },
+                "dailyRecordIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 240
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true
+                },
+                "requiredDays": {
+                  "const": 7
+                },
+                "signedAt": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "Z$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "signedBy": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "minLength": 3,
+                      "maxLength": 240
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "signoffState": {
+                  "enum": [
+                    "DRAFT",
+                    "READY",
+                    "SIGNED"
+                  ]
+                },
+                "weekStart": {
+                  "type": "string",
+                  "format": "date",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                }
+              },
+              "required": [
+                "creditedDays",
+                "dailyRecordIds",
+                "requiredDays",
+                "signedAt",
+                "signedBy",
+                "signoffState",
+                "weekStart"
+              ]
+            }
+          },
+          "required": [
+            "contractVersion",
+            "payload"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "CapabilityWindowLedger": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/RecordBase"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "CapabilityWindowLedger/v1"
+            },
+            "payload": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "capabilityId": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 240
+                },
+                "creditedDays": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 30
+                },
+                "dailyRecordIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 240
+                  },
+                  "minItems": 0,
+                  "uniqueItems": true
+                },
+                "requiredDays": {
+                  "const": 30
+                },
+                "state": {
+                  "enum": [
+                    "BLOCKED",
+                    "COMPLETE",
+                    "NOT_STARTED",
+                    "OPEN"
+                  ]
+                },
+                "windowEnd": {
+                  "type": "string",
+                  "format": "date",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                },
+                "windowStart": {
+                  "type": "string",
+                  "format": "date",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                }
+              },
+              "required": [
+                "capabilityId",
+                "creditedDays",
+                "dailyRecordIds",
+                "requiredDays",
+                "state",
+                "windowEnd",
+                "windowStart"
+              ]
+            }
+          },
+          "required": [
+            "contractVersion",
+            "payload"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "EvidenceCompletenessReport": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/RecordBase"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "EvidenceCompletenessReport/v1"
+            },
+            "payload": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "calculatedCompletenessBps": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 10000
+                },
+                "claimedCompletenessBps": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 10000
+                },
+                "coverageOwnerIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 240
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true
+                },
+                "missingEvidenceKeys": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 240
+                  },
+                  "minItems": 0,
+                  "uniqueItems": true
+                },
+                "presentValidEvidenceCount": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "requiredEvidenceCount": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              },
+              "required": [
+                "calculatedCompletenessBps",
+                "claimedCompletenessBps",
+                "coverageOwnerIds",
+                "missingEvidenceKeys",
+                "presentValidEvidenceCount",
+                "requiredEvidenceCount"
+              ]
+            }
+          },
+          "required": [
+            "contractVersion",
+            "payload"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "ProofException": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/RecordBase"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "ProofException/v1"
+            },
+            "payload": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "approvalEvidenceRefId": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "minLength": 3,
+                      "maxLength": 240
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "approvedBy": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "minLength": 3,
+                      "maxLength": 240
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "exceptionType": {
+                  "enum": [
+                    "EVIDENCE_DELAY",
+                    "PLANNED_MAINTENANCE",
+                    "TELEMETRY_GAP"
+                  ]
+                },
+                "expiresAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "Z$"
+                },
+                "hardZeroWaiver": {
+                  "const": false
+                },
+                "reasonCode": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 240
+                },
+                "scope": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 240
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true
+                },
+                "status": {
+                  "enum": [
+                    "APPROVED",
+                    "DRAFT",
+                    "EXPIRED",
+                    "REJECTED"
+                  ]
+                }
+              },
+              "required": [
+                "approvalEvidenceRefId",
+                "approvedBy",
+                "exceptionType",
+                "expiresAt",
+                "hardZeroWaiver",
+                "reasonCode",
+                "scope",
+                "status"
+              ]
+            }
+          },
+          "required": [
+            "contractVersion",
+            "payload"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "ProofIncident": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/RecordBase"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "ProofIncident/v1"
+            },
+            "payload": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "acknowledgedAt": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "Z$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "capabilityIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 240
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true
+                },
+                "openedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "Z$"
+                },
+                "readbackEvidenceRefIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 240
+                  },
+                  "minItems": 0,
+                  "uniqueItems": true
+                },
+                "resetCapabilityEpoch": {
+                  "type": "boolean"
+                },
+                "resolvedAt": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "Z$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "severity": {
+                  "enum": [
+                    "P0",
+                    "P1",
+                    "P2",
+                    "P3"
+                  ]
+                },
+                "state": {
+                  "enum": [
+                    "ACKNOWLEDGED",
+                    "OPEN",
+                    "RESOLVED_VERIFIED"
+                  ]
+                }
+              },
+              "required": [
+                "acknowledgedAt",
+                "capabilityIds",
+                "openedAt",
+                "readbackEvidenceRefIds",
+                "resetCapabilityEpoch",
+                "resolvedAt",
+                "severity",
+                "state"
+              ]
+            }
+          },
+          "required": [
+            "contractVersion",
+            "payload"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "ProofExitDecision": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/RecordBase"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "ProofExitDecision/v1"
+            },
+            "payload": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "allCapabilitiesComplete": {
+                  "type": "boolean"
+                },
+                "allHardZerosPass": {
+                  "type": "boolean"
+                },
+                "blockingReasons": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 240
+                  },
+                  "minItems": 0,
+                  "uniqueItems": true
+                },
+                "creditedDays": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 30
+                },
+                "decision": {
+                  "enum": [
+                    "BLOCKED",
+                    "PASS"
+                  ]
+                },
+                "decisionAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "Z$"
+                },
+                "decisionBy": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 240
+                },
+                "managedRecoveryEvidenceRefId": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "minLength": 3,
+                      "maxLength": 240
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "requiredDays": {
+                  "const": 30
+                },
+                "windowEnd": {
+                  "type": "string",
+                  "format": "date",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                },
+                "windowStart": {
+                  "type": "string",
+                  "format": "date",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                }
+              },
+              "required": [
+                "allCapabilitiesComplete",
+                "allHardZerosPass",
+                "blockingReasons",
+                "creditedDays",
+                "decision",
+                "decisionAt",
+                "decisionBy",
+                "managedRecoveryEvidenceRefId",
+                "requiredDays",
+                "windowEnd",
+                "windowStart"
+              ]
+            }
+          },
+          "required": [
+            "contractVersion",
+            "payload"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "CustomerZeroCadence": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/RecordBase"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "CustomerZeroCadence/v1"
+            },
+            "payload": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "dailyCeremonies": {
+                  "type": "array",
+                  "items": {
+                    "enum": [
+                      "CLOSE",
+                      "CONTROL_HUDDLE",
+                      "OPEN"
+                    ]
+                  },
+                  "minItems": 3,
+                  "maxItems": 3,
+                  "uniqueItems": true
+                },
+                "externalCustomers": {
+                  "const": 0
+                },
+                "founderMinutesPlanned": {
+                  "const": 195
+                },
+                "iremMinutesPlanned": {
+                  "const": 600
+                },
+                "liveEffects": {
+                  "const": 0
+                },
+                "rehearsalFounderMinutes": {
+                  "const": 360
+                },
+                "rehearsalIremMinutes": {
+                  "const": 630
+                },
+                "state": {
+                  "enum": [
+                    "PLANNED",
+                    "REHEARSED_SYNTHETIC"
+                  ]
+                },
+                "weekStart": {
+                  "type": "string",
+                  "format": "date",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                },
+                "weeklyCeremonies": {
+                  "type": "array",
+                  "items": {
+                    "enum": [
+                      "CHANGE",
+                      "PROOF",
+                      "TRAINING"
+                    ]
+                  },
+                  "minItems": 3,
+                  "maxItems": 3,
+                  "uniqueItems": true
+                }
+              },
+              "required": [
+                "dailyCeremonies",
+                "externalCustomers",
+                "founderMinutesPlanned",
+                "iremMinutesPlanned",
+                "liveEffects",
+                "rehearsalFounderMinutes",
+                "rehearsalIremMinutes",
+                "state",
+                "weekStart",
+                "weeklyCeremonies"
+              ]
+            }
+          },
+          "required": [
+            "contractVersion",
+            "payload"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "CaseHandoff": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/RecordBase"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "CaseHandoff/v1"
+            },
+            "payload": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "acceptedAt": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "Z$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "acceptedBy": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "minLength": 3,
+                      "maxLength": 240
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "caseId": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 240
+                },
+                "fromOwnerId": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 240
+                },
+                "offeredAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "Z$"
+                },
+                "state": {
+                  "enum": [
+                    "ACCEPTED",
+                    "OFFERED",
+                    "REJECTED"
+                  ]
+                },
+                "summaryEvidenceRefIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 240
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true
+                },
+                "toOwnerId": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 240
+                }
+              },
+              "required": [
+                "acceptedAt",
+                "acceptedBy",
+                "caseId",
+                "fromOwnerId",
+                "offeredAt",
+                "state",
+                "summaryEvidenceRefIds",
+                "toOwnerId"
+              ]
+            }
+          },
+          "required": [
+            "contractVersion",
+            "payload"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "TrainingAttestation": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/RecordBase"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "TrainingAttestation/v1"
+            },
+            "payload": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "assessmentEvidenceRefIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 240
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true
+                },
+                "completedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "Z$"
+                },
+                "curriculumVersion": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 240
+                },
+                "expiresAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "Z$"
+                },
+                "scoreBps": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 10000
+                },
+                "status": {
+                  "enum": [
+                    "CURRENT",
+                    "EXPIRED"
+                  ]
+                },
+                "traineeOwnerId": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 240
+                }
+              },
+              "required": [
+                "assessmentEvidenceRefIds",
+                "completedAt",
+                "curriculumVersion",
+                "expiresAt",
+                "scoreBps",
+                "status",
+                "traineeOwnerId"
+              ]
+            }
+          },
+          "required": [
+            "contractVersion",
+            "payload"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "FeedbackRecord": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/RecordBase"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "FeedbackRecord/v1"
+            },
+            "payload": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "caseId": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 240
+                },
+                "category": {
+                  "enum": [
+                    "CORRECTION",
+                    "GAP",
+                    "IMPROVEMENT"
+                  ]
+                },
+                "changeRequestRef": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "minLength": 3,
+                      "maxLength": 240
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "containsCustomerContent": {
+                  "const": false
+                },
+                "disposition": {
+                  "enum": [
+                    "ACCEPTED",
+                    "DEFERRED",
+                    "REJECTED",
+                    "TRIAGED"
+                  ]
+                },
+                "feedbackId": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 240
+                },
+                "submittedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "Z$"
+                },
+                "submittedBy": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 240
+                }
+              },
+              "required": [
+                "caseId",
+                "category",
+                "changeRequestRef",
+                "containsCustomerContent",
+                "disposition",
+                "feedbackId",
+                "submittedAt",
+                "submittedBy"
+              ]
+            }
+          },
+          "required": [
+            "contractVersion",
+            "payload"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "ChangeFreeze": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/RecordBase"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "ChangeFreeze/v1"
+            },
+            "payload": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "approvedBy": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 240
+                },
+                "approvalEvidenceRefId": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 240
+                },
+                "endsAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "Z$"
+                },
+                "g2Approvals": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/G2ApprovalRef"
+                  },
+                  "uniqueItems": true
+                },
+                "prohibitedChanges": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 240
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true
+                },
+                "scope": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 240
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true
+                },
+                "startsAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "Z$"
+                },
+                "state": {
+                  "enum": [
+                    "FROZEN",
+                    "PLANNED",
+                    "RELEASED"
+                  ]
+                }
+              },
+              "required": [
+                "approvedBy",
+                "approvalEvidenceRefId",
+                "endsAt",
+                "g2Approvals",
+                "prohibitedChanges",
+                "scope",
+                "startsAt",
+                "state"
+              ]
+            }
+          },
+          "required": [
+            "contractVersion",
+            "payload"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "CapacityObservation": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/RecordBase"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "CapacityObservation/v1"
+            },
+            "payload": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "admissionAllowed": {
+                  "type": "boolean"
+                },
+                "calculatedFounderUtilizationBps": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "calculatedIremUtilizationBps": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "claimedFounderUtilizationBps": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "claimedIremUtilizationBps": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "founderAvailableMinutes": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "founderRequiredMinutes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "iremAvailableMinutes": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "iremRequiredMinutes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "overrun": {
+                  "type": "boolean"
+                },
+                "windowEnd": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "Z$"
+                },
+                "windowStart": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "Z$"
+                }
+              },
+              "required": [
+                "admissionAllowed",
+                "calculatedFounderUtilizationBps",
+                "calculatedIremUtilizationBps",
+                "claimedFounderUtilizationBps",
+                "claimedIremUtilizationBps",
+                "founderAvailableMinutes",
+                "founderRequiredMinutes",
+                "iremAvailableMinutes",
+                "iremRequiredMinutes",
+                "overrun",
+                "windowEnd",
+                "windowStart"
+              ]
+            }
+          },
+          "required": [
+            "contractVersion",
+            "payload"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "StageReadiness": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/RecordBase"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "StageReadiness/v1"
+            },
+            "payload": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "blockingReasons": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 240
+                  },
+                  "minItems": 0,
+                  "uniqueItems": true
+                },
+                "calculatedDecision": {
+                  "enum": [
+                    "ADVANCE",
+                    "HOLD"
+                  ]
+                },
+                "capacityObservationId": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 240
+                },
+                "changeFreezeId": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 240
+                },
+                "claimedDecision": {
+                  "enum": [
+                    "ADVANCE",
+                    "HOLD"
+                  ]
+                },
+                "coverageComplete": {
+                  "type": "boolean"
+                },
+                "currentStage": {
+                  "enum": [
+                    "DARK",
+                    "READS",
+                    "REVERSIBLE_WRITES",
+                    "BOUNDED_PROVIDER_ACTIONS",
+                    "FORMAL_PROOF"
+                  ]
+                },
+                "evidenceComplete": {
+                  "type": "boolean"
+                },
+                "g2Approvals": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/G2ApprovalRef"
+                  },
+                  "uniqueItems": true
+                },
+                "handoffRecordIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 240
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true
+                },
+                "requestedStage": {
+                  "enum": [
+                    "DARK",
+                    "READS",
+                    "REVERSIBLE_WRITES",
+                    "BOUNDED_PROVIDER_ACTIONS",
+                    "FORMAL_PROOF"
+                  ]
+                },
+                "trainingRecordIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 240
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true
+                }
+              },
+              "required": [
+                "blockingReasons",
+                "calculatedDecision",
+                "capacityObservationId",
+                "changeFreezeId",
+                "claimedDecision",
+                "coverageComplete",
+                "currentStage",
+                "evidenceComplete",
+                "g2Approvals",
+                "handoffRecordIds",
+                "requestedStage",
+                "trainingRecordIds"
+              ]
+            }
+          },
+          "required": [
+            "contractVersion",
+            "payload"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    }
+  }
+}
+

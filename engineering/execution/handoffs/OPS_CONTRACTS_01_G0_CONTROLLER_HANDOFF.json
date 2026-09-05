@@ -1,0 +1,134 @@
+{
+  "schemaVersion": "OPS-CONTRACTS-01/G0-Controller-Handoff/v1",
+  "projectId": "OPS-CONTRACTS-01+CORE-CORRECTION-01",
+  "preparedAt": "2026-09-05T02:47:19Z",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "branch": "codex/ops-contracts-01-g0-6a6d710",
+  "baseSha": "c981a13cbef1cf41fac4cd07a5d9992d61fd3288",
+  "implementationShas": {
+    "operationsContracts": "cf9fee8fbefa1dbda013788795b068477fa8535b",
+    "coreCorrection": "f5a62923e52510cdd40fbef41dc86266e33ab05e"
+  },
+  "finalShaBinding": "DETACHED_CONTENT_ADDRESSED_ANNOTATED_TAG_AFTER_FINAL_COMMIT",
+  "authorities": {
+    "operations": "CIBOTFLOW/Luzione-platform-program@6a6d710a1e35774ef544bf0c770a92481fb09dcb",
+    "coreCorrection": "CIBOTFLOW/Luzione-platform-program@8543a3eab0a969f213bc192391bd7ca657bbf087",
+    "coreAssuranceFingerprint": "3fdc9ddf470509ec9c115656a431f414b9796dda14ec0aaaf9133fbaab796968",
+    "queuedSuccessor": "CIBOTFLOW/Luzione-platform-program@1e77028",
+    "queuedConnectorSuccessor": "CIBOTFLOW/Luzione-platform-program@b3dbea8"
+  },
+  "pullRequest": {
+    "number": 68,
+    "url": "https://github.com/CIBOTFLOW/Luzione-API/pull/68",
+    "state": "OPEN_DRAFT_STACKED_ON_EXACT_CORE_02_FINAL",
+    "mergeOrDefaultBranchAction": "NOT_PERFORMED"
+  },
+  "publishedBundle": {
+    "bundleVersion": "LuzioneOperationsEvidence/v1",
+    "manifestVersion": "LuzioneOperationsEvidenceManifest/v1",
+    "recordContractCount": 17,
+    "sourcePacketFingerprints": {
+      "PROOF-OPS-01/v1": "b2c79f6a580267adfcac1745047518979070ee3f18d90df478dc4b6ec511cb8b",
+      "CUSTOMER-ZERO-OPS-01/v1": "ae1c5225f8bb1c45420572433ac659ff054a1fd2bfad1cb2bf740e5ae008e57c"
+    },
+    "authoritativePaths": [
+      "contracts/operations-evidence/luzione-operations-evidence-v1.manifest.json",
+      "contracts/operations-evidence/v1/luzione-operations-evidence-v1.schema.json",
+      "src/modules/operations-evidence-contracts/contracts.ts",
+      "src/modules/operations-evidence-contracts/consumerSdk.ts",
+      "src/modules/operations-evidence-contracts/generatedSdk.ts",
+      "src/modules/operations-evidence-contracts/fixtures.ts",
+      "src/modules/operations-evidence-contracts/tests/operations-evidence-contracts.test.ts"
+    ],
+    "consumerPackets": [
+      "contracts/operations-evidence/consumer-mappings/l2-crm-app-v1.json",
+      "contracts/operations-evidence/consumer-mappings/l3-sultan-runtime-v1.json"
+    ]
+  },
+  "frozenComposition": {
+    "bundleVersion": "LuzioneCoreContracts/v1",
+    "implementationSha": "828de754e4104cd860e3f47adbf2e84c576e5c10",
+    "finalSha": "bb5eb395af0873f4483ba2dc10c76f9941051dde",
+    "contractsCoreTree": "d57ccc4cccd97b37acd1a1575b1e07ede5787349",
+    "sdkTree": "d594fa014d7020fdf8386c7a6926ff9b573ac355",
+    "changed": false
+  },
+  "coreCorrection": {
+    "projectionAdmission": "EXACT_TRUE_LOCAL_FLAG_AND_EXACT_TRUE_GLOBAL_GATE_AND_DATABASE_AND_SERVICE_AUTH_AND_EXACT_TENANT_AND_SHOPIFY_SOURCE_ALLOWLIST",
+    "defaultState": "DISABLED_WITH_EMPTY_TENANT_AND_SOURCE_ALLOWLISTS",
+    "bidirectionalDimensions": ["route", "relationGroup", "job", "unknown"],
+    "gj1U008Present": true,
+    "completeEvidenceSetPathCount": 15,
+    "ownerPackets": 7,
+    "ownerUnknowns": 19,
+    "signedOwnerReturns": 0,
+    "ownerDisposition": "ALL_UNKNOWN"
+  },
+  "verification": {
+    "focused": {
+      "operationsContracts": "PASS_19_OF_19",
+      "coreInventoryCorrection": "PASS_8_OF_8",
+      "catalogProjection": "PASS_8_OF_8",
+      "topology": "PASS_7_OF_7"
+    },
+    "compliance": "PASS_7_OF_7",
+    "typecheck": "PASS",
+    "lint": "PASS_ZERO_WARNINGS",
+    "fullTests": "PASS_365_OF_365",
+    "build": "PASS_NEXTJS_16_3_4_WEBPACK",
+    "prefinalReleaseGate": {
+      "runId": 33939882566,
+      "jobId": 101235082217,
+      "headSha": "f5a62923e52510cdd40fbef41dc86266e33ab05e",
+      "status": "SUCCESS",
+      "artifactId": 9961450157,
+      "artifactDigest": "sha256:5f899a2f2db437465212d85dbc11ee5171e71bd920f289ceda8d5a5f9a682cb2"
+    },
+    "prefinalCodeql": {
+      "runId": 33939882538,
+      "headSha": "f5a62923e52510cdd40fbef41dc86266e33ab05e",
+      "status": "SUCCESS"
+    }
+  },
+  "preview": {
+    "githubDeploymentId": 6276290284,
+    "githubDeploymentStatusId": 17855249066,
+    "gitBoundSha": "f5a62923e52510cdd40fbef41dc86266e33ab05e",
+    "state": "SUCCESS_BUILD_STATUS_ONLY",
+    "applicationReadbackAt": "2026-09-05T02:47:19Z",
+    "applicationReadback": "HTTP_302_VERCEL_SSO_PROTECTED_AT_API_V1_RELEASE",
+    "productionEvidence": false
+  },
+  "negativeEvidence": [
+    "surplus, missing and wrong-version fields for all seventeen record contracts",
+    "missing accountable owner, capability coverage or evidence",
+    "unaccepted handoff, stale training, capacity overrun and false stage transition",
+    "telemetry-gap day credit and hard-zero waiver",
+    "bundled G2 and unsafe Sultan/agent accountability or approval",
+    "overwrite instead of immutable supersession",
+    "secret, token and direct-PII values",
+    "non-exact projection flags, missing global gate, cross-tenant and unadmitted source",
+    "one-way route, relation-group, job or unknown journey edges and omitted GJ-1/U008",
+    "artifact digest, source packet, manifest or frozen Core drift"
+  ],
+  "rollbackProof": {
+    "method": "git diff c981a13cbef1cf41fac4cd07a5d9992d61fd3288..FINAL_HEAD piped to git apply --reverse --check on FINAL_HEAD",
+    "execution": "DETACHED_ATTESTATION_RECORDS_POST_FINAL_RESULT",
+    "expected": "PASS_WITHOUT_APPLYING_REVERSE_PATCH",
+    "runtimeOrProductionRollback": "NOT_REQUIRED_AND_NOT_PERFORMED"
+  },
+  "remainingStops": [
+    "Independent L2 and L3 consumption is absent.",
+    "Authenticated exact-final application readback is absent because preview access is SSO-protected.",
+    "All nineteen CORE-02 owner answers remain unsigned UNKNOWN.",
+    "Managed recovery, activation-cone acceptance, proof days, customer-zero operations, G1 and every G2 action remain absent."
+  ],
+  "maturity": {
+    "engineeringState": "BOUNDED_PASS",
+    "releaseEvidence": "LOCAL_PROVEN",
+    "effectAuthority": "NO_EFFECT",
+    "finality": "BOUNDED_CLAIM"
+  },
+  "writerRelease": "AFTER_FINAL_COMMIT_AND_DETACHED_ATTESTATION",
+  "oneNextAction": "The controller records the exact-final detached attestation, then dispatches ONBOARD-SPINE-L1-G0/v1 and CONNECTOR-FOUNDATION-01 as one tightly related successor cell on a fresh non-default branch from that final; no OPS branch reuse or production effect."
+}

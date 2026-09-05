@@ -1310,6 +1310,153 @@
         "The test proves immutable repository tree identity, not an authenticated deployed application boundary."
       ],
       "next_action": "Retain both the failed first-head and successful repaired-head CI records as append-only evidence; no further repair is required."
+    },
+    {
+      "failure_id": "OPS_CONTRACTS_01_INITIAL_CLOCK_VALIDATION_20260905",
+      "project_id": "OPS-CONTRACTS-01",
+      "observed_at": "2026-09-05T02:25:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "c981a13cbef1cf41fac4cd07a5d9992d61fd3288",
+      "environment": "local-uncommitted-implementation-worktree",
+      "layer": "strict-sdk-clock-and-manifest-validation",
+      "symptom": "The first focused run passed 16/19 but rejected the valid current training fixture, failed the contradictory-training sensitivity assertion and classified manifest pin drift as a generic value error; TypeScript also rejected a string-to-number clock comparison.",
+      "expected": "Training currency is derived from parsed epoch milliseconds against the explicit assessment clock, contradictory status fails, and immutable manifest pin drift returns the manifest-drift class.",
+      "actual": "The initial parser compared an ISO string directly to a numeric assessment epoch and reused the generic literal helper for frozen manifest pins.",
+      "classification": {
+        "domain": "CLIENT",
+        "class": "INVALID",
+        "retry": "NEVER",
+        "severity": "INFO"
+      },
+      "evidence_refs": [
+        "initial npm run test:ops-contracts:16_of_19",
+        "initial npm run typecheck:TS2365",
+        "src/modules/operations-evidence-contracts/consumerSdk.ts",
+        "src/modules/operations-evidence-contracts/tests/operations-evidence-contracts.test.ts"
+      ],
+      "repair_attempts": [
+        "Parsed the training expiry timestamp before comparing it to the deterministic assessment epoch.",
+        "Added manifest-specific immutable-pin comparison so pin drift retains OPS_MANIFEST_DRIFT.",
+        "Reran focused 19/19 and TypeScript successfully."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "commit:cf9fee8fbefa1dbda013788795b068477fa8535b",
+      "remaining_uncertainty": [],
+      "next_action": "Retain deterministic explicit-clock fixtures in every consumer implementation."
+    },
+    {
+      "failure_id": "OPS_CONTRACTS_01_LINT_UNUSED_INDEX_20260905",
+      "project_id": "OPS-CONTRACTS-01",
+      "observed_at": "2026-09-05T02:27:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "c981a13cbef1cf41fac4cd07a5d9992d61fd3288",
+      "environment": "local-uncommitted-implementation-worktree",
+      "layer": "strict-sdk-static-analysis",
+      "symptom": "The first lint pass reported one unused evidence-loop index warning.",
+      "expected": "ESLint passes with zero warnings.",
+      "actual": "The parser enumerated evidence refs with an unused index after error messages were simplified.",
+      "classification": {
+        "domain": "CLIENT",
+        "class": "INVALID",
+        "retry": "NEVER",
+        "severity": "INFO"
+      },
+      "evidence_refs": [
+        "initial npm run lint:one_warning",
+        "src/modules/operations-evidence-contracts/consumerSdk.ts"
+      ],
+      "repair_attempts": [
+        "Iterated directly over evidence refs without the unused index.",
+        "Reran lint with zero warnings and the complete local release gate successfully."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "commit:cf9fee8fbefa1dbda013788795b068477fa8535b",
+      "remaining_uncertainty": [],
+      "next_action": "No further repair is required."
+    },
+    {
+      "failure_id": "CORE_CORRECTION_01_ASSURANCE_GAPS_20260905",
+      "project_id": "CORE-CORRECTION-01",
+      "observed_at": "2026-09-05T02:34:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "c981a13cbef1cf41fac4cd07a5d9992d61fd3288",
+      "environment": "repository-evidence-audit",
+      "layer": "core-activation-cone-assurance",
+      "symptom": "The authoritative CORE assurance audit classified the prior candidate NOT_CLEARED because internal projections were not exact-opt-in or globally/tenant/source bounded, journey maps omitted reverse edges including GJ-1/U008, the secret scan omitted dedicated evidence files and standard token classes, and the handoff model could not bind its own exact final SHA.",
+      "expected": "Every internal write is exact-opt-in behind the global mutation gate and bounded admission, every journey edge is bidirectional, every declared evidence byte receives standard credential scanning, and exact-final evidence is detached from the commit it attests.",
+      "actual": "SUPPORT-CORE-ASSURE-01/v1 fingerprint 3fdc9ddf470509ec9c115656a431f414b9796dda14ec0aaaf9133fbaab796968 recorded zero cleared, fifteen partial, nine unknown and one failed assurance row.",
+      "classification": {
+        "domain": "PLATFORM",
+        "class": "INVALID",
+        "retry": "NEVER",
+        "severity": "ERROR"
+      },
+      "evidence_refs": [
+        "controller:CIBOTFLOW/Luzione-platform-program@8543a3eab0a969f213bc192391bd7ca657bbf087",
+        "audit-fingerprint:3fdc9ddf470509ec9c115656a431f414b9796dda14ec0aaaf9133fbaab796968",
+        "engineering/execution/core-02/CORE_CORRECTION_01_REMEDIATION_V1.json",
+        "commit:f5a62923e52510cdd40fbef41dc86266e33ab05e"
+      ],
+      "repair_attempts": [
+        "Changed internal projection request semantics to exact true and required the exact global mutation gate, configured database/service authentication and non-empty tenant/source admission.",
+        "Bound the Shopify projection POST to the authenticated tenant and fixed SHOPIFY source through exact allowlists while retaining the default-off environment example.",
+        "Made route, relation-group, job and unknown journey maps mechanically equal in both directions and restored GJ-1/U008.",
+        "Declared and scanned all fifteen dedicated CORE-02 evidence paths across standard credential/token classes and specified a post-final content-addressed tag attestation."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [
+        "signed owner returns for nineteen unknowns",
+        "authenticated application readback",
+        "managed recovery and every G1/G2 decision"
+      ],
+      "resolved": true,
+      "resolution_ref": "commit:f5a62923e52510cdd40fbef41dc86266e33ab05e",
+      "remaining_uncertainty": [
+        "The repository correction does not clear the fifteen partial or nine unknown controller rows that require consumer, owner, deployed or recovery evidence.",
+        "All seven owner packets remain unsigned and all nineteen answers remain UNKNOWN."
+      ],
+      "next_action": "Retain the exact no-effect correction and admit no owner answer without a verifiable human signature and immutable evidence."
+    },
+    {
+      "failure_id": "CORE_CORRECTION_01_TOPOLOGY_ENV_INVENTORY_20260905",
+      "project_id": "CORE-CORRECTION-01",
+      "observed_at": "2026-09-05T02:41:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "6873eedce7070064a624f6838edbea610e3143ae",
+      "environment": "local",
+      "layer": "runtime-configuration-inventory",
+      "symptom": "The first full suite passed 363/364 and rejected the two newly referenced projection admission keys as absent from the canonical topology inventory.",
+      "expected": "Every runtime environment dependency visible in source is represented in the topology inventory.",
+      "actual": "LUZIONE_API_INTERNAL_PROJECTION_TENANTS and LUZIONE_API_INTERNAL_PROJECTION_SOURCES were intentionally added to the fail-closed guard before the broad topology inventory was extended.",
+      "classification": {
+        "domain": "PLATFORM",
+        "class": "INVALID",
+        "retry": "NEVER",
+        "severity": "INFO"
+      },
+      "evidence_refs": [
+        "npm-test:PASS_363_OF_364",
+        "src/modules/platform-topology/tests/topology-inventory.test.ts",
+        "engineering/execution/LUZIONE_API_TOPOLOGY_INVENTORY_V1.json"
+      ],
+      "repair_attempts": [
+        "Added both exact admission keys to the canonical runtime configuration inventory.",
+        "Reran the topology suite 7/7 and full repository suite 364/364."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "commit:f5a62923e52510cdd40fbef41dc86266e33ab05e",
+      "remaining_uncertainty": [],
+      "next_action": "Keep topology coverage mechanically sensitive to every future runtime configuration key."
     }
   ]
 }

@@ -8,6 +8,18 @@
   "canonical_program": "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md",
   "program_extensions": [
     {
+      "extension_id": "LUZIONE_CRM_OS_CORE_CORRECTION_01_G0",
+      "source": "CIBOTFLOW/Luzione-platform-program@8543a3eab0a969f213bc192391bd7ca657bbf087",
+      "repository_program": "engineering/execution/core-02/CORE_CORRECTION_01_REMEDIATION_V1.json",
+      "admitted_at": "2026-09-05T02:34:00Z"
+    },
+    {
+      "extension_id": "LUZIONE_CRM_OS_OPS_CONTRACTS_01_G0",
+      "source": "CIBOTFLOW/Luzione-platform-program@6a6d710a1e35774ef544bf0c770a92481fb09dcb",
+      "repository_program": "architecture/production-convergence/OPS_CONTRACTS_01_WORKING_CONTRACT.md",
+      "admitted_at": "2026-09-05T02:14:33Z"
+    },
+    {
       "extension_id": "LUZIONE_CRM_OS_CORE_02_G0",
       "source": "CIBOTFLOW/Luzione-platform-program@7713b02201e5abb84a92bb0d2af91514d33c84d5",
       "repository_program": "architecture/production-convergence/CORE_02_WORKING_CONTRACT.md",
@@ -41,6 +53,26 @@
     "S4_QUEUE_EXHAUSTED": "Stop when every admitted project is complete, quarantined or removed and no dependency-ready work remains."
   },
   "queue": [
+    {
+      "project_id": "OPS-CONTRACTS-01",
+      "platform_project": "LUZIONE_CRM_OS_OPERATIONS_EVIDENCE",
+      "title": "Strict Proof and Customer-Zero Operations Evidence Contracts",
+      "priority": 520,
+      "status": "COMPLETE",
+      "depends_on": ["CORE-02"],
+      "starting_sha": "c981a13cbef1cf41fac4cd07a5d9992d61fd3288",
+      "controller_authority": "CIBOTFLOW/Luzione-platform-program@6a6d710a1e35774ef544bf0c770a92481fb09dcb",
+      "correction_authority": "CIBOTFLOW/Luzione-platform-program@8543a3eab0a969f213bc192391bd7ca657bbf087",
+      "mutation_cone": ["documentation", "contracts", "generated-sdk", "fixtures", "tests", "execution-metadata", "fail-closed-projection-admission", "topology-inventory"],
+      "core_outcome": "Publish a separate strict operations-evidence bundle for proof-window and customer-zero operation records while preserving frozen LuzioneCoreContracts/v1 and every no-effect/production hold.",
+      "published_artifacts": ["operations-evidence manifest and schema", "strict consumer SDK", "semantic fixtures", "L2/L3 consumer packets"],
+      "required_evidence": ["seventeen exact-field/version positives", "formula/state/clock validation", "owner/evidence/coverage and G2 negatives", "exact projection gates and tenant/source admission", "bidirectional journey inventory", "complete-evidence standard token scanning", "frozen Core tree identity", "local/full CI and rollback proof", "detached exact-final attestation"],
+      "irreversible_effects": [],
+      "completion_evidence_ref": "OPS_CONTRACTS_01_CORE_CORRECTION_01_G0_20260905",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM"
+    },
     {
       "project_id": "CORE-02",
       "platform_project": "LUZIONE_CRM_OS_WAVE_1",
