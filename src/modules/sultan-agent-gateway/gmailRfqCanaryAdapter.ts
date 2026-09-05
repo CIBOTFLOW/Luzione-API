@@ -1,9 +1,8 @@
 import { sha256 } from "@/modules/platform-guarantees/eventContract";
 import {
-  PROVIDER_ADAPTER_CONTRACT_VERSION,
+  LEGACY_PROVIDER_ADAPTER_CONTRACT_VERSION,
   ProviderContractError,
   type PreparedProviderRequest,
-  type ProviderAdapter,
   type ProviderMessage,
   type ProviderObservationResult,
 } from "@/modules/provider-runtime/contracts";
@@ -27,7 +26,12 @@ export type GmailRfqCanaryBinding = {
   sender: string;
 };
 
-export class GmailRfqCanaryAdapter implements ProviderAdapter {
+/**
+ * Historical v0.2 canary adapter retained for bounded compatibility tests.
+ * It deliberately does not implement ProviderAdapter v0.3 and cannot be
+ * registered by the corrected sandbox-only worker.
+ */
+export class GmailRfqCanaryAdapter {
   readonly credentialBindingId: string;
   readonly destination = SULTAN_RFQ_CANARY_DESTINATION;
   readonly mode = "LIVE" as const;
@@ -54,10 +58,10 @@ export class GmailRfqCanaryAdapter implements ProviderAdapter {
     const raw = encodeMimeMessage(payload);
     const rfc822MessageId = stableMessageId(payload.operationId);
     return {
-      contractVersion: PROVIDER_ADAPTER_CONTRACT_VERSION,
+      contractVersion: LEGACY_PROVIDER_ADAPTER_CONTRACT_VERSION,
       credentialBindingId: this.credentialBindingId,
       destination: this.destination,
-      effectAdmissionRef: requiredAdmission(message.effectAdmissionRef),
+      effectAdmissionRef: requiredAdmission(message.effectAdmissionRef ?? null),
       idempotencyKey: message.idempotencyKey,
       objectRef: `${message.objectType}:${message.objectId}`,
       payload: {

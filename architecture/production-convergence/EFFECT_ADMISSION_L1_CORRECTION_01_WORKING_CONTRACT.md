@@ -1,0 +1,23 @@
+# EFFECT-ADMISSION-L1-CORRECTION-01 working contract
+
+Project: `EFFECT-ADMISSION-L1-CORRECTION-01` under controller `51253c275eb02ef821438a8b875af7e4928f59a1` and `EFFECT-ADMISSION-L1-ASSURE-01` fingerprint `a24eefb14a9681ad97a415b8d48c43a7d88900e8c86a8f489645f9354a1a62d9`, from exact API base `37e1fa164b982fcb861d19539cdeec87f6d9a289`.
+
+Outcome: replace the insufficient v1 checkpoint-only identity with a strict versioned execution envelope shared by Sultan command admission and the sandbox provider worker. A provider execution is content-bound to the exact durable P110 origin, strict adapter-prepared dispatch bytes, tenant, authenticated service actor, authority, operation key, original and prepared payload digests, provider, destination and opaque credential binding. Credential release and execute consume the same immutable execution identity.
+
+Entrypoints remain the existing authenticated Sultan prepare/execute routes and the existing P110 worker. No HTTP route, queue, provider, scheduler, credential store or source of finality is added. The current worker is restricted to `SANDBOX` adapters in this cell; `GmailRfqCanaryAdapter` remains unregistered and cannot be activated by these changes.
+
+Authoritative truth is the authenticated API actor and verified Stage-5 admission receipt for Sultan, and the leased P110 outbox/receipt plus latest dispatch-attempt evidence for provider work. Luzione API remains the sole admission, receipt and finality owner. Provider acknowledgement remains non-final.
+
+Contract evolution is explicit: `luzione-effect-admission/v1` and `luzione-provider-adapter/v0.2` remain historical pins. Corrected paths use `luzione-effect-admission/v2`, `luzione-effect-execution-envelope/v1`, `luzione-provider-adapter/v0.3`, `luzione-prepared-provider-dispatch/v1` and `luzione-provider-credential-release/v1`. The contradictory v1 `noEffectOnly: true` live-admission semantic is retired from the corrected decision and replaced with exact `effectAuthority: SANDBOX_ONLY`. Every published schema and parser is strict and digest-sensitive.
+
+Provider flow is: lease the durable outbox row; deterministically prepare and strict-parse the adapter output; evaluate `PROVIDER_CLAIM`; re-read/re-prepare and re-read kill at `PROVIDER_CREDENTIAL_RELEASE`; release only the opaque binding for that exact prepared identity; re-read/re-prepare and re-read kill at `PROVIDER_PRE_EXECUTE`; construct one immutable execution envelope containing that final kill version; atomically persist the whole envelope at `STARTED`; then execute once. A kill or byte change at either re-read denies execution. No live credential is available to the only registered sandbox adapter.
+
+Reconciliation loads the originating execution identity from the durable attempt, reconstructs the strict prepared dispatch from the still-leased P110 origin, rejects any mismatch and calls only `reconcile` under `PROVIDER_RECONCILE`; it never calls `execute` or creates a second execution envelope. Active effect kills do not erase read-only reconciliation evidence.
+
+Sultan prepare captures the exact verified Stage-5 admission receipt ID/hash in its execution-envelope origin and persists that lineage on the reservation. Sultan execute re-reads the reservation joined to the immutable admission receipt, reconstructs the exact lineage, binds the signed human approval and persists the resulting execution identity on the internal action. Caller-provided lineage is never accepted.
+
+Mutation cone: effect-admission contracts/schema/gate/tests, provider contract/runtime/adapters/store attempt evidence, Sultan gateway/store lineage evidence, one additive reversible migration, disposable proofs and execution metadata. Frozen `LuzioneCoreContracts/v1`, onboarding v2 contracts and application routes remain unchanged.
+
+Acceptance: strict v2 decision/envelope/prepared-dispatch/credential-release parser and schema parity; surplus/missing/wrong-version/digest rejection; exact transformed-payload execution identity; Stage-5 receipt lineage through prepare/execute; kill at credential release and immediately before execute; changed prepared payload/provider/destination/binding denial; sandbox-only adapter enforcement; originating-envelope reconciliation with no re-dispatch; isolated forward/reverse/reapply; full compliance/typecheck/lint/test/build and exact-head CI.
+
+Non-scope: live provider or credential resolution, production data/migration/query, deployment/promotion, default branch, merge, activation, G1/G2 or production readiness. Irreversible effects: none. All runtime evidence is synthetic `NO_EFFECT`.

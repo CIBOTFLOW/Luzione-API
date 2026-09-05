@@ -599,8 +599,18 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
     name: "Typed provider adapter, restart-safe dispatch and exact source reconciliation boundary",
     ownerRepository: "CIBOTFLOW/Luzione-API",
     pendingChangeRefs: [],
-    sourcePaths: ["src/modules/provider-runtime/contracts.ts", "src/modules/provider-runtime/runtime.ts", "src/lib/platform-guarantees/postgresWorkflowDeliveryStore.ts", "src/app/api/v1/provider-operations/route.ts", "supabase/migrations/20260831080000_provider_worker_runtime.sql", "supabase/migrations/20260905090000_effect_admission_evidence.sql"],
-    version: "luzione-provider-adapter/v0.2",
+    sourcePaths: [
+      "contracts/effect-admission/luzione-prepared-provider-dispatch-v1.schema.json",
+      "contracts/effect-admission/luzione-provider-credential-release-v1.schema.json",
+      "src/modules/provider-runtime/contracts.ts",
+      "src/modules/provider-runtime/runtime.ts",
+      "src/lib/platform-guarantees/postgresWorkflowDeliveryStore.ts",
+      "src/app/api/v1/provider-operations/route.ts",
+      "supabase/migrations/20260831080000_provider_worker_runtime.sql",
+      "supabase/migrations/20260905090000_effect_admission_evidence.sql",
+      "supabase/migrations/20260905120000_effect_admission_l1_correction.sql"
+    ],
+    version: "luzione-provider-adapter/v0.3",
   },
   {
     compatibility: "EXACT_VERSION",
@@ -612,13 +622,14 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
     ownerRepository: "CIBOTFLOW/Luzione-API",
     pendingChangeRefs: [],
     sourcePaths: [
-      "contracts/effect-admission/luzione-effect-admission-v1.schema.json",
+      "contracts/effect-admission/luzione-effect-admission-v2.schema.json",
+      "contracts/effect-admission/luzione-effect-execution-envelope-v1.schema.json",
       "src/modules/effect-admission/contracts.ts",
       "src/modules/effect-admission/gate.ts",
       "src/modules/provider-runtime/runtime.ts",
       "src/modules/sultan-agent-gateway/service.ts"
     ],
-    version: "luzione-effect-admission/v1",
+    version: "luzione-effect-admission/v2",
   },
   {
     compatibility: "NEW_MAJOR_FOR_BREAKING",

@@ -4,6 +4,7 @@ import type { Pool, PoolClient } from "pg";
 import { decideRetry } from "@/modules/platform-guarantees/retryPolicy";
 import { nextWorkflowState } from "@/modules/platform-guarantees/stateMachine";
 import type { FailureClass, FlowCommandType, WorkflowState } from "@/modules/platform-guarantees/types";
+import type { ProviderExecutionContext } from "@/modules/provider-runtime/contracts";
 
 export const WORKFLOW_DELIVERY_CONTRACT_VERSION = "luzione-workflow-delivery/v0.1";
 export const WORKER_LEASE_MS = 60_000;
@@ -190,10 +191,7 @@ export class PostgresWorkflowDeliveryStore {
 
   async recordDispatchStarted(input: {
     adapterContractVersion: string;
-    credentialBindingId: string;
-    effectAdmissionDigest: string;
-    effectAdmissionKillVersion: string;
-    effectAdmissionRef: string;
+    effectExecutionContext: ProviderExecutionContext;
     outboxMessageId: string;
     providerMode: "LIVE" | "SANDBOX";
     providerRequestRef: string;
@@ -207,11 +205,21 @@ export class PostgresWorkflowDeliveryStore {
           (tenant_id, attempt_id, outbox_message_id, attempt_number, result, started_at,
            adapter_contract_version, provider_mode, provider_request_ref,
            effect_admission_contract_version,effect_admission_ref,effect_admission_digest,
-           effect_admission_kill_version,credential_binding_id)
-         values ($1,$2,$3,$4,'STARTED',now(),$5,$6,$7,'luzione-effect-admission/v1',$8,$9,$10,$11)`,
+           effect_admission_kill_version,credential_binding_id,effect_execution_envelope,
+           effect_execution_envelope_ref,effect_execution_identity,originating_envelope_ref,
+           prepared_dispatch_digest)
+         values ($1,$2,$3,$4,'STARTED',now(),$5,$6,$7,'luzione-effect-admission/v2',$8,$9,$10,$11,$12::jsonb,$13,$14,$15,$16)`,
         [input.tenantId, `attempt_${crypto.randomUUID()}`, input.outboxMessageId,
           row.attempt_count, input.adapterContractVersion, input.providerMode, input.providerRequestRef,
-          input.effectAdmissionRef, input.effectAdmissionDigest, input.effectAdmissionKillVersion, input.credentialBindingId],
+          input.effectExecutionContext.executionEnvelope.effectAdmissionRef,
+          input.effectExecutionContext.executionEnvelope.executionIdentity.slice("effect-execution:".length),
+          input.effectExecutionContext.executionEnvelope.killVersion,
+          input.effectExecutionContext.executionEnvelope.credentialBindingId,
+          JSON.stringify(input.effectExecutionContext.executionEnvelope),
+          input.effectExecutionContext.executionEnvelope.executionEnvelopeRef,
+          input.effectExecutionContext.executionEnvelope.executionIdentity,
+          input.effectExecutionContext.executionEnvelope.originatingEnvelopeRef,
+          input.effectExecutionContext.executionEnvelope.preparedDispatchDigest],
       );
       await client.query(
         `update public.p110_outbox_messages
@@ -472,12 +480,19 @@ export class PostgresWorkflowDeliveryStore {
       const result = await client.query(
         `select checkpoint.reconciliation_id,outbox.*,receipt.target_object_type,receipt.target_object_id,
                 receipt.expected_object_version,receipt.committed_object_version as resulting_object_version,
-                receipt.actor_id,receipt.actor_type
+                receipt.actor_id,receipt.actor_type,
+                attempt.effect_execution_envelope,attempt.effect_execution_envelope_ref,
+                attempt.effect_execution_identity,attempt.originating_envelope_ref,
+                attempt.prepared_dispatch_digest
            from public.p110_reconciliation_checkpoints checkpoint
            join public.p110_outbox_messages outbox
              on outbox.tenant_id=checkpoint.tenant_id and outbox.outbox_message_id=checkpoint.outbox_message_id
            join public.p110_command_receipts receipt
              on receipt.tenant_id=checkpoint.tenant_id and receipt.receipt_id=checkpoint.receipt_id
+           join public.p110_delivery_attempts attempt
+             on attempt.tenant_id=outbox.tenant_id
+            and attempt.outbox_message_id=outbox.outbox_message_id
+            and attempt.attempt_number=outbox.attempt_count
           where checkpoint.tenant_id=$1 and checkpoint.reconciliation_id=$2 and checkpoint.result='PENDING'
             and checkpoint.lease_owner=$3 and checkpoint.lease_expires_at>now()
           for update of checkpoint`,
