@@ -118,6 +118,7 @@ function boundaries(row: Row, committedVersion: string) {
 }
 
 function profileFromRow(row: Row, observedAt: string): SupplierProfileV1 {
+  if (!isCanonicalSupplierIdentityInstant(observedAt)) throw new SeedSupplierIdentityDomainError("INVALID_OBSERVED_AT", "Supplier Profile observedAt must be a real canonical RFC3339 UTC instant.", 400);
   const tenantId = String(row.tenant_id);
   const profileId = String(row.supplier_profile_id);
   const versionNumber = Number(row.version);
@@ -283,13 +284,13 @@ function profileData(input: {
 }
 
 function factsFromData(data: SupplierProfileV1["data"], appendedEvidence: readonly SupplierProfileRefInput[] = []): SupplierProfileFacts {
-  const evidence = [...data.evidenceRefs.map(({ tenantId: _tenantId, ...ref }) => ref as SupplierProfileRefInput), ...appendedEvidence];
+  const evidence = [...data.evidenceRefs.map((ref): SupplierProfileRefInput => ({ objectId: ref.objectId, objectType: "EVIDENCE_ARTIFACT", ownerProject: ref.ownerProject, version: ref.version })), ...appendedEvidence];
   const unique = new Map(evidence.map((ref) => [`${ref.ownerProject}:${ref.objectId}@${ref.version}`, ref]));
   return {
     approvedCategories: data.approvedCategories,
     approvedRegions: data.approvedRegions,
     capabilities: data.capabilities,
-    contactRefs: data.contactRefs.map(({ tenantId: _tenantId, ...ref }) => ref as SupplierProfileRefInput),
+    contactRefs: data.contactRefs.map((ref): SupplierProfileRefInput => ({ objectId: ref.objectId, objectType: "CONTACT", ownerProject: ref.ownerProject, version: ref.version })),
     evidenceRefs: [...unique.values()],
     identityReview: data.identityReview,
     provenanceRefs: data.provenanceRefs,

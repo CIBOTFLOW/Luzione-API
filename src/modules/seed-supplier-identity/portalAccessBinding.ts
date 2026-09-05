@@ -7,7 +7,7 @@ import { databasePool } from "@/lib/db";
 import { type CommandTransaction } from "@/lib/platform-guarantees/postgresCommandStore";
 import { createLifecycleCommandRequest, LifecycleCommandKernel } from "@/modules/platform-guarantees/commandKernel";
 import { sha256 } from "@/modules/platform-guarantees/eventContract";
-import { SUPPLIER_PROFILE_OWNER, SUPPLIER_PROFILE_POLICY_VERSION, SeedSupplierIdentityContractError } from "@/modules/seed-supplier-identity/contracts";
+import { SUPPLIER_PROFILE_OWNER, SUPPLIER_PROFILE_POLICY_VERSION } from "@/modules/seed-supplier-identity/contracts";
 import { accountVersionRef, isCanonicalSupplierIdentityInstant } from "@/modules/seed-supplier-identity/model";
 import { SeedSupplierIdentityDomainError, SupplierIdentityAtomicCommandStore } from "@/modules/seed-supplier-identity/store";
 import type { HumanApprovalSubject } from "@/modules/onboard-core/humanApproval";
