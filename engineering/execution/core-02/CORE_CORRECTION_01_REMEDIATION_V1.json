@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "CORE-CORRECTION-01/Remediation/v1",
+  "projectId": "CORE-CORRECTION-01",
+  "controllerAuthority": "CIBOTFLOW/Luzione-platform-program@8543a3eab0a969f213bc192391bd7ca657bbf087",
+  "sourceAudit": {
+    "packetId": "SUPPORT-CORE-ASSURE-01/v1",
+    "fingerprint": "3fdc9ddf470509ec9c115656a431f414b9796dda14ec0aaaf9133fbaab796968",
+    "decision": "NOT_CLEARED"
+  },
+  "remediations": {
+    "internalProjectionAdmission": {
+      "requestedFlagSemantics": "EXACT_TRUE",
+      "requiresGlobalMutationGate": true,
+      "requiresDatabaseAndServiceAuthentication": true,
+      "requiresExactTenantAdmission": true,
+      "requiresExactSourceAdmission": true,
+      "default": "DISABLED"
+    },
+    "bidirectionalJourneyMappings": {
+      "dimensions": ["route", "relationGroup", "job", "unknown"],
+      "journeys": ["GJ-1", "GJ-2", "GJ-3"],
+      "gj1IncludesUnknown": "CORE02-U008",
+      "mechanicalEqualityRequired": true
+    },
+    "secretScan": {
+      "evidenceSetRef": "engineering/execution/core-02/CORE_02_EVIDENCE_SET_V1.json",
+      "scanEveryListedByte": true,
+      "standardCredentialAndTokenClassesRequired": true
+    }
+  },
+  "ownerReturns": {
+    "packetCount": 7,
+    "answerCount": 19,
+    "signedCount": 0,
+    "disposition": "ALL_UNSIGNED_ANSWERS_REMAIN_UNKNOWN"
+  },
+  "detachedFinalAttestation": {
+    "schemaVersion": "OPS-CONTRACTS-01/Detached-Final-Attestation/v1",
+    "publicationTiming": "AFTER_FINAL_COMMIT",
+    "publicationMechanism": "CONTENT_ADDRESSED_ANNOTATED_GIT_TAG",
+    "requiredPayloadFields": [
+      "schemaVersion",
+      "repository",
+      "branch",
+      "baseSha",
+      "implementationSha",
+      "finalSha",
+      "artifactDigests",
+      "testResults",
+      "effectAuthority",
+      "productionReady"
+    ],
+    "verification": "TAG_PEELED_COMMIT_MUST_EQUAL_PAYLOAD_FINAL_SHA_AND_BRANCH_FINAL_SHA",
+    "sameCommitSelfHashProhibited": true,
+    "repositoryTrackedFinalShaPlaceholderProhibited": true
+  },
+  "effectAuthority": "NO_EFFECT",
+  "g1Satisfied": false,
+  "g2Authorized": false
+}

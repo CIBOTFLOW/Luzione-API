@@ -1310,6 +1310,75 @@
         "The test proves immutable repository tree identity, not an authenticated deployed application boundary."
       ],
       "next_action": "Retain both the failed first-head and successful repaired-head CI records as append-only evidence; no further repair is required."
+    },
+    {
+      "failure_id": "OPS_CONTRACTS_01_INITIAL_CLOCK_VALIDATION_20260905",
+      "project_id": "OPS-CONTRACTS-01",
+      "observed_at": "2026-09-05T02:25:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "c981a13cbef1cf41fac4cd07a5d9992d61fd3288",
+      "environment": "local-uncommitted-implementation-worktree",
+      "layer": "strict-sdk-clock-and-manifest-validation",
+      "symptom": "The first focused run passed 16/19 but rejected the valid current training fixture, failed the contradictory-training sensitivity assertion and classified manifest pin drift as a generic value error; TypeScript also rejected a string-to-number clock comparison.",
+      "expected": "Training currency is derived from parsed epoch milliseconds against the explicit assessment clock, contradictory status fails, and immutable manifest pin drift returns the manifest-drift class.",
+      "actual": "The initial parser compared an ISO string directly to a numeric assessment epoch and reused the generic literal helper for frozen manifest pins.",
+      "classification": {
+        "domain": "CLIENT",
+        "class": "INVALID",
+        "retry": "NEVER",
+        "severity": "INFO"
+      },
+      "evidence_refs": [
+        "initial npm run test:ops-contracts:16_of_19",
+        "initial npm run typecheck:TS2365",
+        "src/modules/operations-evidence-contracts/consumerSdk.ts",
+        "src/modules/operations-evidence-contracts/tests/operations-evidence-contracts.test.ts"
+      ],
+      "repair_attempts": [
+        "Parsed the training expiry timestamp before comparing it to the deterministic assessment epoch.",
+        "Added manifest-specific immutable-pin comparison so pin drift retains OPS_MANIFEST_DRIFT.",
+        "Reran focused 19/19 and TypeScript successfully."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "commit:cf9fee8fbefa1dbda013788795b068477fa8535b",
+      "remaining_uncertainty": [],
+      "next_action": "Retain deterministic explicit-clock fixtures in every consumer implementation."
+    },
+    {
+      "failure_id": "OPS_CONTRACTS_01_LINT_UNUSED_INDEX_20260905",
+      "project_id": "OPS-CONTRACTS-01",
+      "observed_at": "2026-09-05T02:27:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "c981a13cbef1cf41fac4cd07a5d9992d61fd3288",
+      "environment": "local-uncommitted-implementation-worktree",
+      "layer": "strict-sdk-static-analysis",
+      "symptom": "The first lint pass reported one unused evidence-loop index warning.",
+      "expected": "ESLint passes with zero warnings.",
+      "actual": "The parser enumerated evidence refs with an unused index after error messages were simplified.",
+      "classification": {
+        "domain": "CLIENT",
+        "class": "INVALID",
+        "retry": "NEVER",
+        "severity": "INFO"
+      },
+      "evidence_refs": [
+        "initial npm run lint:one_warning",
+        "src/modules/operations-evidence-contracts/consumerSdk.ts"
+      ],
+      "repair_attempts": [
+        "Iterated directly over evidence refs without the unused index.",
+        "Reran lint with zero warnings and the complete local release gate successfully."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "commit:cf9fee8fbefa1dbda013788795b068477fa8535b",
+      "remaining_uncertainty": [],
+      "next_action": "No further repair is required."
     }
   ]
 }

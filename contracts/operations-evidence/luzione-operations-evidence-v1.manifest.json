@@ -1,7 +1,7 @@
 {
   "schemaVersion": "LuzioneOperationsEvidenceManifest/v1",
   "bundleVersion": "LuzioneOperationsEvidence/v1",
-  "candidateSha": "UNBOUND_G0",
+  "candidateSha": "cf9fee8fbefa1dbda013788795b068477fa8535b",
   "controllerAuthority": "6a6d710a1e35774ef544bf0c770a92481fb09dcb",
   "effectAuthority": "NO_EFFECT",
   "runtimeActivation": "NOT_IMPLEMENTED",

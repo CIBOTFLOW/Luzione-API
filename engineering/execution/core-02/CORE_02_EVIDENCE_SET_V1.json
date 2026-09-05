@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "CORE-02/Evidence-Set/v1",
+  "projectId": "CORE-02",
+  "controllerAuthority": "CIBOTFLOW/Luzione-platform-program@8543a3eab0a969f213bc192391bd7ca657bbf087",
+  "auditFingerprint": "3fdc9ddf470509ec9c115656a431f414b9796dda14ec0aaaf9133fbaab796968",
+  "classification": "REPOSITORY_EVIDENCE_ONLY_NO_SECRET_VALUES",
+  "paths": [
+    "architecture/production-convergence/CORE_02_WORKING_CONTRACT.md",
+    "engineering/execution/CORE_02_G0_WRITER_CLAIM.json",
+    "engineering/execution/core-02/CORE_02_API_ACTIVATION_CONE_MANIFEST_V1.json",
+    "engineering/execution/core-02/CORE_02_ARTIFACT_DIGESTS_V1.json",
+    "engineering/execution/core-02/CORE_02_EVIDENCE_SET_V1.json",
+    "engineering/execution/core-02/CORE_02_UNKNOWN_OWNER_LEDGER_V1.json",
+    "engineering/execution/core-02/CORE_CORRECTION_01_REMEDIATION_V1.json",
+    "engineering/execution/core-02/owner-returns/CORE_02_OWNER_CONNECTOR_RUNTIME_V1.json",
+    "engineering/execution/core-02/owner-returns/CORE_02_OWNER_CRM_ONBOARDING_V1.json",
+    "engineering/execution/core-02/owner-returns/CORE_02_OWNER_DATABASE_SECURITY_V1.json",
+    "engineering/execution/core-02/owner-returns/CORE_02_OWNER_IDENTITY_CREDENTIAL_V1.json",
+    "engineering/execution/core-02/owner-returns/CORE_02_OWNER_PRODUCTION_DECISION_V1.json",
+    "engineering/execution/core-02/owner-returns/CORE_02_OWNER_RELEASE_RECOVERY_V1.json",
+    "engineering/execution/core-02/owner-returns/CORE_02_OWNER_SUPPORT_V1.json",
+    "engineering/execution/handoffs/CORE_02_G0_CONTROLLER_HANDOFF.json"
+  ],
+  "policy": {
+    "scanEveryListedByte": true,
+    "standardCredentialAndTokenClassesRequired": true,
+    "unsignedOwnerReturnsRemainUnknown": true,
+    "productionMutationAuthorized": false
+  }
+}

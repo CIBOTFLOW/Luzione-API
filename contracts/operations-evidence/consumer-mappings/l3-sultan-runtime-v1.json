@@ -2,8 +2,7 @@
   "schemaVersion": "OPS-CONTRACTS-01/L3-Sultan-Runtime-Consumer-Packet/v1",
   "producerRepository": "CIBOTFLOW/Luzione-API",
   "producerBaseSha": "c981a13cbef1cf41fac4cd07a5d9992d61fd3288",
-  "producerImplementationSha": "PENDING_IMPLEMENTATION_COMMIT",
-  "producerFinalEvidenceSha": "PENDING_EVIDENCE_COMMIT",
+  "producerImplementationSha": "cf9fee8fbefa1dbda013788795b068477fa8535b",
   "producerBranch": "codex/ops-contracts-01-g0-6a6d710",
   "bundleVersion": "LuzioneOperationsEvidence/v1",
   "sourcePacketPins": {

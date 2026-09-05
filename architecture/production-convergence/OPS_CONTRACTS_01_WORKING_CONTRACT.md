@@ -11,6 +11,8 @@ The source specifications are bound by immutable fingerprints:
 - `PROOF-OPS-01/v1`: `b2c79f6a580267adfcac1745047518979070ee3f18d90df478dc4b6ec511cb8b`.
 - `CUSTOMER-ZERO-OPS-01/v1`: `ae1c5225f8bb1c45420572433ac659ff054a1fd2bfad1cb2bf740e5ae008e57c`.
 
+Before sealing, controller `CIBOTFLOW/Luzione-platform-program@8543a3eab0a969f213bc192391bd7ca657bbf087` adds `CORE-CORRECTION-01` with audit fingerprint `3fdc9ddf470509ec9c115656a431f414b9796dda14ec0aaaf9133fbaab796968`. The same successor branch therefore also closes the bounded CORE-02 assurance defects: exact-false-by-default projection admission under the global mutation gate and explicit tenant/source allowlists, bidirectionally complete journey mappings including GJ-1/U008, and standard-class scanning of the complete declared CORE-02 evidence set. It does not reinterpret an unsigned owner response as truth.
+
 ## Entrypoint and end state
 
 The only entrypoint in this branch is an offline strict parser or generated consumer SDK call over an in-memory document. A successful end state is a version-bound, exact-field, immutable, tenant-bound, no-secret/no-PII evidence record whose deterministic formulas, state transitions, observation clock, owner coverage, and referenced evidence all validate. A failure produces a typed fail-closed compatibility error.
@@ -61,6 +63,8 @@ The bundle pins the frozen Core producer pair `828de754e4104cd860e3f47adbf2e84c5
 
 The mutation cone is limited to this working contract, a new operations-evidence schema/manifest/consumer mappings, a new parser/SDK/fixture/test module, test taxonomy and script registration, and repository-local proof/handoff metadata.
 
+CORE-CORRECTION-01 additionally permits the smallest fail-closed configuration and catalog-projection route guard needed to require all four admission layers. The environment example remains disabled and empty. This is a denial-path hardening change, not runtime activation.
+
 ## Deterministic laws
 
 1. Evidence references bind an exact 40-character release SHA, artifact version, SHA-256 digest, observation time, classification, verifier, and tenant; secret/PII content and mutable refs are forbidden.
@@ -87,5 +91,8 @@ Before handoff, the exact candidate must pass:
 6. compliance, typecheck, lint, full test suite, and production build;
 7. exact reverse-patch check without executing rollback;
 8. exact-head automated CI when repository workflow policy permits it.
+9. a detached content-addressed annotated Git tag created only after the final commit, with its peeled target and payload both binding that exact final SHA.
 
 Local/CI success supports only a bounded G0 claim. Consumer integration, activation-cone clearance, authenticated deployed readback, live proof days, recovery evidence, G1, and every G2 authority remain separate prerequisites.
+
+The exact queued successor after this writer releases is `ONBOARD-SPINE-L1-G0/v1` under controller `1e77028`: default-off/no-effect tenant-scoped persistence and POST/GET boundaries for approved `TenantBlueprint`, expiring `SetupMandate`, staged `ImportBatch`, and deterministic `ImportReceipt` readback using Core reservation/replay, reversible migrations, and rejection/idempotency/rollback tests. It is not started or forked in this branch.

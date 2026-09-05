@@ -2067,6 +2067,69 @@
       "next_proof_needed": [
         "The controller routes the seven unsigned exact-field packets to their named human functions and admits only signature-verifiable returns that preserve all NO_EFFECT holds."
       ]
+    },
+    {
+      "proof_id": "OPS_CONTRACTS_01_G0_OPERATIONS_EVIDENCE_20260905",
+      "project_id": "OPS-CONTRACTS-01",
+      "recorded_at": "2026-09-05T02:31:34Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "cf9fee8fbefa1dbda013788795b068477fa8535b",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "OPS-CONTRACTS-01 publishes a separate strict v1 schema, parser, generated SDK and fixture bundle for PROOF-OPS-01 and CUSTOMER-ZERO-OPS-01 operations evidence, composes with byte-identical LuzioneCoreContracts/v1 trees, and authorizes no route, persistence, provider, deployment, proof-window, stage or production effect.",
+      "exercised_boundaries": [
+        "All seventeen EvidenceRef, MetricCatalog, proof-entry/daily/weekly/capability/completeness/exception/incident/exit and customer-zero cadence/handoff/training/feedback/freeze/capacity/stage fixtures passed the same generated SDK boundary.",
+        "Every document rejected surplus, missing and wrong-version fields through the discriminated strict parser.",
+        "Missing accountable owner, capability coverage and record evidence failed closed; agent/Sultan owner, signer, approver and trainee identities were denied.",
+        "Completeness, proof-day credit and capacity utilization formulas were deterministic and mismatch-sensitive; a telemetry gap, hard-zero breach or capacity overrun could not earn credit or admission.",
+        "Unaccepted handoff, stale training, false stage jump/advance and bundled G2 evidence failed closed under an explicit assessment clock.",
+        "Corrections used append-only supersession; self-supersession and overwrite fields failed, and secret/direct-PII keys or values were rejected before compatibility evaluation.",
+        "The manifest pinned PROOF-OPS-01/v1 fingerprint b2c79f6a580267adfcac1745047518979070ee3f18d90df478dc4b6ec511cb8b and CUSTOMER-ZERO-OPS-01/v1 fingerprint ae1c5225f8bb1c45420572433ac659ff054a1fd2bfad1cb2bf740e5ae008e57c; drift in either packet or Core composition failed.",
+        "The checked-out contracts/core and src/modules/luzione-core-contracts trees remained d57ccc4cccd97b37acd1a1575b1e07ede5787349 and d594fa014d7020fdf8386c7a6926ff9b573ac355.",
+        "Focused tests passed 19/19; full repository tests passed 362/362; seven compliance documents, TypeScript, ESLint with zero warnings and the Next.js 16.3.4 webpack build passed.",
+        "No route, database object, migration, credential, provider call, runtime flag, deployment, default branch, production query/mutation, activation or rollback was introduced or exercised."
+      ],
+      "untested_boundaries": [
+        "independent L2 and L3 exact-SHA consumption of the generated SDK and fixtures",
+        "authenticated Git-bound deployed readback or any persisted operations-evidence record",
+        "activation-cone clearance, proof-window entry, live proof days or customer-zero production operations",
+        "managed recovery, exact-action G2 authority, controller acceptance or G1",
+        "any runtime, provider, customer, database, migration or production effect"
+      ],
+      "evidence_refs": [
+        "commit:cf9fee8fbefa1dbda013788795b068477fa8535b",
+        "contracts/operations-evidence/luzione-operations-evidence-v1.manifest.json",
+        "contracts/operations-evidence/v1/luzione-operations-evidence-v1.schema.json",
+        "contracts/operations-evidence/consumer-mappings/l2-crm-app-v1.json",
+        "contracts/operations-evidence/consumer-mappings/l3-sultan-runtime-v1.json",
+        "src/modules/operations-evidence-contracts/generatedSdk.ts",
+        "src/modules/operations-evidence-contracts/tests/operations-evidence-contracts.test.ts",
+        "engineering/execution/ops-contracts-01/OPS_CONTRACTS_01_ARTIFACT_DIGESTS_V1.json"
+      ],
+      "failure_refs": [
+        "OPS_CONTRACTS_01_INITIAL_CLOCK_VALIDATION_20260905",
+        "OPS_CONTRACTS_01_LINT_UNUSED_INDEX_20260905"
+      ],
+      "cross_repo_handoffs": [
+        "L2 CRM App consumer packet pins the exact implementation and prohibits local evidence/finality/authority redefinition.",
+        "L3 Sultan Runtime consumer packet permits evidence preparation only and prohibits agent accountability, approval, stage and exit authority."
+      ],
+      "deferred_external_infra": [
+        "exact-head automated CI",
+        "independent exact-SHA L2/L3 consumption",
+        "authenticated deployed application readback",
+        "activation-cone, managed recovery and all G1/G2 authority"
+      ],
+      "remaining_uncertainty": [
+        "The SDK is proven only against synthetic local documents and does not establish a truth store or deployed transport boundary.",
+        "The source packets are specification-complete but no proof window or customer-zero production operation has started.",
+        "A parsed readiness or exit record is evidence only and cannot authorize or execute an operational transition."
+      ],
+      "next_proof_needed": [
+        "L2 and L3 independently pin cf9fee8fbefa1dbda013788795b068477fa8535b, execute the published positive/negative fixtures without semantic forks, and return immutable zero-effect consumer evidence."
+      ]
     }
   ]
 }

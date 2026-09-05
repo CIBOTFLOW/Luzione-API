@@ -2,6 +2,7 @@
   "schemaVersion": "CORE-02/Unknown-Owner-Ledger/v1",
   "projectId": "CORE-02",
   "controllerAuthority": "CIBOTFLOW/Luzione-platform-program@7713b02201e5abb84a92bb0d2af91514d33c84d5",
+  "correctionAuthority": "CIBOTFLOW/Luzione-platform-program@8543a3eab0a969f213bc192391bd7ca657bbf087",
   "inventoryRef": "engineering/execution/core-02/CORE_02_API_ACTIVATION_CONE_MANIFEST_V1.json",
   "policy": {
     "unknownMeansApproved": false,

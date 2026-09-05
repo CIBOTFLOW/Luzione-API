@@ -60,3 +60,15 @@ Inputs are the exact CORE-01 final, existing API routes, migrations, registries,
 ## Irreversible effects
 
 None are authorized or required. Every external, production, credential, migration, default-branch, provider, and rollback action remains outside this project.
+
+## CORE-CORRECTION-01 bounded remediation
+
+Controller `CIBOTFLOW/Luzione-platform-program@8543a3eab0a969f213bc192391bd7ca657bbf087` and audit fingerprint `3fdc9ddf470509ec9c115656a431f414b9796dda14ec0aaaf9133fbaab796968` supersede the affected assurance claims without changing `LuzioneCoreContracts/v1`:
+
+- internal catalog projections are disabled unless their flag is exact `true`, the global mutation gate is exact `true`, database and service authentication are configured, and the authenticated tenant plus fixed source are both explicitly admitted;
+- journey-to-route, journey-to-relation-group, journey-to-job, and journey-to-unknown edges must exactly equal their reverse declarations; GJ-1 includes service-token identity unknown `CORE02-U008`;
+- every byte in the declared fifteen-path CORE-02 evidence set is scanned for standard database, private-key, bearer, GitHub, Stripe, OpenAI, Slack, Google, AWS, Shopify, Supabase, JWT, Vercel, npm, SendGrid, and assigned-secret value classes;
+- all seven owner packets and nineteen answers remain unsigned and therefore `UNKNOWN`;
+- the eventual OPS-CONTRACTS-01 final is attested only after it exists by a content-addressed annotated Git tag whose peeled target and payload both equal that final SHA. No tracked file claims its own containing commit hash.
+
+This correction changes only fail-closed admission code, documentary inventory/evidence, and mechanical tests. It neither enables the projection gate nor supplies production, owner, recovery, consumer, or G1/G2 evidence.

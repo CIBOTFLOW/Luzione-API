@@ -3,6 +3,8 @@
   "projectId": "CORE-02",
   "repository": "CIBOTFLOW/Luzione-API",
   "controllerAuthority": "CIBOTFLOW/Luzione-platform-program@7713b02201e5abb84a92bb0d2af91514d33c84d5",
+  "correctionAuthority": "CIBOTFLOW/Luzione-platform-program@8543a3eab0a969f213bc192391bd7ca657bbf087",
+  "correctionAuditFingerprint": "3fdc9ddf470509ec9c115656a431f414b9796dda14ec0aaaf9133fbaab796968",
   "observedRepositorySha": "bb5eb395af0873f4483ba2dc10c76f9941051dde",
   "observedAt": "2026-09-05T01:36:47Z",
   "brand": {
@@ -42,17 +44,28 @@
       "journeyId": "GJ-1",
       "name": "Tenant onboarding",
       "contractObjects": ["TenantBlueprint/v1", "SetupMandate/v1", "ImportBatch/v1", "ImportReceipt/v1", "ConnectorBinding/v1", "SyncReceipt/v1"],
-      "routeIds": ["workflow-pack-catalog-read"],
-      "relationGroupIds": ["onboarding-configuration-artifacts", "shared-command-workflow-control-plane"],
+      "routeIds": [
+        "release-read", "livez-read", "readyz-read", "healthz-read",
+        "rls-readiness-read", "platform-guarantees-read", "provider-operations-read",
+        "workflow-pack-catalog-read", "governance-evaluate",
+        "autonomy-constitution-read", "autonomy-evaluate"
+      ],
+      "relationGroupIds": [
+        "onboarding-configuration-artifacts", "shared-command-workflow-control-plane",
+        "authority-policy-referenced-runtime", "security-readiness-referenced-runtime"
+      ],
       "jobIds": [],
       "repositoryState": "CONTRACT_AND_LEGACY_CONFIGURATION_ARTIFACTS_ONLY",
-      "unknownRefs": ["CORE02-U001", "CORE02-U002", "CORE02-U005", "CORE02-U006", "CORE02-U007", "CORE02-U009", "CORE02-U010", "CORE02-U011", "CORE02-U012", "CORE02-U013", "CORE02-U014", "CORE02-U015", "CORE02-U017", "CORE02-U019"]
+      "unknownRefs": ["CORE02-U001", "CORE02-U002", "CORE02-U005", "CORE02-U006", "CORE02-U007", "CORE02-U008", "CORE02-U009", "CORE02-U010", "CORE02-U011", "CORE02-U012", "CORE02-U013", "CORE02-U014", "CORE02-U015", "CORE02-U017", "CORE02-U019"]
     },
     {
       "journeyId": "GJ-2",
       "name": "Lead to procurement",
       "contractObjects": ["SultanOperation/v1", "SultanReceipt/v1", "SultanReadback/v1"],
       "routeIds": [
+        "release-read", "livez-read", "readyz-read", "healthz-read",
+        "rls-readiness-read", "platform-guarantees-read", "provider-operations-read",
+        "governance-evaluate", "autonomy-constitution-read", "autonomy-evaluate",
         "lead-read", "lead-command", "commercial-case-read", "commercial-case-command",
         "quote-read", "quote-command", "proposal-review-read", "proposal-review-command",
         "quote-approval-read", "quote-approval-command", "order-read", "order-command",
@@ -66,7 +79,8 @@
         "shared-command-workflow-control-plane", "lead-commercial-dark-path",
         "proposal-quote-approval-dark-path", "order-fulfillment-dark-path",
         "sultan-policy-internal-actions", "sultan-stage5-evidence",
-        "catalog-projection-referenced-runtime", "authority-policy-referenced-runtime"
+        "catalog-projection-referenced-runtime", "authority-policy-referenced-runtime",
+        "security-readiness-referenced-runtime"
       ],
       "jobIds": ["provider-worker", "workflow-timer-claimer"],
       "repositoryState": "DEFAULT_OFF_DARK_PATH_AND_READBACK_PRESENT_CANONICAL_TRANSFER_UNPROVEN",
@@ -76,8 +90,17 @@
       "journeyId": "GJ-3",
       "name": "Support to resolution",
       "contractObjects": ["SupportCase/v1", "SupportAction/v1", "CustomerReply/v1", "SultanOperation/v1", "SultanReceipt/v1", "SultanReadback/v1"],
-      "routeIds": ["sultan-agent-intent-evaluate", "sultan-tool-manifest-read", "sultan-tool-invoke", "sultan-command-prepare", "sultan-effect-readback"],
-      "relationGroupIds": ["shared-command-workflow-control-plane", "sultan-policy-internal-actions"],
+      "routeIds": [
+        "release-read", "livez-read", "readyz-read", "healthz-read",
+        "rls-readiness-read", "platform-guarantees-read", "provider-operations-read",
+        "governance-evaluate", "autonomy-constitution-read", "autonomy-evaluate",
+        "sultan-agent-intent-evaluate", "sultan-tool-manifest-read", "sultan-tool-invoke",
+        "sultan-command-prepare", "sultan-effect-readback"
+      ],
+      "relationGroupIds": [
+        "shared-command-workflow-control-plane", "sultan-policy-internal-actions",
+        "authority-policy-referenced-runtime", "security-readiness-referenced-runtime"
+      ],
       "jobIds": [],
       "repositoryState": "STRICT_CONTRACTS_PRESENT_SUPPORT_SPECIFIC_ROUTE_STORE_AND_JOB_ABSENT",
       "unknownRefs": ["CORE02-U004", "CORE02-U005", "CORE02-U006", "CORE02-U007", "CORE02-U008", "CORE02-U010", "CORE02-U011", "CORE02-U012", "CORE02-U013", "CORE02-U014", "CORE02-U015", "CORE02-U016", "CORE02-U019"]
@@ -173,7 +196,7 @@
   "flags": [
     {"flagId":"runtime-mutations","reference":"LUZIONE_API_MUTATIONS_ENABLED","default":"DISABLED_UNLESS_EXACT_TRUE_AND_REQUIRED_CONFIG_PRESENT","journeys":["GJ-1","GJ-2","GJ-3"],"state":"OBSERVED_REPOSITORY"},
     {"flagId":"domain-command-tenants","reference":"LUZIONE_API_DOMAIN_COMMAND_TENANTS","default":"EMPTY_ALLOWLIST","journeys":["GJ-2"],"state":"OBSERVED_REPOSITORY"},
-    {"flagId":"internal-projections","reference":"LUZIONE_API_INTERNAL_PROJECTIONS_ENABLED","default":"REQUESTED_UNLESS_EXACT_FALSE_BUT_REQUIRES_DATABASE_AND_SERVICE_TOKEN","journeys":["GJ-2"],"state":"OBSERVED_REPOSITORY"},
+    {"flagId":"internal-projections","reference":"LUZIONE_API_INTERNAL_PROJECTIONS_ENABLED|LUZIONE_API_INTERNAL_PROJECTION_TENANTS|LUZIONE_API_INTERNAL_PROJECTION_SOURCES","default":"DISABLED_UNLESS_EXACT_TRUE_WITH_GLOBAL_MUTATION_GATE_AND_EXACT_TENANT_SOURCE_ALLOWLISTS","journeys":["GJ-2"],"state":"OBSERVED_REPOSITORY_FAIL_CLOSED"},
     {"flagId":"provider-sandbox","reference":"LUZIONE_API_PROVIDER_SANDBOX_ENABLED|LUZIONE_API_PROVIDER_SANDBOX_TENANTS|LUZIONE_API_PROVIDER_SANDBOX_DESTINATIONS","default":"DISABLED_AND_EMPTY_ALLOWLISTS","journeys":["GJ-2"],"state":"OBSERVED_REPOSITORY"},
     {"flagId":"provider-live","reference":"LUZIONE_API_PROVIDER_LIVE_ENABLED|LUZIONE_API_PROVIDER_LIVE_TENANTS|LUZIONE_API_PROVIDER_LIVE_DESTINATIONS","default":"DISABLED_AND_EMPTY_ALLOWLISTS","journeys":["GJ-2"],"state":"OBSERVED_REPOSITORY_G2_REQUIRED"},
     {"flagId":"core01-dark-flags","reference":"LuzioneCoreFeatureFlags/v1","members":["onboardingApply","importCommit","connectorSync","operationEffects","providerDispatch","supportActionEffects","customerReplyDelivery"],"default":"ALL_FALSE","journeys":["GJ-1","GJ-2","GJ-3"],"state":"FROZEN_CONTRACT_NO_RUNTIME_BINDING_OBSERVED"}

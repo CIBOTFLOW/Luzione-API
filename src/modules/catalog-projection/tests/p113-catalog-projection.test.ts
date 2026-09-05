@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
+import { internalProjectionsEnabledFor, runtimeConfig } from "../../../lib/api/config";
 import {
   P113ContractError,
   P113_INGEST_CONTRACT_VERSION,
@@ -109,13 +110,54 @@ test("the service boundary is authenticated, idempotent, and never authorizes ex
   const store = readFileSync("src/modules/catalog-projection/store.ts", "utf8");
   assert.match(route, /requireServiceActor\(request\.headers, "catalog\.projection\.(read|ingest)"\)/);
   assert.match(route, /Idempotency-Key header is required/);
-  assert.match(route, /internalProjectionsEnabled/);
+  assert.match(route, /internalProjectionsEnabledFor\(\{ source: "SHOPIFY", tenantId: actor\.tenantId \}\)/);
   assert.match(store, /pg_advisory_xact_lock/);
   assert.match(store, /external_write_authorized[^\n]+false/);
   assert.match(store, /returning state, products_observed/);
   assert.match(store, /payload->>'vendor'/);
   assert.match(store, /productsCount \+ productVariantsCount/);
   assert.doesNotMatch(route, /SHOPIFY_(ADMIN|ACCESS)_TOKEN|DATABASE_URL/);
+});
+
+test("internal projections require exact gates and bounded tenant/source admission", () => {
+  const names = [
+    "DATABASE_URL",
+    "LUZIONE_API_SERVICE_TOKEN",
+    "LUZIONE_API_MUTATIONS_ENABLED",
+    "LUZIONE_API_INTERNAL_PROJECTIONS_ENABLED",
+    "LUZIONE_API_INTERNAL_PROJECTION_TENANTS",
+    "LUZIONE_API_INTERNAL_PROJECTION_SOURCES",
+  ] as const;
+  const original = Object.fromEntries(names.map((name) => [name, process.env[name]]));
+  try {
+    process.env.DATABASE_URL = "configured";
+    process.env.LUZIONE_API_SERVICE_TOKEN = "configured";
+    process.env.LUZIONE_API_MUTATIONS_ENABLED = "true";
+    process.env.LUZIONE_API_INTERNAL_PROJECTIONS_ENABLED = "TRUE";
+    process.env.LUZIONE_API_INTERNAL_PROJECTION_TENANTS = "tenant-a";
+    process.env.LUZIONE_API_INTERNAL_PROJECTION_SOURCES = "SHOPIFY";
+    assert.equal(runtimeConfig().internalProjectionsRequested, false);
+    assert.equal(internalProjectionsEnabledFor({ source: "SHOPIFY", tenantId: "tenant-a" }), false);
+
+    process.env.LUZIONE_API_INTERNAL_PROJECTIONS_ENABLED = "true";
+    process.env.LUZIONE_API_MUTATIONS_ENABLED = "false";
+    assert.equal(internalProjectionsEnabledFor({ source: "SHOPIFY", tenantId: "tenant-a" }), false);
+
+    process.env.LUZIONE_API_MUTATIONS_ENABLED = "true";
+    assert.equal(internalProjectionsEnabledFor({ source: "SHOPIFY", tenantId: "tenant-b" }), false);
+    assert.equal(internalProjectionsEnabledFor({ source: "UNBOUNDED", tenantId: "tenant-a" }), false);
+    assert.equal(internalProjectionsEnabledFor({ source: "SHOPIFY", tenantId: "tenant-a" }), true);
+
+    process.env.LUZIONE_API_INTERNAL_PROJECTION_SOURCES = "";
+    assert.equal(runtimeConfig().internalProjectionAdmissionConfigured, false);
+    assert.equal(internalProjectionsEnabledFor({ source: "SHOPIFY", tenantId: "tenant-a" }), false);
+  } finally {
+    for (const name of names) {
+      const value = original[name];
+      if (value === undefined) delete process.env[name];
+      else process.env[name] = value;
+    }
+  }
 });
 
 test("the database boundary assumes only the bounded P113 role inside explicit transactions", () => {
