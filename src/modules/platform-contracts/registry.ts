@@ -754,6 +754,25 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
     version: "luzione-readback-envelope/v0.2-draft.1",
   },
   {
+    compatibility: "EXACT_VERSION",
+    consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
+    contractId: "luzione-core-contract-bundle-v1",
+    currentRuntime: false,
+    maturity: "LIBRARY_ONLY",
+    name: "CORE-01 strict operation, receipt, readback, onboarding, import, connector and support contract bundle",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: ["controller:CORE-01:G0", "controller:SUPPORT-01:L1-CORE-CONTRACTS:v1"],
+    sourcePaths: [
+      "contracts/core/luzione-core-v1.manifest.json",
+      "contracts/core/v1/luzione-core-contracts-v1.schema.json",
+      "contracts/core/consumer-mappings/sultan-runtime-01-v1.json",
+      "src/modules/luzione-core-contracts/contracts.ts",
+      "src/modules/luzione-core-contracts/consumerSdk.ts",
+      "src/modules/luzione-core-contracts/fixtures.ts"
+    ],
+    version: "LuzioneCoreContracts/v1",
+  },
+  {
     compatibility: "NEW_MAJOR_FOR_BREAKING",
     consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
     contractId: "luzione-authority",

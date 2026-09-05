@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "LuzioneCoreReleaseManifest/v1",
+  "bundleVersion": "LuzioneCoreContracts/v1",
+  "candidateSha": "UNBOUND_G0",
+  "controllerAuthority": "b19a4d858c0c90dba8600facbf329b7de7c322ad",
+  "supportPacketAuthority": "c5a26960970091d9fe664460fa32be190a50ccb9",
+  "effectAuthority": "NO_EFFECT",
+  "runtimeActivation": "DARK_ONLY",
+  "productionReady": false,
+  "fepDependency": false,
+  "preservedA02": {
+    "implementationSha": "12685f46a60edea23aaa0a5403e300bf8858066b",
+    "finalSha": "bc43d5db8fe58230d6c3d35e32a73e1e8618b71e",
+    "versions": {
+      "bundle": "luzione-shared-contracts/v0.2-draft.1",
+      "identityTenant": "luzione-identity-tenant/v0.2-draft.1",
+      "command": "luzione-command-envelope/v0.2-draft.1",
+      "receipt": "luzione-receipt-envelope/v0.2-draft.1",
+      "readback": "luzione-readback-envelope/v0.2-draft.1"
+    }
+  },
+  "artifacts": {
+    "schemaBundle": "contracts/core/v1/luzione-core-contracts-v1.schema.json",
+    "strictConsumerSdk": "src/modules/luzione-core-contracts/index.ts",
+    "semanticFixtures": "src/modules/luzione-core-contracts/fixtures.ts",
+    "compatibilitySuite": "src/modules/luzione-core-contracts/tests/core-contracts.test.ts",
+    "runtimeMapping": "contracts/core/consumer-mappings/sultan-runtime-01-v1.json",
+    "featureFlagsFixture": "LuzioneCoreFeatureFlags/v1"
+  },
+  "contracts": {
+    "SultanOperation/v1": "#/$defs/SultanOperation",
+    "SultanReceipt/v1": "#/$defs/SultanReceipt",
+    "SultanReadback/v1": "#/$defs/SultanReadback",
+    "TenantBlueprint/v1": "#/$defs/TenantBlueprint",
+    "SetupMandate/v1": "#/$defs/SetupMandate",
+    "ImportBatch/v1": "#/$defs/ImportBatch",
+    "ImportReceipt/v1": "#/$defs/ImportReceipt",
+    "ConnectorBinding/v1": "#/$defs/ConnectorBinding",
+    "SyncReceipt/v1": "#/$defs/SyncReceipt",
+    "SupportCase/v1": "#/$defs/SupportCase",
+    "SupportAction/v1": "#/$defs/SupportAction",
+    "CustomerReply/v1": "#/$defs/CustomerReply",
+    "LuzioneCoreFeatureFlags/v1": "#/$defs/FeatureFlags",
+    "LuzioneCoreReleaseManifest/v1": "#/$defs/ReleaseManifest"
+  }
+}
