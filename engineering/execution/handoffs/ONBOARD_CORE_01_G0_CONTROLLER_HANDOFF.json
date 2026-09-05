@@ -1,0 +1,133 @@
+{
+  "schemaVersion": "ONBOARD-CORE-01/G0-Controller-Handoff/v1",
+  "projectId": "ONBOARD-CORE-01",
+  "preparedAt": "2026-09-05T03:42:58Z",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "branch": "codex/onboard-core-01-g0-47dbdf6",
+  "baseSha": "a21ec6e3f888dff5aef5d7612ed7b22ef44cbc80",
+  "implementationShas": {
+    "blueprintMandate": "27b50a89658fe1572bfefe6ef6e02d993deaceb7",
+    "importDryRun": "46a14c3a499d57c8699395d714bb44e9a4576ab6",
+    "connectorValidation": "7f937c515960cb522215ae7e928b3075049477fe",
+    "registryReconciliation": "cd5a9c091c61e1891112c94282c0f8882bf343ee"
+  },
+  "finalShaBinding": "COMMIT_CONTAINING_THIS_HANDOFF_RETURNED_AS_EXACT_PR_HEAD",
+  "authorities": {
+    "onboardingCore": "CIBOTFLOW/Luzione-platform-program@47dbdf6b5ba26b2898abd8dd1eaa0419bfcbbfcf",
+    "tenantBlueprintMap": "CIBOTFLOW/Luzione-platform-program@54bc20a",
+    "importMap": "CIBOTFLOW/Luzione-platform-program@e446e51",
+    "connectorFoundation": "CIBOTFLOW/Luzione-platform-program@b3dbea8",
+    "implementationCheckpoint": "CIBOTFLOW/Luzione-platform-program@da7cbfb",
+    "successorPipeline": "CIBOTFLOW/Luzione-platform-program@f7fd111"
+  },
+  "pullRequest": {
+    "number": 69,
+    "url": "https://github.com/CIBOTFLOW/Luzione-API/pull/69",
+    "state": "OPEN_DRAFT_STACKED_ON_EXACT_OPS_CONTRACTS_FINAL",
+    "baseBranch": "codex/ops-contracts-01-g0-6a6d710",
+    "baseSha": "a21ec6e3f888dff5aef5d7612ed7b22ef44cbc80",
+    "mergeOrDefaultBranchAction": "NOT_PERFORMED"
+  },
+  "publishedVersions": [
+    "LuzioneOnboardCoreApi/v1",
+    "LuzioneTenantPackDraft/v1",
+    "TenantBlueprintMap/v1",
+    "TenantBlueprint/v1",
+    "SetupMandate/v1",
+    "CRMImportDryRunMap/v1",
+    "ImportBatch/v1",
+    "ImportReceipt/v1",
+    "ConnectorSyncValidation/v1",
+    "ConnectorBinding/v1",
+    "SyncReceipt/v1"
+  ],
+  "migrations": [
+    {
+      "name": "20260905040000_onboard_core_blueprints_mandates.sql",
+      "sha256": "5863953c6df67e4710572a5ff71e3a848a43527f0b56781ada300abfeea693ac",
+      "relationCount": 3,
+      "rollbackResult": "PASS_REMOVED_3_PRESERVED_P110_REAPPLY_3"
+    },
+    {
+      "name": "20260905041000_onboard_core_import_dry_runs.sql",
+      "sha256": "d46b4c193110be71b1abfbd942b934dfc99ddb378978332a3b89b19e8c9458da",
+      "relationCount": 3,
+      "rollbackResult": "PASS_REMOVED_3_PRESERVED_SETUP_MANDATE_REAPPLY_3"
+    }
+  ],
+  "endpoints": [
+    "GET|POST /api/v1/onboarding/tenant-blueprints",
+    "POST /api/v1/onboarding/tenant-blueprints/approvals",
+    "GET|POST /api/v1/onboarding/setup-mandates",
+    "POST /api/v1/onboarding/imports/dry-runs",
+    "GET /api/v1/onboarding/imports/{batchId}",
+    "POST /api/v1/connectors/sync-validations"
+  ],
+  "packagePins": {
+    "luzione-api": "0.1.0",
+    "node": ">=20",
+    "next": "16.3.4",
+    "pg": "8.20.0",
+    "l2Packet": "engineering/execution/onboard-core-01/ONBOARD_CORE_01_L2_CONSUMER_PACKET_V1.json"
+  },
+  "frozenComposition": {
+    "bundleVersion": "LuzioneCoreContracts/v1",
+    "contractsCoreTree": "d57ccc4cccd97b37acd1a1575b1e07ede5787349",
+    "sdkTree": "d594fa014d7020fdf8386c7a6926ff9b573ac355",
+    "changed": false
+  },
+  "localVerification": {
+    "focusedOnboardingAndProvider": "PASS_25_OF_25",
+    "registryReconciliation": "PASS_15_OF_15",
+    "compliance": "PASS",
+    "typecheck": "PASS",
+    "lint": "PASS_ZERO_WARNINGS",
+    "fullTests": "PASS_385_OF_385",
+    "build": "PASS_NEXTJS_16_3_4_WEBPACK",
+    "blueprintMandateProof": "PASS_2_DRAFTS_2_APPROVALS_1_SUPERSESSION_1_MANDATE_5_RECEIPTS_ROLLBACK_REAPPLY",
+    "importProof": "PASS_1_BATCH_3_ROWS_1_IMPORT_RECEIPT_4_COMMAND_RECEIPTS_1_CONFLICT_ROLLBACK_REAPPLY",
+    "connectorProof": "PASS_3_RECEIPTS_1_CONFLICT_3_OUTBOX_3_ATTEMPTS_3_RECONCILIATIONS_3_NO_EFFECT_ZERO_SCHEMA_DELTA"
+  },
+  "exactHeadAutomation": {
+    "releaseGate": "PENDING_FINAL_PUSH",
+    "codeql": "PENDING_FINAL_PUSH",
+    "artifact": "PENDING_FINAL_PUSH"
+  },
+  "preview": {
+    "deployment": "PENDING_FINAL_PUSH",
+    "applicationReadback": "NOT_YET_OBSERVED",
+    "productionEvidence": false
+  },
+  "negativeEvidence": [
+    "surplus, missing and wrong-version fields",
+    "client-issued tenant/actor/approval/receipt/finality authority",
+    "source or connector payload digest mismatch",
+    "same tenant/key with changed content",
+    "cross-tenant read/write and actor capability mismatch",
+    "stale object version and superseded Blueprint",
+    "expired, revoked, inactive, cross-tenant or action-denying Mandate",
+    "mandate import count overrun and invalid Batch/Receipt status/finality",
+    "live/revoked ConnectorBinding, unapproved provider and non-opaque credential reference",
+    "ambiguous acknowledgement redispatch and unavailable source false finality",
+    "default gate, tenant allowlist or sandbox destination absent"
+  ],
+  "rollbackProof": {
+    "database": "TWO_ISOLATED_DISPOSABLE_ROLLBACK_REAPPLY_PROOFS_PASS_AND_CONNECTOR_SCHEMA_DELTA_ZERO",
+    "git": "git diff a21ec6e3f888dff5aef5d7612ed7b22ef44cbc80..FINAL_HEAD piped to git apply --reverse --check on FINAL_HEAD",
+    "runtimeOrProductionRollback": "NOT_REQUIRED_AND_NOT_PERFORMED"
+  },
+  "remainingStops": [
+    "Exact-final automated CI, CodeQL and any deployment status remain pending until this handoff commit is pushed.",
+    "Independent L2 exact-pin consumer evidence is absent.",
+    "Authenticated exact-SHA application preview/readback is absent.",
+    "Managed migration, backup/PITR, production recovery and every production/G1/G2 action are absent."
+  ],
+  "maturity": {
+    "engineeringState": "BOUNDED_PASS",
+    "releaseEvidence": "LOCAL_PROVEN",
+    "effectAuthority": "NO_EFFECT",
+    "finality": "BOUNDED_CLAIM"
+  },
+  "writerRelease": "RELEASED_AFTER_FINAL_COMMIT_AND_PUSH",
+  "oneNextAction": "From the exact ONBOARD-CORE-01 final, create a fresh non-default EFFECT-ADMISSION-L1 branch and implement the b7a73c98c741f0d258bada5297b59092adb5ce3ae6fbdb8e01ed09758d3f155d shared default-off admission packet; do not reuse or modify this onboarding branch."
+}

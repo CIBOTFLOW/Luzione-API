@@ -1,0 +1,128 @@
+{
+  "schemaVersion": "ONBOARD-CORE-01/L2-Consumer-Packet/v1",
+  "producerRepository": "CIBOTFLOW/Luzione-API",
+  "producerBranch": "codex/onboard-core-01-g0-47dbdf6",
+  "producerBaseSha": "a21ec6e3f888dff5aef5d7612ed7b22ef44cbc80",
+  "semanticPins": {
+    "blueprintMandate": "27b50a89658fe1572bfefe6ef6e02d993deaceb7",
+    "importDryRun": "46a14c3a499d57c8699395d714bb44e9a4576ab6",
+    "connectorValidation": "7f937c515960cb522215ae7e928b3075049477fe",
+    "registryReconciliation": "cd5a9c091c61e1891112c94282c0f8882bf343ee"
+  },
+  "pullRequest": 69,
+  "packagePin": {
+    "name": "luzione-api",
+    "version": "0.1.0",
+    "node": ">=20",
+    "next": "16.3.4",
+    "pg": "8.20.0"
+  },
+  "contractVersions": [
+    "LuzioneOnboardCoreApi/v1",
+    "LuzioneTenantPackDraft/v1",
+    "TenantBlueprintMap/v1",
+    "TenantBlueprint/v1",
+    "SetupMandate/v1",
+    "CRMImportDryRunMap/v1",
+    "ImportBatch/v1",
+    "ImportReceipt/v1",
+    "ConnectorSyncValidation/v1",
+    "ConnectorBinding/v1",
+    "SyncReceipt/v1"
+  ],
+  "migrationPins": [
+    {
+      "file": "supabase/migrations/20260905040000_onboard_core_blueprints_mandates.sql",
+      "sha256": "5863953c6df67e4710572a5ff71e3a848a43527f0b56781ada300abfeea693ac",
+      "relations": [
+        "onboarding_tenant_blueprint_drafts",
+        "onboarding_tenant_blueprint_approvals",
+        "onboarding_setup_mandates"
+      ],
+      "rollback": "scripts/validation/rollback-onboard-core-blueprints-mandates.sql"
+    },
+    {
+      "file": "supabase/migrations/20260905041000_onboard_core_import_dry_runs.sql",
+      "sha256": "d46b4c193110be71b1abfbd942b934dfc99ddb378978332a3b89b19e8c9458da",
+      "relations": [
+        "onboarding_import_batches",
+        "onboarding_import_rows",
+        "onboarding_import_receipts"
+      ],
+      "rollback": "scripts/validation/rollback-onboard-core-import-dry-runs.sql"
+    }
+  ],
+  "endpointPins": [
+    {
+      "methods": ["GET", "POST"],
+      "path": "/api/v1/onboarding/tenant-blueprints",
+      "source": "src/app/api/v1/onboarding/tenant-blueprints/route.ts",
+      "capabilities": ["onboarding.blueprint.read", "onboarding.blueprint.propose"]
+    },
+    {
+      "methods": ["POST"],
+      "path": "/api/v1/onboarding/tenant-blueprints/approvals",
+      "source": "src/app/api/v1/onboarding/tenant-blueprints/approvals/route.ts",
+      "capabilities": ["onboarding.blueprint.approve"]
+    },
+    {
+      "methods": ["GET", "POST"],
+      "path": "/api/v1/onboarding/setup-mandates",
+      "source": "src/app/api/v1/onboarding/setup-mandates/route.ts",
+      "capabilities": ["onboarding.mandate.read", "onboarding.mandate.issue"]
+    },
+    {
+      "methods": ["POST"],
+      "path": "/api/v1/onboarding/imports/dry-runs",
+      "source": "src/app/api/v1/onboarding/imports/dry-runs/route.ts",
+      "capabilities": ["onboarding.import.dry_run"]
+    },
+    {
+      "methods": ["GET"],
+      "path": "/api/v1/onboarding/imports/{batchId}",
+      "source": "src/app/api/v1/onboarding/imports/[batchId]/route.ts",
+      "capabilities": ["onboarding.import.read"]
+    },
+    {
+      "methods": ["POST"],
+      "path": "/api/v1/connectors/sync-validations",
+      "source": "src/app/api/v1/connectors/sync-validations/route.ts",
+      "capabilities": ["connector.sync_validation.execute"]
+    }
+  ],
+  "authoritativeSources": {
+    "blueprintMandateContracts": "src/modules/onboard-core/contracts.ts",
+    "blueprintMandateStore": "src/modules/onboard-core/store.ts",
+    "importContracts": "src/modules/onboard-core/importContracts.ts",
+    "importStore": "src/modules/onboard-core/importStore.ts",
+    "connectorContracts": "src/modules/onboard-core/connectorContracts.ts",
+    "connectorService": "src/modules/onboard-core/connectorService.ts",
+    "openApi": "contracts/openapi/luzione-api-v0.1.yaml",
+    "frozenCoreManifest": "contracts/core/luzione-core-v1.manifest.json",
+    "frozenCoreSdk": "src/modules/luzione-core-contracts/consumerSdk.ts"
+  },
+  "requiredConsumerBehavior": [
+    "Pin the smallest semantic implementation SHA needed by the consumer and do not infer later slice semantics from an earlier pin.",
+    "Submit only LuzioneTenantPackDraft/v1 DRAFT content; never issue tenant, blueprint, mandate, approval, supersession, receipt, finality or rollback authority locally.",
+    "Compute and send the exact canonical source digest, retain source schema digest, sourcePackId and sourcePackVersion, and treat changed content under the same version as conflict.",
+    "Read canonical identifiers and object versions only from L1 responses/readback; send expected object versions on later transitions.",
+    "Treat VALIDATED_NO_EFFECT as dry-run evidence only, never CRM commit or import completion.",
+    "Submit ConnectorBinding/v1 only as DRAFT with an opaque secret-ref identifier; never send or resolve a credential value.",
+    "Treat provider acknowledgement as non-final and preserve reconciliation evidence without initiating redispatch.",
+    "Keep all feature flags and tenant admission unset/false in consumer tests and hosted environments unless separately authorized."
+  ],
+  "prohibitedLocalRedefinitions": [
+    "tenant, actor, blueprint, mandate, import batch or connector receipt identity",
+    "approval, supersession, expiry, limits, prohibited action or rollback semantics",
+    "idempotency key, payload digest, object version, receipt or finality semantics",
+    "Core TenantBlueprint, SetupMandate, ImportBatch, ImportReceipt, ConnectorBinding or SyncReceipt schema"
+  ],
+  "effectAuthority": "NO_EFFECT",
+  "strongestClaim": "BOUNDED_G0_PRODUCER_CANDIDATE_NOT_INTEGRATED_NOT_PRODUCTION_READY",
+  "remainingProof": [
+    "exact-SHA automated producer CI",
+    "independent L2 exact-pin compatibility evidence",
+    "authenticated Git-bound deployed application readback",
+    "managed migration/recovery evidence and every G1/G2 decision"
+  ]
+}

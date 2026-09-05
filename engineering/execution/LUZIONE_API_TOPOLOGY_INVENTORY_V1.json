@@ -3,12 +3,12 @@
   "inventory_id": "luzione-api-topology/v1",
   "project_id": "API_SE_001",
   "repository": "CIBOTFLOW/Luzione-API",
-  "observed_ref": "main",
-  "observed_sha": "be8cd38fe6af24a5d686ff414b02caf449980386",
-  "observed_at": "2026-08-29T22:58:24Z",
+  "observed_ref": "codex/onboard-core-01-g0-47dbdf6",
+  "observed_sha": "7f937c515960cb522215ae7e928b3075049477fe",
+  "observed_at": "2026-09-05T03:38:16Z",
   "scope": {
     "included": [
-      "tracked main-branch runtime, routes, migrations, tests, deployment configuration and published architecture",
+      "tracked ONBOARD-CORE-01 candidate runtime, routes, migrations, tests, deployment configuration and published architecture",
       "open Luzione API pull requests as pending, non-runtime evidence",
       "published cross-system ownership contracts in this repository"
     ],
@@ -294,6 +294,83 @@
       "authentication": "credential-bound actor with provider_operations.read capability",
       "canonical_readback": "tenant-scoped P110 outbox, reconciliation, dead-letter and kill-switch aggregates",
       "effect": "NO_EFFECT"
+    },
+    {
+      "route_id": "tenant-blueprint-read",
+      "method": "GET",
+      "path": "/api/v1/onboarding/tenant-blueprints",
+      "source_path": "src/app/api/v1/onboarding/tenant-blueprints/route.ts",
+      "authentication": "credential-bound same-tenant actor with onboarding blueprint read capability",
+      "canonical_readback": "tenant-scoped append-only public.tenant_blueprints record",
+      "effect": "NO_EFFECT"
+    },
+    {
+      "route_id": "tenant-blueprint-propose",
+      "method": "POST",
+      "path": "/api/v1/onboarding/tenant-blueprints",
+      "source_path": "src/app/api/v1/onboarding/tenant-blueprints/route.ts",
+      "authentication": "credential-bound same-tenant actor with onboarding blueprint proposal capability plus exact default-off tenant admission",
+      "canonical_readback": "canonical L1-issued draft TenantBlueprint/v1 plus P110 receipt",
+      "effect": "DEFAULT_OFF_INTERNAL_ONBOARDING_MUTATION",
+      "external_effect_authorized": false
+    },
+    {
+      "route_id": "tenant-blueprint-approval",
+      "method": "POST",
+      "path": "/api/v1/onboarding/tenant-blueprints/approvals",
+      "source_path": "src/app/api/v1/onboarding/tenant-blueprints/approvals/route.ts",
+      "authentication": "credential-bound same-tenant human approver with exact default-off tenant admission",
+      "canonical_readback": "append-only approval or supersession record plus P110 receipt",
+      "effect": "DEFAULT_OFF_HUMAN_DECISION_EVIDENCE",
+      "external_effect_authorized": false
+    },
+    {
+      "route_id": "setup-mandate-read",
+      "method": "GET",
+      "path": "/api/v1/onboarding/setup-mandates",
+      "source_path": "src/app/api/v1/onboarding/setup-mandates/route.ts",
+      "authentication": "credential-bound same-tenant actor with onboarding mandate read capability",
+      "canonical_readback": "tenant-scoped append-only public.setup_mandates record",
+      "effect": "NO_EFFECT"
+    },
+    {
+      "route_id": "setup-mandate-issue",
+      "method": "POST",
+      "path": "/api/v1/onboarding/setup-mandates",
+      "source_path": "src/app/api/v1/onboarding/setup-mandates/route.ts",
+      "authentication": "credential-bound same-tenant human authority over an approved blueprint plus exact default-off tenant admission",
+      "canonical_readback": "canonical expiring SetupMandate/v1 plus P110 receipt",
+      "effect": "DEFAULT_OFF_INTERNAL_ONBOARDING_MUTATION",
+      "external_effect_authorized": false
+    },
+    {
+      "route_id": "import-dry-run-write",
+      "method": "POST",
+      "path": "/api/v1/onboarding/imports/dry-runs",
+      "source_path": "src/app/api/v1/onboarding/imports/dry-runs/route.ts",
+      "authentication": "credential-bound same-tenant actor with a live DRY_RUN_IMPORT mandate plus exact default-off tenant admission",
+      "canonical_readback": "tenant-scoped ImportBatch/v1, row evidence, deterministic ImportReceipt/v1 and P110 receipt",
+      "effect": "DEFAULT_OFF_NO_EFFECT_IMPORT_VALIDATION",
+      "external_effect_authorized": false
+    },
+    {
+      "route_id": "import-dry-run-read",
+      "method": "GET",
+      "path": "/api/v1/onboarding/imports/{batchId}",
+      "source_path": "src/app/api/v1/onboarding/imports/[batchId]/route.ts",
+      "authentication": "credential-bound same-tenant actor with onboarding import read capability",
+      "canonical_readback": "tenant-scoped ImportBatch/v1, row evidence and ImportReceipt/v1",
+      "effect": "NO_EFFECT"
+    },
+    {
+      "route_id": "connector-sync-validation",
+      "method": "POST",
+      "path": "/api/v1/connectors/sync-validations",
+      "source_path": "src/app/api/v1/connectors/sync-validations/route.ts",
+      "authentication": "credential-bound exact service actor with same-tenant draft binding plus global, endpoint, tenant and sandbox destination admission",
+      "canonical_readback": "P110 receipt/outbox, SandboxEchoProviderAdapter acknowledgement/readback and L1-issued SyncReceipt/v1",
+      "effect": "DEFAULT_OFF_SANDBOX_NO_EFFECT_VALIDATION",
+      "external_effect_authorized": false
     },
     {
       "route_id": "governance-evaluate",
@@ -631,6 +708,8 @@
     "DATABASE_POOL_MAX",
     "DATABASE_POOL_MAX_USES",
     "DATABASE_URL",
+    "LUZIONE_API_CONNECTOR_SYNC_VALIDATIONS_ENABLED",
+    "LUZIONE_API_CONNECTOR_SYNC_VALIDATION_TENANTS",
     "LUZIONE_API_DOMAIN_COMMAND_TENANTS",
     "LUZIONE_API_INTERNAL_PROJECTION_SOURCES",
     "LUZIONE_API_INTERNAL_PROJECTION_TENANTS",
@@ -640,6 +719,8 @@
     "LUZIONE_API_SERVICE_CAPABILITIES",
     "LUZIONE_BUILD_TIME",
     "LUZIONE_API_MUTATIONS_ENABLED",
+    "LUZIONE_API_ONBOARDING_CORE_ENABLED",
+    "LUZIONE_API_ONBOARDING_CORE_TENANTS",
     "LUZIONE_API_PROVIDER_LIVE_DESTINATIONS",
     "LUZIONE_API_PROVIDER_LIVE_ENABLED",
     "LUZIONE_API_PROVIDER_LIVE_TENANTS",

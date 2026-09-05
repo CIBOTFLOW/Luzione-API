@@ -48,7 +48,7 @@ export class PostgresWorkflowDeliveryStore {
     }
   }
 
-  async claimDueOutbox(input: { limit?: number; tenantId: string; workerId: string }) {
+  async claimDueOutbox(input: { limit?: number; outboxMessageId?: string; tenantId: string; workerId: string }) {
     const workerId = validatedWorkerId(input.workerId);
     return this.transaction(input.tenantId, async (client) => {
       const expired = await client.query(
@@ -65,9 +65,10 @@ export class PostgresWorkflowDeliveryStore {
            join public.p110_command_receipts receipt
              on receipt.tenant_id = outbox.tenant_id and receipt.receipt_id = outbox.receipt_id
           where outbox.tenant_id = $1 and outbox.state = 'CLAIMED'
+            and ($2::text is null or outbox.outbox_message_id = $2)
             and outbox.lease_expires_at <= now()
           for update of outbox skip locked`,
-        [input.tenantId],
+        [input.tenantId, input.outboxMessageId ?? null],
       );
       for (const row of expired.rows) {
         if (row.dispatch_started) {
@@ -132,6 +133,7 @@ export class PostgresWorkflowDeliveryStore {
            select outbox.outbox_message_id
              from public.p110_outbox_messages outbox
             where outbox.tenant_id = $1
+              and ($4::text is null or outbox.outbox_message_id = $4)
               and outbox.state in ('PENDING','RETRY_SCHEDULED')
               and outbox.not_before <= now()
               and outbox.attempt_count < outbox.max_attempts
@@ -160,7 +162,7 @@ export class PostgresWorkflowDeliveryStore {
            from claimed
            join public.p110_command_receipts receipt
              on receipt.tenant_id = claimed.tenant_id and receipt.receipt_id = claimed.receipt_id`,
-        [input.tenantId, boundedLimit(input.limit), workerId],
+        [input.tenantId, boundedLimit(input.limit), workerId, input.outboxMessageId ?? null],
       );
       return claimed.rows;
     });
@@ -405,7 +407,7 @@ export class PostgresWorkflowDeliveryStore {
     });
   }
 
-  async claimDueReconciliations(input: { limit?: number; tenantId: string; workerId: string }) {
+  async claimDueReconciliations(input: { limit?: number; outboxMessageId?: string; tenantId: string; workerId: string }) {
     const workerId = validatedWorkerId(input.workerId);
     return this.transaction(input.tenantId, async (client) => {
       await client.query(
@@ -413,14 +415,16 @@ export class PostgresWorkflowDeliveryStore {
             set lease_owner = null, lease_started_at = null, heartbeat_at = null,
                 lease_expires_at = null, next_check_at = now(),
                 notes = 'The prior reconciliation lease expired and was safely released.'
-          where tenant_id = $1 and result = 'PENDING' and lease_expires_at <= now()`,
-        [input.tenantId],
+          where tenant_id = $1 and result = 'PENDING' and lease_expires_at <= now()
+            and ($2::text is null or outbox_message_id = $2)`,
+        [input.tenantId, input.outboxMessageId ?? null],
       );
       const claimed = await client.query(
         `with candidates as (
            select reconciliation_id
              from public.p110_reconciliation_checkpoints
             where tenant_id = $1 and result = 'PENDING' and next_check_at <= now()
+              and ($4::text is null or outbox_message_id = $4)
               and attempt_count < max_attempts and lease_owner is null
             order by next_check_at, checked_at
             for update skip locked
@@ -443,7 +447,7 @@ export class PostgresWorkflowDeliveryStore {
              on outbox.tenant_id = claimed.tenant_id and outbox.outbox_message_id = claimed.outbox_message_id
            join public.p110_command_receipts receipt
              on receipt.tenant_id = claimed.tenant_id and receipt.receipt_id = claimed.receipt_id`,
-        [input.tenantId, boundedLimit(input.limit), workerId],
+        [input.tenantId, boundedLimit(input.limit), workerId, input.outboxMessageId ?? null],
       );
       return claimed.rows;
     });

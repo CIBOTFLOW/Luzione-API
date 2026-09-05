@@ -13,8 +13,8 @@ type DeliveryFailure = {
 };
 
 export type ProviderWorkerStore = {
-  claimDueOutbox(input: { limit?: number; tenantId: string; workerId: string }): Promise<Record<string, unknown>[]>;
-  claimDueReconciliations(input: { limit?: number; tenantId: string; workerId: string }): Promise<Record<string, unknown>[]>;
+  claimDueOutbox(input: { limit?: number; outboxMessageId?: string; tenantId: string; workerId: string }): Promise<Record<string, unknown>[]>;
+  claimDueReconciliations(input: { limit?: number; outboxMessageId?: string; tenantId: string; workerId: string }): Promise<Record<string, unknown>[]>;
   completeClaimedReconciliation(input: {
     notes?: string | null;
     observedObjectVersion?: string | null;
@@ -43,7 +43,7 @@ export class ProviderWorkerRuntime {
     private readonly enabled: Enablement = providerAdapterEnabled,
   ) {}
 
-  async runDeliveryBatch(input: { limit?: number; tenantId: string; workerId: string }) {
+  async runDeliveryBatch(input: { limit?: number; outboxMessageId?: string; tenantId: string; workerId: string }) {
     const claimed = await this.store.claimDueOutbox(input);
     const outcomes: Array<{ destination: string | null; outboxMessageId: string; state: string }> = [];
     for (const row of claimed) {
@@ -98,7 +98,7 @@ export class ProviderWorkerRuntime {
     return { claimed: claimed.length, outcomes };
   }
 
-  async runReconciliationBatch(input: { limit?: number; tenantId: string; workerId: string }) {
+  async runReconciliationBatch(input: { limit?: number; outboxMessageId?: string; tenantId: string; workerId: string }) {
     const claimed = await this.store.claimDueReconciliations(input);
     const outcomes: Array<{ reconciliationId: string; result: string }> = [];
     for (const row of claimed) {
