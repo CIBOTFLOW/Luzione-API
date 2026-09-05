@@ -61,6 +61,13 @@ export function onboardingCoreEnabledForTenant(tenantId: string) {
     && allowlist("LUZIONE_API_ONBOARDING_CORE_TENANTS").has(tenantId);
 }
 
+export function connectorSyncValidationEnabledForTenant(tenantId: string) {
+  return runtimeConfig().mutationsEnabled
+    && process.env.LUZIONE_API_CONNECTOR_SYNC_VALIDATIONS_ENABLED === "true"
+    && allowlist("LUZIONE_API_CONNECTOR_SYNC_VALIDATION_TENANTS").has(tenantId)
+    && providerAdapterEnabled({ destination: "sandbox.echo", mode: "SANDBOX", tenantId });
+}
+
 export function providerAdapterEnabled(input: { destination: string; mode: "LIVE" | "SANDBOX"; tenantId: string }) {
   const prefix = input.mode === "LIVE" ? "LUZIONE_API_PROVIDER_LIVE" : "LUZIONE_API_PROVIDER_SANDBOX";
   return runtimeConfig().mutationsEnabled

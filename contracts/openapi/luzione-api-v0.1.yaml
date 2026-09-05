@@ -87,6 +87,9 @@
     "/api/v1/onboarding/imports/{batchId}": {
       "get": { "operationId": "getImportDryRun", "summary": "Read the same-tenant Batch, row evidence, and no-effect Receipt", "parameters": [{ "name": "batchId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }], "responses": { "200": { "description": "Canonical import dry-run readback" }, "404": { "description": "Batch not found in the authenticated tenant" } } }
     },
+    "/api/v1/connectors/sync-validations": {
+      "post": { "operationId": "executeConnectorSyncValidation", "summary": "Reserve, dispatch, reconcile and issue one canonical sandbox-only SyncReceipt/v1", "responses": { "200": { "description": "Exact replay or source-confirmed sandbox validation" }, "201": { "description": "New source-confirmed sandbox validation" }, "202": { "description": "Sandbox validation has durable reconciliation evidence" }, "403": { "description": "Service, tenant, provider, Binding, or opaque reference denied" }, "409": { "description": "Payload digest or P110 idempotency conflict" }, "503": { "description": "Exact tenant/destination gates disabled or validation unavailable" } } }
+    },
     "/api/v1/provider-operations": {
       "get": { "operationId": "getProviderOperations", "summary": "Read tenant-bound provider worker, reconciliation, dead-letter and kill-switch aggregates", "responses": { "200": { "description": "Bounded provider operations readback" }, "401": { "description": "Service authentication required" }, "503": { "description": "Readback unavailable" } } }
     },
