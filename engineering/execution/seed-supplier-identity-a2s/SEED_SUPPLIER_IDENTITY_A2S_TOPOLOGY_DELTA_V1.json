@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "artifact_id": "SEED_SUPPLIER_IDENTITY_A2S_TOPOLOGY_DELTA_V1",
+  "project_id": "SEED-SUPPLIER-IDENTITY-A2S",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "base_topology": "engineering/execution/LUZIONE_API_TOPOLOGY_INVENTORY_V1.json",
+  "base_proof_sha": "5cc727ac0cfb3f8f7fa75015246486bf7f7089f5",
+  "seed_product_contract_producer_sha": "e14b405d58a293c002f5676984a95e55372b3bd2",
+  "schedule_contract_producer_sha": "265724e528502b44a1250efea551539d74cb0bbd",
+  "procurement_contract_producer_sha": "777e0d471d2ecf02294fffb7562761d6f8a36dbd",
+  "supplier_identity_contract_producer_sha": "9ad995ef52dcc8c39698a165095658bc756a295f",
+  "effect_authority": "NO_EFFECT",
+  "http_surfaces": [
+    {"route_id":"seed-supplier-profile-command","method":"POST","path":"/api/v1/supplier-profiles/commands","source_path":"src/app/api/v1/supplier-profiles/commands/route.ts","authentication":"credential-bound service transport plus signed same-tenant human subject and default-off command admission","canonical_readback":"P110 receipt plus exact SupplierProfile/v1 and TimelineEvent/v1 owner readback","effect":"DEFAULT_OFF_NO_EFFECT_INTERNAL_MUTATION","external_effect_authorized":false},
+    {"route_id":"seed-supplier-profile-read","method":"GET","path":"/api/v1/supplier-profiles/{supplierProfileId}","source_path":"src/app/api/v1/supplier-profiles/[supplierProfileId]/route.ts","authentication":"credential-bound same-tenant actor with supplier.profile.read and independent default-off read admission","canonical_readback":"SupplierProfileReadModel/v1 inside apiResponse({ok,result,...})","effect":"DEFAULT_OFF_NO_EFFECT_READ"},
+    {"route_id":"seed-account-supplier-profile-read","method":"GET","path":"/api/v1/accounts/{accountId}/supplier-profile","source_path":"src/app/api/v1/accounts/[accountId]/supplier-profile/route.ts","authentication":"credential-bound same-tenant actor with supplier.profile.read and independent default-off read admission","canonical_readback":"SupplierProfileReadModel/v1 inside apiResponse({ok,result,...})","effect":"DEFAULT_OFF_NO_EFFECT_READ"},
+    {"route_id":"seed-portal-account-binding-command","method":"POST","path":"/api/v1/supplier-portal-account-bindings/commands","source_path":"src/app/api/v1/supplier-portal-account-bindings/commands/route.ts","authentication":"exact Portal workload plus signed same-tenant human approval and default-off command admission; no production Portal caller mapped","canonical_readback":"P110 receipt plus exact PortalOrganizationAccountAccessBinding/v1 and TimelineEvent/v1 readback","effect":"G0_DEFAULT_OFF_NO_EFFECT_INTERNAL_ACCESS_PROJECTION","external_effect_authorized":false},
+    {"route_id":"seed-portal-account-binding-read","method":"GET","path":"/api/v1/supplier-portal-account-bindings/{bindingId}","source_path":"src/app/api/v1/supplier-portal-account-bindings/[bindingId]/route.ts","authentication":"exact Portal workload with read capability and independent default-off read admission; no production Portal caller mapped","canonical_readback":"PortalOrganizationAccountAccessBinding/v1 inside apiResponse({ok,result,...})","effect":"G0_DEFAULT_OFF_NO_EFFECT_READ"}
+  ],
+  "relations": [
+    {"name":"seed_supplier_profile_versions","state":"DEFAULT_OFF_API_OWNER","write":"INSERT_ONLY_APPEND_ONLY","effect":"NO_EFFECT","canonical_dependency":"public.accounts exact tenant/version"},
+    {"name":"seed_supplier_portal_account_binding_versions","state":"G0_DEFAULT_OFF_API_ACCESS_PROJECTION","write":"INSERT_ONLY_APPEND_ONLY","effect":"NO_EFFECT","canonical_dependency":"public.accounts plus exact Portal organization/membership/object-grant evidence"}
+  ],
+  "runtime_configuration_keys": [
+    "LUZIONE_API_SEED_SUPPLIER_IDENTITY_READS_ENABLED",
+    "LUZIONE_API_SEED_SUPPLIER_IDENTITY_READ_TENANTS",
+    "LUZIONE_API_SEED_SUPPLIER_IDENTITY_COMMANDS_ENABLED",
+    "LUZIONE_API_SEED_SUPPLIER_IDENTITY_COMMAND_TENANTS"
+  ],
+  "blocked_dependencies": [
+    "Supplier Portal service:luzione-supplier-portal has no admitted Vercel OIDC caller mapping; test service-token identity is disposable proof only.",
+    "A3 RFQ-through-selection dependency triggers and application holds remain unchanged pending a separate correction package.",
+    "A2P canonical ProposalVersion owner remains required before PO draft admission."
+  ],
+  "prohibited_effects": ["portal_invite_or_access_change_execution","rfq_send","purchase_order_release","supplier_commitment","provider_dispatch","managed_migration","deployment"]
+}

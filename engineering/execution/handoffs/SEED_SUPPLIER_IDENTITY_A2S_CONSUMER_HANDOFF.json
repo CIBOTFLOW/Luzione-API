@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "handoff_id": "SEED_SUPPLIER_IDENTITY_A2S_CONSUMER_HANDOFF",
+  "project_id": "SEED-SUPPLIER-IDENTITY-A2S",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_branch": "codex/seed-supplier-identity-a2s",
+  "base_sha": "5cc727ac0cfb3f8f7fa75015246486bf7f7089f5",
+  "implementation_sha": "9ad995ef52dcc8c39698a165095658bc756a295f",
+  "exact_candidate_sha": null,
+  "seed_product_contract_producer_sha": "e14b405d58a293c002f5676984a95e55372b3bd2",
+  "schedule_contract_producer_sha": "265724e528502b44a1250efea551539d74cb0bbd",
+  "procurement_contract_producer_sha": "777e0d471d2ecf02294fffb7562761d6f8a36dbd",
+  "supplier_identity_contract_producer_sha": "9ad995ef52dcc8c39698a165095658bc756a295f",
+  "contracts": {
+    "supplier_profile": "SupplierProfile/v1",
+    "supplier_command": "SeedSupplierIdentityCommand/v1",
+    "supplier_read_model": "SupplierProfileReadModel/v1",
+    "portal_binding": "PortalOrganizationAccountAccessBinding/v1",
+    "portal_binding_command": "PortalOrganizationAccountAccessBindingCommand/v1",
+    "timeline": "TimelineEvent/v1",
+    "response_envelope": "api-http-response/1.0"
+  },
+  "routes": [
+    {"method":"POST","path":"/api/v1/supplier-profiles/commands","result":"P110 DOMAIN_COMMITTED receipt plus exact SupplierProfile/v1 and TimelineEvent/v1 readback"},
+    {"method":"GET","path":"/api/v1/supplier-profiles/:supplierProfileId","result":"SupplierProfileReadModel/v1 inside apiResponse({ok,result,...})"},
+    {"method":"GET","path":"/api/v1/accounts/:accountId/supplier-profile","result":"SupplierProfileReadModel/v1 inside apiResponse({ok,result,...})"},
+    {"method":"POST","path":"/api/v1/supplier-portal-account-bindings/commands","result":"P110 DOMAIN_COMMITTED receipt plus exact PortalOrganizationAccountAccessBinding/v1 and TimelineEvent/v1 readback"},
+    {"method":"GET","path":"/api/v1/supplier-portal-account-bindings/:bindingId","result":"PortalOrganizationAccountAccessBinding/v1 inside apiResponse({ok,result,...})"}
+  ],
+  "success_envelope_fields": ["ok","responseContractVersion","result","requestId","correlationId","requestIdentityContractVersion","traceId"],
+  "runtime_gate": {
+    "reads": {"database":"DATABASE_URL","feature":"LUZIONE_API_SEED_SUPPLIER_IDENTITY_READS_ENABLED","tenant_allowlist":"LUZIONE_API_SEED_SUPPLIER_IDENTITY_READ_TENANTS","depends_on_mutation_gate":false,"default":"OFF"},
+    "commands": {"global":"LUZIONE_API_MUTATIONS_ENABLED","feature":"LUZIONE_API_SEED_SUPPLIER_IDENTITY_COMMANDS_ENABLED","tenant_allowlist":"LUZIONE_API_SEED_SUPPLIER_IDENTITY_COMMAND_TENANTS","default":"OFF"}
+  },
+  "consumer_files": {
+    "supplier_contracts":"src/modules/seed-supplier-identity/contracts.ts",
+    "portal_contracts":"src/modules/seed-supplier-identity/portalAccessContracts.ts",
+    "read_model_parser":"src/modules/seed-supplier-identity/readModel.ts",
+    "positive_command_read_and_http_fixtures":"src/modules/seed-supplier-identity/fixtures.ts",
+    "working_contract":"architecture/production-convergence/SEED_SUPPLIER_IDENTITY_A2S_WORKING_CONTRACT.md",
+    "topology_delta":"engineering/execution/seed-supplier-identity-a2s/SEED_SUPPLIER_IDENTITY_A2S_TOPOLOGY_DELTA_V1.json",
+    "artifact_digests":"engineering/execution/seed-supplier-identity-a2s/SEED_SUPPLIER_IDENTITY_A2S_ARTIFACT_DIGESTS_V1.json",
+    "disposable_proof":"scripts/validation/run-seed-supplier-identity-a2s-proof.sh"
+  },
+  "consumer_rules": [
+    "CRM Account is canonical organization identity; never create a duplicate Supplier or Portal-organization truth row.",
+    "Supplier eligibility requires exact same-tenant Account version, stored ELIGIBLE status, open validity window, and approved capability.",
+    "Portal organization, membership and object-grant state grants bounded access only; it never grants supplier eligibility.",
+    "Validate A1 seed-product, A2 schedule, A3 procurement, A2S supplier-identity and runtime release identities independently.",
+    "Treat all supplied HTTP fixtures as apiResponse({ok,result,...}) bodies; clients must not invent a top-level local envelope.",
+    "A3 RFQ/quote/bid/selection/PO holds remain active; A2S does not silently lift them.",
+    "Portal binding routes are G0/default-off. No admitted Vercel caller maps service:luzione-supplier-portal; disposable service-token proof does not establish production Portal authentication.",
+    "No client may infer invite, RFQ send, PO release, supplier commitment, provider acknowledgement, payment, or any live effect from this handoff."
+  ],
+  "release_state": "LOCAL_IMPLEMENTED_DEFAULT_OFF_NO_EFFECT_PROOF_PENDING",
+  "deployment_sha": null,
+  "managed_migration": "NOT_RUN",
+  "push_or_merge": "NOT_PERFORMED",
+  "local_verification": {"typecheck":"PASS","focused_tests":"PASS_9_OF_9","taxonomy":"PASS_4_OF_4","disposable_postgres":"PASS_PRE_CANDIDATE","lint":"PENDING_CANDIDATE","full_tests":"PENDING_CANDIDATE","production_build":"PENDING_CANDIDATE"}
+}

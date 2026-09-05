@@ -34,6 +34,7 @@ const inventoryPath = "engineering/execution/LUZIONE_API_TOPOLOGY_INVENTORY_V1.j
 const topologyDeltaPaths = [
   "engineering/execution/seed-project-publication-a2/SEED_PROJECT_PUBLICATION_A2_TOPOLOGY_DELTA_V1.json",
   "engineering/execution/seed-procurement-a3/SEED_PROCUREMENT_A3_TOPOLOGY_DELTA_V1.json",
+  "engineering/execution/seed-supplier-identity-a2s/SEED_SUPPLIER_IDENTITY_A2S_TOPOLOGY_DELTA_V1.json",
 ] as const;
 const baseInventory = JSON.parse(readFileSync(inventoryPath, "utf8")) as Inventory;
 const topologyDeltas = topologyDeltaPaths.map((path) => JSON.parse(readFileSync(path, "utf8")) as Pick<Inventory, "http_surfaces" | "runtime_configuration_keys">);

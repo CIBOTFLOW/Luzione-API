@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
@@ -235,4 +236,18 @@ test("canonical read admission is independent of mutation admission and all A2S 
       if (value === undefined) delete process.env[key]; else process.env[key] = value;
     }
   }
+});
+
+test("A2S additive evidence manifest seals current artifacts without rewriting historical bundles", () => {
+  const manifest = JSON.parse(readFileSync("engineering/execution/seed-supplier-identity-a2s/SEED_SUPPLIER_IDENTITY_A2S_ARTIFACT_DIGESTS_V1.json", "utf8")) as {
+    artifacts: Array<{ path: string; sha256: string }>;
+    base_sha: string;
+    implementation_sha: string;
+  };
+  assert.equal(manifest.base_sha, "5cc727ac0cfb3f8f7fa75015246486bf7f7089f5");
+  assert.equal(manifest.implementation_sha, "9ad995ef52dcc8c39698a165095658bc756a295f");
+  for (const artifact of manifest.artifacts) {
+    assert.equal(createHash("sha256").update(readFileSync(artifact.path)).digest("hex"), artifact.sha256, artifact.path);
+  }
+  assert.equal(createHash("sha256").update(readFileSync("engineering/execution/seed-procurement-a3/SEED_PROCUREMENT_A3_ARTIFACT_DIGESTS_V1.json")).digest("hex"), "f836268c84cc7f5e8d3fbfd75e43fed2e2ec5c627e96849e20a2773fd233e7cf");
 });
