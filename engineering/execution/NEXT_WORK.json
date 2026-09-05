@@ -8,6 +8,13 @@
   "canonical_program": "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md",
   "program_extensions": [
     {
+      "extension_id": "LUZIONE_CRM_OS_OPS_CONTRACTS_CORRECTION_02_G0",
+      "source": "CIBOTFLOW/Luzione-platform-program@65dcf041236133af9c3c3cdf2a7d27789b8ee9b2",
+      "source_fingerprint": "b11f3cb5b9901a37a36c2543aba3542ef8e4b7349f62d14bac16e9813faa103f",
+      "repository_program": "architecture/production-convergence/OPS_CONTRACTS_CORRECTION_02_WORKING_CONTRACT.md",
+      "admitted_at": "2026-09-05T07:05:00Z"
+    },
+    {
       "extension_id": "LUZIONE_CRM_OS_EFFECT_ADMISSION_L1_CORRECTION_01_G0",
       "source": "CIBOTFLOW/Luzione-platform-program@51253c275eb02ef821438a8b875af7e4928f59a1",
       "source_fingerprint": "a24eefb14a9681ad97a415b8d48c43a7d88900e8c86a8f489645f9354a1a62d9",
@@ -90,6 +97,23 @@
     "S4_QUEUE_EXHAUSTED": "Stop when every admitted project is complete, quarantined or removed and no dependency-ready work remains."
   },
   "queue": [
+    {
+      "project_id": "OPS-CONTRACTS-CORRECTION-02",
+      "platform_project": "LUZIONE_CRM_OS_OPERATIONS_EVIDENCE_ASSURANCE",
+      "title": "Source-Bound Human Authority and Verified Capability Recovery",
+      "priority": 534,
+      "status": "IN_PROGRESS",
+      "depends_on": ["OPS-CONTRACTS-CORRECTION-01", "CONNECTOR-REVOCATION-L1-CORRECTION-01"],
+      "starting_sha": "ef4d69145192da627184c73ac170a623ab6dc72e",
+      "controller_authority": "CIBOTFLOW/Luzione-platform-program@65dcf041236133af9c3c3cdf2a7d27789b8ee9b2",
+      "source_fingerprint": "b11f3cb5b9901a37a36c2543aba3542ef8e4b7349f62d14bac16e9813faa103f",
+      "source_map_fingerprint": "66ca2ccbaca70ef60b407be7ac9230184b55cdeccbd9c50fdc67566802d72959",
+      "mutation_cone": ["documentation", "contracts", "generated-sdk", "fixtures", "tests", "execution-metadata"],
+      "core_outcome": "Publish an additive v3 operations ledger whose human owners, G2 grants and capability resets are bound to exact canonical source readback while v1/v2 remain prohibited for decision-bearing use.",
+      "published_artifacts": ["source-bound authority contracts", "incident recovery and deterministic epoch reset contracts", "strict SDK/schema parity", "L2/L3 ABSENT-capable source packets"],
+      "required_evidence": ["identity and role/function substitution denial", "agent and cross-tenant denial", "stale/revoked/superseded membership denial", "one-scope grant denial", "resolved-verified incident and recovery binding", "continuous epoch lineage", "zero decision credit", "full local and exact-SHA CI"],
+      "irreversible_effects": []
+    },
     {
       "project_id": "EFFECT-ADMISSION-L1",
       "platform_project": "LUZIONE_CRM_OS_EFFECT_ADMISSION",

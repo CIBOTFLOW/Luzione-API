@@ -1,0 +1,22 @@
+{
+  "packetVersion": "OperationsEvidenceAuthorityRecoverySourcePacket/v1",
+  "consumer": "CIBOTFLOW/Luzione-UI",
+  "consumerLane": "L2",
+  "producerRepository": "CIBOTFLOW/Luzione-API",
+  "producerCandidateSha": "0000000000000000000000000000000000000000",
+  "ledgerVersion": "LuzioneOperationsEvidenceLedger/v3",
+  "sourceStatus": "ABSENT",
+  "mayMintAuthority": false,
+  "routeConnection": "DISCONNECTED",
+  "requiredFutureReturn": [
+    "exact current same-tenant human membership source readback",
+    "canonical role and function source binding",
+    "one append-only approval receipt per exact G2 action/stage/effect",
+    "resolved-verified incident plus incident-bound recovery source readback"
+  ],
+  "decisionBearingUse": "PROHIBITED_PENDING_OPS_CONTRACTS_ASSURE_03_AND_EXACT_SOURCE_RETURN",
+  "effectAuthority": "NO_EFFECT",
+  "proofDayCredit": 0,
+  "g2Credit": 0,
+  "productionCredit": 0
+}
