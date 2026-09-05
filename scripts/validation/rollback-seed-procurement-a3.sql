@@ -41,6 +41,7 @@ drop table if exists public.seed_rfq_drafts;
 drop table if exists public.seed_product_candidates;
 drop table if exists public.seed_product_sources;
 drop table if exists public.seed_procurement_evidence_artifacts;
+drop function if exists public.seed_procurement_a3_validate_product_lineage();
 drop function if exists public.seed_procurement_a3_hold_unresolved_dependencies();
 drop function if exists public.seed_procurement_a3_reject_mutation();
 

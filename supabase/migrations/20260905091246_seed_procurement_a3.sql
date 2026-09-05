@@ -59,7 +59,11 @@ create table public.seed_product_sources (
   foreign key (tenant_id, artifact_id) references public.seed_procurement_evidence_artifacts(tenant_id, artifact_id) on delete restrict,
   foreign key (tenant_id, duplicate_of_source_id) references public.seed_product_sources(tenant_id, product_source_id) on delete restrict,
   foreign key (tenant_id, created_command_id) references public.p110_command_receipts(tenant_id, command_id) deferrable initially deferred,
-  check ((status = 'CONFLICT') = (jsonb_array_length(conflict_refs) > 0))
+  check (
+    (status = 'ACTIVE' and jsonb_array_length(conflict_refs) = 0)
+    or status = 'REVIEW_REQUIRED'
+    or (status = 'CONFLICT' and jsonb_array_length(conflict_refs) > 0)
+  )
 );
 
 create table public.seed_product_candidates (
@@ -87,7 +91,8 @@ create table public.seed_product_candidates (
   foreign key (tenant_id, product_source_id) references public.seed_product_sources(tenant_id, product_source_id) on delete restrict,
   foreign key (tenant_id, duplicate_of_candidate_id) references public.seed_product_candidates(tenant_id, product_candidate_id) on delete restrict,
   foreign key (tenant_id, created_command_id) references public.p110_command_receipts(tenant_id, command_id) deferrable initially deferred,
-  check ((status = 'REVIEW_REQUIRED') or jsonb_array_length(conflict_refs) = 0)
+  check ((status = 'REVIEW_REQUIRED') or jsonb_array_length(conflict_refs) = 0),
+  check (lane <> 'APPROVED_VENDOR' or nullif(canonical_payload ->> 'vendorId', '') is not null)
 );
 
 create table public.seed_rfq_drafts (
@@ -285,6 +290,76 @@ $$;
 
 revoke all on function public.seed_procurement_a3_hold_unresolved_dependencies() from public;
 
+create function public.seed_procurement_a3_validate_product_lineage()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+declare
+  parent_project_id text;
+  parent_status text;
+  parent_digest text;
+  duplicate_project_id text;
+begin
+  if tg_table_name = 'seed_product_sources' then
+    select project_id,status,content_digest
+      into parent_project_id,parent_status,parent_digest
+      from public.seed_procurement_evidence_artifacts
+     where tenant_id=new.tenant_id and artifact_id=new.artifact_id;
+    if not found then
+      raise exception 'SEED-PROCUREMENT-A3 Product Source evidence is not tenant-visible';
+    end if;
+    if parent_project_id is distinct from new.project_id then
+      raise exception 'SEED-PROCUREMENT-A3 Product Source must inherit Evidence Artifact project scope';
+    end if;
+    if parent_digest <> new.content_digest then
+      raise exception 'SEED-PROCUREMENT-A3 Product Source digest must match Evidence Artifact';
+    end if;
+    if parent_status <> 'ACTIVE' and new.status <> 'REVIEW_REQUIRED' then
+      raise exception 'SEED-PROCUREMENT-A3 Product Source cannot promote non-active evidence';
+    end if;
+    if new.duplicate_of_source_id is not null then
+      select project_id into duplicate_project_id
+        from public.seed_product_sources
+       where tenant_id=new.tenant_id and product_source_id=new.duplicate_of_source_id;
+      if not found or duplicate_project_id is distinct from new.project_id then
+        raise exception 'SEED-PROCUREMENT-A3 duplicate Product Source must share project scope';
+      end if;
+      if new.status <> 'REVIEW_REQUIRED' then
+        raise exception 'SEED-PROCUREMENT-A3 duplicate Product Source must remain review-required';
+      end if;
+    end if;
+  elsif tg_table_name = 'seed_product_candidates' then
+    select project_id,status into parent_project_id,parent_status
+      from public.seed_product_sources
+     where tenant_id=new.tenant_id and product_source_id=new.product_source_id;
+    if not found then
+      raise exception 'SEED-PROCUREMENT-A3 Product Candidate source is not tenant-visible';
+    end if;
+    if parent_project_id is distinct from new.project_id then
+      raise exception 'SEED-PROCUREMENT-A3 Product Candidate must inherit Product Source project scope';
+    end if;
+    if parent_status <> 'ACTIVE' and new.status <> 'REVIEW_REQUIRED' then
+      raise exception 'SEED-PROCUREMENT-A3 Product Candidate cannot promote a non-active source';
+    end if;
+    if new.duplicate_of_candidate_id is not null then
+      select project_id into duplicate_project_id
+        from public.seed_product_candidates
+       where tenant_id=new.tenant_id and product_candidate_id=new.duplicate_of_candidate_id;
+      if not found or duplicate_project_id is distinct from new.project_id then
+        raise exception 'SEED-PROCUREMENT-A3 duplicate Product Candidate must share project scope';
+      end if;
+      if new.status <> 'REVIEW_REQUIRED' then
+        raise exception 'SEED-PROCUREMENT-A3 duplicate Product Candidate must remain review-required';
+      end if;
+    end if;
+  end if;
+  return new;
+end
+$$;
+
+revoke all on function public.seed_procurement_a3_validate_product_lineage() from public;
+
 create trigger seed_procurement_evidence_append_only before update or delete on public.seed_procurement_evidence_artifacts for each row execute function public.seed_procurement_a3_reject_mutation();
 create trigger seed_product_sources_append_only before update or delete on public.seed_product_sources for each row execute function public.seed_procurement_a3_reject_mutation();
 create trigger seed_product_candidates_append_only before update or delete on public.seed_product_candidates for each row execute function public.seed_procurement_a3_reject_mutation();
@@ -294,6 +369,8 @@ create trigger seed_bid_comparisons_append_only before update or delete on publi
 create trigger seed_selection_decisions_append_only before update or delete on public.seed_procurement_selection_decisions for each row execute function public.seed_procurement_a3_reject_mutation();
 create trigger seed_purchase_order_drafts_append_only before update or delete on public.seed_purchase_order_drafts for each row execute function public.seed_procurement_a3_reject_mutation();
 create trigger seed_purchase_order_acks_append_only before update or delete on public.seed_purchase_order_acknowledgements for each row execute function public.seed_procurement_a3_reject_mutation();
+create trigger seed_product_sources_validate_lineage before insert on public.seed_product_sources for each row execute function public.seed_procurement_a3_validate_product_lineage();
+create trigger seed_product_candidates_validate_lineage before insert on public.seed_product_candidates for each row execute function public.seed_procurement_a3_validate_product_lineage();
 create trigger seed_rfq_dependency_hold before insert on public.seed_rfq_drafts for each row execute function public.seed_procurement_a3_hold_unresolved_dependencies();
 create trigger seed_supplier_quote_dependency_hold before insert on public.seed_supplier_quotes for each row execute function public.seed_procurement_a3_hold_unresolved_dependencies();
 create trigger seed_bid_comparison_dependency_hold before insert on public.seed_bid_comparisons for each row execute function public.seed_procurement_a3_hold_unresolved_dependencies();
@@ -365,7 +442,7 @@ end $$;
 comment on table public.seed_product_sources is
   'Immutable artifact-backed ProductSource/v1 observations. G0 stores reviewed fixture facts only and performs no fetch, upload, scan, OCR, or provider action.';
 comment on table public.seed_bid_comparisons is
-  'Reserved append-only BidComparison/v1 schema. Inserts remain database-held until an API-owned canonical Supplier eligibility source is admitted.';
+  'Reserved append-only BidComparison/v1 schema. Inserts remain database-held until an API-owned SupplierProfile/v1 is admitted.';
 comment on table public.seed_purchase_order_drafts is
   'Reserved PurchaseOrder/v1 draft schema. Inserts remain database-held until tenant/project/version-matched canonical ProposalVersion readback is admitted.';
 comment on table public.seed_purchase_order_acknowledgements is

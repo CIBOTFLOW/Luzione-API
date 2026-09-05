@@ -827,7 +827,7 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
     maturity: "IMPLEMENTED",
     name: "Default-off NO_EFFECT product intelligence commands with dependency-held RFQ-to-PO boundary",
     ownerRepository: "CIBOTFLOW/Luzione-API",
-    pendingChangeRefs: ["controller:SEED-PROCUREMENT-A3:G0_CANDIDATE", "controller:SEED-SUPPLIER-IDENTITY-A2S:BLOCKED_DEPENDENCY", "controller:SEED-PROPOSAL-A2P:BLOCKED_DEPENDENCY"],
+    pendingChangeRefs: ["controller:SEED-PROCUREMENT-A3:G0_CANDIDATE", "controller:SEED-SUPPLIER-IDENTITY-A2S:BLOCKED_DEPENDENCY", "controller:SEED-PROPOSAL-OWNER-A2P:BLOCKED_DEPENDENCY"],
     sourcePaths: [
       "src/modules/seed-procurement/contracts.ts",
       "src/modules/seed-procurement/store.ts",

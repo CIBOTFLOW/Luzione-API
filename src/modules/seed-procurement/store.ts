@@ -35,6 +35,7 @@ import {
   productCandidateIdFor,
   productSourceIdFor,
   procurementVersions,
+  timelineProjectVersion,
 } from "@/modules/seed-procurement/model";
 import type { SeedProcurementReadModelData } from "@/modules/seed-procurement/readModel";
 import { projectVersion, specificationLineVersion, specificationVersion } from "@/modules/seed-project-publication/model";
@@ -60,6 +61,10 @@ export class SeedProcurementDomainError extends Error {
 
 function json<T>(value: unknown): T { return (typeof value === "string" ? JSON.parse(value) : value) as T; }
 function iso(value: unknown) { const parsed = Date.parse(String(value)); if (!Number.isFinite(parsed)) throw new Error("Canonical procurement row has an invalid timestamp."); return new Date(parsed).toISOString(); }
+function nullableText(value: unknown) { return value === null || value === undefined ? null : String(value); }
+function requireSameProjectScope(actual: unknown, expected: string | null, label: string) {
+  if (nullableText(actual) !== expected) throw new SeedProcurementDomainError("OBJECT_ISOLATION_DENIED", `${label} must inherit the exact Project scope.`, 404);
+}
 function actorType(value: unknown): SeedAuthorityBoundaryV1["actorType"] { return value === "user" ? "HUMAN" : value === "agent" ? "SULTAN_AGENT" : "SERVICE"; }
 function sourceRef(tenantId: string, input: Omit<SeedSourceRefV1, "tenantId">): SeedSourceRefV1 { return { ...input, tenantId }; }
 function boundaries(row: Row, committedVersion: string, capability: string, approvalRef: string | null = null) {
@@ -101,7 +106,7 @@ function sourceFromRow(row: Row) {
     tenantId,
     updatedAt: iso(row.created_at),
   });
-  return { conflictRefs: json<string[]>(row.conflict_refs), duplicateOfSourceId: row.duplicate_of_source_id === null ? null : String(row.duplicate_of_source_id), extractionProvenance: json<string[]>(row.extraction_provenance), ingestionFormat: String(row.ingestion_format), resource };
+  return { conflictRefs: json<string[]>(row.conflict_refs), duplicateOfSourceId: row.duplicate_of_source_id === null ? null : String(row.duplicate_of_source_id), extractionProvenance: json<string[]>(row.extraction_provenance), ingestionFormat: String(row.ingestion_format), projectId: nullableText(row.project_id), resource };
 }
 
 function candidateFromRow(row: Row) {
@@ -119,7 +124,7 @@ function candidateFromRow(row: Row) {
     tenantId,
     updatedAt: iso(row.created_at),
   });
-  return { conflictRefs: json<string[]>(row.conflict_refs), duplicateOfCandidateId: row.duplicate_of_candidate_id === null ? null : String(row.duplicate_of_candidate_id), extractionProvenance: json<string[]>(row.extraction_provenance), fit: { inputs: json<ProductCandidateRecordCommand["fit"]["inputs"]>(row.fit_inputs), score: Number(row.objective_fit_score), weights: json<ProductCandidateRecordCommand["fit"]["weights"]>(row.fit_weights) }, resource };
+  return { conflictRefs: json<string[]>(row.conflict_refs), duplicateOfCandidateId: row.duplicate_of_candidate_id === null ? null : String(row.duplicate_of_candidate_id), extractionProvenance: json<string[]>(row.extraction_provenance), fit: { inputs: json<ProductCandidateRecordCommand["fit"]["inputs"]>(row.fit_inputs), score: Number(row.objective_fit_score), weights: json<ProductCandidateRecordCommand["fit"]["weights"]>(row.fit_weights) }, projectId: nullableText(row.project_id), resource };
 }
 
 async function bindRead(client: PoolClient, tenantId: string) { await client.query("begin read only"); await client.query("select set_config('app.tenant_id', $1, true)", [tenantId]); }
@@ -148,11 +153,11 @@ export class SeedProcurementStore {
 
   async readProjectProcurement(actor: ApiActor, projectId: string): Promise<SeedProcurementReadModelData | null> {
     return this.readTransaction(actor.tenantId, async (client) => {
-      const project = await client.query("select project_id from public.seed_projects where tenant_id = $1 and project_id = $2 limit 1", [actor.tenantId, projectId]);
+      const project = await client.query("select project_id,version from public.seed_projects where tenant_id = $1 and project_id = $2 limit 1", [actor.tenantId, projectId]);
       if (!project.rows[0]) return null;
       const evidence = await client.query(`select a.*, ${RECEIPT_COLUMNS} from public.seed_procurement_evidence_artifacts a join public.p110_command_receipts r on r.tenant_id=a.tenant_id and r.command_id=a.created_command_id where a.tenant_id=$1 and a.project_id=$2 order by a.captured_at,a.artifact_id`, [actor.tenantId, projectId]);
-      const sources = await client.query(`select s.*, ${RECEIPT_COLUMNS}, a.object_version artifact_version from public.seed_product_sources s join public.seed_procurement_evidence_artifacts a on a.tenant_id=s.tenant_id and a.artifact_id=s.artifact_id join public.p110_command_receipts r on r.tenant_id=s.tenant_id and r.command_id=s.created_command_id where s.tenant_id=$1 and (s.project_id=$2 or s.project_id is null) order by s.observed_at,s.product_source_id`, [actor.tenantId, projectId]);
-      const candidates = await client.query(`select c.*, ${RECEIPT_COLUMNS}, s.object_version product_source_version from public.seed_product_candidates c join public.seed_product_sources s on s.tenant_id=c.tenant_id and s.product_source_id=c.product_source_id join public.p110_command_receipts r on r.tenant_id=c.tenant_id and r.command_id=c.created_command_id where c.tenant_id=$1 and (c.project_id=$2 or c.project_id is null) order by c.objective_fit_score desc,c.product_candidate_id`, [actor.tenantId, projectId]);
+      const sources = await client.query(`select s.*, ${RECEIPT_COLUMNS}, a.object_version artifact_version from public.seed_product_sources s join public.seed_procurement_evidence_artifacts a on a.tenant_id=s.tenant_id and a.artifact_id=s.artifact_id join public.p110_command_receipts r on r.tenant_id=s.tenant_id and r.command_id=s.created_command_id where s.tenant_id=$1 and s.project_id=$2 order by s.observed_at,s.product_source_id`, [actor.tenantId, projectId]);
+      const candidates = await client.query(`select c.*, ${RECEIPT_COLUMNS}, s.object_version product_source_version from public.seed_product_candidates c join public.seed_product_sources s on s.tenant_id=c.tenant_id and s.product_source_id=c.product_source_id join public.p110_command_receipts r on r.tenant_id=c.tenant_id and r.command_id=c.created_command_id where c.tenant_id=$1 and c.project_id=$2 order by c.objective_fit_score desc,c.product_candidate_id`, [actor.tenantId, projectId]);
       const heldRows = await client.query(`select
         (select count(*) from public.seed_rfq_drafts where tenant_id=$1 and project_id=$2) rfqs,
         (select count(*) from public.seed_supplier_quotes where tenant_id=$1 and project_id=$2) quotes,
@@ -169,9 +174,9 @@ export class SeedProcurementStore {
           union select created_command_id from public.seed_product_candidates where tenant_id=$1 and project_id=$2
         ) order by e.recorded_at,e.event_id`, [actor.tenantId, projectId]);
       return { acknowledgements: [], bidComparisons: [], blockedDependencies: [
-        { affectedCapabilities: ["rfq.create_draft", "supplier_quote.normalize", "bid_comparison.create", "procurement_selection.record"], code: "SUPPLIER_ELIGIBILITY_UNVERIFIED", requiredContract: "CanonicalSupplierEligibility/v1", summary: "The existing tenant Account projection proves identity but has no supplier eligibility fact." },
+        { affectedCapabilities: ["rfq.create_draft", "supplier_quote.normalize", "bid_comparison.create", "procurement_selection.record"], code: "SUPPLIER_ELIGIBILITY_UNVERIFIED", requiredContract: "SupplierProfile/v1", summary: "The existing tenant Account projection proves identity but has no supplier eligibility fact." },
         { affectedCapabilities: ["purchase_order.create_draft", "purchase_order_acknowledgement.record"], code: "PROPOSAL_CANONICAL_READER_UNAVAILABLE", requiredContract: "ProposalVersion/v1 canonical API readback", summary: "The API publishes a ProposalVersion contract but does not yet own a tenant/project/version-matched Proposal runtime reader." },
-      ], evidenceArtifacts: evidence.rows.map((row) => evidenceFromRow(row as Row)), productCandidates: candidates.rows.map((row) => candidateFromRow(row as Row)), productSources: sources.rows.map((row) => sourceFromRow(row as Row)), purchaseOrders: [], rfqs: [], selectionDecisions: [], supplierQuotes: [], timeline: timelineRows.rows.map((row) => timelineFromRow(row as Row, projectId)) };
+      ], evidenceArtifacts: evidence.rows.map((row) => ({ projectId: String(row.project_id), resource: evidenceFromRow(row as Row) })), productCandidates: candidates.rows.map((row) => candidateFromRow(row as Row)), productSources: sources.rows.map((row) => sourceFromRow(row as Row)), purchaseOrders: [], rfqs: [], selectionDecisions: [], supplierQuotes: [], timeline: timelineRows.rows.map((row) => timelineFromRow(row as Row, projectId, timelineProjectVersion(projectId, project.rows[0].version))) };
     });
   }
 
@@ -218,10 +223,13 @@ export class SeedProcurementStore {
     const receipt = await this.executeKernel(input, { id, objectType: "product_source", sourceRefs: [`postgres:public.seed_procurement_evidence_artifacts/${input.command.artifactId}@${input.command.artifactVersion}`] }, async (transaction) => {
       if (input.command.projectRef) await this.requireProject(transaction.client, input.actor.tenantId, input.command.projectRef.projectId, input.command.projectRef.projectVersion);
       const artifact = await this.requireArtifact(transaction.client, input.actor.tenantId, input.command.artifactId, input.command.artifactVersion);
+      const projectId = input.command.projectRef?.projectId ?? null;
+      requireSameProjectScope(artifact.project_id, projectId, "Product Source evidence");
       if (String(artifact.content_digest) !== input.command.source.contentDigest) throw new SeedProcurementDomainError("SOURCE_REFERENCE_CONFLICT", "Product Source digest does not match the immutable Evidence Artifact.", 409);
-      if (input.command.duplicateOfSourceId) await this.requireProductSourceRow(transaction.client, input.actor.tenantId, input.command.duplicateOfSourceId, null);
+      const duplicate = input.command.duplicateOfSourceId ? await this.requireProductSourceRow(transaction.client, input.actor.tenantId, input.command.duplicateOfSourceId, null) : null;
+      if (duplicate) requireSameProjectScope(duplicate.project_id, projectId, "Duplicate Product Source");
       await advisory(transaction.client, input.actor.tenantId, `product-source:${id}`);
-      const status = input.command.conflictRefs.length ? "CONFLICT" : input.command.source.validUntil && Date.parse(input.command.source.validUntil) <= Date.parse(input.requestedAt) ? "REVIEW_REQUIRED" : "ACTIVE";
+      const status = String(artifact.status) !== "ACTIVE" || duplicate ? "REVIEW_REQUIRED" : input.command.conflictRefs.length ? "CONFLICT" : input.command.source.validUntil && Date.parse(input.command.source.validUntil) <= Date.parse(input.requestedAt) ? "REVIEW_REQUIRED" : "ACTIVE";
       const payload = { ...input.command.source, sourceArtifactRef: input.command.artifactId };
       await transaction.client.query(`insert into public.seed_product_sources (tenant_id,product_source_id,project_id,artifact_id,source_kind,ingestion_format,status,content_digest,duplicate_of_source_id,extraction_provenance,conflict_refs,canonical_payload,object_version,created_command_id,created_by,created_by_type,observed_at,valid_until,created_at) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10::jsonb,$11::jsonb,$12::jsonb,$13,$14,$15,$16,$17,$18,$19)`, [input.actor.tenantId, id, input.command.projectRef?.projectId ?? null, input.command.artifactId, input.command.source.kind, input.command.ingestionFormat, status, input.command.source.contentDigest, input.command.duplicateOfSourceId, JSON.stringify(input.command.extractionProvenance), JSON.stringify(input.command.conflictRefs), JSON.stringify(payload), version, input.command.commandId, input.actor.actorId, input.actor.actorType, input.command.source.observedAt, input.command.source.validUntil, input.requestedAt]);
       await this.hooks.afterOwnerWrites?.("PRODUCT_SOURCE", transaction.client);
@@ -235,15 +243,18 @@ export class SeedProcurementStore {
     const version = procurementVersions.productCandidate(id);
     const receipt = await this.executeKernel(input, { id, objectType: "product_candidate", sourceRefs: [`postgres:public.seed_product_sources/${input.command.productSourceId}@${input.command.productSourceVersion}`] }, async (transaction) => {
       if (input.command.projectRef) await this.requireProject(transaction.client, input.actor.tenantId, input.command.projectRef.projectId, input.command.projectRef.projectVersion);
+      const projectId = input.command.projectRef?.projectId ?? null;
       const source = await this.requireProductSourceRow(transaction.client, input.actor.tenantId, input.command.productSourceId, input.command.productSourceVersion);
-      if (input.command.projectRef && source.project_id !== null && String(source.project_id) !== input.command.projectRef.projectId) throw new SeedProcurementDomainError("OBJECT_ISOLATION_DENIED", "Product Source belongs to another Project.", 404);
-      if (input.command.duplicateOfCandidateId) await this.requireCandidateRow(transaction.client, input.actor.tenantId, input.command.duplicateOfCandidateId);
+      requireSameProjectScope(source.project_id, projectId, "Product Candidate source");
+      const duplicate = input.command.duplicateOfCandidateId ? await this.requireCandidateRow(transaction.client, input.actor.tenantId, input.command.duplicateOfCandidateId) : null;
+      if (duplicate) requireSameProjectScope(duplicate.project_id, projectId, "Duplicate Product Candidate");
       const unresolved = [...input.command.conflictRefs];
+      if (String(source.status) !== "ACTIVE") unresolved.push(`unresolved:product-source-status:${String(source.status)}`);
       if (input.command.candidate.vendorId) {
         await this.requireAccountIdentity(transaction.client, input.actor.tenantId, input.command.candidate.vendorId);
         unresolved.push(`unresolved:supplier-eligibility:${input.command.candidate.vendorId}`);
       }
-      const status = unresolved.length || input.command.candidate.confidence.score < 0.8 ? "REVIEW_REQUIRED" : "ELIGIBLE";
+      const status = duplicate || unresolved.length || input.command.candidate.confidence.score < 0.8 ? "REVIEW_REQUIRED" : "ELIGIBLE";
       const score = objectiveScore(input.command.fit);
       await advisory(transaction.client, input.actor.tenantId, `product-candidate:${id}`);
       const payload = { ...input.command.candidate, productSourceId: input.command.productSourceId };
@@ -306,20 +317,21 @@ export class SeedProcurementStore {
     if (projectVersion(projectId, Number(result.rows[0].version)) !== expectedVersion) throw new SeedProcurementDomainError("VERSION_CONFLICT", "Canonical Project version is stale.", 409);
   }
   private async requireArtifact(client: PoolClient, tenantId: string, id: string, version: string) {
-    const result = await client.query("select artifact_id,object_version,content_digest,project_id from public.seed_procurement_evidence_artifacts where tenant_id=$1 and artifact_id=$2 limit 1", [tenantId, id]);
+    const result = await client.query("select artifact_id,object_version,content_digest,project_id,status from public.seed_procurement_evidence_artifacts where tenant_id=$1 and artifact_id=$2 limit 1", [tenantId, id]);
     if (!result.rows[0]) throw new SeedProcurementDomainError("EVIDENCE_NOT_FOUND", "Evidence Artifact not found for this tenant.", 404);
     if (String(result.rows[0].object_version) !== version) throw new SeedProcurementDomainError("VERSION_CONFLICT", "Evidence Artifact version is stale.", 409);
     return result.rows[0] as Row;
   }
   private async requireProductSourceRow(client: PoolClient, tenantId: string, id: string, version: string | null) {
-    const result = await client.query("select product_source_id,object_version,project_id from public.seed_product_sources where tenant_id=$1 and product_source_id=$2 limit 1", [tenantId, id]);
+    const result = await client.query("select product_source_id,object_version,project_id,status from public.seed_product_sources where tenant_id=$1 and product_source_id=$2 limit 1", [tenantId, id]);
     if (!result.rows[0]) throw new SeedProcurementDomainError("PRODUCT_SOURCE_NOT_FOUND", "Product Source not found for this tenant.", 404);
     if (version && String(result.rows[0].object_version) !== version) throw new SeedProcurementDomainError("VERSION_CONFLICT", "Product Source version is stale.", 409);
     return result.rows[0] as Row;
   }
   private async requireCandidateRow(client: PoolClient, tenantId: string, id: string) {
-    const result = await client.query("select product_candidate_id from public.seed_product_candidates where tenant_id=$1 and product_candidate_id=$2 limit 1", [tenantId, id]);
+    const result = await client.query("select product_candidate_id,project_id from public.seed_product_candidates where tenant_id=$1 and product_candidate_id=$2 limit 1", [tenantId, id]);
     if (!result.rows[0]) throw new SeedProcurementDomainError("PRODUCT_CANDIDATE_NOT_FOUND", "Duplicate Product Candidate reference is not tenant-visible.", 404);
+    return result.rows[0] as Row;
   }
   private async requireAccountIdentity(client: PoolClient, tenantId: string, accountId: string) {
     try {
@@ -339,7 +351,7 @@ export class SeedProcurementStore {
   }
   private confirmReadback<T>(receipt: Awaited<ReturnType<LifecycleCommandKernel<CommandTransaction>["execute"]>>, readback: T | null, versionOf: (readback: T) => string = (value) => (value as { resource: { version: string } }).resource.version) {
     const readbackMatchesReceipt = readback === null ? false : versionOf(readback) === receipt.objectVersion;
-    if (!readback || (!receipt.idempotentReplay && !readbackMatchesReceipt)) throw new SeedProcurementDomainError("READBACK_UNCONFIRMED", "Owner commit readback could not be confirmed; reconcile the durable receipt before retrying.", 503, { committedObjectVersion: receipt.objectVersion, receiptId: receipt.receiptId, retry: "RECONCILE_FIRST" });
+    if (!readback || !readbackMatchesReceipt) throw new SeedProcurementDomainError("READBACK_UNCONFIRMED", "Owner commit readback could not be confirmed; reconcile the durable receipt before retrying.", 503, { committedObjectVersion: receipt.objectVersion, receiptId: receipt.receiptId, retry: "RECONCILE_FIRST" });
     return { readback, readbackMatchesReceipt, receipt };
   }
   private async readTransaction<T>(tenantId: string, operation: (client: PoolClient) => Promise<T>) {
@@ -350,12 +362,12 @@ export class SeedProcurementStore {
   }
 }
 
-function timelineFromRow(row: Row, projectId: string): TimelineEventV1 {
+function timelineFromRow(row: Row, projectId: string, projectVersionRef: string): TimelineEventV1 {
   const tenantId = String(row.tenant_id);
   const id = String(row.event_id);
   const version = `timeline-event:${id}:v1`;
   const subject = sourceRef(tenantId, { objectId: String(row.subject_object_id), objectType: String(row.subject_object_type).toUpperCase(), ownerProject: String(row.subject_owner_project), version: String(row.subject_object_version) });
-  const project = sourceRef(tenantId, { objectId: projectId, objectType: "PROJECT", ownerProject: "LUZIONE_PROJECT", version: projectVersion(projectId, 1) });
+  const project = sourceRef(tenantId, { objectId: projectId, objectType: "PROJECT", ownerProject: "LUZIONE_PROJECT", version: projectVersionRef });
   return parseTimelineEventV1({ ...boundaries(row, version, String(row.command_type)), contractVersion: SEED_PRODUCT_CONTRACT_VERSIONS.timelineEvent, createdAt: iso(row.recorded_at), data: { actorId: String(row.actor_id), aggregateRefs: [project, subject], eventType: String(row.command_type).toUpperCase().replaceAll(".", "_"), evidenceRefs: json<string[]>(row.evidence_refs), occurredAt: iso(row.occurred_at), recordedAt: iso(row.recorded_at), summary: `Accepted ${String(row.command_type)} with durable owner commit ${String(row.committed_object_version)}.`, visibility: "INTERNAL" }, resource: { archivedAt: null, id, status: "ACTIVE", type: "TIMELINE_EVENT", version }, sourceRefs: [subject], tenantId, updatedAt: iso(row.recorded_at) });
 }
 

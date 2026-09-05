@@ -56,9 +56,9 @@ export type SeedProcurementReadModelData = {
   acknowledgements: PurchaseOrderAcknowledgementV1[];
   bidComparisons: BidComparisonV1[];
   blockedDependencies: Array<{ affectedCapabilities: string[]; code: string; requiredContract: string; summary: string }>;
-  evidenceArtifacts: EvidenceArtifactV1[];
-  productCandidates: Array<{ conflictRefs: string[]; duplicateOfCandidateId: string | null; extractionProvenance: string[]; fit: ObjectiveFit & { score: number }; resource: ProductCandidateV1 }>;
-  productSources: Array<{ conflictRefs: string[]; duplicateOfSourceId: string | null; extractionProvenance: string[]; ingestionFormat: string; resource: ProductSourceV1 }>;
+  evidenceArtifacts: Array<{ projectId: string | null; resource: EvidenceArtifactV1 }>;
+  productCandidates: Array<{ conflictRefs: string[]; duplicateOfCandidateId: string | null; extractionProvenance: string[]; fit: ObjectiveFit & { score: number }; projectId: string | null; resource: ProductCandidateV1 }>;
+  productSources: Array<{ conflictRefs: string[]; duplicateOfSourceId: string | null; extractionProvenance: string[]; ingestionFormat: string; projectId: string | null; resource: ProductSourceV1 }>;
   purchaseOrders: PurchaseOrderV1[];
   rfqs: RFQV1[];
   selectionDecisions: ProcurementSelectionDecisionV1[];
@@ -98,14 +98,17 @@ function nullableId(value: unknown, path: string) { return value === null ? null
 function strings(value: unknown, path: string) { return array(value, path).map((item, index) => bounded(item, `${path}[${index}]`)); }
 function timestamp(value: unknown, path: string) { const parsed = bounded(value, path); if (!Number.isFinite(Date.parse(parsed))) fail("INVALID_VALUE", `${path} must be an ISO timestamp.`); return parsed; }
 function sameTenant(tenantId: string, resource: { tenantId: string }, path: string) { if (resource.tenantId !== tenantId) fail("TENANT_MISMATCH", `${path} crosses the authenticated tenant.`); }
+function unitInterval(value: unknown, path: string) { if (typeof value !== "number" || !Number.isFinite(value) || value < 0 || value > 1) fail("INVALID_VALUE", `${path} must be a finite number from zero through one.`); return value; }
 
 function parseFit(value: unknown, path: string) {
   const parsed = exact(value, ["inputs", "score", "weights"], path);
-  const keys = ["leadTime", "margin", "price", "sourceFreshness", "specificationMatch", "supplierReliability"];
-  const inputs = exact(parsed.inputs, keys, `${path}.inputs`) as ObjectiveFit["inputs"];
-  const weights = exact(parsed.weights, keys, `${path}.weights`) as ObjectiveFit["weights"];
-  const score = Number(parsed.score);
-  if (!Number.isFinite(score) || score < 0 || score > 1) fail("INVALID_VALUE", `${path}.score is invalid.`);
+  const keys = ["leadTime", "margin", "price", "sourceFreshness", "specificationMatch", "supplierReliability"] as const;
+  const rawInputs = exact(parsed.inputs, keys, `${path}.inputs`);
+  const rawWeights = exact(parsed.weights, keys, `${path}.weights`);
+  const inputs = Object.fromEntries(keys.map((key) => [key, unitInterval(rawInputs[key], `${path}.inputs.${key}`)])) as ObjectiveFit["inputs"];
+  const weights = Object.fromEntries(keys.map((key) => [key, unitInterval(rawWeights[key], `${path}.weights.${key}`)])) as ObjectiveFit["weights"];
+  if (Object.values(weights).reduce((sum, weight) => sum + weight, 0) <= 0) fail("INVALID_VALUE", `${path}.weights must have positive total weight.`);
+  const score = unitInterval(parsed.score, `${path}.score`);
   if (objectiveScore({ inputs, weights }) !== score) fail("OBJECTIVE_SCORE_MISMATCH", `${path}.score does not reconcile to disclosed inputs and weights.`);
   return { inputs, score, weights };
 }
@@ -150,9 +153,51 @@ export function parseSeedProcurementReadModel(value: unknown): SeedProcurementRe
   const releaseIdentity = metadata.releaseIdentity as ReleaseIdentity;
   const violations = releaseIdentityViolations(releaseIdentity);
   if (violations.length) fail("DEPLOYMENT_IDENTITY_INVALID", violations.join(", "));
-  const evidenceArtifacts = array(input.evidenceArtifacts, "evidenceArtifacts").map((item, index) => { const parsed = parseEvidenceArtifactV1(item); sameTenant(tenantId, parsed, `evidenceArtifacts[${index}]`); return parsed; });
-  const productSources = array(input.productSources, "productSources").map((item, index) => { const record = exact(item, ["conflictRefs", "duplicateOfSourceId", "extractionProvenance", "ingestionFormat", "resource"], `productSources[${index}]`); const resource = parseProductSourceV1(record.resource); sameTenant(tenantId, resource, `productSources[${index}]`); return { conflictRefs: strings(record.conflictRefs, "conflictRefs"), duplicateOfSourceId: nullableId(record.duplicateOfSourceId, "duplicateOfSourceId"), extractionProvenance: strings(record.extractionProvenance, "extractionProvenance"), ingestionFormat: bounded(record.ingestionFormat, "ingestionFormat"), resource }; });
-  const productCandidates = array(input.productCandidates, "productCandidates").map((item, index) => { const record = exact(item, ["conflictRefs", "duplicateOfCandidateId", "extractionProvenance", "fit", "resource"], `productCandidates[${index}]`); const resource = parseProductCandidateV1(record.resource); sameTenant(tenantId, resource, `productCandidates[${index}]`); return { conflictRefs: strings(record.conflictRefs, "conflictRefs"), duplicateOfCandidateId: nullableId(record.duplicateOfCandidateId, "duplicateOfCandidateId"), extractionProvenance: strings(record.extractionProvenance, "extractionProvenance"), fit: parseFit(record.fit, "fit"), resource }; });
+  const evidenceArtifacts = array(input.evidenceArtifacts, "evidenceArtifacts").map((item, index) => {
+    const record = exact(item, ["projectId", "resource"], `evidenceArtifacts[${index}]`);
+    const recordProjectId = nullableId(record.projectId, `evidenceArtifacts[${index}].projectId`);
+    if (recordProjectId !== projectId) fail("REFERENCE_MISMATCH", "Evidence Artifact crosses the Project read boundary.");
+    const resource = parseEvidenceArtifactV1(record.resource);
+    sameTenant(tenantId, resource, `evidenceArtifacts[${index}]`);
+    return { projectId: recordProjectId, resource };
+  });
+  const productSources = array(input.productSources, "productSources").map((item, index) => {
+    const record = exact(item, ["conflictRefs", "duplicateOfSourceId", "extractionProvenance", "ingestionFormat", "projectId", "resource"], `productSources[${index}]`);
+    const recordProjectId = nullableId(record.projectId, `productSources[${index}].projectId`);
+    if (recordProjectId !== projectId) fail("REFERENCE_MISMATCH", "Product Source crosses the Project read boundary.");
+    const resource = parseProductSourceV1(record.resource);
+    sameTenant(tenantId, resource, `productSources[${index}]`);
+    const evidence = evidenceArtifacts.find((item) => item.resource.resource.id === resource.data.sourceArtifactRef);
+    if (!evidence || evidence.projectId !== recordProjectId || evidence.resource.data.contentDigest !== resource.data.contentDigest) fail("REFERENCE_MISMATCH", "Product Source must bind an exact same-Project Evidence Artifact and content digest.");
+    if (evidence.resource.resource.status !== "ACTIVE" && resource.resource.status === "ACTIVE") fail("FINALITY_MISMATCH", "Product Source cannot promote review or quarantined evidence to ACTIVE.");
+    return { conflictRefs: strings(record.conflictRefs, "conflictRefs"), duplicateOfSourceId: nullableId(record.duplicateOfSourceId, "duplicateOfSourceId"), extractionProvenance: strings(record.extractionProvenance, "extractionProvenance"), ingestionFormat: bounded(record.ingestionFormat, "ingestionFormat"), projectId: recordProjectId, resource };
+  });
+  for (const source of productSources) {
+    if (source.duplicateOfSourceId === null) continue;
+    const duplicate = productSources.find((candidate) => candidate.resource.resource.id === source.duplicateOfSourceId && candidate.resource.resource.id !== source.resource.resource.id);
+    if (!duplicate || duplicate.projectId !== source.projectId) fail("REFERENCE_MISMATCH", "Duplicate Product Source must resolve inside the same Project graph.");
+    if (source.resource.resource.status !== "REVIEW_REQUIRED") fail("FINALITY_MISMATCH", "Duplicate Product Source must remain REVIEW_REQUIRED.");
+  }
+  const productCandidates = array(input.productCandidates, "productCandidates").map((item, index) => {
+    const record = exact(item, ["conflictRefs", "duplicateOfCandidateId", "extractionProvenance", "fit", "projectId", "resource"], `productCandidates[${index}]`);
+    const recordProjectId = nullableId(record.projectId, `productCandidates[${index}].projectId`);
+    if (recordProjectId !== projectId) fail("REFERENCE_MISMATCH", "Product Candidate crosses the Project read boundary.");
+    const rawResource = object(record.resource, `productCandidates[${index}].resource`);
+    const rawData = object(rawResource.data, `productCandidates[${index}].resource.data`);
+    const source = productSources.find((item) => item.resource.resource.id === rawData.productSourceId);
+    if (!source || source.projectId !== recordProjectId) fail("REFERENCE_MISMATCH", "Product Candidate must bind an exact Product Source inside the same Project graph.");
+    const resource = parseProductCandidateV1(record.resource, source.resource);
+    sameTenant(tenantId, resource, `productCandidates[${index}]`);
+    if (resource.data.lane === "APPROVED_VENDOR" && resource.data.vendorId === null) fail("REFERENCE_MISMATCH", "APPROVED_VENDOR Product Candidate requires vendorId.");
+    if (source.resource.resource.status !== "ACTIVE" && ["ELIGIBLE", "SELECTED"].includes(resource.resource.status)) fail("FINALITY_MISMATCH", "Product Candidate cannot become eligible from a non-active Product Source.");
+    return { conflictRefs: strings(record.conflictRefs, "conflictRefs"), duplicateOfCandidateId: nullableId(record.duplicateOfCandidateId, "duplicateOfCandidateId"), extractionProvenance: strings(record.extractionProvenance, "extractionProvenance"), fit: parseFit(record.fit, "fit"), projectId: recordProjectId, resource };
+  });
+  for (const candidate of productCandidates) {
+    if (candidate.duplicateOfCandidateId === null) continue;
+    const duplicate = productCandidates.find((item) => item.resource.resource.id === candidate.duplicateOfCandidateId && item.resource.resource.id !== candidate.resource.resource.id);
+    if (!duplicate || duplicate.projectId !== candidate.projectId) fail("REFERENCE_MISMATCH", "Duplicate Product Candidate must resolve inside the same Project graph.");
+    if (candidate.resource.resource.status !== "REVIEW_REQUIRED") fail("FINALITY_MISMATCH", "Duplicate Product Candidate must remain REVIEW_REQUIRED.");
+  }
   const rfqs = array(input.rfqs, "rfqs").map((item, index) => { const parsed = parseRFQV1(item); sameTenant(tenantId, parsed, `rfqs[${index}]`); if (parsed.data.projectId !== projectId || parsed.resource.status !== "DRAFT") fail("REFERENCE_MISMATCH", "Only this Project's RFQ drafts belong in A3 readback."); return parsed; });
   const supplierQuotes = array(input.supplierQuotes, "supplierQuotes").map((item, index) => { const record = exact(item, ["economics", "resource"], `supplierQuotes[${index}]`); const resource = parseSupplierQuoteV1(record.resource); sameTenant(tenantId, resource, `supplierQuotes[${index}]`); if (!rfqs.some((rfq) => rfq.resource.id === resource.data.rfqId)) fail("REFERENCE_MISMATCH", "Supplier Quote must reference an exact RFQ in the graph."); return { economics: parseEconomics(record.economics, "economics"), resource }; });
   const bidComparisons = array(input.bidComparisons, "bidComparisons").map((item, index) => { const parsed = parseBidComparisonV1(item); sameTenant(tenantId, parsed, `bidComparisons[${index}]`); return parsed; });

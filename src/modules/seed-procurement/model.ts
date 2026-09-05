@@ -1,4 +1,5 @@
 import { sha256 } from "@/modules/platform-guarantees/eventContract";
+import { projectVersion } from "@/modules/seed-project-publication/model";
 import type {
   ObjectiveFit,
   SupplierQuoteNormalizeCommand,
@@ -47,6 +48,12 @@ export const procurementVersions = Object.freeze({
   purchaseOrder: (id: string) => `purchase-order:${id}:v1`,
   acknowledgement: (id: string) => `purchase-order-acknowledgement:${id}:v1`,
 });
+
+export function timelineProjectVersion(projectId: string, canonicalVersion: unknown) {
+  const version = Number(canonicalVersion);
+  if (!Number.isSafeInteger(version) || version < 1) throw new Error("Canonical Project version is invalid for TimelineEvent aggregation.");
+  return projectVersion(projectId, version);
+}
 
 export function objectiveScore(fit: ObjectiveFit) {
   const keys = Object.keys(fit.inputs).sort() as Array<keyof ObjectiveFit["inputs"]>;
