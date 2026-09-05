@@ -70,6 +70,17 @@
       "get": { "operationId": "getFulfillmentIntent", "summary": "Read a bounded no-effect Fulfillment Intent", "responses": { "200": { "description": "Fulfillment Intent readback" }, "404": { "description": "Intent not found" } } },
       "post": { "operationId": "requestFulfillmentIntent", "summary": "Record a no-effect intent for the exact current Order", "responses": { "201": { "description": "Intent committed with P110 receipt" }, "409": { "description": "Order version or line conflict" }, "503": { "description": "Mutation path disabled or unavailable" } } }
     },
+    "/api/v1/onboarding/tenant-blueprints": {
+      "get": { "operationId": "getTenantBlueprint", "summary": "Read one same-tenant canonical TenantBlueprint/v1", "responses": { "200": { "description": "Tenant Blueprint readback" }, "404": { "description": "Blueprint not found in the authenticated tenant" } } },
+      "post": { "operationId": "proposeTenantBlueprint", "summary": "Map an exact DRAFT Tenant Pack into a default-off canonical TenantBlueprint/v1", "responses": { "201": { "description": "Append-only draft committed with P110 receipt" }, "403": { "description": "Tenant or authority denied" }, "409": { "description": "Source digest, mapping, version, or idempotency conflict" }, "503": { "description": "Onboarding persistence disabled or unavailable" } } }
+    },
+    "/api/v1/onboarding/tenant-blueprints/approvals": {
+      "post": { "operationId": "approveTenantBlueprint", "summary": "Append a credential-bound human Blueprint approval or supersession", "responses": { "201": { "description": "Immutable approval evidence committed with P110 receipt" }, "403": { "description": "Credential-bound human authority required" }, "409": { "description": "Stale or invalid approval lineage" }, "503": { "description": "Onboarding persistence disabled or unavailable" } } }
+    },
+    "/api/v1/onboarding/setup-mandates": {
+      "get": { "operationId": "getSetupMandate", "summary": "Read one same-tenant expiring SetupMandate/v1", "responses": { "200": { "description": "Canonical Setup Mandate readback" }, "404": { "description": "Mandate not found in the authenticated tenant" } } },
+      "post": { "operationId": "issueSetupMandate", "summary": "Issue a default-off NO_EFFECT mandate from an exact active approved Blueprint", "responses": { "201": { "description": "Immutable Setup Mandate committed with P110 receipt" }, "403": { "description": "Approved active Blueprint authority missing" }, "409": { "description": "Stale Blueprint or immutable Mandate conflict" }, "503": { "description": "Onboarding persistence disabled or unavailable" } } }
+    },
     "/api/v1/provider-operations": {
       "get": { "operationId": "getProviderOperations", "summary": "Read tenant-bound provider worker, reconciliation, dead-letter and kill-switch aggregates", "responses": { "200": { "description": "Bounded provider operations readback" }, "401": { "description": "Service authentication required" }, "503": { "description": "Readback unavailable" } } }
     },
