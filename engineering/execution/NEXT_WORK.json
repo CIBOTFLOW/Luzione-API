@@ -9,9 +9,9 @@
   "program_extensions": [
     {
       "extension_id": "LUZIONE_CRM_OS_EFFECT_ADMISSION_L1_CORRECTION_01_G0",
-      "source": "CIBOTFLOW/Luzione-platform-program@2ed64d7",
+      "source": "CIBOTFLOW/Luzione-platform-program@51253c275eb02ef821438a8b875af7e4928f59a1",
       "source_fingerprint": "a24eefb14a9681ad97a415b8d48c43a7d88900e8c86a8f489645f9354a1a62d9",
-      "repository_program": "PENDING_ONBOARD_CORE_CORRECTION_01_CLOSEOUT",
+      "repository_program": "architecture/production-convergence/EFFECT_ADMISSION_L1_CORRECTION_01_WORKING_CONTRACT.md",
       "admitted_at": "2026-09-05T04:59:03Z"
     },
     {
@@ -135,21 +135,21 @@
       "platform_project": "LUZIONE_CRM_OS_EFFECT_ADMISSION_ASSURANCE",
       "title": "Exact Execution Envelope and Effect Admission Lineage Correction",
       "priority": 537,
-      "status": "READY",
+      "status": "BOUNDED_PASS",
       "depends_on": ["ONBOARD-CORE-CORRECTION-01"],
-      "starting_sha": null,
-      "starting_sha_source": "detached exact-final attestation for ONBOARD-CORE-CORRECTION-01",
-      "controller_authority": "CIBOTFLOW/Luzione-platform-program@2ed64d7",
+      "starting_sha": "37e1fa164b982fcb861d19539cdeec87f6d9a289",
+      "starting_sha_source": "controller-accepted ONBOARD-CORE-CORRECTION-01 final",
+      "controller_authority": "CIBOTFLOW/Luzione-platform-program@51253c275eb02ef821438a8b875af7e4928f59a1",
       "source_fingerprint": "a24eefb14a9681ad97a415b8d48c43a7d88900e8c86a8f489645f9354a1a62d9",
       "mutation_cone": ["effect-contract", "provider-runtime", "sultan-boundary", "tests", "execution-metadata"],
       "core_outcome": "Version the admission contract around one strict prepared-dispatch digest and typed execution envelope, re-read kill state at credential release and immediately before execute, and bind reconciliation and Sultan lineage to the originating envelope.",
       "published_artifacts": ["versioned EffectAdmission successor", "typed execution envelope", "originating-envelope reconciliation", "Sultan admission lineage", "parser/schema parity"],
       "required_evidence": ["exact execution identity", "prepared dispatch strict parse and digest", "two exact kill rereads", "originating-envelope reconciliation", "Sultan lineage", "sandbox-only full local and exact-SHA CI"],
       "irreversible_effects": [],
-      "completion_evidence_ref": null,
-      "release_evidence": "NOT_ASSESSED",
+      "completion_evidence_ref": "EFFECT_ADMISSION_L1_CORRECTION_01_G0_20260905",
+      "release_evidence": "LOCAL_PROVEN",
       "effect_authority": "SANDBOX_ONLY",
-      "finality": "NOT_FINAL"
+      "finality": "BOUNDED_CLAIM"
     },
     {
       "project_id": "CONNECTOR-REVOCATION-L1-G0",

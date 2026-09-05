@@ -22,7 +22,7 @@ test("pilot separates command preparation from A1 execution and leaves RFQ dispa
   assert.doesNotMatch(envelopeMigration, /insert into public\.sultan_agent_policy_envelopes/i);
   assert.doesNotMatch(store, /GmailRfqCanaryAdapter|messages\/send|maxAttempts: 1/);
   assert.match(store, /admission\.receipt_hash=reservation\.admission_receipt_hash/);
-  assert.match(store, /stage5AdmissionReceiptHash\(unsigned\)/);
+  assert.match(store, /stage5AdmissionReceiptHash\(unsigned as/);
   assert.match(store, /parseEffectExecutionEnvelope\(input\.effectExecutionEnvelope\)/);
   assert.match(effectCorrectionMigration, /foreign key \(tenant_id, admission_receipt_id, admission_receipt_hash\)/);
   assert.match(effectCorrectionMigration, /prepare_effect_admission_ref/);

@@ -2373,6 +2373,69 @@
       "next_proof_needed": [
         "Seal and push the exact final, bind exact-head CI and detached tag evidence, then create a fresh non-default EFFECT-ADMISSION-L1-CORRECTION-01 branch under fingerprint a24eefb14a9681ad97a415b8d48c43a7d88900e8c86a8f489645f9354a1a62d9."
       ]
+    },
+    {
+      "proof_id": "EFFECT_ADMISSION_L1_CORRECTION_01_G0_20260905",
+      "project_id": "EFFECT-ADMISSION-L1-CORRECTION-01",
+      "recorded_at": "2026-09-05T05:42:28Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "6bdc17b343a94b55de2b4cdd34c485ea06ab97a6",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "SANDBOX_ONLY",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "EFFECT-ADMISSION-L1-CORRECTION-01 versions the insufficient v1 boundary into a strict v2 admission plus one content-bound execution envelope, rereads kill state before credential release and immediately before execute, atomically records the final envelope at STARTED, reconciles only from that origin without redispatch, and persists linked Sultan Stage-5 prepare/execute lineage while authorizing no live effect.",
+      "exercised_boundaries": [
+        "Effect admission v2 binds source payload, canonical prepared-dispatch digest, tenant, authenticated actor, authority, operation key, provider, destination, opaque credential-binding ID and originating envelope into one deterministic execution identity.",
+        "Provider v0.3 preparation is strict and effect/credential-free; credential release requires exact claim lineage; a final pre-execute decision rereads kill state and alone produces the typed execution envelope.",
+        "Unset/false admission, agent actor, tenant/actor/authority/provider/destination/binding drift, changed source/prepared digest, missing prior decision, kill at credential release, kill before execute, live adapter mode, surplus/missing/wrong-version and stored-envelope tampering failed closed.",
+        "The final provider execution envelope is inserted atomically with STARTED and constrained to SANDBOX mode, exact admission, execution identity, origin, prepared digest, opaque binding and kill version.",
+        "Ambiguous acknowledgement produced one execute and one reconciliation; reconciliation loaded and matched the originating stored envelope, and tampering produced VERSION_MISMATCH without a second execute.",
+        "Sultan prepare stores exact Stage-5 admission receipt ID/hash, origin, prepare admission reference and execution identity under a three-column content-hash foreign key.",
+        "Sultan execute rereads the reservation/admission join, verifies the signed human authority and persists an exact SULTAN_EXECUTE envelope on the append-only internal action.",
+        "The historical Gmail v0.2 adapter remains only for compatibility tests and is structurally incompatible with the current v0.3 sandbox-only registry; no credential resolver or provider call was run.",
+        "Disposable Postgres observed 13 correction columns and 4 constraints, proved cross-tenant kill isolation and kill-version changes, reversed to 0 correction columns, reapplied to 13 and cleaned up.",
+        "Focused suites passed 21/21; compliance passed 7/7; TypeScript, zero-warning ESLint, all 389 tests and Next.js 16.3.4 webpack build passed.",
+        "Frozen contracts/core and src/modules/luzione-core-contracts tree IDs remained d57ccc4cccd97b37acd1a1575b1e07ede5787349 and d594fa014d7020fdf8386c7a6926ff9b573ac355."
+      ],
+      "untested_boundaries": [
+        "exact-final automated CI, CodeQL and authenticated Git-bound preview application readback",
+        "independent L2/L3 exact-SHA consumer compatibility",
+        "managed migration, backup/PITR and recovery",
+        "credential resolution, live provider acknowledgement/readback, production worker lifecycle or any customer effect",
+        "G1, G2, merge, default-branch action, activation, production rollback or production readiness"
+      ],
+      "evidence_refs": [
+        "commit:6bdc17b343a94b55de2b4cdd34c485ea06ab97a6",
+        "architecture/production-convergence/EFFECT_ADMISSION_L1_CORRECTION_01_WORKING_CONTRACT.md",
+        "engineering/execution/effect-admission-l1-correction-01/EFFECT_ADMISSION_L1_CORRECTION_01_ARTIFACT_DIGESTS_V1.json",
+        "engineering/execution/effect-admission-l1-correction-01/EFFECT_ADMISSION_L1_CORRECTION_01_ASSURANCE_MATRIX_V1.json",
+        "engineering/execution/effect-admission-l1-correction-01/EFFECT_ADMISSION_L1_CORRECTION_01_CONSUMER_PACKET_V1.json",
+        "engineering/execution/handoffs/EFFECT_ADMISSION_L1_CORRECTION_01_G0_CONTROLLER_HANDOFF.json",
+        "supabase/migrations/20260905120000_effect_admission_l1_correction.sql",
+        "scripts/validation/rollback-effect-admission-l1-correction.sql"
+      ],
+      "failure_refs": [
+        "EFFECT_ADMISSION_L1_CORRECTION_01_PGCRYPTO_HARNESS_20260905",
+        "EFFECT_ADMISSION_L1_CORRECTION_01_INFO_SCHEMA_VISIBILITY_20260905"
+      ],
+      "cross_repo_handoffs": [
+        "L2 may consume only opaque API-issued decisions/references and exact pins; it cannot select or redefine identity, authority, binding, kill version, receipt or finality.",
+        "L3 must call the API prepare/execute boundary and preserve logical-agent versus authenticated-service identity; it cannot build a Sultan-local admission, credential or execution-envelope authority."
+      ],
+      "deferred_external_infra": [
+        "exact-head CI and protected preview",
+        "independent consumers",
+        "managed recovery and every live effect authority"
+      ],
+      "remaining_uncertainty": [
+        "Local synthetic evidence does not prove hosted worker, managed database or provider behavior.",
+        "No exact v2 consumer return exists.",
+        "No live adapter contract is admitted by v0.3."
+      ],
+      "next_proof_needed": [
+        "Push the exact final, bind automated CI and detached tag evidence, then wait for controller acceptance before the fresh CONNECTOR-REVOCATION-L1-G0 successor."
+      ]
     }
   ]
 }
