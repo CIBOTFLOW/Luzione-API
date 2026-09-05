@@ -16,6 +16,7 @@
     "test:ops-contracts": "node --import tsx --test src/modules/operations-evidence-contracts/tests/*.test.ts",
     "test:ops-contracts-correction": "node --import tsx --test src/modules/operations-evidence-contracts/tests/operations-evidence-ledger-v2.test.ts",
     "test:ops-contracts-correction-02": "node --import tsx --test src/modules/operations-evidence-contracts/tests/operations-evidence-ledger-v3.test.ts",
+    "test:ops-contracts-correction-03": "node --import tsx --test src/modules/operations-evidence-contracts/tests/operations-evidence-ledger-v3.test.ts",
     "test:onboard-core": "node --import tsx --test src/modules/onboard-core/tests/*.test.ts",
     "test:effect-admission": "node --import tsx --test src/modules/effect-admission/tests/*.test.ts src/modules/production-convergence/tests/provider-runtime.test.ts src/modules/sultan-agent-gateway/tests/sultan-agent-gateway.test.ts",
     "test:connector-revocation": "node --import tsx --test src/modules/connector-revocation/tests/*.test.ts",

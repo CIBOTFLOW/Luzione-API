@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/operations-evidence/v3/operations-evidence-canonical-source-objects-v1.schema.json",
+  "title": "Operations Evidence Canonical Source Objects v1",
+  "oneOf": [
+    { "$ref": "#/$defs/TenantMembership" },
+    { "$ref": "#/$defs/G2Approval" },
+    { "$ref": "#/$defs/ProofIncident" },
+    { "$ref": "#/$defs/IncidentRecovery" }
+  ],
+  "$defs": {
+    "Id": { "type": "string", "minLength": 3, "maxLength": 240, "pattern": "^\\S(?:.*\\S)?$" },
+    "HumanId": { "type": "string", "minLength": 7, "maxLength": 240, "pattern": "^human:\\S(?:.*\\S)?$" },
+    "Timestamp": { "type": "string", "format": "date-time", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$" },
+    "Sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "CanonicalReadback": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "contractVersion": { "const": "OperationsEvidenceCanonicalSourceReadback/v1" },
+        "objectHash": { "$ref": "#/$defs/Sha256" }, "objectId": { "$ref": "#/$defs/Id" },
+        "objectType": { "enum": ["G2_APPROVAL", "RECOVERY_RECEIPT", "PROOF_INCIDENT", "TENANT_MEMBERSHIP"] },
+        "objectVersion": { "$ref": "#/$defs/Id" }, "readbackAt": { "$ref": "#/$defs/Timestamp" },
+        "readbackId": { "$ref": "#/$defs/Id" }, "sourceSystem": { "enum": ["LUZIONE_CORE", "LUZIONE_CRM_APP"] },
+        "tenantId": { "$ref": "#/$defs/Id" }
+      },
+      "required": ["contractVersion", "objectHash", "objectId", "objectType", "objectVersion", "readbackAt", "readbackId", "sourceSystem", "tenantId"]
+    },
+    "TenantMembership": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "canonicalFunction": { "enum": ["FOUNDER", "PLATFORM_OPERATIONS", "SUPPORT_OPERATIONS"] },
+        "canonicalRole": { "enum": ["FOUNDER", "IREM"] },
+        "contractVersion": { "const": "OperationsEvidenceCanonicalTenantMembership/v1" },
+        "membershipState": { "const": "ACTIVE" }, "principalType": { "const": "HUMAN" },
+        "revokedAt": { "type": "null" }, "subjectId": { "$ref": "#/$defs/HumanId" },
+        "supersededByBindingId": { "type": "null" }, "tenantId": { "$ref": "#/$defs/Id" },
+        "validFrom": { "$ref": "#/$defs/Timestamp" }, "validUntil": { "$ref": "#/$defs/Timestamp" }
+      },
+      "required": ["canonicalFunction", "canonicalRole", "contractVersion", "membershipState", "principalType", "revokedAt", "subjectId", "supersededByBindingId", "tenantId", "validFrom", "validUntil"]
+    },
+    "G2Approval": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "actionId": { "$ref": "#/$defs/Id" }, "approvalId": { "$ref": "#/$defs/Id" },
+        "approvalState": { "const": "APPROVED" }, "contractVersion": { "const": "OperationsEvidenceCanonicalG2Approval/v1" },
+        "effect": { "enum": ["TENANT_LIVE_READ", "TENANT_REVERSIBLE_WRITE", "BOUNDED_PROVIDER_ACTION", "FORMAL_PROOF_OPEN"] },
+        "expiresAt": { "$ref": "#/$defs/Timestamp" }, "issuedAt": { "$ref": "#/$defs/Timestamp" },
+        "requestedStage": { "enum": ["READS", "REVERSIBLE_WRITES", "BOUNDED_PROVIDER_ACTIONS", "FORMAL_PROOF"] },
+        "revokedAt": { "type": "null" }, "signerSubjectId": { "$ref": "#/$defs/HumanId" },
+        "state": { "const": "GRANTED" }, "supersededByGrantId": { "type": "null" },
+        "tenantId": { "$ref": "#/$defs/Id" }, "validFrom": { "$ref": "#/$defs/Timestamp" }
+      },
+      "required": ["actionId", "approvalId", "approvalState", "contractVersion", "effect", "expiresAt", "issuedAt", "requestedStage", "revokedAt", "signerSubjectId", "state", "supersededByGrantId", "tenantId", "validFrom"]
+    },
+    "ProofIncident": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "acknowledgedAt": { "$ref": "#/$defs/Timestamp" }, "capabilityId": { "$ref": "#/$defs/Id" },
+        "contractVersion": { "const": "OperationsEvidenceCanonicalProofIncident/v1" },
+        "incidentRecordId": { "$ref": "#/$defs/Id" }, "openedAt": { "$ref": "#/$defs/Timestamp" },
+        "resetCapabilityEpoch": { "const": true }, "resolvedAt": { "$ref": "#/$defs/Timestamp" },
+        "state": { "const": "RESOLVED_VERIFIED" }, "tenantId": { "$ref": "#/$defs/Id" }
+      },
+      "required": ["acknowledgedAt", "capabilityId", "contractVersion", "incidentRecordId", "openedAt", "resetCapabilityEpoch", "resolvedAt", "state", "tenantId"]
+    },
+    "IncidentRecovery": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "capabilityId": { "$ref": "#/$defs/Id" }, "completedAt": { "$ref": "#/$defs/Timestamp" },
+        "contractVersion": { "const": "OperationsEvidenceCanonicalIncidentRecovery/v1" },
+        "incidentRecordId": { "$ref": "#/$defs/Id" }, "recoveryReceiptId": { "$ref": "#/$defs/Id" },
+        "state": { "const": "VERIFIED" }, "tenantId": { "$ref": "#/$defs/Id" }
+      },
+      "required": ["capabilityId", "completedAt", "contractVersion", "incidentRecordId", "recoveryReceiptId", "state", "tenantId"]
+    }
+  },
+  "x-luzione-source-authority": "SYNTHETIC_PINNED_SIGNATURE_ZERO_CREDIT"
+}

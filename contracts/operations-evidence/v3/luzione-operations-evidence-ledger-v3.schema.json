@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://api.luzione.com/contracts/operations-evidence/v3/luzione-operations-evidence-ledger-v3.schema.json",
   "title": "Luzione Operations Evidence Source-Bound Ledger v3",
-  "description": "Strict additive NO_EFFECT envelope over frozen v2. Cross-record source ownership, validity, recovery ordering and epoch lineage are enforced by the L1 SDK. V1/v2 remain prohibited for decision-bearing use.",
+  "description": "Strict additive NO_EFFECT envelope over frozen v2. Authenticated exact source bytes and durable append state are mandatory. V1/v2 remain prohibited for decision-bearing use.",
   "type": "object",
   "additionalProperties": false,
   "properties": {
@@ -11,7 +11,7 @@
     "capabilityEpochResets": { "type": "array", "items": { "$ref": "#/$defs/CapabilityEpochReset" }, "uniqueItems": true },
     "contractVersion": { "const": "LuzioneOperationsEvidenceLedger/v3" },
     "creditCeiling": { "$ref": "#/$defs/CreditCeiling" },
-    "decisionPolicy": { "const": "ZERO_CREDIT_PENDING_ASSURANCE_03" },
+    "decisionPolicy": { "const": "ZERO_CREDIT_PENDING_ASSURANCE_04" },
     "effectAuthority": { "const": "NO_EFFECT" },
     "g2EffectAuthorityGrants": { "type": "array", "items": { "$ref": "#/$defs/G2EffectAuthorityGrant" }, "uniqueItems": true },
     "humanAuthoritySourceBindings": { "type": "array", "items": { "$ref": "#/$defs/HumanAuthoritySourceBinding" }, "minItems": 1, "uniqueItems": true },
@@ -155,15 +155,17 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "contractVersion": { "const": "OperationsEvidenceAuthorityRecoverySourceSnapshot/v1" },
+        "contractVersion": { "const": "OperationsEvidenceAuthorityRecoverySourceSnapshot/v2" },
         "g2EffectAuthorityGrants": { "type": "array", "items": { "$ref": "#/$defs/G2EffectAuthorityGrant" }, "uniqueItems": true },
         "humanAuthoritySourceBindings": { "type": "array", "items": { "$ref": "#/$defs/HumanAuthoritySourceBinding" }, "minItems": 1, "uniqueItems": true },
         "incidentRecoverySourceBindings": { "type": "array", "items": { "$ref": "#/$defs/IncidentRecoverySourceBinding" }, "uniqueItems": true },
-        "resolvedBy": { "enum": ["LUZIONE_CORE_SERVER", "SYNTHETIC_TEST_HARNESS"] },
+        "resolvedBy": { "const": "SYNTHETIC_TEST_HARNESS" },
         "snapshotAt": { "$ref": "#/$defs/Timestamp" },
+        "snapshotDigest": { "$ref": "#/$defs/Sha256" },
+        "sourceAttestations": { "type": "array", "items": { "$ref": "operations-evidence-canonical-source-attestation-v1.schema.json" }, "minItems": 1, "uniqueItems": true },
         "tenantId": { "$ref": "#/$defs/Id" }
       },
-      "required": ["contractVersion", "g2EffectAuthorityGrants", "humanAuthoritySourceBindings", "incidentRecoverySourceBindings", "resolvedBy", "snapshotAt", "tenantId"]
+      "required": ["contractVersion", "g2EffectAuthorityGrants", "humanAuthoritySourceBindings", "incidentRecoverySourceBindings", "resolvedBy", "snapshotAt", "snapshotDigest", "sourceAttestations", "tenantId"]
     },
     "CreditCeiling": {
       "type": "object",
@@ -180,10 +182,12 @@
   },
   "x-luzione-semanticRules": {
     "baseV1V2DecisionBearingUse": "PROHIBITED",
-    "capabilityEpochLineage": "SERVER_DERIVED_CONTINUOUS_SINGLE_SUCCESSOR",
+    "capabilityEpochLineage": "SERVER_DERIVED_DURABLE_APPEND_ONLY_CONTINUOUS_SINGLE_SUCCESSOR",
     "g2ScopeCardinality": 1,
     "proofDayCreditCeiling": 0,
     "schemaSdkParity": "BIDIRECTIONAL_FIXTURES_REQUIRED",
-    "sourceBindings": "SERVER_RESOLVED_EXACT_TENANT_SUBJECT_VERSION_HASH_READBACK"
+    "resetDayCredit": "STRICTLY_AFTER_LATEST_VERIFIED_RESET",
+    "sourceBindings": "PINNED_SIGNATURE_OVER_EXACT_TYPED_CANONICAL_OBJECT_AND_READBACK_BYTES",
+    "sourceCredit": "SYNTHETIC_AND_ABSENT_REMAIN_ZERO"
   }
 }

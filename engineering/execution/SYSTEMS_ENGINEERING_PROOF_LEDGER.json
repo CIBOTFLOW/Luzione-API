@@ -2752,6 +2752,53 @@
         "This candidate is not integrated, G1 or production-ready."
       ],
       "next_proof_needed": ["L5 independently reruns ONBOARD-CORE-CORRECTION assurance against the exact implementation/final pair and L2 returns one exact consumer repin; all G1/G2 holds remain."]
+    },
+    {
+      "proof_id": "OPS_CONTRACTS_CORRECTION_03_G0_20260905",
+      "project_id": "OPS-CONTRACTS-CORRECTION-03",
+      "recorded_at": "2026-09-05T17:08:04Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "f801ebfee1668ec822a4e41d5aedc7cd62b876c5",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "OPS-CONTRACTS-CORRECTION-03 adds tenant-scoped compare-and-append identity state, pinned-signature canonical source bytes and strict post-reset calendar semantics to v3 while all synthetic/ABSENT proof-day, G2 and production credit remains zero.",
+      "exercised_boundaries": [
+        "Stable G2 grant IDs persist across parser invocations; exact replay is idempotent and changed approval source, signer, action, stage, effect, expiry, state or digest fails closed.",
+        "Exact canonical typed object and readback bytes are independently hashed, metadata-bound and verified by a pinned synthetic Ed25519 public key; caller re-seal and generic recovery relabel fail closed.",
+        "Tenant-scoped durable append state rejects capability successor gaps, forks, cycles, duplicates and new-epoch reuse across distinct ledger document IDs.",
+        "Capability credit accepts only calendar days strictly after the latest verified reset; the same reset day is rejected even where the frozen v2 structural parser admitted it.",
+        "All D01-D06 and B07-B11 targets passed; schema/SDK field parity covered append state, source attestation, typed source objects and readback.",
+        "Focused 10/10, operations-evidence 46/46, full repository 444/444, compliance 7/7, typecheck, zero-warning lint and Next.js 16.3.4 webpack build passed.",
+        "Exact base-to-implementation diff passed git apply --reverse --check with exit 0; no route, relation, migration or external recovery action exists.",
+        "Frozen Core, onboarding, effect-admission, connector-revocation and operations v1/v2 trees matched the exact base."
+      ],
+      "untested_boundaries": [
+        "independent OPS-CONTRACTS-ASSURE-04 and exact L2/L3 consumer repins",
+        "real canonical source signing/ownership and hosted durable append-state integration",
+        "exact-final automated CI and authenticated Git-bound application readback",
+        "proof-day, G2, production, deployment, migration, activation, rollback or managed recovery"
+      ],
+      "evidence_refs": [
+        "commit:f801ebfee1668ec822a4e41d5aedc7cd62b876c5",
+        "engineering/execution/ops-contracts-correction-03/OPS_CONTRACTS_CORRECTION_03_ARTIFACT_DIGESTS_V1.json",
+        "engineering/execution/ops-contracts-correction-03/OPS_CONTRACTS_CORRECTION_03_ASSURANCE_MATRIX_V1.json",
+        "engineering/execution/handoffs/OPS_CONTRACTS_CORRECTION_03_G0_CONTROLLER_HANDOFF.json",
+        "evidence/OPS_CONTRACTS_CORRECTION_03_G0_20260905.md"
+      ],
+      "failure_refs": ["OPS_CONTRACTS_CORRECTION_03_CROSS_LEDGER_SCOPE_REVIEW_20260905", "OPS_CONTRACTS_CORRECTION_03_B11_ASSERTION_CLASS_20260905"],
+      "cross_repo_handoffs": [
+        "L2 remains ABSENT/disconnected and may not mint membership, owner, approval, grant, incident, recovery, epoch or decision truth.",
+        "L3 remains ABSENT/disconnected-consumer-only and may not use Sultan agents, services or workloads as canonical human or source authority."
+      ],
+      "deferred_external_infra": ["exact-final CI", "authenticated preview", "independent assurance and consumers", "real source authority", "hosted durable state", "every production/G2 boundary"],
+      "remaining_uncertainty": [
+        "The pinned source key and append store prove synthetic parser semantics only.",
+        "Producer-local evidence cannot establish independent consumption or decision authority.",
+        "This candidate is not integrated, G1 or production-ready."
+      ],
+      "next_proof_needed": ["OPS-CONTRACTS-ASSURE-04 independently verifies the exact implementation/final/tag tuple while L2/L3 keep source packets ABSENT unless exact immutable returns exist."]
     }
   ]
 }
