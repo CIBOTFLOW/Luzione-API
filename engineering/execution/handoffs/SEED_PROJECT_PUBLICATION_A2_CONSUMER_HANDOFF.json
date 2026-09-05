@@ -7,10 +7,11 @@
   "base_sha": "e14b405d58a293c002f5676984a95e55372b3bd2",
   "implementation_sha": "a654c1d26dd6f93be15fa02cbd6aba344f7acb7a",
   "correction_sha": "96712c157e04c6fd36a4a1bb9bf549f5b35efa1a",
-  "producer_contract_sha": "a654c1d26dd6f93be15fa02cbd6aba344f7acb7a",
+  "provenance_correction_sha": "265724e528502b44a1250efea551539d74cb0bbd",
+  "producer_contract_sha": "265724e528502b44a1250efea551539d74cb0bbd",
   "seed_product_contract_producer_sha": "e14b405d58a293c002f5676984a95e55372b3bd2",
-  "schedule_contract_producer_sha": "a654c1d26dd6f93be15fa02cbd6aba344f7acb7a",
-  "exact_candidate_sha": "96712c157e04c6fd36a4a1bb9bf549f5b35efa1a",
+  "schedule_contract_producer_sha": "265724e528502b44a1250efea551539d74cb0bbd",
+  "exact_candidate_sha": "265724e528502b44a1250efea551539d74cb0bbd",
   "engineering_state": "BOUNDED_PASS",
   "release_evidence": "LOCAL_PROVEN",
   "effect_authority": "NO_EFFECT",
@@ -55,7 +56,7 @@
   "consumer_actions": [
     {
       "repository": "CIBOTFLOW/Luzione-UI",
-      "action": "Replace the temporary local schedule migration/repository writer and top-level schedule/projects envelope with the exact API routes, apiResponse envelope and fixtures pinned to producer contract SHA a654c1d26dd6f93be15fa02cbd6aba344f7acb7a."
+      "action": "Replace the temporary local schedule migration/repository writer and top-level schedule/projects envelope with the exact API routes, apiResponse envelope and fixtures pinned to schedule contract producer SHA 265724e528502b44a1250efea551539d74cb0bbd and seed-product contract producer SHA e14b405d58a293c002f5676984a95e55372b3bd2."
     },
     {
       "repository": "CIBOTFLOW/Luzione-Room-Planner-MVP",

@@ -22,7 +22,7 @@ import type { DeterministicDiffEntry } from "@/modules/seed-project-publication/
 
 export const PROJECT_SPECIFICATION_SCHEDULE_READ_MODEL_VERSION = "ProjectSpecificationScheduleReadModel/v1";
 export const SEED_PRODUCT_CONTRACT_PRODUCER_SHA = "e14b405d58a293c002f5676984a95e55372b3bd2";
-export const PROJECT_SPECIFICATION_SCHEDULE_CONTRACT_PRODUCER_SHA = "a654c1d26dd6f93be15fa02cbd6aba344f7acb7a";
+export const PROJECT_SPECIFICATION_SCHEDULE_CONTRACT_PRODUCER_SHA = "265724e528502b44a1250efea551539d74cb0bbd";
 export const API_HTTP_RESPONSE_VERSION = "api-http-response/1.0";
 
 export const SEED_PROJECT_PUBLICATION_HTTP_ROUTES = Object.freeze({

@@ -2,7 +2,10 @@
 
 State: bounded local pass; default-off; no deployment or managed migration authorized.
 
-Producer contract SHA: `a654c1d26dd6f93be15fa02cbd6aba344f7acb7a`  
+Schedule contract producer SHA: `265724e528502b44a1250efea551539d74cb0bbd`
+
+Initial implementation SHA: `a654c1d26dd6f93be15fa02cbd6aba344f7acb7a`
+
 Core seed-product contract base: `e14b405d58a293c002f5676984a95e55372b3bd2`
 
 ## Ownership and lifecycle

@@ -2616,7 +2616,7 @@
       "project_id": "SEED-PROJECT-PUBLICATION-A2",
       "recorded_at": "2026-09-05T09:20:00Z",
       "repository": "CIBOTFLOW/Luzione-API",
-      "exact_sha": "96712c157e04c6fd36a4a1bb9bf549f5b35efa1a",
+      "exact_sha": "265724e528502b44a1250efea551539d74cb0bbd",
       "engineering_state": "BOUNDED_PASS",
       "release_evidence": "LOCAL_PROVEN",
       "effect_authority": "NO_EFFECT",
@@ -2645,6 +2645,7 @@
       "evidence_refs": [
         "commit:a654c1d26dd6f93be15fa02cbd6aba344f7acb7a",
         "commit:96712c157e04c6fd36a4a1bb9bf549f5b35efa1a",
+        "commit:265724e528502b44a1250efea551539d74cb0bbd",
         "architecture/production-convergence/SEED_PROJECT_PUBLICATION_A2_WORKING_CONTRACT.md",
         "engineering/execution/handoffs/SEED_PROJECT_PUBLICATION_A2_CONSUMER_HANDOFF.json",
         "engineering/execution/seed-project-publication-a2/SEED_PROJECT_PUBLICATION_A2_ARTIFACT_DIGESTS_V1.json",
@@ -2669,7 +2670,7 @@
         "The intentionally immutable A2 facts do not implement revision approval, rejection or activation."
       ],
       "next_proof_needed": [
-        "Controller accepts exact candidate 96712c157e04c6fd36a4a1bb9bf549f5b35efa1a before consumer activation.",
+        "Controller accepts exact candidate 265724e528502b44a1250efea551539d74cb0bbd before consumer activation.",
         "UI and Room Planner return independently authored exact-version positive, negative and default-off evidence.",
         "A later additive slice defines revision disposition/activation without mutating A2 facts."
       ]
