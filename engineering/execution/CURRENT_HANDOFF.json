@@ -2,10 +2,10 @@
   "schema_version": 2,
   "queue_id": "LUZIONE_API_SYSTEMS_ENGINEERING_V1",
   "repository": "CIBOTFLOW/Luzione-API",
-  "program_state": "API_STAGE5_EXACT_SOURCE_AND_MANAGED_RECOVERY_PROVEN_PUBLICATION_PENDING_PRODUCTION_BLOCKED_NO_EFFECT",
-  "current_project": "API_STAGE5_001",
-  "next_projects": ["API_STAGE5_001", "A02"],
-  "next_action": "Publish the exact API Stage 5 implementation and machine handoff in a new pull request from merged main, run real-branch CI, repair any failure, and merge only the green exact head. Preserve draft PR #58 independently. Keep production DDL and deployment claims blocked until a named accessible backup/PITR and restore receipt, exact principal authority, writer exclusion, merged main SHA, and exact deployed readbacks all exist.",
+  "program_state": "CORE_01_G0_CONTRACT_SPINE_FROZEN_LOCAL_PROVEN_CONSUMER_AND_DEPLOYED_EVIDENCE_PENDING_NO_EFFECT",
+  "current_project": "CORE-01",
+  "next_projects": ["CORE-01"],
+  "next_action": "L2 and L3 pin CORE-01 implementation 828de754e4104cd860e3f47adbf2e84c576e5c10, execute the strict fixtures independently, and return exact consumer SHAs and digests; keep every activation and production surface blocked.",
   "canonical_program": "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md",
   "failure_ledger": "engineering/execution/SYSTEMS_ENGINEERING_FAILURE_LEDGER.json",
   "proof_ledger": "engineering/execution/SYSTEMS_ENGINEERING_PROOF_LEDGER.json",
@@ -105,7 +105,7 @@
     "Supabase Pro plan entitlement indicates daily backups should exist, but the available management surface cannot list a project-specific backup receipt or PITR window; no production DDL is safe until that exact restore evidence is recorded."
   ],
   "stop_code": "S1_IRREVERSIBLE_EXTERNAL_EFFECT",
-  "updated_at": "2026-09-03T02:36:33.000Z",
+  "updated_at": "2026-09-05T01:24:00.000Z",
   "api_stage5_001": {
     "status": "EXACT_IMPLEMENTATION_AND_MANAGED_RECOVERY_PASS_PUBLICATION_PENDING_PRODUCTION_BLOCKED",
     "branch": "codex/stage5-authority-outcomes-v2",
@@ -239,5 +239,29 @@
     "live_http_journey": "DEPLOYED_SIGNED_OIDC_NOT_RUN",
     "business_receipt_readback": "NOT_APPLICABLE_NO_EFFECT",
     "production_observation": "NOT_RUN"
+  },
+  "core_01": {
+    "status": "BOUNDED_PASS_LOCAL_PROVEN_NO_EFFECT_NOT_G1",
+    "controller_authority": "b19a4d858c0c90dba8600facbf329b7de7c322ad",
+    "support_packet_authority": "c5a26960970091d9fe664460fa32be190a50ccb9",
+    "base_sha": "7ee5a0a53a3434c3e00969dc626a4daad33f9dc0",
+    "branch": "codex/core-01-contract-spine-g0-b19a4d8",
+    "implementation_sha": "828de754e4104cd860e3f47adbf2e84c576e5c10",
+    "evidence_head": "COMMIT_CONTAINING_THIS_HANDOFF",
+    "bundle_version": "LuzioneCoreContracts/v1",
+    "a02_pins": [
+      "luzione-shared-contracts/v0.2-draft.1",
+      "luzione-identity-tenant/v0.2-draft.1",
+      "luzione-command-envelope/v0.2-draft.1",
+      "luzione-receipt-envelope/v0.2-draft.1",
+      "luzione-readback-envelope/v0.2-draft.1"
+    ],
+    "support_sdk": "FROZEN_TO_IMPLEMENTATION_SHA",
+    "sultan_runtime_consumer": "CIBOTFLOW/Sultan-OS@e2b95ab71e5a604dcdd8ff6ab75b50a32ba4d838",
+    "local_verification": "PASS_COMPLIANCE_7_OF_7_TYPECHECK_LINT_ZERO_WARNINGS_FOCUSED_52_OF_52_FULL_337_OF_337_WEBPACK_BUILD",
+    "runtime_activation": "DARK_ONLY",
+    "effect_authority": "NO_EFFECT",
+    "production_observation": "NOT_RUN",
+    "writer_lock": "RELEASED"
   }
 }

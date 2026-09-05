@@ -10,8 +10,8 @@
     "gitBlob": "73a961ea725b64fa89234dbfe078aff698d29be1"
   },
   "sdkBundle": "LuzioneCoreContracts/v1",
-  "sdkManifestCandidateSha": "UNBOUND_G0",
-  "bindingState": "PENDING_L1_FREEZE",
+  "sdkManifestCandidateSha": "828de754e4104cd860e3f47adbf2e84c576e5c10",
+  "bindingState": "FROZEN_L1_G0_IMPLEMENTATION",
   "effectAuthority": "NO_EFFECT",
   "capabilityMappings": [
     {

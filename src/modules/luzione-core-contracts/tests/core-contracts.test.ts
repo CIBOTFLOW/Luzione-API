@@ -243,7 +243,7 @@ test("schema, manifest and six-capability Sultan mapping are mechanically comple
   assert.deepEqual(manifest.preservedA02.versions, CORE_A02_PINS);
   assert.equal(manifest.fepDependency, false);
   assert.equal(mapping.consumerFinalSha, "e2b95ab71e5a604dcdd8ff6ab75b50a32ba4d838");
-  assert.equal(mapping.bindingState, "PENDING_L1_FREEZE");
+  assert.equal(mapping.bindingState, "FROZEN_L1_G0_IMPLEMENTATION");
   assert.equal(mapping.effectAuthority, "NO_EFFECT");
   assert.deepEqual(mapping.capabilityMappings.map(({ capabilityId }) => capabilityId), [
     "crm.growth-research", "crm.opportunity-assistance", "crm.proposal-preparation",

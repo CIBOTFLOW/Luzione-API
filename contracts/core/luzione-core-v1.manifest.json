@@ -1,7 +1,7 @@
 {
   "schemaVersion": "LuzioneCoreReleaseManifest/v1",
   "bundleVersion": "LuzioneCoreContracts/v1",
-  "candidateSha": "UNBOUND_G0",
+  "candidateSha": "828de754e4104cd860e3f47adbf2e84c576e5c10",
   "controllerAuthority": "b19a4d858c0c90dba8600facbf329b7de7c322ad",
   "supportPacketAuthority": "c5a26960970091d9fe664460fa32be190a50ccb9",
   "effectAuthority": "NO_EFFECT",
