@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "artifact_id": "SEED_PROCUREMENT_A3_TOPOLOGY_DELTA_V1",
+  "project_id": "SEED-PROCUREMENT-A3",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "base_topology": "engineering/execution/LUZIONE_API_TOPOLOGY_INVENTORY_V1.json",
+  "base_proof_sha": "70828af4c10cd180d332c4b1e5771d719d1ab579",
+  "seed_product_contract_producer_sha": "e14b405d58a293c002f5676984a95e55372b3bd2",
+  "schedule_contract_producer_sha": "265724e528502b44a1250efea551539d74cb0bbd",
+  "procurement_contract_producer_sha": "d6d1c98e42ddc168e3b2eac629e74214f3102ba0",
+  "effect_authority": "NO_EFFECT",
+  "http_surfaces": [
+    {
+      "route_id": "seed-procurement-command",
+      "method": "POST",
+      "path": "/api/v1/procurement/commands",
+      "source_path": "src/app/api/v1/procurement/commands/route.ts",
+      "authentication": "credential-bound same-tenant actor with procurement.command capability and exact default-off tenant admission",
+      "canonical_readback": "P110 receipt plus exact evidence/product-source/product-candidate owner readback; downstream commands return explicit dependency failures before owner write",
+      "effect": "DEFAULT_OFF_NO_EFFECT_INTERNAL_MUTATION",
+      "external_effect_authorized": false
+    },
+    {
+      "route_id": "project-procurement-read",
+      "method": "GET",
+      "path": "/api/v1/projects/{projectId}/procurement",
+      "source_path": "src/app/api/v1/projects/[projectId]/procurement/route.ts",
+      "authentication": "credential-bound same-tenant actor with procurement.read capability",
+      "canonical_readback": "SeedProcurementReadModel/v1 with product observations, disclosed scoring, P110 TimelineEvent/v1 and explicit downstream dependency holds",
+      "effect": "NO_EFFECT"
+    }
+  ],
+  "relations": [
+    {"name":"seed_procurement_evidence_artifacts","state":"DEFAULT_OFF_API_OWNER","write":"INSERT_ONLY","effect":"NO_EFFECT"},
+    {"name":"seed_product_sources","state":"DEFAULT_OFF_API_OWNER","write":"INSERT_ONLY","effect":"NO_EFFECT"},
+    {"name":"seed_product_candidates","state":"DEFAULT_OFF_API_OWNER","write":"INSERT_ONLY","effect":"NO_EFFECT"},
+    {"name":"seed_rfq_drafts","state":"DATABASE_DEPENDENCY_HELD","missing_dependency":"CanonicalSupplierEligibility/v1"},
+    {"name":"seed_supplier_quotes","state":"DATABASE_DEPENDENCY_HELD","missing_dependency":"CanonicalSupplierEligibility/v1"},
+    {"name":"seed_bid_comparisons","state":"DATABASE_DEPENDENCY_HELD","missing_dependency":"CanonicalSupplierEligibility/v1"},
+    {"name":"seed_procurement_selection_decisions","state":"DATABASE_DEPENDENCY_HELD","missing_dependency":"CanonicalSupplierEligibility/v1"},
+    {"name":"seed_purchase_order_drafts","state":"DATABASE_DEPENDENCY_HELD","missing_dependency":"ProposalVersion/v1 canonical API readback"},
+    {"name":"seed_purchase_order_acknowledgements","state":"DATABASE_DEPENDENCY_HELD","missing_dependency":"exact canonical PurchaseOrder/v1 draft"}
+  ],
+  "runtime_configuration_keys": [
+    "LUZIONE_API_MUTATIONS_ENABLED",
+    "LUZIONE_API_SEED_PROCUREMENT_ENABLED",
+    "LUZIONE_API_SEED_PROCUREMENT_TENANTS"
+  ],
+  "prohibited_effects": [
+    "network_product_fetch",
+    "provider_email_ingestion",
+    "portal_mutation",
+    "rfq_send",
+    "purchase_order_release",
+    "supplier_commitment",
+    "managed_migration",
+    "deployment"
+  ]
+}
