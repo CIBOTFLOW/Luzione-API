@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "artifact_id": "SEED_PROCUREMENT_A3_CORRECTION_01_PROOF_V1",
+  "project_id": "SEED-PROCUREMENT-A3-CORRECTION-01",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "exact_candidate_sha": "656c537dbf801aa22eece51514040e6e56ba5460",
+  "observed_at": "2026-09-06T02:29:36Z",
+  "environment": "LOCAL_DISPOSABLE_ONLY",
+  "external_effects": "NOT_AUTHORIZED_NOT_EXECUTED",
+  "managed_migration": "NOT_RUN",
+  "deployment_sha": null,
+  "checks": {
+    "typecheck": "PASS",
+    "lint": "PASS_ZERO_WARNINGS",
+    "focused_tests": "PASS_12_OF_12",
+    "full_tests": "PASS_546_OF_546",
+    "production_build": "PASS_NEXTJS_16_3_4_WEBPACK",
+    "disposable_postgres": "PASS",
+    "migration_empty_rollback_reapply": "PASS",
+    "guarded_rollback_after_admission": "PASS_REFUSED",
+    "known_bad_v1_digest_and_rejection": "PASS"
+  },
+  "database_observations": {
+    "p110_receipts": 22,
+    "p110_events": 22,
+    "p110_outbox_rows": 22,
+    "non_no_effect_outbox_rows": 0,
+    "rfq_quote_bid_selection_insert_grants": 4,
+    "rfq_quote_bid_selection_total_select_insert_grants": 8,
+    "purchase_order_insert_grants": 0,
+    "removed_supplier_hold_triggers": 4,
+    "preserved_purchase_order_hold_triggers": 2,
+    "deferred_integrity_triggers": 4,
+    "explicit_tenant_policies": 4,
+    "anon_authenticated_grants": 0,
+    "public_trigger_function_execute_grants": 0
+  },
+  "behavioral_observations": [
+    "exact replay reused one receipt under concurrent Evidence Artifact and RFQ calls",
+    "changed-payload idempotency conflict and stale versions failed closed",
+    "cross-tenant and cross-Project reads and writes failed closed",
+    "Supplier Profile capability, expiry, revocation and tenant denials failed closed",
+    "URL-resolved PDF retained direct PDF and upstream URL Evidence Artifact lineage",
+    "selection and derived approved Bid Comparison v2 rolled back atomically under injected failure",
+    "human selection appended an immutable fact and distinct derived approval receipt",
+    "purchase-order draft and acknowledgement remained dependency-held",
+    "all successful owner writes produced exact DOMAIN_COMMITTED readback without external effects"
+  ],
+  "artifact_digest_manifest": "engineering/execution/seed-procurement-a3-correction-01/SEED_PROCUREMENT_A3_CORRECTION_01_ARTIFACT_DIGESTS_V1.json"
+}

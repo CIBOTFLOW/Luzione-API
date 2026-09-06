@@ -1,4 +1,6 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
@@ -256,4 +258,50 @@ test("A3C migration admits exactly four owner writes while preserving RLS, appen
   assert.equal(topology.database_posture.browser_role_grants, 0);
   assert.deepEqual(topology.database_posture.preserved_dependency_holds, ["PURCHASE_ORDER", "PURCHASE_ORDER_ACKNOWLEDGEMENT"]);
   assert.ok(topology.prohibited_effects.includes("deployment"));
+});
+
+test("A3C proof and handoff bind every artifact to the immutable exact candidate", () => {
+  const exactCandidateSha = "656c537dbf801aa22eece51514040e6e56ba5460";
+  const manifest = JSON.parse(readFileSync("engineering/execution/seed-procurement-a3-correction-01/SEED_PROCUREMENT_A3_CORRECTION_01_ARTIFACT_DIGESTS_V1.json", "utf8")) as {
+    artifacts: Array<{ path: string; sha256: string }>;
+    exact_candidate_sha: string;
+    implementation_sha: string;
+  };
+  const proof = JSON.parse(readFileSync("engineering/execution/seed-procurement-a3-correction-01/SEED_PROCUREMENT_A3_CORRECTION_01_PROOF_V1.json", "utf8")) as {
+    checks: Record<string, string>;
+    database_observations: { anon_authenticated_grants: number; non_no_effect_outbox_rows: number; preserved_purchase_order_hold_triggers: number };
+    deployment_sha: string | null;
+    exact_candidate_sha: string;
+    external_effects: string;
+    managed_migration: string;
+  };
+  const handoff = JSON.parse(readFileSync("engineering/execution/handoffs/SEED_PROCUREMENT_A3_CORRECTION_01_CONSUMER_HANDOFF.json", "utf8")) as {
+    contracts: { command: string; read_model: string };
+    deployment_sha: string | null;
+    exact_candidate_sha: string;
+    managed_migration: string;
+    procurement_correction_contract_producer_sha: string;
+    remaining_dependency_holds: Array<{ commands: string[] }>;
+  };
+  assert.equal(manifest.exact_candidate_sha, exactCandidateSha);
+  assert.equal(manifest.implementation_sha, "a98d70e75baac9c25c3aa8af96615fbf3eba4575");
+  for (const artifact of manifest.artifacts) {
+    const bytes = execFileSync("git", ["show", `${exactCandidateSha}:${artifact.path}`]);
+    assert.equal(createHash("sha256").update(bytes).digest("hex"), artifact.sha256, artifact.path);
+  }
+  assert.equal(proof.exact_candidate_sha, exactCandidateSha);
+  assert.equal(proof.checks.full_tests, "PASS_546_OF_546");
+  assert.equal(proof.database_observations.non_no_effect_outbox_rows, 0);
+  assert.equal(proof.database_observations.anon_authenticated_grants, 0);
+  assert.equal(proof.database_observations.preserved_purchase_order_hold_triggers, 2);
+  assert.equal(proof.external_effects, "NOT_AUTHORIZED_NOT_EXECUTED");
+  assert.equal(proof.managed_migration, "NOT_RUN");
+  assert.equal(proof.deployment_sha, null);
+  assert.equal(handoff.exact_candidate_sha, exactCandidateSha);
+  assert.equal(handoff.contracts.command, "SeedProcurementCommand/v2");
+  assert.equal(handoff.contracts.read_model, "SeedProcurementReadModel/v2");
+  assert.equal(handoff.procurement_correction_contract_producer_sha, "a98d70e75baac9c25c3aa8af96615fbf3eba4575");
+  assert.equal(handoff.remaining_dependency_holds.length, 2);
+  assert.equal(handoff.managed_migration, "NOT_RUN");
+  assert.equal(handoff.deployment_sha, null);
 });

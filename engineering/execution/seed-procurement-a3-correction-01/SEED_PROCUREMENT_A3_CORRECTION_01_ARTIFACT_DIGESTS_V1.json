@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "artifact_id": "SEED_PROCUREMENT_A3_CORRECTION_01_ARTIFACT_DIGESTS_V1",
+  "project_id": "SEED-PROCUREMENT-A3-CORRECTION-01",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "base_sha": "d3c4ea4156675c39e60f78a06ee12f37cf428b67",
+  "implementation_sha": "a98d70e75baac9c25c3aa8af96615fbf3eba4575",
+  "exact_candidate_sha": "656c537dbf801aa22eece51514040e6e56ba5460",
+  "generated_at": "2026-09-06T02:29:36Z",
+  "hash_algorithm": "sha256",
+  "artifacts": [
+    {"path":"architecture/production-convergence/SEED_PROCUREMENT_A3_CORRECTION_01_WORKING_CONTRACT.md","sha256":"0593ac39ba1fe8c9c1c973157290123859e9f24d967e20a2384ebea3d20e0aaf"},
+    {"path":"engineering/execution/seed-procurement-a3-correction-01/SEED_PROCUREMENT_A3_CORRECTION_01_TOPOLOGY_DELTA_V1.json","sha256":"38325c4df5ebf9281d2078729512bfe83aacfcdba62dd62ae917a039f45cfdb5"},
+    {"path":"scripts/validation/rollback-seed-procurement-a3-correction-01.sql","sha256":"bd40ad0d20ea8930e259a3d27df4e4b9ac49f0622b16350b128ccde8237adb65"},
+    {"path":"scripts/validation/run-seed-procurement-a3-correction-01-proof.sh","sha256":"194e89415d0aa3853b243026e703f975d734f353e592170aef6dbdffaa77e493"},
+    {"path":"scripts/validation/seed-procurement-a3-postgres-proof.ts","sha256":"adbf868dc8093c7ee8368dbab256fc568f27d03df1622228b9d40f3ae31f8e8f"},
+    {"path":"scripts/validation/seed-procurement-a3-proof-fixture.sql","sha256":"ad8419ff1e1a85dd0fc8b2af7e309b2e6e7f84b0bd5b0c4c572adb764cd8b1f6"},
+    {"path":"src/app/api/v1/procurement/commands/route.ts","sha256":"35abfb023e25ff60b5ed40da52b5c197c15b790bef3434cfd2265536a84294b5"},
+    {"path":"src/modules/platform-contracts/registry.ts","sha256":"1b53363fa11ebf0dd870a561ab4dc1cbf45f0dc6b245b65551079be7de640487"},
+    {"path":"src/modules/production-convergence/releaseIdentity.ts","sha256":"b51cd0f38b29e7a8f38df6307082be4615240135a9f5792085cecf7cf86acd50"},
+    {"path":"src/modules/production-convergence/tests/release-identity.test.ts","sha256":"b590e5fb3ba694658635957454561554358e1df9fea7322a5470cb28c8c51e16"},
+    {"path":"src/modules/seed-procurement/contracts.ts","sha256":"6bde8d1aac4f3c6546d5358a9772f58165cac96ec8070a3b7539dd7b497db769"},
+    {"path":"src/modules/seed-procurement/fixtures.ts","sha256":"3f07f01d10e1ada108be20e665c6502d4cb8bcd3b90025b23ca7ba61f389b28a"},
+    {"path":"src/modules/seed-procurement/fixtures/a3-v1-known-bad.ts","sha256":"c6748c867aecd74f9f159159f9a2cd015ccd4333d9e0a222b180615ce2f6c834"},
+    {"path":"src/modules/seed-procurement/readModel.ts","sha256":"c29e3ee282596a8450d2e7a8f625eab7e90e9a320931b44b0ed04eb7c1577def"},
+    {"path":"src/modules/seed-procurement/routeSupport.ts","sha256":"44c7b79631cf24000c331367ef4d7ba65e12a127388d55506107eb133256e8fb"},
+    {"path":"src/modules/seed-procurement/store.ts","sha256":"13ce87d32a154a2f8b2b01396d8145ceae8b68cdc2a56f32deb7b0b4a1179b6e"},
+    {"path":"src/modules/seed-procurement/tests/seed-procurement.test.ts","sha256":"84926ba455ec374dac3246f16e9d96c8006beb3994b25dd9d12995e5d4dd98e5"},
+    {"path":"src/modules/seed-supplier-identity/tests/seed-supplier-identity.test.ts","sha256":"cb0428de6785b92300dfc1479bd92e5361ba0ebc27f8082dcd10dc863da85d45"},
+    {"path":"supabase/migrations/20260906003727_seed_procurement_a3_correction_01.sql","sha256":"2fc5b55e9b3a4908df2b5e5a441061ee4fe807f15fdd2676796cb427bd6de739"}
+  ]
+}

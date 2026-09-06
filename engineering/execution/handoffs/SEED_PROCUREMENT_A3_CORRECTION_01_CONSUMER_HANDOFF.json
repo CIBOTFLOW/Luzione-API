@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "handoff_id": "SEED_PROCUREMENT_A3_CORRECTION_01_CONSUMER_HANDOFF",
+  "project_id": "SEED-PROCUREMENT-A3-CORRECTION-01",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_branch": "codex/seed-procurement-a3-correction-01",
+  "base_sha": "d3c4ea4156675c39e60f78a06ee12f37cf428b67",
+  "implementation_sha": "a98d70e75baac9c25c3aa8af96615fbf3eba4575",
+  "exact_candidate_sha": "656c537dbf801aa22eece51514040e6e56ba5460",
+  "seed_product_contract_producer_sha": "e14b405d58a293c002f5676984a95e55372b3bd2",
+  "schedule_contract_producer_sha": "265724e528502b44a1250efea551539d74cb0bbd",
+  "historical_procurement_contract_producer_sha": "777e0d471d2ecf02294fffb7562761d6f8a36dbd",
+  "supplier_identity_contract_producer_sha": "6467b989db7422c45935dcec3ad334b4fe99ce5f",
+  "procurement_correction_contract_producer_sha": "a98d70e75baac9c25c3aa8af96615fbf3eba4575",
+  "contracts": {
+    "command": "SeedProcurementCommand/v2",
+    "read_model": "SeedProcurementReadModel/v2",
+    "selection_fact": "ProcurementSelectionDecision/v1",
+    "supplier_profile": "SupplierProfile/v1",
+    "timeline": "TimelineEvent/v1",
+    "response_envelope": "api-http-response/1.0"
+  },
+  "routes": [
+    {"method":"POST","path":"/api/v1/procurement/commands","result":"default-off NO_EFFECT P110 DOMAIN_COMMITTED receipt plus exact authoritative readback; immutable selection requires signed same-tenant human authority and atomically appends approved Bid Comparison v2"},
+    {"method":"GET","path":"/api/v1/projects/:projectId/procurement","result":"SeedProcurementReadModel/v2 inside apiResponse({ok,result,...}) with exact correction and supplier producer pins"}
+  ],
+  "runtime_gate": {
+    "commands": {"global":"LUZIONE_API_MUTATIONS_ENABLED","feature":"LUZIONE_API_SEED_PROCUREMENT_ENABLED","tenant_allowlist":"LUZIONE_API_SEED_PROCUREMENT_TENANTS","default":"OFF"},
+    "reads": {"authentication":"procurement.read capability and server-derived tenant","feature_flag":"NONE","managed_migration_required":true}
+  },
+  "admitted_local_behavior": [
+    "Evidence Artifact, Product Source, Product Candidate, RFQ draft, normalized Supplier Quote, Bid Comparison and immutable human Procurement Selection are API-owned append-only canonical writes.",
+    "Product Source records exact direct Evidence Artifact lineage and optional ordered upstream Evidence Artifact lineage; URL-resolved PDF therefore keeps both artifacts.",
+    "Candidate vendor, RFQ supplier, normalized quote, bid set and selection require exact current SupplierProfile/v1 version and capability readback.",
+    "Bid recommendations remain non-authoritative; only a signed same-tenant human selection creates approved Bid Comparison v2.",
+    "Every admitted mutation is atomic with one owner row, P110 receipt, event and NO_EFFECT outbox; the derived approved bid receives a separate causally linked receipt.",
+    "Readback reconstructs and validates exact tenant, Project, source, supplier, version, receipt, economics and authority lineage."
+  ],
+  "remaining_dependency_holds": [
+    {"commands":["purchase_order.create_draft"],"code":"PROPOSAL_CANONICAL_READER_UNAVAILABLE","dependency":"SEED-PROPOSAL-OWNER-A2P ProposalVersion/v1 canonical persistence and exact readback"},
+    {"commands":["purchase_order_acknowledgement.record"],"code":"PURCHASE_ORDER_NOT_AVAILABLE","dependency":"exact canonical PurchaseOrder/v1 draft"}
+  ],
+  "consumer_files": {
+    "commands":"src/modules/seed-procurement/contracts.ts",
+    "read_model_parser":"src/modules/seed-procurement/readModel.ts",
+    "positive_fixtures":"src/modules/seed-procurement/fixtures.ts",
+    "known_bad_v1_fixture":"src/modules/seed-procurement/fixtures/a3-v1-known-bad.ts",
+    "topology_delta":"engineering/execution/seed-procurement-a3-correction-01/SEED_PROCUREMENT_A3_CORRECTION_01_TOPOLOGY_DELTA_V1.json",
+    "artifact_digests":"engineering/execution/seed-procurement-a3-correction-01/SEED_PROCUREMENT_A3_CORRECTION_01_ARTIFACT_DIGESTS_V1.json",
+    "proof":"engineering/execution/seed-procurement-a3-correction-01/SEED_PROCUREMENT_A3_CORRECTION_01_PROOF_V1.json",
+    "disposable_proof":"scripts/validation/run-seed-procurement-a3-correction-01-proof.sh"
+  },
+  "consumer_rules": [
+    "Pin command/read-model version, correction producer SHA, supplier-identity producer SHA and exact candidate SHA independently.",
+    "Do not accept SeedProcurementCommand/v1 or SeedProcurementReadModel/v1; retain the published v1 fixture only as a known-bad control.",
+    "Do not create local canonical RFQ, quote, bid, selection or purchase-order writers.",
+    "Do not display a recommendation as a human selection or provider acknowledgement as source-confirmed completion.",
+    "Keep Proposal and PO flows visibly blocked until A2P exact owner/readback evidence is admitted.",
+    "No consumer may infer product fetching, vendor-email ingestion, RFQ send, PO release, supplier commitment, managed migration, deployment or any external effect from this G0 handoff."
+  ],
+  "release_state": "LOCAL_PROVEN_DEFAULT_OFF_NO_EFFECT_G0_CANDIDATE",
+  "deployment_sha": null,
+  "managed_migration": "NOT_RUN",
+  "merge": "NOT_PERFORMED",
+  "local_verification": {
+    "typecheck": "PASS",
+    "focused_tests": "PASS_12_OF_12",
+    "full_tests": "PASS_546_OF_546",
+    "lint": "PASS_ZERO_WARNINGS",
+    "production_build": "PASS_NEXTJS_16_3_4_WEBPACK",
+    "disposable_postgres": "PASS_22_RECEIPTS_22_EVENTS_22_OUTBOX_ZERO_BAD_EFFECTS_4_EXPLICIT_POLICIES_ZERO_BROWSER_GRANTS_2_PO_HOLDS_ROLLBACK_GUARD_1"
+  }
+}
