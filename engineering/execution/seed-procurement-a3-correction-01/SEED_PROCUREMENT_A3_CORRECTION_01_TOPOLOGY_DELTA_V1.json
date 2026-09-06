@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "artifact_id": "SEED_PROCUREMENT_A3_CORRECTION_01_TOPOLOGY_DELTA_V1",
+  "project_id": "SEED-PROCUREMENT-A3-CORRECTION-01",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "base_topology": "engineering/execution/seed-procurement-a3/SEED_PROCUREMENT_A3_TOPOLOGY_DELTA_V1.json",
+  "base_proof_sha": "d3c4ea4156675c39e60f78a06ee12f37cf428b67",
+  "seed_product_contract_producer_sha": "e14b405d58a293c002f5676984a95e55372b3bd2",
+  "schedule_contract_producer_sha": "265724e528502b44a1250efea551539d74cb0bbd",
+  "historical_procurement_contract_producer_sha": "777e0d471d2ecf02294fffb7562761d6f8a36dbd",
+  "supplier_identity_contract_producer_sha": "6467b989db7422c45935dcec3ad334b4fe99ce5f",
+  "procurement_correction_contract_producer_sha": "a98d70e75baac9c25c3aa8af96615fbf3eba4575",
+  "effect_authority": "NO_EFFECT",
+  "http_surfaces": [
+    {
+      "route_id": "seed-procurement-command-v2",
+      "method": "POST",
+      "path": "/api/v1/procurement/commands",
+      "source_path": "src/app/api/v1/procurement/commands/route.ts",
+      "authentication": "credential-bound same-tenant service actor; immutable selection additionally requires a signed same-tenant human subject with procurement.selection.record",
+      "canonical_readback": "one DOMAIN_COMMITTED P110 receipt plus exact authoritative readback for evidence, source, candidate, RFQ, normalized quote, bid comparison or selection; selection atomically appends approved Bid Comparison v2",
+      "effect": "DEFAULT_OFF_NO_EFFECT_INTERNAL_MUTATION",
+      "external_effect_authorized": false
+    },
+    {
+      "route_id": "project-procurement-read-v2",
+      "method": "GET",
+      "path": "/api/v1/projects/{projectId}/procurement",
+      "source_path": "src/app/api/v1/projects/[projectId]/procurement/route.ts",
+      "authentication": "credential-bound same-tenant actor with procurement.read",
+      "canonical_readback": "SeedProcurementReadModel/v2 with exact artifact/source/supplier/receipt/version lineage, human selection, approved bid and the remaining Proposal dependency hold",
+      "effect": "NO_EFFECT"
+    }
+  ],
+  "relations": [
+    {"name":"seed_procurement_evidence_artifacts","state":"DEFAULT_OFF_API_OWNER","write":"INSERT_ONLY_APPEND_ONLY","effect":"NO_EFFECT"},
+    {"name":"seed_product_sources","state":"DEFAULT_OFF_API_OWNER","write":"INSERT_ONLY_APPEND_ONLY","effect":"NO_EFFECT","correction":"exact direct plus upstream Evidence Artifact lineage"},
+    {"name":"seed_product_candidates","state":"DEFAULT_OFF_API_OWNER","write":"INSERT_ONLY_APPEND_ONLY","effect":"NO_EFFECT","supplier_requirement":"SupplierProfile/v1 CATALOG_SOURCE when vendor is claimed"},
+    {"name":"seed_rfq_drafts","state":"DEFAULT_OFF_API_OWNER","write":"INSERT_ONLY_APPEND_ONLY","effect":"NO_EFFECT","supplier_requirement":"SupplierProfile/v1 RFQ_RESPONSE"},
+    {"name":"seed_supplier_quotes","state":"DEFAULT_OFF_API_OWNER","write":"INSERT_ONLY_APPEND_ONLY","effect":"NO_EFFECT","supplier_requirement":"SupplierProfile/v1 QUOTE_SUBMISSION"},
+    {"name":"seed_bid_comparisons","state":"DEFAULT_OFF_API_OWNER","write":"INSERT_ONLY_APPEND_ONLY_VERSIONED","effect":"NO_EFFECT","supplier_requirement":"every quote supplier has SupplierProfile/v1 QUOTE_SUBMISSION"},
+    {"name":"seed_procurement_selection_decisions","state":"DEFAULT_OFF_API_OWNER","write":"INSERT_ONLY_IMMUTABLE","effect":"NO_EFFECT","authority":"A2 signed same-tenant human selection"},
+    {"name":"seed_purchase_order_drafts","state":"DATABASE_DEPENDENCY_HELD","missing_dependency":"ProposalVersion/v1 canonical API owner and exact readback"},
+    {"name":"seed_purchase_order_acknowledgements","state":"DATABASE_DEPENDENCY_HELD","missing_dependency":"exact canonical PurchaseOrder/v1 draft"}
+  ],
+  "runtime_configuration_keys": [
+    "LUZIONE_API_MUTATIONS_ENABLED",
+    "LUZIONE_API_SEED_PROCUREMENT_ENABLED",
+    "LUZIONE_API_SEED_PROCUREMENT_TENANTS"
+  ],
+  "database_posture": {
+    "migration": "supabase/migrations/20260906003727_seed_procurement_a3_correction_01.sql",
+    "new_runtime_insert_relations": 4,
+    "new_runtime_privileges": ["SELECT", "INSERT"],
+    "forced_rls_relations": 4,
+    "explicit_tenant_policies": 4,
+    "browser_role_grants": 0,
+    "removed_dependency_holds": ["RFQ", "SUPPLIER_QUOTE", "BID_COMPARISON", "PROCUREMENT_SELECTION"],
+    "preserved_dependency_holds": ["PURCHASE_ORDER", "PURCHASE_ORDER_ACKNOWLEDGEMENT"]
+  },
+  "blocked_dependencies": [
+    "A2P API-owned ProposalTemplate/v1 and ProposalVersion/v1 durable owner/readback are required before PO draft admission.",
+    "No managed migration or deployed runtime has been observed for this candidate.",
+    "UI, Sultan and Portal consumers require independent exact-version and exact-SHA evidence before admission."
+  ],
+  "prohibited_effects": [
+    "network_product_fetch",
+    "provider_email_ingestion",
+    "portal_mutation",
+    "rfq_send",
+    "purchase_order_release",
+    "supplier_commitment",
+    "managed_migration",
+    "deployment"
+  ]
+}

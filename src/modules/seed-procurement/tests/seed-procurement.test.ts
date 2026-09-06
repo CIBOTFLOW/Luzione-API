@@ -211,6 +211,12 @@ test("A3C migration admits exactly four owner writes while preserving RLS, appen
   const store = readFileSync("src/modules/seed-procurement/store.ts", "utf8");
   const route = readFileSync("src/app/api/v1/procurement/commands/route.ts", "utf8");
   const routeSupport = readFileSync("src/modules/seed-procurement/routeSupport.ts", "utf8");
+  const topology = JSON.parse(readFileSync("engineering/execution/seed-procurement-a3-correction-01/SEED_PROCUREMENT_A3_CORRECTION_01_TOPOLOGY_DELTA_V1.json", "utf8")) as {
+    database_posture: { browser_role_grants: number; new_runtime_insert_relations: number; preserved_dependency_holds: string[] };
+    effect_authority: string;
+    procurement_correction_contract_producer_sha: string;
+    prohibited_effects: string[];
+  };
   assert.equal((migration.match(/force row level security/g) ?? []).length, 9);
   assert.equal((migration.match(/to luzione_api_runtime using/g) ?? []).length, 9);
   assert.match(migration, /set search_path = ''/);
@@ -244,4 +250,10 @@ test("A3C migration admits exactly four owner writes while preserving RLS, appen
   assert.match(routeSupport, /SeedSupplierIdentityDomainError/);
   assert.match(routeSupport, /status: error\.status/);
   assert.doesNotMatch(`${store}\n${route}`, /fetch\(|EXTERNAL_EFFECT|supplier_rfq_email|sendRfq|releasePurchaseOrder/);
+  assert.equal(topology.procurement_correction_contract_producer_sha, "a98d70e75baac9c25c3aa8af96615fbf3eba4575");
+  assert.equal(topology.effect_authority, "NO_EFFECT");
+  assert.equal(topology.database_posture.new_runtime_insert_relations, 4);
+  assert.equal(topology.database_posture.browser_role_grants, 0);
+  assert.deepEqual(topology.database_posture.preserved_dependency_holds, ["PURCHASE_ORDER", "PURCHASE_ORDER_ACKNOWLEDGEMENT"]);
+  assert.ok(topology.prohibited_effects.includes("deployment"));
 });
