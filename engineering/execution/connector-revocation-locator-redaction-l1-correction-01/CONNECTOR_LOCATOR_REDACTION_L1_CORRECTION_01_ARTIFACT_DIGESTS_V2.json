@@ -1,0 +1,93 @@
+{
+  "schemaVersion": "CONNECTOR-LOCATOR-REDACTION-L1-CORRECTION-01/Artifact-Digests/v2",
+  "recordedAt": "2026-09-06T03:15:52Z",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "branch": "codex/connector-locator-redaction-l1-evidence-reseal-02-049bab8",
+  "resealProject": "CONNECTOR-LOCATOR-REDACTION-L1-EVIDENCE-RESEAL-02",
+  "acceptedAssuranceFingerprintSha256": "049bab88e55c0890525d7de0441f94f2eb769a0d44bf61afbc8018163e0e5461",
+  "implementationSemantics": "PASS_BOUNDED_G0_NO_EFFECT",
+  "predecessorTuple": {
+    "connectorBase": "cc2f562d3902998b7edf5c0ae8a2e3cc1ccc500a",
+    "connectorBaseTree": "19397c8d41928c62fb9a5749556900908705f6ec",
+    "implementation": "7d01a0be684364be7926ee715041c07d96781cd6",
+    "implementationTree": "5acedeeea2aa08d96d5aaa4aa292efd99453f0da",
+    "priorEvidenceCommit": "724e235c67b1c19652e7e83ccdc2b2eb68bb9600",
+    "priorEvidenceTree": "14a82f2cd9c12820b4e4d0854c10c4af43b75be6",
+    "priorAnnotatedTag": "connector-locator-redaction-l1-correction-01-g0-exact-final",
+    "priorAnnotatedTagObject": "09a3ae3c11a8c88c1026fb6bca00cb639e180b79",
+    "priorAnnotatedTagPeel": "724e235c67b1c19652e7e83ccdc2b2eb68bb9600"
+  },
+  "finalEvidenceBinding": {
+    "mode": "DETACHED_ANNOTATED_TAG",
+    "tag": "connector-locator-redaction-l1-evidence-reseal-02-g0-exact-final"
+  },
+  "evidenceOnlyDelta": {
+    "operation": "ADD",
+    "path": "engineering/execution/connector-revocation-locator-redaction-l1-correction-01/CONNECTOR_LOCATOR_REDACTION_L1_CORRECTION_01_ARTIFACT_DIGESTS_V2.json",
+    "count": 1,
+    "priorBytesDisposition": "FROZEN_BYTE_IDENTICAL"
+  },
+  "immutableArtifactDigestsSha256": {
+    "correctedStrictParserSdk": "bc99f87fef2e782416fe37a81c9f01859a8b693c9715db169470c025dfdf7803",
+    "focusedSuite": "26bee8f3d712e4c817cafa204f335be77394cec7670ebce4069db75496887e6f",
+    "correctionManifest": "2e31a728b926752322da9b73f413f0cab1f0f51e1ae110f8021556fa593e8235",
+    "l2BlockedPacket": "61260885071a88fb658b5a002aa372bb78ec2ab8aa009f9e89f4275a66547524",
+    "artifactDigestsV1": "1e13d800569851b5650eb64a7389f3dcd89298cd313ebbd1c66dbd1177327eea",
+    "predecessorManifest": "ed827b095cd61d314649e118638ee59008207b55f553f8df664164e428ecf232",
+    "predecessorL2Packet": "18a7c32ece43f1f386fb9506dc88b10195761d881e876552e957c746e7b45332",
+    "bindingReadbackSchema": "938f226dc6d8665396ff35df50d35b8e0a115d65c850b892190a5748507f0630",
+    "revocationReadbackSchema": "2599c7e72764113a79e192c3e96f492af53f97826cab8f5529a8155a7f5746cb",
+    "revocationReceiptV3Schema": "6ef759ab73061aafbd818047a4a4760528fbfd92be99a6969a5e3849dc84f33a",
+    "revocationRequestV3Schema": "34c24638b180862b2ce316a8f5c6de30510db265747957a7effb077283fc93d6",
+    "resolver": "029e8fb1fa060d662e6a88804dad96c69bbc3ed1576396969cd8ba54e48a673f",
+    "service": "df903d41800294dc8850c50be0163e14e338aab0c8d7a5bea5a83a53cea55ab4",
+    "index": "19dd18435fe6bb8704f148242e87413f27bf52de1a62ebe007a587188bb3b0a3",
+    "postRoute": "97e95c856dc7e3a8225143ceb7ec317a9e244fa477f2e8bab89a1e56ce99f782",
+    "getRoute": "96ef24d8998d43013f3b204e63dbaf242b92d1513d1f29d3dd547093ae2a6e11",
+    "routeSupport": "91bbb987fdd21587b78b67eacdd0982b0e3455c4092b8959917292f19db21e6c",
+    "migration": "f2a93924ab556185f99a7cf55407a5251bf4ccd51caecf68c7fd310d468363f7",
+    "emptyReverse": "b719ebbac4d1b7d087bdd1cc91ee6702abc23aa9bd3b6588f7743607c110336d"
+  },
+  "immutableArtifactBlobs": {
+    "correctedStrictParserSdk": "986db1d17467361e02e339ae78c2c4684ffcc748",
+    "focusedSuite": "bff30a5c4bfda2f9adb963b2a59a57db1b16f679",
+    "correctionManifest": "a554e194b30f6e6a0ef4aba99403a373d4a56c5e",
+    "l2BlockedPacket": "a1a459876b6d4b74d4835e60f0e2468e65699f96",
+    "artifactDigestsV1": "f58fd4894e638ee83afb9fd6262643ecedd50bdd"
+  },
+  "frozenTrees": {
+    "supportBundleV1": "3e0649d6aa9a0862c39d62a2f75508c81d791974",
+    "operationsEvidenceContracts": "05723f3ce09aa8db67a5ab976d33ca9e5ebd69c8",
+    "luzioneCoreSdk": "d594fa014d7020fdf8386c7a6926ff9b573ac355",
+    "onboardCore": "a4ba4366b3b2af4337806c2709dbcdeab29b4d8c",
+    "effectAdmission": "b14044b0da3d0eb7c1a2fa855ddf24da13797239",
+    "providerRuntime": "427d562c8ec923b9ddf3e0086cab390e7dfbe05d"
+  },
+  "verification": {
+    "json": "PASS",
+    "exactDelta": "PASS_ONE_ADDED_FILE",
+    "priorBytes": "PASS_FROZEN_BYTE_IDENTICAL",
+    "diffCheck": "PASS",
+    "gitReverseApplyCheck": "PASS_EXIT_0",
+    "sourceTestsBuild": "NOT_RERUN_ACCEPTED_IMPLEMENTATION_SEMANTICS_AND_ZERO_SOURCE_DELTA",
+    "hostedAutomation": "NOT_POLLED",
+    "preview": "NOT_POLLED"
+  },
+  "l2Disposition": "BLOCKED_PENDING_CONNECTOR_LOCATOR_REDACTION_L1_ASSURE_03",
+  "effectAuthority": "NO_EFFECT",
+  "credit": {
+    "g1": 0,
+    "g2": 0,
+    "production": 0,
+    "proof": 0,
+    "rollback": 0
+  },
+  "productionReady": false,
+  "unresolvedRisks": [
+    "Independent CONNECTOR-LOCATOR-REDACTION-L1-ASSURE-03 has not evaluated this evidence reseal.",
+    "Existing v1 stored receipts deliberately cannot produce public readback.",
+    "No admitted canonical locator-free ConnectorBinding owner adapter exists; production route resolution remains fail closed.",
+    "No hosted CI, preview, provider, credential, database, migration, rollback or production boundary was exercised."
+  ],
+  "nextAction": "Run independent CONNECTOR-LOCATOR-REDACTION-L1-ASSURE-03 against the predecessor tuple, successor annotated tag and this v2 artifact digest."
+}
