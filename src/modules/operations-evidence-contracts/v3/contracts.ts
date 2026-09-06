@@ -390,7 +390,6 @@ export type LuzioneOperationsEvidenceLedgerManifestV3 = {
     schemaBundle: string;
     semanticFixtures: string;
     sourceAttestationSchema: string;
-    stableSignedSourceReadbackIdentitySchema: string;
     strictConsumerSdk: string;
   };
   assuranceFingerprintSha256: string;

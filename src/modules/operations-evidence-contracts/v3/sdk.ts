@@ -802,7 +802,7 @@ export function parseLuzioneOperationsEvidenceLedgerManifestV3(
   for (const [key, item] of Object.entries(compatibility)) literal(item, true, `manifest.compatibility.${key}`);
   const availability = exact(raw.sourceAvailability, ["canonicalG2Approval", "canonicalHumanMembership", "incidentBoundRecovery", "resolvedVerifiedIncident"], "manifest.sourceAvailability");
   for (const [key, item] of Object.entries(availability)) literal(item, "ABSENT", `manifest.sourceAvailability.${key}`);
-  const artifacts = exact(raw.artifacts, ["appendStateSchema", "canonicalSourceObjectsSchema", "l2SourcePacket", "l3SourcePacket", "ruleSource", "schemaBundle", "semanticFixtures", "sourceAttestationSchema", "stableSignedSourceReadbackIdentitySchema", "strictConsumerSdk"], "manifest.artifacts");
+  const artifacts = exact(raw.artifacts, ["appendStateSchema", "canonicalSourceObjectsSchema", "l2SourcePacket", "l3SourcePacket", "ruleSource", "schemaBundle", "semanticFixtures", "sourceAttestationSchema", "strictConsumerSdk"], "manifest.artifacts");
   for (const [key, item] of Object.entries(artifacts)) id(item, `manifest.artifacts.${key}`);
   return raw as unknown as LuzioneOperationsEvidenceLedgerManifestV3;
 }

@@ -24,7 +24,6 @@
     "schemaBundle": "contracts/operations-evidence/v3/luzione-operations-evidence-ledger-v3.schema.json",
     "semanticFixtures": "src/modules/operations-evidence-contracts/v3/fixtures.ts",
     "sourceAttestationSchema": "contracts/operations-evidence/v3/operations-evidence-canonical-source-attestation-v1.schema.json",
-    "stableSignedSourceReadbackIdentitySchema": "contracts/operations-evidence/v3/stable-signed-source-readback-identity-v1.schema.json",
     "strictConsumerSdk": "src/modules/operations-evidence-contracts/v3/index.ts"
   },
   "compatibility": {

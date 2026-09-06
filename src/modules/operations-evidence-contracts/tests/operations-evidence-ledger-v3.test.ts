@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import test from "node:test";
 import type { CapabilityWindowLedgerV1, ProofDailyRecordV1 } from "../contracts";
 import { OperationsEvidenceCompatibilityError, type OperationsEvidenceErrorCode } from "../consumerSdk";
@@ -32,7 +32,6 @@ import {
 
 const schemaPath = "contracts/operations-evidence/v3/luzione-operations-evidence-ledger-v3.schema.json";
 const appendSchemaPath = "contracts/operations-evidence/v3/operations-evidence-append-state-v2.schema.json";
-const stableIdentitySchemaPath = "contracts/operations-evidence/v3/stable-signed-source-readback-identity-v1.schema.json";
 const sourceSchemaPath = "contracts/operations-evidence/v3/operations-evidence-canonical-source-attestation-v1.schema.json";
 const sourceObjectsSchemaPath = "contracts/operations-evidence/v3/operations-evidence-canonical-source-objects-v1.schema.json";
 const manifestPath = "contracts/operations-evidence/luzione-operations-evidence-ledger-v3.manifest.json";
@@ -267,10 +266,9 @@ test("E08-E09 populated v1 history is denied while empty synthetic v1 can initia
   });
 });
 
-test("schema/SDK parity exposes exact append/source field sets and all D01-D06/B07-B11 probes", () => {
+test("schema/SDK parity keeps stable readback identity embedded and exposes all D01-D06/B07-B11 probes", () => {
   const schema = JSON.parse(readFileSync(schemaPath, "utf8"));
   const appendSchema = JSON.parse(readFileSync(appendSchemaPath, "utf8"));
-  const stableIdentitySchema = JSON.parse(readFileSync(stableIdentitySchemaPath, "utf8"));
   const sourceSchema = JSON.parse(readFileSync(sourceSchemaPath, "utf8"));
   const sourceObjectsSchema = JSON.parse(readFileSync(sourceObjectsSchemaPath, "utf8"));
   assert.deepEqual([...schema.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.ledger].sort());
@@ -279,7 +277,7 @@ test("schema/SDK parity exposes exact append/source field sets and all D01-D06/B
   assert.deepEqual([...appendSchema.$defs.EpochSuccessor.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.epochSuccessorIdentityV2].sort());
   assert.deepEqual([...appendSchema.$defs.G2GrantIdentity.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.g2GrantIdentityV2].sort());
   assert.deepEqual([...appendSchema.$defs.StableSignedSourceReadbackIdentity.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.stableSignedSourceReadbackIdentity].sort());
-  assert.deepEqual([...stableIdentitySchema.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.stableSignedSourceReadbackIdentity].sort());
+  assert.equal(existsSync("contracts/operations-evidence/v3/stable-signed-source-readback-identity-v1.schema.json"), false);
   assert.deepEqual([...sourceSchema.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.canonicalSourceAttestation].sort());
   assert.deepEqual([...sourceObjectsSchema.$defs.TenantMembership.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.canonicalTenantMembership].sort());
   assert.deepEqual([...sourceObjectsSchema.$defs.G2Approval.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.canonicalG2Approval].sort());
@@ -302,6 +300,7 @@ test("D06 manifest and immutable handoff contain exact truthful evidence modes w
   });
   assert.equal(manifest.effectAuthority, "NO_EFFECT");
   assert.equal(manifest.productionReady, false);
+  assert.equal("stableSignedSourceReadbackIdentitySchema" in manifest.artifacts, false);
   const handoff = readFileSync("architecture/production-convergence/OPS_CONTRACTS_CORRECTION_03_IMMUTABLE_HANDOFF.md", "utf8");
   assert.doesNotMatch(handoff, /\b(?:PENDING|PLACEHOLDER|PEEL_SHA|TO_BE_FILLED)\b/);
   assert.match(handoff, /DETACHED_ANNOTATED_TAG/);
