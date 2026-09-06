@@ -1,0 +1,68 @@
+{
+  "consumer": "Luzione-UI/L2",
+  "effectAuthority": "NO_EFFECT",
+  "implementationSha": "63845b2165ca3dcc58f922ed0a168a1e6c138d9c",
+  "manifest": {
+    "path": "contracts/connector-revocation/v3/connector-revocation-v3.manifest.json",
+    "sha256": "ed827b095cd61d314649e118638ee59008207b55f553f8df664164e428ecf232"
+  },
+  "newReservationBoundary": {
+    "method": "POST",
+    "path": "/api/v1/connectors/revocations",
+    "requestVersion": "ConnectorRevocationRequest/v3",
+    "requiredRequestFields": [
+      "contractVersion",
+      "expectedPriorReadbackId",
+      "operation",
+      "operationKey",
+      "payloadDigest",
+      "selector"
+    ],
+    "selectorFields": [
+      "bindingId",
+      "expectedBindingHeadDigest",
+      "expectedCredentialGeneration"
+    ]
+  },
+  "ownerAuthority": "Luzione API resolves the exact current same-tenant ConnectorBindingReadback/v1. The request selector is a proposal and cannot supply binding, provider-account, destination, credential-content, credential-locator, receipt, disposition or finality truth.",
+  "pinRule": "Pin this exact implementation SHA and every listed raw schema digest. Never pin the branch or final evidence commit as the semantic source.",
+  "privacyBoundary": {
+    "forbiddenPublicFields": [
+      "ciphertext",
+      "credentialHandle",
+      "credentialReference",
+      "providerResponse",
+      "reference",
+      "secret",
+      "token",
+      "vaultPath"
+    ],
+    "legacyRows": "ConnectorRevocationReceipt/v1 and /v2 locator-bearing evidence remains private and may be consumed only through ConnectorRevocationReadback/v1 redaction.",
+    "syntheticResolution": "TEST_FIXTURE_ONLY"
+  },
+  "readbackBoundary": {
+    "method": "GET",
+    "path": "/api/v1/connectors/revocations/{readbackId}",
+    "responseVersion": "ConnectorRevocationReadback/v1",
+    "tenantScope": "server-authenticated same tenant"
+  },
+  "schemaDigests": {
+    "ConnectorBindingReadback/v1": "938f226dc6d8665396ff35df50d35b8e0a115d65c850b892190a5748507f0630",
+    "ConnectorRevocationReadback/v1": "2599c7e72764113a79e192c3e96f492af53f97826cab8f5529a8155a7f5746cb",
+    "ConnectorRevocationReceipt/v3": "6ef759ab73061aafbd818047a4a4760528fbfd92be99a6969a5e3849dc84f33a",
+    "ConnectorRevocationRequest/v3": "34c24638b180862b2ce316a8f5c6de30510db265747957a7effb077283fc93d6"
+  },
+  "status": "G0_CANDIDATE_NOT_INTEGRATED",
+  "versionCompatibility": {
+    "ConnectorRevocationRequest/v1": "VERSION_RETIRED",
+    "ConnectorRevocationRequest/v2": "EXACT_EXISTING_REPLAY_ONLY_REDACTED",
+    "ConnectorRevocationRequest/v3": "SOLE_NEW_RESERVATION_VERSION_DEFAULT_OFF"
+  },
+  "versions": [
+    "ConnectorBindingReadback/v1",
+    "ConnectorRevocationRequest/v3",
+    "ConnectorRevocationReceipt/v3",
+    "ConnectorRevocationReadback/v1",
+    "CONNECTOR-LOCATOR-REDACTION-L1/policy-v3"
+  ]
+}
