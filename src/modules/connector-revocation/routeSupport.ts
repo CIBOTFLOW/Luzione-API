@@ -3,10 +3,11 @@ import type { RequestIdentityEnvelope } from "@/modules/platform-contracts/reque
 import { IdempotencyConflictError } from "@/modules/platform-guarantees/commandKernel";
 import { ConnectorRevocationContractError } from "./contracts";
 import { ConnectorRevocationV2Error } from "./v2/contracts";
+import { ConnectorRevocationV3Error } from "./v3/contracts";
 
 export function connectorRevocationRouteFailure(error: unknown, identity: RequestIdentityEnvelope) {
-  if (error instanceof ConnectorRevocationContractError || error instanceof ConnectorRevocationV2Error) {
-    return apiResponse({ ok: false, code: error.code, message: error.message }, { requestIdentity: identity, status: error.status });
+  if (error instanceof ConnectorRevocationContractError || error instanceof ConnectorRevocationV2Error || error instanceof ConnectorRevocationV3Error) {
+    return apiResponse({ ok: false, code: error.code, message: "Connector revocation failed closed at a typed contract boundary." }, { requestIdentity: identity, status: error.status });
   }
   if (error instanceof IdempotencyConflictError) {
     return apiResponse({ ok: false, code: "IDEMPOTENCY_CONFLICT", message: "The server reservation already binds a different payload or human authority." }, { requestIdentity: identity, status: 409 });

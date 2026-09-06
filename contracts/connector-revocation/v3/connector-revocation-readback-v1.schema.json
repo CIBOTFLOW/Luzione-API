@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/connector-revocation/v3/connector-revocation-readback-v1.schema.json",
+  "title": "ConnectorRevocationReadback/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["binding", "contractVersion", "localCredentialDisposition", "operationKey", "operationKind", "projectionDigest", "providerAcknowledged", "readbackId", "reconciliationResult", "recordedAt", "recoveryState", "remoteFinality", "sourceConfirmed", "sourceReceiptVersion", "tenantId", "zeroEffect"],
+  "properties": {
+    "binding": { "type": "object", "additionalProperties": false, "required": ["bindingHeadDigest", "bindingId", "bindingVersion", "credentialGeneration", "destination", "provider", "providerAccountRef"], "properties": { "bindingHeadDigest": { "$ref": "#/$defs/Sha256" }, "bindingId": { "type": "string", "format": "uuid" }, "bindingVersion": { "$ref": "#/$defs/StrictId" }, "credentialGeneration": { "type": "integer", "minimum": 1, "maximum": 2147483647 }, "destination": { "$ref": "#/$defs/StrictId" }, "provider": { "enum": ["GOOGLE_WORKSPACE", "MICROSOFT_365", "QUICKBOOKS_ONLINE"] }, "providerAccountRef": { "$ref": "#/$defs/StrictId" } } },
+    "contractVersion": { "const": "ConnectorRevocationReadback/v1" },
+    "localCredentialDisposition": { "enum": ["ERASURE_AUTHORIZED_NO_EFFECT", "RETAINED"] },
+    "operationKey": { "$ref": "#/$defs/StrictId" },
+    "operationKind": { "enum": ["AUTHORIZE_FORWARD_RECOVERY_ERASURE", "REQUEST_REMOTE_REVOCATION"] },
+    "projectionDigest": { "$ref": "#/$defs/Sha256" },
+    "providerAcknowledged": { "type": "boolean" },
+    "readbackId": { "type": "string", "pattern": "^connector-revocation-readback:[a-f0-9]{64}$" },
+    "reconciliationResult": { "enum": ["AMBIGUOUS", "MATCHED", "NOT_ATTEMPTED", "NOT_FOUND", "PENDING", "SOURCE_UNAVAILABLE", "VERSION_MISMATCH"] },
+    "recordedAt": { "$ref": "#/$defs/Timestamp" },
+    "recoveryState": { "enum": ["FORWARD_RECOVERY_AUTHORIZED_NO_EFFECT", "NORMAL"] },
+    "remoteFinality": { "enum": ["ACKNOWLEDGED", "AMBIGUITY_EXHAUSTED", "BLOCKED", "REMOTE_REVOKE_FAILED", "REQUESTED", "RECONCILING", "REVOKED", "SOURCE_UNAVAILABLE", "VERSION_MISMATCH"] },
+    "sourceConfirmed": { "type": "boolean" },
+    "sourceReceiptVersion": { "enum": ["ConnectorRevocationReceipt/v1", "ConnectorRevocationReceipt/v2", "ConnectorRevocationReceipt/v3"] },
+    "tenantId": { "$ref": "#/$defs/StrictId" },
+    "zeroEffect": { "const": true }
+  },
+  "$defs": {
+    "Sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "StrictId": { "type": "string", "minLength": 3, "maxLength": 190, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:@/-]{2,189}$" },
+    "Timestamp": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$" }
+  }
+}

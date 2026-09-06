@@ -1,9 +1,12 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { readdirSync, readFileSync, statSync } from "node:fs";
+import { join } from "node:path";
 import test from "node:test";
 
 import { killState } from "@/modules/effect-admission/contracts";
 import { CORE_CONTRACT_VERSIONS, type ConnectorBindingV1 } from "@/modules/luzione-core-contracts/contracts";
+import { sha256 } from "@/modules/platform-guarantees/eventContract";
 import {
   CONNECTOR_CREDENTIAL_HANDLE_V2,
   CONNECTOR_REVOCATION_RECEIPT_V2,
@@ -26,7 +29,33 @@ import {
   type ConnectorRevocationRequestV2,
 } from "@/modules/connector-revocation/v2/contracts";
 import { RevocationPhaseKillGuardV2 } from "@/modules/connector-revocation/v2/killGuard";
-import { SyntheticCanonicalConnectorBindingResolver, UnavailableCanonicalConnectorBindingResolver } from "@/modules/connector-revocation/v2/resolver";
+import {
+  CONNECTOR_BINDING_READBACK_V1,
+  CONNECTOR_REVOCATION_READBACK_V1,
+  CONNECTOR_REVOCATION_RECEIPT_V3,
+  CONNECTOR_REVOCATION_V3_SCHEMA_RULES,
+  ConnectorRevocationV3Error,
+  assertLocatorFree,
+  assertSelectorMatchesBindingReadbackV1,
+  connectorRevocationRawBodyDigestV3,
+  issueConnectorBindingReadbackV1,
+  issueConnectorRevocationReceiptV3,
+  issueConnectorRevocationRequestV3,
+  parseConnectorBindingReadbackV1,
+  parseConnectorRevocationRawBodyV3,
+  parseConnectorRevocationReadbackV1,
+  parseConnectorRevocationReceiptV3,
+  parseConnectorRevocationRequestV3,
+  projectConnectorRevocationReadbackV1,
+  revocationReservationV3,
+  type ConnectorRevocationRequestV3,
+} from "@/modules/connector-revocation/v3/contracts";
+import { UnavailableConnectorBindingReadbackResolverV1 } from "@/modules/connector-revocation/v3/resolver";
+import {
+  SyntheticCanonicalConnectorBindingResolver,
+  SyntheticConnectorBindingReadbackResolverV1,
+} from "@/modules/connector-revocation/tests/fixtures/syntheticCanonicalConnectorBindingResolvers";
+import { UnavailableCanonicalConnectorBindingResolver } from "@/modules/connector-revocation/v2/resolver";
 
 const tenantId = "tenant-proof";
 const binding: ConnectorBindingV1 = {
@@ -266,12 +295,199 @@ test("migration and routes preserve append-only P110 authority and fail-closed o
   const reverse = readFileSync("scripts/validation/rollback-connector-revocation-l1-correction-01.sql", "utf8");
   const route = readFileSync("src/app/api/v1/connectors/revocations/route.ts", "utf8");
   const service = readFileSync("src/modules/connector-revocation/v2/service.ts", "utf8");
+  const resolver = readFileSync("src/modules/connector-revocation/v2/resolver.ts", "utf8");
+  const fixture = readFileSync("src/modules/connector-revocation/tests/fixtures/syntheticCanonicalConnectorBindingResolvers.ts", "utf8");
   assert.match(migration, /ConnectorRevocationReceipt\/v2/);
   assert.match(reverse, /reverse blocked: ConnectorRevocationReceipt\/v2 evidence exists/);
   assert.match(route, /parseConnectorRevocationRawBodyV2/);
   assert.match(service, /UnavailableCanonicalConnectorBindingResolver/);
+  assert.doesNotMatch(resolver, /SyntheticCanonicalConnectorBindingResolver/);
+  assert.match(fixture, /SyntheticCanonicalConnectorBindingResolver/);
   assert.match(service, /PostgresAtomicCommandStore/);
   assert.doesNotMatch(service, /delete from public\.connector_revocation_receipts/i);
   const deliveryPayload = service.slice(service.indexOf("delivery: {"), service.indexOf("expectedObjectVersion:"));
   assert.doesNotMatch(deliveryPayload, /credentialHandle\.reference|credentialReference/);
+});
+
+const v3BindingId = "50000000-0000-4000-8000-000000000005";
+const v3BindingReadback = issueConnectorBindingReadbackV1({
+  bindingId: v3BindingId,
+  bindingVersion: "binding-version:20",
+  credential: {
+    contentBindingDigest: sha256({ domain: "owner.private.content-binding/v1", tenantId, bindingId: v3BindingId, generation: 9, nonce: "synthetic-only" }),
+    generation: 9,
+    version: "credential-version:9",
+  },
+  destination: "sandbox.connector-revocation",
+  observedAt: "2026-09-05T16:00:00.000Z",
+  provider: "GOOGLE_WORKSPACE",
+  providerAccountRef: "provider-account:google:proof-005",
+  revocation: { revokedAt: null, revocationReadbackId: null },
+  status: "BOUND",
+  tenantId,
+});
+
+function requestV3(overrides: Partial<Omit<ConnectorRevocationRequestV3, "contractVersion" | "payloadDigest">> = {}) {
+  return issueConnectorRevocationRequestV3({
+    expectedPriorReadbackId: null,
+    operation: { kind: "REQUEST_REMOTE_REVOCATION", scenario: "matched" },
+    operationKey: "connector-revocation-v3-proof-001",
+    selector: { bindingId: v3BindingId, expectedBindingHeadDigest: v3BindingReadback.bindingHeadDigest, expectedCredentialGeneration: 9 },
+    ...overrides,
+  });
+}
+
+const v3Kill = { containmentKillVersion: `kill:${"a".repeat(64)}`, normalKillVersion: `kill:${"b".repeat(64)}` };
+
+function receiptV3(overrides: Partial<Parameters<typeof issueConnectorRevocationReceiptV3>[0]> = {}) {
+  const revocation = requestV3();
+  return issueConnectorRevocationReceiptV3({
+    acknowledgement: { providerAcknowledgementRef: null, sourceReadbackRef: null },
+    actor: { humanActorId: "user_human-proof", humanAuthenticationRef: "supabase-session:human-proof", requestActorClass: "service", requestActorId: "service:sultan-os" },
+    bindingReadback: v3BindingReadback,
+    commandReceiptRef: "p110-command:connector-proof",
+    killEvidence: { accepted: v3Kill, beforeCredentialHold: null, beforeExecuteOrDisposition: null },
+    localCredentialDisposition: "RETAINED",
+    operation: { key: revocation.operationKey, kind: revocation.operation.kind, payloadDigest: revocation.payloadDigest, selector: revocation.selector },
+    priorReadbackId: null,
+    reconciliation: { reconciliationRef: null, result: "NOT_ATTEMPTED" },
+    recordedAt: "2026-09-05T16:01:00.000Z",
+    recoveryState: "NORMAL",
+    remoteFinality: "REQUESTED",
+    tenantId,
+    ...overrides,
+  });
+}
+
+function expectV3Code(action: () => unknown, code: string) {
+  assert.throws(action, (error: unknown) => error instanceof ConnectorRevocationV3Error && error.code === code);
+}
+
+test("v3 adverse 1: parser denies locator keys, prefixes, surplus fields and raw collisions", () => {
+  const value = requestV3();
+  assert.deepEqual(parseConnectorRevocationRequestV3(value), value);
+  const raw = JSON.stringify(value);
+  assert.equal(parseConnectorRevocationRawBodyV3(raw).rawBodyDigest, connectorRevocationRawBodyDigestV3(raw));
+  expectV3Code(() => parseConnectorRevocationRawBodyV3(` ${raw}`), "RAW_CANONICAL_COLLISION");
+  expectV3Code(() => parseConnectorRevocationRequestV3({ ...value, credentialReference: "redacted" }), "LOCATOR_KEY_FORBIDDEN");
+  expectV3Code(() => parseConnectorRevocationRequestV3({ ...value, operationKey: "vault:tenant-proof" }), "LOCATOR_VALUE_FORBIDDEN");
+  expectV3Code(() => parseConnectorRevocationRequestV3({ ...value, operationKey: `${value.operationKey} ` }), "RAW_CANONICAL_COLLISION");
+  expectV3Code(() => parseConnectorRevocationRequestV3({ ...value, operationKey: "x".repeat(191) }), "INVALID_PACKET");
+});
+
+test("v3 adverse 2: locator-free owner head and credential generation are exact lineage", async () => {
+  assert.equal(v3BindingReadback.contractVersion, CONNECTOR_BINDING_READBACK_V1);
+  assert.deepEqual(parseConnectorBindingReadbackV1(v3BindingReadback), v3BindingReadback);
+  assert.doesNotThrow(() => assertSelectorMatchesBindingReadbackV1(requestV3().selector, v3BindingReadback, tenantId));
+  expectV3Code(() => parseConnectorBindingReadbackV1({ ...v3BindingReadback, bindingVersion: "binding-version:21" }), "BINDING_HEAD_DIGEST_MISMATCH");
+  expectV3Code(() => assertSelectorMatchesBindingReadbackV1({ ...requestV3().selector, expectedBindingHeadDigest: "f".repeat(64) }, v3BindingReadback, tenantId), "BINDING_HEAD_DRIFT");
+  expectV3Code(() => assertSelectorMatchesBindingReadbackV1({ ...requestV3().selector, expectedCredentialGeneration: 8 }, v3BindingReadback, tenantId), "CREDENTIAL_GENERATION_DRIFT");
+  expectV3Code(() => assertSelectorMatchesBindingReadbackV1(requestV3().selector, v3BindingReadback, "tenant-foreign"), "CANONICAL_TENANT_MISMATCH");
+  assert.equal((await new SyntheticConnectorBindingReadbackResolverV1([v3BindingReadback]).resolveCurrent({ bindingId: v3BindingId, tenantId }))?.bindingHeadDigest, v3BindingReadback.bindingHeadDigest);
+  await assert.rejects(() => new UnavailableConnectorBindingReadbackResolverV1().resolveCurrent({ bindingId: v3BindingId, tenantId }), (error: unknown) => error instanceof ConnectorRevocationV3Error && error.code === "CANONICAL_BINDING_SOURCE_UNAVAILABLE");
+});
+
+test("v3 adverse 3: current and locator-bearing legacy receipts project only closed redacted readback", () => {
+  const current = receiptV3();
+  assert.equal(current.contractVersion, CONNECTOR_REVOCATION_RECEIPT_V3);
+  assert.deepEqual(parseConnectorRevocationReceiptV3(current), current);
+  const currentProjection = projectConnectorRevocationReadbackV1(current);
+  assert.equal(currentProjection.contractVersion, CONNECTOR_REVOCATION_READBACK_V1);
+  assert.deepEqual(parseConnectorRevocationReadbackV1(currentProjection), currentProjection);
+  assert.doesNotThrow(() => assertLocatorFree(currentProjection));
+
+  const legacyBinding: ConnectorBindingV1 = {
+    bindingId: v3BindingId, consentRef: "consent:legacy-proof", contractVersion: CORE_CONTRACT_VERSIONS.connectorBinding,
+    credentialReference: "secret-ref:legacy.hidden", cursor: "cursor:legacy", provider: "GOOGLE_WORKSPACE",
+    revocation: { revokedAt: null, revocationRef: null }, scopes: ["mail.metadata.read"], status: "BOUND", tenantId,
+  };
+  const handle = issueConnectorCredentialHandleV2({ bindingId: v3BindingId, generation: 7, provider: "GOOGLE_WORKSPACE", providerAccountRef: "provider-account:google:legacy", reference: legacyBinding.credentialReference, tenantId, version: "credential-version:7" });
+  const legacyResolution = issueCanonicalConnectorBindingResolutionV1({ binding: legacyBinding, bindingVersion: "binding-version:7", credentialHandle: handle, current: true, destination: "sandbox.connector-revocation", ownerReadbackRef: "connector-binding-owner-readback:legacy", providerAccountRef: handle.providerAccountRef, resolvedAt: "2026-09-05T15:00:00.000Z", tenantId });
+  const legacyRequest = issueConnectorRevocationRequestV2({ expectedPriorReceiptId: null, operation: { kind: "REQUEST_REMOTE_REVOCATION", scenario: "matched" }, operationKey: "connector-revocation-v2-legacy", selector: { bindingId: v3BindingId, expectedBindingVersion: legacyResolution.bindingVersion, expectedCredentialGeneration: 7, expectedCredentialVersion: handle.version, expectedDestination: legacyResolution.destination, expectedProvider: legacyResolution.binding.provider, expectedProviderAccountRef: legacyResolution.providerAccountRef } });
+  const legacyReceipt = issueConnectorRevocationReceiptV2({ acknowledgement: { providerAcknowledgementRef: null, sourceReadbackRef: null }, actor: current.actor, bindingResolution: legacyResolution, commandReceiptRef: "p110-command:legacy", killEvidence: current.killEvidence, localCredentialDisposition: "RETAINED", operation: { key: legacyRequest.operationKey, kind: legacyRequest.operation.kind, payloadDigest: legacyRequest.payloadDigest, selector: legacyRequest.selector }, priorReceiptId: null, reconciliation: { reconciliationRef: null, result: "NOT_ATTEMPTED" }, recordedAt: "2026-09-05T15:01:00.000Z", recoveryState: "NORMAL", remoteFinality: "REQUESTED", tenantId });
+  const redacted = projectConnectorRevocationReadbackV1(legacyReceipt);
+  const encoded = JSON.stringify(redacted);
+  assert.doesNotMatch(encoded, /secret-ref:|credentialHandle|credentialReference|receiptId|receiptDigest|payloadDigest/);
+  assert.equal(redacted.sourceReceiptVersion, "ConnectorRevocationReceipt/v2");
+});
+
+test("v3 adverse 4: public route retires v1 and limits v2 to exact read-only replay", () => {
+  const route = readFileSync("src/app/api/v1/connectors/revocations/route.ts", "utf8");
+  const service = readFileSync("src/modules/connector-revocation/v3/service.ts", "utf8");
+  assert.match(route, /VERSION_RETIRED/);
+  assert.match(route, /replayLegacyV2/);
+  assert.doesNotMatch(route, /ConnectorRevocationServiceV2/);
+  assert.match(service, /begin read only/);
+  assert.match(service, /REPLAY_CONTENT_CONFLICT/);
+  assert.doesNotMatch(service.slice(service.indexOf("async replayLegacyV2"), service.indexOf("async readById")), /resolveCurrent|insert into|kernel\.execute/);
+});
+
+test("v3 adverse 5: shared namespace cannot alias or downgrade a legacy operation", () => {
+  const current = requestV3();
+  const legacyBinding: ConnectorBindingV1 = { bindingId: v3BindingId, consentRef: "consent:proof", contractVersion: CORE_CONTRACT_VERSIONS.connectorBinding, credentialReference: "secret-ref:legacy.hidden", cursor: "cursor:proof", provider: "GOOGLE_WORKSPACE", revocation: { revokedAt: null, revocationRef: null }, scopes: ["mail.metadata.read"], status: "BOUND", tenantId };
+  const handle = issueConnectorCredentialHandleV2({ bindingId: v3BindingId, generation: 9, provider: "GOOGLE_WORKSPACE", providerAccountRef: v3BindingReadback.providerAccountRef, reference: legacyBinding.credentialReference, tenantId, version: "credential-version:9" });
+  const legacyResolution = issueCanonicalConnectorBindingResolutionV1({ binding: legacyBinding, bindingVersion: v3BindingReadback.bindingVersion, credentialHandle: handle, current: true, destination: v3BindingReadback.destination, ownerReadbackRef: "connector-binding-owner-readback:legacy", providerAccountRef: handle.providerAccountRef, resolvedAt: v3BindingReadback.observedAt, tenantId });
+  const legacy = issueConnectorRevocationRequestV2({ expectedPriorReceiptId: null, operation: current.operation, operationKey: current.operationKey, selector: { bindingId: v3BindingId, expectedBindingVersion: legacyResolution.bindingVersion, expectedCredentialGeneration: 9, expectedCredentialVersion: handle.version, expectedDestination: legacyResolution.destination, expectedProvider: legacyResolution.binding.provider, expectedProviderAccountRef: legacyResolution.providerAccountRef } });
+  assert.equal(revocationReservationV3(tenantId, current, v3BindingReadback).idempotencyKey, revocationReservationV2(tenantId, legacy, legacyResolution).idempotencyKey);
+  assert.notEqual(revocationReservationV3(tenantId, current, v3BindingReadback).objectVersion, revocationReservationV2(tenantId, legacy, legacyResolution).objectVersion);
+  assert.match(readFileSync("src/modules/connector-revocation/v3/service.ts", "utf8"), /VERSION_ALIAS_DENIED/);
+});
+
+test("v3 adverse 6: schemas and parser required fields stay in semantic parity", () => {
+  const schemas = [
+    ["contracts/connector-revocation/v3/connector-binding-readback-v1.schema.json", CONNECTOR_REVOCATION_V3_SCHEMA_RULES.bindingReadbackRequired],
+    ["contracts/connector-revocation/v3/connector-revocation-request-v3.schema.json", CONNECTOR_REVOCATION_V3_SCHEMA_RULES.requestRequired],
+    ["contracts/connector-revocation/v3/connector-revocation-receipt-v3.schema.json", CONNECTOR_REVOCATION_V3_SCHEMA_RULES.receiptRequired],
+    ["contracts/connector-revocation/v3/connector-revocation-readback-v1.schema.json", CONNECTOR_REVOCATION_V3_SCHEMA_RULES.readbackRequired],
+  ] as const;
+  for (const [path, required] of schemas) {
+    const schema = JSON.parse(readFileSync(path, "utf8")) as { additionalProperties: boolean; required: string[] };
+    assert.equal(schema.additionalProperties, false);
+    assert.deepEqual([...schema.required].sort(), required);
+  }
+  assert.equal(CONNECTOR_REVOCATION_V3_SCHEMA_RULES.strictIdMaxLength, 190);
+  assert.equal(CONNECTOR_REVOCATION_V3_SCHEMA_RULES.strictRawWhitespace, true);
+  assert.deepEqual(Object.keys(projectConnectorRevocationReadbackV1(receiptV3())).sort(), CONNECTOR_REVOCATION_V3_SCHEMA_RULES.readbackRequired);
+});
+
+function filesUnder(path: string): string[] {
+  return readdirSync(path).flatMap((name) => {
+    const item = join(path, name);
+    return statSync(item).isDirectory() ? filesUnder(item) : [item];
+  });
+}
+
+test("v3 adverse 7: synthetic owner resolution is physically test-only and public errors cannot reflect locators", () => {
+  const productionSources = filesUnder("src")
+    .filter((path) => !path.includes("/tests/"))
+    .filter((path) => /\.(?:ts|tsx)$/.test(path));
+  for (const path of productionSources) {
+    assert.doesNotMatch(readFileSync(path, "utf8"), /syntheticCanonicalConnectorBindingResolvers|SyntheticConnectorBindingReadbackResolverV1|SyntheticCanonicalConnectorBindingResolver/);
+  }
+  assert.doesNotMatch(readFileSync("src/modules/connector-revocation/v2/resolver.ts", "utf8"), /Synthetic/);
+  assert.doesNotMatch(readFileSync("src/modules/connector-revocation/v3/index.ts", "utf8"), /fixtures|Synthetic/);
+  assert.doesNotMatch(readFileSync("src/modules/connector-revocation/routeSupport.ts", "utf8"), /message: error\.message/);
+});
+
+test("v3 receipt/readback finality remains source-confirmed and erasure remains independent", () => {
+  const requested = receiptV3();
+  expectV3Code(() => parseConnectorRevocationReceiptV3({ ...requested, remoteFinality: "REVOKED" }), "REMOTE_FINALITY_UNPROVEN");
+  const acknowledged = issueConnectorRevocationReceiptV3({ ...requested, acknowledgement: { providerAcknowledgementRef: "provider-ack:proof", sourceReadbackRef: null }, remoteFinality: "ACKNOWLEDGED" });
+  assert.equal(projectConnectorRevocationReadbackV1(acknowledged).sourceConfirmed, false);
+  const revoked = issueConnectorRevocationReceiptV3({ ...requested, acknowledgement: { providerAcknowledgementRef: "provider-ack:proof", sourceReadbackRef: "source-readback:proof" }, reconciliation: { reconciliationRef: "reconciliation:proof", result: "MATCHED" }, remoteFinality: "REVOKED" });
+  assert.equal(projectConnectorRevocationReadbackV1(revoked).sourceConfirmed, true);
+  assert.equal(projectConnectorRevocationReadbackV1(revoked).localCredentialDisposition, "RETAINED");
+  assert.doesNotThrow(() => parseConnectorRevocationReceiptV3(revoked));
+});
+
+test("v3 manifest pins exact schema, parser, resolver, service, migration and reverse bytes", () => {
+  const manifest = JSON.parse(readFileSync("contracts/connector-revocation/v3/connector-revocation-v3.manifest.json", "utf8")) as {
+    contracts: Array<{ schema: string; sha256: string; version: string }>;
+    implementation: Record<string, { path: string; sha256: string }>;
+  };
+  const entries = [...manifest.contracts.map(({ schema: path, sha256: expected }) => ({ path, expected })), ...Object.values(manifest.implementation).map(({ path, sha256: expected }) => ({ path, expected }))];
+  for (const { path, expected } of entries) {
+    assert.equal(createHash("sha256").update(readFileSync(path)).digest("hex"), expected, path);
+  }
+  assert.deepEqual(manifest.contracts.map(({ version }) => version), [CONNECTOR_BINDING_READBACK_V1, "ConnectorRevocationRequest/v3", CONNECTOR_REVOCATION_RECEIPT_V3, CONNECTOR_REVOCATION_READBACK_V1]);
 });

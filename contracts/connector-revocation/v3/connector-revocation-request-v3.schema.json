@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/connector-revocation/v3/connector-revocation-request-v3.schema.json",
+  "title": "ConnectorRevocationRequest/v3",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contractVersion", "expectedPriorReadbackId", "operation", "operationKey", "payloadDigest", "selector"],
+  "properties": {
+    "contractVersion": { "const": "ConnectorRevocationRequest/v3" },
+    "expectedPriorReadbackId": { "oneOf": [{ "type": "null" }, { "type": "string", "pattern": "^connector-revocation-readback:[a-f0-9]{64}$" }] },
+    "operation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "scenario"],
+      "properties": {
+        "kind": { "enum": ["AUTHORIZE_FORWARD_RECOVERY_ERASURE", "REQUEST_REMOTE_REVOCATION"] },
+        "scenario": { "enum": ["ack_only", "ambiguous", "failed", "matched", "source_unavailable", "version_mismatch"] }
+      }
+    },
+    "operationKey": { "$ref": "#/$defs/StrictId" },
+    "payloadDigest": { "$ref": "#/$defs/Sha256" },
+    "selector": {
+      "type": "object", "additionalProperties": false,
+      "required": ["bindingId", "expectedBindingHeadDigest", "expectedCredentialGeneration"],
+      "properties": {
+        "bindingId": { "type": "string", "format": "uuid" },
+        "expectedBindingHeadDigest": { "$ref": "#/$defs/Sha256" },
+        "expectedCredentialGeneration": { "type": "integer", "minimum": 1, "maximum": 2147483647 }
+      }
+    }
+  },
+  "$defs": {
+    "Sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "StrictId": { "type": "string", "minLength": 3, "maxLength": 190, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:@/-]{2,189}$" }
+  }
+}

@@ -13,7 +13,7 @@ import {
   issueConnectorRevocationRequestV2,
   type ConnectorRevocationRequestV2,
 } from "@/modules/connector-revocation/v2/contracts";
-import { SyntheticCanonicalConnectorBindingResolver } from "@/modules/connector-revocation/v2/resolver";
+import { SyntheticCanonicalConnectorBindingResolver } from "@/modules/connector-revocation/tests/fixtures/syntheticCanonicalConnectorBindingResolvers";
 import { ConnectorRevocationServiceV2 } from "@/modules/connector-revocation/v2/service";
 
 const databaseUrl = process.env.DATABASE_URL;
