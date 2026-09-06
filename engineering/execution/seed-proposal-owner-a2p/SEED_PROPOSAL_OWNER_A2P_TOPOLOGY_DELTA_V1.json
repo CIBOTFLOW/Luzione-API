@@ -9,8 +9,8 @@
   "schedule_contract_producer_sha": "265724e528502b44a1250efea551539d74cb0bbd",
   "supplier_identity_contract_producer_sha": "6467b989db7422c45935dcec3ad334b4fe99ce5f",
   "historical_procurement_contract_producer_sha": "777e0d471d2ecf02294fffb7562761d6f8a36dbd",
-  "procurement_correction_contract_producer_sha": "A2P_IMPLEMENTATION_SHA_PENDING",
-  "proposal_contract_producer_sha": "A2P_IMPLEMENTATION_SHA_PENDING",
+  "procurement_correction_contract_producer_sha": "ac5ab1dd448514ff310f0fe0155fc821f2eb7408",
+  "proposal_contract_producer_sha": "ac5ab1dd448514ff310f0fe0155fc821f2eb7408",
   "effect_authority": "NO_EFFECT",
   "http_surfaces": [
     {

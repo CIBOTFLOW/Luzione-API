@@ -16,7 +16,7 @@ import { API_HTTP_RESPONSE_VERSION, PROJECT_SPECIFICATION_SCHEDULE_CONTRACT_PROD
 import { SEED_PROCUREMENT_CORRECTION_CONTRACT_PRODUCER_SHA, SEED_SUPPLIER_IDENTITY_CONTRACT_PRODUCER_SHA } from "@/modules/seed-procurement/readModel";
 import { SEED_PROPOSAL_READ_MODEL_VERSION, type ProposalEconomics } from "@/modules/seed-proposal-owner/contracts";
 
-export const SEED_PROPOSAL_CONTRACT_PRODUCER_SHA = "0000000000000000000000000000000000000000";
+export const SEED_PROPOSAL_CONTRACT_PRODUCER_SHA = "ac5ab1dd448514ff310f0fe0155fc821f2eb7408";
 
 export const SEED_PROPOSAL_HTTP_ROUTES = Object.freeze({
   commandCollection: "/api/v1/proposals/commands",
