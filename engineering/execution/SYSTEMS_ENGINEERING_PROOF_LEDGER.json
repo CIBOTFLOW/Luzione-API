@@ -2810,6 +2810,83 @@
         "SEED-PROCUREMENT-A3-CORRECTION-01 integrates exact SupplierProfile eligibility while preserving the ProposalVersion hold and reruns disposable proof.",
         "Portal and UI consumers return independently authored exact-version, wrong-tenant, revocation, stale-version and default-off evidence before runtime admission."
       ]
+    },
+    {
+      "proof_id": "SEED_PROPOSAL_OWNER_A2P_LOCAL_PROOF_20260906",
+      "project_id": "SEED-PROPOSAL-OWNER-A2P",
+      "recorded_at": "2026-09-06T04:30:33Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "151c02b63fdbb49c71f86c2e1e184673fec91115",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The exact local A2P candidate makes Luzione API the target canonical Proposal owner over API-PC-009 document and quote/economics truth, adds immutable typed CPQ templates/versions/lines/decisions/render preparations, and admits an approval-ready PurchaseOrder/v1 draft from exact accepted Proposal, bid, quote, supplier, and specification lineage while keeping all new commands default-off and every external effect absent.",
+      "exercised_boundaries": [
+        "ProposalVersion/v1 reuses commercial_case_proposal_document_versions bound to exact quote_economics_versions; an immutable identity-only map supplies stable v1 IDs without a parallel proposal body or economics table.",
+        "Eight typed line classes reconcile supplier cost, freight, duty, reserve, landed cost, client price, discount, tax, total, and gross margin using integer minor units in application and deferred database integrity.",
+        "Exact Project, Specification, Specification Line, Product Candidate, template, scan Evidence Artifact, receipt, actor, and version lineage failed closed on stale, foreign, incomplete, or promoted state.",
+        "Template versions bind private tenant object references, exact clean tenant-global EvidenceArtifact/v1 scan evidence, hashes, merge tokens, and deterministic DOCX/HTML/PDF validation; unsupported PDFs remain invalid.",
+        "One concurrent revision won under an advisory lock, exact replay reused its receipt, changed replay conflicted, and injected failures rolled back owner and receipt rows atomically.",
+        "Client decisions bound all four exact scopes and mirrored into the predecessor review ledger; no decision carried into a later revision.",
+        "HTTP client-decision admission failed closed at CLIENT_OBJECT_GRANT_ADAPTER_UNAVAILABLE because no server-derived Portal grant adapter is admitted; store proof used only an injected exact server-derived grant reader.",
+        "Render preparation retained null provider acknowledgement, source readback, artifact, delivery, and effect authority.",
+        "One exact latest accepted Proposal Version plus approved Bid Comparison v2, immutable human selection, selected Supplier Quote, current Supplier Profile, and shared Specification Lines admitted one immutable PO draft with quote-derived currency/cost and null release approval.",
+        "Five owner tables forced tenant RLS with five explicit runtime policies, SELECT/INSERT only, zero unsafe grants, six protected predecessor writers, seven deferred integrity triggers, and zero PUBLIC trigger execution.",
+        "Disposable proof reported two proposal versions, eight line types, four decision scopes, four predecessor reviews, one PO draft, one remaining PO acknowledgement/effect hold, tenant isolation, exact accepted readback, and zero external effects.",
+        "Final producer gates passed: typecheck, zero-warning lint, 5 of 5 proposal tests, 13 of 13 procurement regressions, 4 of 4 taxonomy tests, 7 of 7 topology tests, all 552 repository tests, seven compliance controls, disposable PostgreSQL proof, and the Next.js 16.3.4 webpack build."
+      ],
+      "untested_boundaries": [
+        "managed Supabase migration, backup/PITR, forward recovery, hosted concurrency, authenticated preview, or production observation",
+        "independent UI, Portal, or Sultan exact-SHA consumer proof",
+        "server-derived Portal object-grant adapter and real client-decision authentication",
+        "private upload, malware provider, DOCX/PDF renderer, proposal send/delivery, or Shopify publishing",
+        "PO release/send, supplier acknowledgement, payment, shipment, or any provider effect",
+        "shadow comparison and retirement of the active UI/API legacy proposal mutation paths",
+        "central API-PC-013 prerequisite Account/Opportunity runtime-read correction"
+      ],
+      "evidence_refs": [
+        "commit:ac5ab1dd448514ff310f0fe0155fc821f2eb7408",
+        "commit:151c02b63fdbb49c71f86c2e1e184673fec91115",
+        "architecture/production-convergence/SEED_PROPOSAL_OWNER_A2P_WORKING_CONTRACT.md",
+        "engineering/execution/handoffs/SEED_PROPOSAL_OWNER_A2P_CONSUMER_HANDOFF.json",
+        "engineering/execution/seed-proposal-owner-a2p/SEED_PROPOSAL_OWNER_A2P_ARTIFACT_DIGESTS_V1.json",
+        "engineering/execution/seed-proposal-owner-a2p/SEED_PROPOSAL_OWNER_A2P_PROOF_V1.json",
+        "engineering/execution/seed-proposal-owner-a2p/SEED_PROPOSAL_OWNER_A2P_TOPOLOGY_DELTA_V1.json",
+        "engineering/execution/seed-proposal-owner-a2p/SEED_PROPOSAL_OWNER_A2P_WRITER_RETIREMENT_V1.json",
+        "supabase/migrations/20260906032814_seed_proposal_owner_a2p.sql",
+        "scripts/validation/run-seed-proposal-owner-a2p-proof.sh"
+      ],
+      "failure_refs": [
+        "SEED_PROCUREMENT_A3_PROPOSAL_READER_GAP_20260905",
+        "SEED_PROPOSAL_OWNER_A2P_DOCKER_SOCKET_SANDBOX_20260906",
+        "SEED_PROPOSAL_OWNER_A2P_EXHAUSTIVE_METADATA_20260906",
+        "SEED_PROPOSAL_OWNER_A2P_SHARED_SCHEMA_DOWN_MIGRATION_UNSAFE_20260906",
+        "SEED_PROPOSAL_OWNER_A2P_API_PC_013_PREREQUISITE_SELECT_GAP_20260906"
+      ],
+      "cross_repo_handoffs": [
+        "Luzione UI must consume SeedProposalReadModel/v1, retire direct proposal writes for any cutover tenant, and return shadow/output parity plus rollback-switch evidence.",
+        "Partner Portal must supply a server-derived exact object-grant adapter and may never put tenant, actor, authority, or grant truth in the command body.",
+        "Sultan may recommend or prepare proposal actions but cannot become a second proposal writer or infer render/send/PO-release finality."
+      ],
+      "deferred_external_infra": [
+        "exact-head automated CI and immutable tag",
+        "authenticated preview and production observation",
+        "managed migration/recovery and centralized prerequisite grant correction",
+        "every document, customer, supplier, PO, payment, and provider effect"
+      ],
+      "remaining_uncertainty": [
+        "Producer-local proof does not establish independent consumer integration or deployed authentication.",
+        "The active UI proposal writer is not retired and shadow comparison has not run.",
+        "Client decisions remain unreachable through HTTP until D1C supplies the exact server-derived Portal grant boundary.",
+        "API-PC-013 prerequisite read grants are incomplete for managed A2/A2S integration."
+      ],
+      "next_proof_needed": [
+        "Controller reviews the pushed proof head and separately admits producer, exact candidate, and null deployment state.",
+        "UI and Portal consumers re-pin proposal and A2P-compatible procurement producers and return exact positive/negative/default-off evidence.",
+        "Implement the centralized API-PC-013 prerequisite-read correction before any managed migration or runtime activation.",
+        "Run shadow comparison and prove all overlapping writers unreachable before a tenant cutover."
+      ]
     }
   ]
 }

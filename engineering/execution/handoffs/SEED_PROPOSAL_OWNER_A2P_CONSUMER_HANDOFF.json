@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "handoff_id": "SEED_PROPOSAL_OWNER_A2P_CONSUMER_HANDOFF",
+  "project_id": "SEED-PROPOSAL-OWNER-A2P",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_branch": "codex/seed-proposal-owner-a2p",
+  "base_sha": "f77d68daca1ce897d498e9661bceeee9554a579c",
+  "implementation_sha": "ac5ab1dd448514ff310f0fe0155fc821f2eb7408",
+  "exact_candidate_sha": "151c02b63fdbb49c71f86c2e1e184673fec91115",
+  "seed_product_contract_producer_sha": "e14b405d58a293c002f5676984a95e55372b3bd2",
+  "schedule_contract_producer_sha": "265724e528502b44a1250efea551539d74cb0bbd",
+  "historical_procurement_contract_producer_sha": "777e0d471d2ecf02294fffb7562761d6f8a36dbd",
+  "supplier_identity_contract_producer_sha": "6467b989db7422c45935dcec3ad334b4fe99ce5f",
+  "procurement_correction_contract_producer_sha": "ac5ab1dd448514ff310f0fe0155fc821f2eb7408",
+  "proposal_contract_producer_sha": "ac5ab1dd448514ff310f0fe0155fc821f2eb7408",
+  "contracts": {
+    "command": "SeedProposalCommand/v1",
+    "read_model": "SeedProposalReadModel/v1",
+    "template": "ProposalTemplate/v1",
+    "proposal": "ProposalVersion/v1",
+    "line": "ProposalLine/v1",
+    "decision": "ApprovalDecision/v1",
+    "purchase_order": "PurchaseOrder/v1",
+    "timeline": "TimelineEvent/v1",
+    "response_envelope": "api-http-response/1.0"
+  },
+  "routes": [
+    {
+      "method": "POST",
+      "path": "/api/v1/proposals/commands",
+      "result": "default-off NO_EFFECT P110 DOMAIN_COMMITTED receipt plus exact template, Proposal Version, render-preparation, or store-admitted exact client-decision readback; HTTP client decisions remain blocked pending D1C"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/projects/:projectId/proposals",
+      "result": "SeedProposalReadModel/v1 inside apiResponse({ok,result,...}) with exact proposal, economics, line, decision, template, preparation, receipt, and producer pins"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/proposals/:proposalId?version=:exactVersion",
+      "result": "one exact tenant-scoped canonical ProposalVersion/v1 readback or not found"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/procurement/commands",
+      "result": "A2P-compatible SeedProcurementCommand/v2 admits approval-ready PurchaseOrder/v1 draft only; release/send/acknowledgement remain held"
+    }
+  ],
+  "runtime_gate": {
+    "commands": {
+      "global": "LUZIONE_API_MUTATIONS_ENABLED",
+      "feature": "LUZIONE_API_SEED_PROPOSAL_COMMANDS_ENABLED",
+      "tenant_allowlist": "LUZIONE_API_SEED_PROPOSAL_COMMAND_TENANTS",
+      "default": "OFF"
+    },
+    "reads": {
+      "authentication": "proposal.read capability and server-derived tenant",
+      "feature_flag": "NONE",
+      "managed_migration_required": true
+    },
+    "client_decision": {
+      "http_state": "BLOCKED_CLIENT_OBJECT_GRANT_ADAPTER_UNAVAILABLE",
+      "required": "signed same-tenant human plus server-derived exact active Portal object grant"
+    }
+  },
+  "admitted_local_behavior": [
+    "Proposal Template versions, Proposal Versions, typed child lines, exact-version scoped decisions, and render preparations are API-owned immutable canonical writes over API-PC-009 truth.",
+    "Proposal Versions bind exact Project/Specification/Product/template versions and independently reconciled integer economics; revisions append and decisions do not inherit.",
+    "Template metadata binds a tenant-private object reference and an exact clean EvidenceArtifact/v1; unsupported PDFs remain INVALID with a validation report.",
+    "Render preparation is not provider execution, artifact readback, delivery, or customer send.",
+    "One exact latest accepted Proposal Version can authorize an approval-ready PO draft only with the matching approved bid, human selection, quote, supplier profile, and specification lines.",
+    "Every admitted mutation is atomic with one P110 receipt/event/NO_EFFECT outbox and exact readback; no provider effect is reachable."
+  ],
+  "remaining_dependency_holds": [
+    {
+      "capability": "approval_decision.record over HTTP",
+      "code": "CLIENT_OBJECT_GRANT_ADAPTER_UNAVAILABLE",
+      "dependency": "SEED-PROPOSAL-CLIENT-DECISION-D1C server-derived Portal object-grant adapter"
+    },
+    {
+      "commands": ["purchase_order_acknowledgement.record"],
+      "code": "PURCHASE_ORDER_EFFECT_NOT_ADMITTED",
+      "dependency": "effect-admitted PO release/send plus normalized supplier acknowledgement and source readback"
+    },
+    {
+      "capability": "managed API integration",
+      "code": "API_PC_013_PREREQUISITE_SELECT_GAP",
+      "dependency": "least-privilege restoration of exact Account/Opportunity runtime SELECT used by A2/A2S"
+    }
+  ],
+  "consumer_files": {
+    "commands": "src/modules/seed-proposal-owner/contracts.ts",
+    "read_model_parser": "src/modules/seed-proposal-owner/readModel.ts",
+    "positive_fixtures": "src/modules/seed-proposal-owner/fixtures.ts",
+    "topology_delta": "engineering/execution/seed-proposal-owner-a2p/SEED_PROPOSAL_OWNER_A2P_TOPOLOGY_DELTA_V1.json",
+    "writer_retirement": "engineering/execution/seed-proposal-owner-a2p/SEED_PROPOSAL_OWNER_A2P_WRITER_RETIREMENT_V1.json",
+    "artifact_digests": "engineering/execution/seed-proposal-owner-a2p/SEED_PROPOSAL_OWNER_A2P_ARTIFACT_DIGESTS_V1.json",
+    "proof": "engineering/execution/seed-proposal-owner-a2p/SEED_PROPOSAL_OWNER_A2P_PROOF_V1.json",
+    "disposable_proof": "scripts/validation/run-seed-proposal-owner-a2p-proof.sh"
+  },
+  "consumer_rules": [
+    "Pin command/read-model version, proposal producer SHA, A2P-compatible procurement producer SHA, upstream producer SHAs, and exact candidate SHA independently.",
+    "Do not create a local canonical proposal, line, decision, quote-economics, template, render-artifact, or Purchase Order writer.",
+    "Do not submit a client grant in a command body; D1C must resolve it server-side from the authenticated Portal identity and exact object/version grant.",
+    "Treat render PREPARED and P110 DOMAIN_COMMITTED as internal finality only; neither means document rendered, sent, delivered, client accepted, PO released, or supplier acknowledged.",
+    "Keep every overlapping legacy mutation path dark or unreachable for an admitted tenant; G1 cannot have dual writers.",
+    "No consumer may infer upload, malware-provider execution, render, proposal send, Shopify publish, PO release, supplier commitment, managed migration, deployment, or any external effect from this handoff."
+  ],
+  "release_state": "LOCAL_PROVEN_DEFAULT_OFF_NO_EFFECT_G0_CANDIDATE",
+  "deployment_sha": null,
+  "managed_migration": "NOT_RUN",
+  "merge": "NOT_PERFORMED",
+  "local_verification": {
+    "typecheck": "PASS",
+    "focused_proposal_tests": "PASS_5_OF_5",
+    "focused_procurement_tests": "PASS_13_OF_13",
+    "taxonomy_and_topology": "PASS_11_OF_11",
+    "full_tests": "PASS_552_OF_552",
+    "compliance": "PASS_7_CONTROL_DOCUMENTS",
+    "lint": "PASS_ZERO_WARNINGS",
+    "production_build": "PASS_NEXTJS_16_3_4_WEBPACK",
+    "disposable_postgres": "PASS_2_PROPOSAL_VERSIONS_8_LINE_TYPES_4_DECISION_SCOPES_1_PO_DRAFT_5_FORCED_RLS_TABLES_ZERO_UNSAFE_GRANTS_ZERO_EXTERNAL_EFFECTS",
+    "proof_head_focused_proposal_tests": "PASS_6_OF_6_INCLUDING_EXACT_CANDIDATE_DIGEST_BINDING",
+    "proof_head_full_tests": "PASS_553_OF_553"
+  }
+}

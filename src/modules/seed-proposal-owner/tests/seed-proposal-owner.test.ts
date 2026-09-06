@@ -1,4 +1,6 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
@@ -54,4 +56,65 @@ test("A2P migration and routes adapt predecessor truth, force RLS, preserve zero
   assert.doesNotMatch(migration, /create table public\.seed_proposals|create table public\.seed_proposal_versions/i);
   const route = readFileSync("src/app/api/v1/proposals/commands/route.ts", "utf8"); assert.match(route, /requireServiceActor\(request\.headers, "proposal\.command"\)/); assert.match(route, /CLIENT_OBJECT_GRANT_ADAPTER_UNAVAILABLE/); assert.doesNotMatch(route, /clientGrant\s*:\s*(body|command)/);
   for (const forbidden of ["sendMail", "shopify", "stripe", "fetch(", "providerAdapter"]) assert.doesNotMatch(route, new RegExp(forbidden.replace("(", "\\("), "i"));
+});
+
+test("A2P proof, writer retirement, and consumer handoff bind the immutable exact candidate", () => {
+  const exactCandidateSha = "151c02b63fdbb49c71f86c2e1e184673fec91115";
+  const implementationSha = "ac5ab1dd448514ff310f0fe0155fc821f2eb7408";
+  const manifest = JSON.parse(readFileSync("engineering/execution/seed-proposal-owner-a2p/SEED_PROPOSAL_OWNER_A2P_ARTIFACT_DIGESTS_V1.json", "utf8")) as {
+    artifacts: Array<{ path: string; sha256: string }>;
+    exact_candidate_sha: string;
+    implementation_sha: string;
+  };
+  const proof = JSON.parse(readFileSync("engineering/execution/seed-proposal-owner-a2p/SEED_PROPOSAL_OWNER_A2P_PROOF_V1.json", "utf8")) as {
+    checks: Record<string, string>;
+    database_observations: { non_no_effect_outbox_rows: number; parallel_proposal_truth_tables: number; remaining_po_dependency_holds: number; unsafe_owner_grants: number };
+    deployment_sha: string | null;
+    exact_candidate_sha: string;
+    external_effects: string;
+    managed_migration: string;
+  };
+  const handoff = JSON.parse(readFileSync("engineering/execution/handoffs/SEED_PROPOSAL_OWNER_A2P_CONSUMER_HANDOFF.json", "utf8")) as {
+    contracts: { command: string; read_model: string };
+    deployment_sha: string | null;
+    exact_candidate_sha: string;
+    managed_migration: string;
+    proposal_contract_producer_sha: string;
+    remaining_dependency_holds: Array<{ capability?: string; commands?: string[] }>;
+  };
+  const retirement = JSON.parse(readFileSync("engineering/execution/seed-proposal-owner-a2p/SEED_PROPOSAL_OWNER_A2P_WRITER_RETIREMENT_V1.json", "utf8")) as {
+    current_state: string;
+    deployment_sha: string | null;
+    external_effects: string;
+    paths: Array<{ role: string }>;
+    shadow_comparison: { status: string };
+  };
+
+  assert.equal(manifest.exact_candidate_sha, exactCandidateSha);
+  assert.equal(manifest.implementation_sha, implementationSha);
+  for (const artifact of manifest.artifacts) {
+    const bytes = execFileSync("git", ["show", `${exactCandidateSha}:${artifact.path}`]);
+    assert.equal(createHash("sha256").update(bytes).digest("hex"), artifact.sha256, artifact.path);
+  }
+  assert.equal(proof.exact_candidate_sha, exactCandidateSha);
+  assert.equal(proof.checks.full_tests, "PASS_552_OF_552");
+  assert.equal(proof.database_observations.parallel_proposal_truth_tables, 0);
+  assert.equal(proof.database_observations.unsafe_owner_grants, 0);
+  assert.equal(proof.database_observations.non_no_effect_outbox_rows, 0);
+  assert.equal(proof.database_observations.remaining_po_dependency_holds, 1);
+  assert.equal(proof.external_effects, "NOT_AUTHORIZED_NOT_EXECUTED");
+  assert.equal(proof.managed_migration, "NOT_RUN");
+  assert.equal(proof.deployment_sha, null);
+  assert.equal(handoff.exact_candidate_sha, exactCandidateSha);
+  assert.equal(handoff.proposal_contract_producer_sha, implementationSha);
+  assert.equal(handoff.contracts.command, "SeedProposalCommand/v1");
+  assert.equal(handoff.contracts.read_model, "SeedProposalReadModel/v1");
+  assert.equal(handoff.managed_migration, "NOT_RUN");
+  assert.equal(handoff.deployment_sha, null);
+  assert.equal(handoff.remaining_dependency_holds.length, 3);
+  assert.equal(retirement.current_state, "G0_NEW_WRITER_DEFAULT_OFF_LEGACY_WRITERS_NOT_RETIRED");
+  assert.equal(retirement.shadow_comparison.status, "NOT_RUN_NEW_COMMAND_UNREACHABLE");
+  assert.equal(retirement.paths.filter((path) => path.role === "TARGET_CANONICAL_WRITER").length, 1);
+  assert.equal(retirement.external_effects, "NOT_AUTHORIZED_NOT_EXECUTED");
+  assert.equal(retirement.deployment_sha, null);
 });
