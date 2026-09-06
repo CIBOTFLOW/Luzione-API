@@ -1,0 +1,28 @@
+{
+  "packetVersion": "connector-revocation-v3-correction-01-l2-block/v1",
+  "consumer": "Luzione-UI/L2",
+  "status": "BLOCKED_PENDING_CONNECTOR_LOCATOR_REDACTION_L1_ASSURE_02",
+  "effectAuthority": "NO_EFFECT",
+  "decisionCredit": 0,
+  "candidateImplementationSha": "7d01a0be684364be7926ee715041c07d96781cd6",
+  "candidateCorrectionManifest": {
+    "path": "contracts/connector-revocation/v3/connector-revocation-v3-correction-01.manifest.json",
+    "sha256": "2e31a728b926752322da9b73f413f0cab1f0f51e1ae110f8021556fa593e8235"
+  },
+  "pinDisposition": "DO_NOT_PIN_OR_CONSUME_BEFORE_INDEPENDENT_ASSURANCE",
+  "postAssurancePinRule": "Pin the exact implementation SHA plus the exact correction-manifest digest; never pin this branch or the final evidence commit.",
+  "compatibility": {
+    "ConnectorRevocationReceipt/v1": "PARSER_COMPATIBILITY_ONLY; PUBLIC_PROJECTION_ALWAYS_FAILS_WITH_LEGACY_V1_READBACK_UNAVAILABLE_409",
+    "ConnectorRevocationReceipt/v2": "UNCHANGED_REDACTED_READBACK",
+    "ConnectorRevocationReceipt/v3": "UNCHANGED_CANONICAL_READBACK"
+  },
+  "forbiddenLegacyProjectionFields": [
+    "bindingHeadDigest",
+    "bindingVersion",
+    "credentialGeneration",
+    "destination"
+  ],
+  "sourceAuthority": "Luzione API remains the sole receipt, finality and readback authority. L2 may not derive legacy lineage or mint a substitute projection.",
+  "runtimeDisposition": "ROUTE_DISCONNECTED; DEFAULT_OFF; NO_PROVIDER_OR_CREDENTIAL_REACHABILITY",
+  "requiredNextEvidence": "CONNECTOR-LOCATOR-REDACTION-L1-ASSURE-02 must independently verify the exact implementation and correction manifest before any consumer repin."
+}

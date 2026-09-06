@@ -1,0 +1,120 @@
+{
+  "schemaVersion": "CONNECTOR-LOCATOR-REDACTION-L1-CORRECTION-01/Artifact-Digests/v1",
+  "recordedAt": "2026-09-06T02:50:51Z",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "branch": "codex/connector-locator-redaction-l1-correction-01-7fc2915",
+  "controllerAuthority": "CIBOTFLOW/Luzione-platform-program@192a8ce9db04055f661abdd2f9b90447308ef1d7",
+  "packetSourceCommit": "CIBOTFLOW/Luzione-platform-program@47cb3c396ffba9f6a4416d4d24151d0a9150f2bd",
+  "packetFingerprintSha256": "7fc291521eed538c14aa7b8afaf10bd1d3add5a0b646694be0cf915843f53b20",
+  "assuranceInputFingerprintSha256": "460bcfe5d0bb7aa09461c4b333540773fc92ba535f8cb1c71e60ed5bb9f5dc8a",
+  "baseSha": "cc2f562d3902998b7edf5c0ae8a2e3cc1ccc500a",
+  "baseTree": "19397c8d41928c62fb9a5749556900908705f6ec",
+  "implementationSha": "7d01a0be684364be7926ee715041c07d96781cd6",
+  "implementationTree": "5acedeeea2aa08d96d5aaa4aa292efd99453f0da",
+  "finalSha": "PEEL_DETACHED_ANNOTATED_TAG_CONNECTOR_LOCATOR_REDACTION_L1_CORRECTION_01_G0_EXACT_FINAL",
+  "finalTree": "PEEL_DETACHED_ANNOTATED_TAG_CONNECTOR_LOCATOR_REDACTION_L1_CORRECTION_01_G0_EXACT_FINAL_TREE",
+  "finalEvidenceBinding": {
+    "mode": "DETACHED_ANNOTATED_TAG",
+    "tag": "connector-locator-redaction-l1-correction-01-g0-exact-final"
+  },
+  "changedPaths": {
+    "implementation": [
+      "src/modules/connector-revocation/v3/contracts.ts",
+      "src/modules/connector-revocation/tests/connector-revocation-v2.test.ts"
+    ],
+    "finalAdditions": [
+      "contracts/connector-revocation/v3/connector-revocation-v3-correction-01.manifest.json",
+      "contracts/connector-revocation/v3/l2-consumer-packet-correction-01.json",
+      "engineering/execution/connector-revocation-locator-redaction-l1-correction-01/CONNECTOR_LOCATOR_REDACTION_L1_CORRECTION_01_ARTIFACT_DIGESTS_V1.json"
+    ],
+    "count": 5
+  },
+  "contractDisposition": {
+    "newVersions": [],
+    "ConnectorRevocationReceipt/v1": "RELEASED_PARSER_ACCEPTS_VALID_BYTES; PUBLIC_PROJECTION_FAILS_CLOSED_409",
+    "ConnectorRevocationReceipt/v2": "UNCHANGED",
+    "ConnectorRevocationReceipt/v3": "UNCHANGED",
+    "ConnectorRevocationReadback/v1": "UNCHANGED_SCHEMA; ONLY_V2_V3_MAY_BE_PROJECTED"
+  },
+  "rawSha256": {
+    "correctedStrictParserSdk": "bc99f87fef2e782416fe37a81c9f01859a8b693c9715db169470c025dfdf7803",
+    "focusedSuite": "26bee8f3d712e4c817cafa204f335be77394cec7670ebce4069db75496887e6f",
+    "correctionManifest": "2e31a728b926752322da9b73f413f0cab1f0f51e1ae110f8021556fa593e8235",
+    "l2BlockedPacket": "61260885071a88fb658b5a002aa372bb78ec2ab8aa009f9e89f4275a66547524",
+    "predecessorManifest": "ed827b095cd61d314649e118638ee59008207b55f553f8df664164e428ecf232",
+    "predecessorL2Packet": "18a7c32ece43f1f386fb9506dc88b10195761d881e876552e957c746e7b45332",
+    "bindingReadbackSchema": "938f226dc6d8665396ff35df50d35b8e0a115d65c850b892190a5748507f0630",
+    "revocationReadbackSchema": "2599c7e72764113a79e192c3e96f492af53f97826cab8f5529a8155a7f5746cb",
+    "revocationReceiptV3Schema": "6ef759ab73061aafbd818047a4a4760528fbfd92be99a6969a5e3849dc84f33a",
+    "revocationRequestV3Schema": "34c24638b180862b2ce316a8f5c6de30510db265747957a7effb077283fc93d6",
+    "resolver": "029e8fb1fa060d662e6a88804dad96c69bbc3ed1576396969cd8ba54e48a673f",
+    "service": "df903d41800294dc8850c50be0163e14e338aab0c8d7a5bea5a83a53cea55ab4",
+    "index": "19dd18435fe6bb8704f148242e87413f27bf52de1a62ebe007a587188bb3b0a3",
+    "postRoute": "97e95c856dc7e3a8225143ceb7ec317a9e244fa477f2e8bab89a1e56ce99f782",
+    "getRoute": "96ef24d8998d43013f3b204e63dbaf242b92d1513d1f29d3dd547093ae2a6e11",
+    "routeSupport": "91bbb987fdd21587b78b67eacdd0982b0e3455c4092b8959917292f19db21e6c",
+    "migration": "f2a93924ab556185f99a7cf55407a5251bf4ccd51caecf68c7fd310d468363f7",
+    "emptyReverse": "b719ebbac4d1b7d087bdd1cc91ee6702abc23aa9bd3b6588f7743607c110336d"
+  },
+  "frozenTrees": {
+    "connectorV3AtImplementation": "7c74c21f222fc86516e66702a0ab15b13b958fa2",
+    "supportBundleV1": "3e0649d6aa9a0862c39d62a2f75508c81d791974",
+    "operationsEvidenceContracts": "05723f3ce09aa8db67a5ab976d33ca9e5ebd69c8",
+    "luzioneCoreSdk": "d594fa014d7020fdf8386c7a6926ff9b573ac355",
+    "onboardCore": "a4ba4366b3b2af4337806c2709dbcdeab29b4d8c",
+    "effectAdmission": "b14044b0da3d0eb7c1a2fa855ddf24da13797239",
+    "providerRuntime": "427d562c8ec923b9ddf3e0086cab390e7dfbe05d"
+  },
+  "localVerification": {
+    "focusedConnectorRevocationV2": "PASS_26_OF_26",
+    "connectorRevocationAll": "PASS_35_OF_35",
+    "taxonomy": "PASS_4_OF_4",
+    "full": "PASS_457_OF_457",
+    "compliance": "PASS_7_OF_7",
+    "typecheck": "PASS",
+    "lint": "PASS_ZERO_WARNINGS",
+    "build": "PASS_NEXTJS_16_3_4_WEBPACK",
+    "staticLegacySynthesisScan": "PASS_DOMAIN_AND_FABRICATED_LITERAL_BRANCH_ABSENT",
+    "releasedSchemaAndPredecessorDiff": "EMPTY",
+    "nonAllowedPathDiff": "EMPTY",
+    "gitReverseApplyCheck": "PASS_EXIT_0",
+    "migrationExecution": "NOT_RUN_NO_MIGRATION_CHANGED"
+  },
+  "gateContingencies": [
+    {
+      "gate": "typecheck attempted concurrently with Next build",
+      "observed": "FAILED_TRANSIENT_TS6053_WHILE_NEXT_REWROTE_DOT_NEXT_TYPES",
+      "resolution": "RERUN_AFTER_BUILD_PASS_EXIT_0",
+      "sourceDefect": false
+    }
+  ],
+  "negativeEvidence": [
+    "valid ConnectorRevocationReceipt/v1 carrying credential-generation:987 parses with the released parser and projection throws LEGACY_V1_READBACK_UNAVAILABLE status 409",
+    "the v1 denial exposes no binding, bindingHeadDigest, bindingVersion, credentialGeneration or destination field",
+    "malformed v1 with a surplus field remains rejected by the released parser",
+    "the legacy synthesis domain, fixed generation and v1 binding-version projection branch are absent",
+    "v2 legacy-locator evidence still projects only closed redacted readback",
+    "v3 owner lineage, finality and acknowledgement separation remain exact",
+    "public route remains default-off and v1 reservation remains retired",
+    "canonical owner resolver remains unavailable and synthetic resolution remains physically test-only"
+  ],
+  "reverseBoundary": "GIT_ONLY_PRE_PIN_REVERSE_TO_CC2F562D3902998B7EDF5C0AE8A2E3CC1CCC500A; NO_DDL_OR_DATA_CHANGED; NO_PRODUCTION_ROLLBACK_AUTHORITY",
+  "forwardRecoveryBoundary": "AFTER_AN_ASSURED_CONSUMER_PIN_USE_A_NEW_ADDITIVE_CORRECTION_AND_REPIN; NEVER_REWRITE_RELEASED_SCHEMA_OR_PREDECESSOR_LEDGER",
+  "automation": "NOT_OBSERVED; HOSTED_POLLING_PROHIBITED_FOR_THIS CELL",
+  "preview": "NOT_REQUESTED_OR_OBSERVED",
+  "l2Disposition": "BLOCKED_PENDING_CONNECTOR_LOCATOR_REDACTION_L1_ASSURE_02",
+  "effectAuthority": "NO_EFFECT",
+  "decisionCredit": {
+    "g1": 0,
+    "g2": 0,
+    "production": 0
+  },
+  "productionReady": false,
+  "unresolvedRisks": [
+    "Independent CONNECTOR-LOCATOR-REDACTION-L1-ASSURE-02 has not evaluated this candidate.",
+    "Existing v1 stored receipts cannot produce public readback and require an explicitly authorized migration or separate source-lineage recovery design if readback availability is needed.",
+    "No admitted canonical locator-free ConnectorBinding owner adapter exists; production route resolution remains fail closed.",
+    "Local tests and build do not prove hosted CI, preview application readback, managed recovery, provider behavior or production behavior."
+  ],
+  "nextAction": "Run independent CONNECTOR-LOCATOR-REDACTION-L1-ASSURE-02 against the exact implementation, final and annotated-tag tuple; only after a pass may L2 pin the implementation SHA and correction-manifest digest."
+}
