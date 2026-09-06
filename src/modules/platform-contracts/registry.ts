@@ -840,15 +840,16 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
     contractId: "seed-procurement-command",
     currentRuntime: true,
     maturity: "IMPLEMENTED",
-    name: "Default-off NO_EFFECT product intelligence, supplier-gated sourcing and immutable human-selection commands",
+    name: "Default-off NO_EFFECT product intelligence, supplier-gated sourcing, immutable human selection, and approval-ready PO-draft commands",
     ownerRepository: "CIBOTFLOW/Luzione-API",
-    pendingChangeRefs: ["controller:SEED-PROCUREMENT-A3-CORRECTION-01:G0_CANDIDATE", "controller:SEED-PROPOSAL-OWNER-A2P:BLOCKED_DEPENDENCY"],
+    pendingChangeRefs: ["controller:SEED-PROCUREMENT-A3-CORRECTION-01:G0_CANDIDATE", "controller:SEED-PROPOSAL-OWNER-A2P:G0_CANDIDATE"],
     sourcePaths: [
       "src/modules/seed-procurement/contracts.ts",
       "src/modules/seed-procurement/store.ts",
       "src/app/api/v1/procurement/commands/route.ts",
       "supabase/migrations/20260905091246_seed_procurement_a3.sql",
-      "supabase/migrations/20260906003727_seed_procurement_a3_correction_01.sql"
+      "supabase/migrations/20260906003727_seed_procurement_a3_correction_01.sql",
+      "supabase/migrations/20260906032814_seed_proposal_owner_a2p.sql"
     ],
     version: "SeedProcurementCommand/v2",
   },
@@ -875,13 +876,49 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
     maturity: "IMPLEMENTED",
     name: "Tenant-bound procurement graph read model with exact source, supplier, receipt and human-selection provenance",
     ownerRepository: "CIBOTFLOW/Luzione-API",
-    pendingChangeRefs: ["controller:SEED-PROCUREMENT-A3-CORRECTION-01:G0_CANDIDATE", "controller:SEED-PROPOSAL-OWNER-A2P:BLOCKED_DEPENDENCY"],
+    pendingChangeRefs: ["controller:SEED-PROCUREMENT-A3-CORRECTION-01:G0_CANDIDATE", "controller:SEED-PROPOSAL-OWNER-A2P:G0_CANDIDATE"],
     sourcePaths: [
       "src/modules/seed-procurement/readModel.ts",
       "src/modules/seed-procurement/fixtures.ts",
       "src/app/api/v1/projects/[projectId]/procurement/route.ts"
     ],
     version: "SeedProcurementReadModel/v2",
+  },
+  {
+    compatibility: "EXACT_VERSION",
+    consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS", "CIBOTFLOW/Supplier-Designer-Portal"],
+    contractId: "seed-proposal-command",
+    currentRuntime: true,
+    maturity: "IMPLEMENTED",
+    name: "Default-off immutable template, typed CPQ proposal revision, exact client-decision, and render-preparation command boundary",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: ["controller:SEED-PROPOSAL-OWNER-A2P:G0_CANDIDATE", "controller:SEED-PROPOSAL-CLIENT-DECISION-D1C:BLOCKED_DEPENDENCY"],
+    sourcePaths: [
+      "src/modules/seed-proposal-owner/contracts.ts",
+      "src/modules/seed-proposal-owner/model.ts",
+      "src/modules/seed-proposal-owner/store.ts",
+      "src/modules/seed-proposal-owner/fixtures.ts",
+      "src/app/api/v1/proposals/commands/route.ts",
+      "supabase/migrations/20260906032814_seed_proposal_owner_a2p.sql"
+    ],
+    version: "SeedProposalCommand/v1",
+  },
+  {
+    compatibility: "EXACT_VERSION",
+    consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS", "CIBOTFLOW/Supplier-Designer-Portal"],
+    contractId: "seed-proposal-read-model",
+    currentRuntime: true,
+    maturity: "IMPLEMENTED",
+    name: "Tenant-bound proposal graph read model with exact Project, economics, line, decision, template, render-preparation, receipt, and producer lineage",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: ["controller:SEED-PROPOSAL-OWNER-A2P:G0_CANDIDATE"],
+    sourcePaths: [
+      "src/modules/seed-proposal-owner/readModel.ts",
+      "src/modules/seed-proposal-owner/fixtures.ts",
+      "src/app/api/v1/projects/[projectId]/proposals/route.ts",
+      "src/app/api/v1/proposals/[proposalId]/route.ts"
+    ],
+    version: "SeedProposalReadModel/v1",
   },
   {
     compatibility: "EXACT_VERSION",

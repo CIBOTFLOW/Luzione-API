@@ -90,7 +90,7 @@ test("objective score and quote landed economics reconcile from disclosed inputs
   assert.equal(economics.lines[0].landedTotalMinor, economics.lines[0].supplierCostTotalMinor + economics.lines[0].freightMinor + economics.lines[0].dutyMinor + economics.lines[0].reserveMinor);
 });
 
-test("A3C read model pins historical, correction, and supplier producers with only the Proposal hold", () => {
+test("A2P-compatible read model pins producers and retains only the PO effect-admission hold", () => {
   const parsed = parseSeedProcurementReadModel(seedProcurementPositiveFixture);
   assert.equal(parsed.blockedDependencies.length, 1);
   assert.equal(parsed.purchaseOrders.length, 0);

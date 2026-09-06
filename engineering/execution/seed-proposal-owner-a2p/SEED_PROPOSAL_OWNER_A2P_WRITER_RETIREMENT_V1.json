@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "artifact_id": "SEED_PROPOSAL_OWNER_A2P_WRITER_RETIREMENT_V1",
+  "project_id": "SEED-PROPOSAL-OWNER-A2P",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "observed_base_sha": "f77d68daca1ce897d498e9661bceeee9554a579c",
+  "target_owner": "CIBOTFLOW/Luzione-API:/api/v1/proposals/commands",
+  "current_state": "G0_NEW_WRITER_DEFAULT_OFF_LEGACY_WRITERS_NOT_RETIRED",
+  "paths": [
+    {
+      "path_id": "api-pc-009-quote-create",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "source_path": "src/app/api/v1/commands/quotes/route.ts",
+      "store_path": "src/modules/proposal-quote-approval/store.ts",
+      "relations": ["quotes", "quote_lines", "quote_economics_versions"],
+      "role": "LEGACY_CANONICAL_PREDECESSOR_COMMAND",
+      "g0_posture": "PRESERVED_SEPARATE_DEFAULT_OFF_GATE",
+      "g1_requirement": "route existing Proposal CPQ creation through SeedProposalCommand/v1 or make the old write path unreachable for the admitted tenant"
+    },
+    {
+      "path_id": "api-pc-009-quote-margin-decision",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "source_path": "src/app/api/v1/commands/quote-approvals/route.ts",
+      "store_path": "src/modules/proposal-quote-approval/store.ts",
+      "relations": ["quotes", "quote_margin_approval_records"],
+      "role": "LEGACY_INTERNAL_MARGIN_REVIEW",
+      "g0_posture": "PRESERVED_NOT_A_CLIENT_DECISION",
+      "g1_requirement": "retain only as an explicitly separate internal margin-policy decision or retire; never alias it to ApprovalDecision/v1"
+    },
+    {
+      "path_id": "api-pc-009-proposal-review",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "source_path": "src/app/api/v1/commands/proposal-reviews/route.ts",
+      "store_path": "src/modules/proposal-quote-approval/store.ts",
+      "relations": ["commercial_case_proposal_review_versions"],
+      "role": "LEGACY_INTERNAL_REVIEW",
+      "g0_posture": "PRESERVED_SEPARATE_DEFAULT_OFF_GATE",
+      "g1_requirement": "retain only for internal review semantics; client decisions must enter through the A2P server-derived Portal grant adapter"
+    },
+    {
+      "path_id": "api-pc-010-order-conversion",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "source_path": "src/app/api/v1/commands/orders/route.ts",
+      "store_path": "src/modules/order-fulfillment/store.ts",
+      "relations": ["quotes", "orders", "order_lines"],
+      "role": "LEGACY_ACCEPTED_QUOTE_TO_ORDER",
+      "g0_posture": "PRESERVED_SEPARATE_DEFAULT_OFF_GATE",
+      "g1_requirement": "must not consume an A2P proposal as an accepted quote or release a seed Purchase Order; converge under a separately admitted order transition"
+    },
+    {
+      "path_id": "ui-legacy-proposal-composition-and-render",
+      "repository": "CIBOTFLOW/Luzione-UI",
+      "source_path": "P15/P16 proposal modules and proposal persistence/rendering paths; exact consumer inventory required",
+      "relations": ["commercial_case_proposal_context_versions", "commercial_case_proposal_document_versions", "commercial_case_proposal_review_versions", "quotes", "quote_lines"],
+      "role": "DECLARED_ACTIVE_LEGACY_WRITER_FROM_API_PC_009_EVIDENCE",
+      "g0_posture": "NOT_CHANGED_BY_API_SLICE",
+      "g1_requirement": "UI consumer must return exact path inventory, shadow equality results, tenant cutover flag, rollback switch, and proof that direct canonical writes are unreachable"
+    },
+    {
+      "path_id": "api-a2p-canonical-proposal-command",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "source_path": "src/app/api/v1/proposals/commands/route.ts",
+      "store_path": "src/modules/seed-proposal-owner/store.ts",
+      "relations": ["commercial_case_proposal_template_versions", "commercial_case_proposal_context_versions", "commercial_case_proposal_document_versions", "commercial_case_proposal_v1_identity_map", "commercial_case_proposal_line_versions", "commercial_case_proposal_client_decision_versions", "commercial_case_proposal_render_preparations", "quotes", "quote_lines", "quote_economics_versions"],
+      "role": "TARGET_CANONICAL_WRITER",
+      "g0_posture": "DEFAULT_OFF_NO_EFFECT",
+      "g1_requirement": "enable only for an explicitly admitted tenant after every overlapping legacy writer is unreachable and shadow outputs reconcile"
+    }
+  ],
+  "shadow_comparison": {
+    "status": "NOT_RUN_NEW_COMMAND_UNREACHABLE",
+    "comparison_dimensions": [
+      "stable proposal/project/case identity",
+      "typed line classification and exact source refs",
+      "integer totals, landed cost, gross margin, discounts, and tax",
+      "template version and content digest",
+      "revision and decision non-inheritance",
+      "receipt/timeline/readback lineage"
+    ],
+    "required_sample": "deterministic investor tenant plus at least one tenant-scoped historical proposal cohort",
+    "pass_condition": "no unexplained field or economics drift and zero dual writes",
+    "rollback": "disable LUZIONE_API_SEED_PROPOSAL_COMMANDS_ENABLED and tenant allowlist; do not delete immutable owner rows"
+  },
+  "cutover_gates": [
+    "exact A2P producer and proof head admitted by controller",
+    "independent UI and Portal strict-parser consumer proof",
+    "server-derived Portal object-grant adapter admitted for client decisions",
+    "shadow comparison passes on exact versioned fixtures",
+    "all overlapping UI/API mutation paths unreachable for the cutover tenant",
+    "managed additive migration and backup/forward-recovery evidence",
+    "kill/disable switch and canonical readback verified"
+  ],
+  "deployment_sha": null,
+  "managed_migration": "NOT_RUN",
+  "external_effects": "NOT_AUTHORIZED_NOT_EXECUTED"
+}

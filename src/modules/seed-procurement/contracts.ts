@@ -367,6 +367,7 @@ function parsePo(input: JsonObject): PurchaseOrderDraftCreateCommand {
   exact(input, ["bidComparisonId", "commandId", "commandType", "contractVersion", "expectedVersion", "idempotencyKey", "lineRefs", "projectId", "projectVersion", "proposalVersion", "proposalVersionId", "selectionDecisionId", "selectionDecisionVersion"], "command");
   if (!Array.isArray(input.lineRefs) || input.lineRefs.length === 0) fail("INVALID_COMMAND", "lineRefs must be non-empty.");
   const lineRefs = input.lineRefs.map((value, index) => { const ref = exact(value, ["objectId", "objectType", "ownerProject", "version"], `command.lineRefs[${index}]`); if (ref.objectType !== "SPECIFICATION_LINE" || ref.ownerProject !== "LUZIONE_PROJECT") fail("REFERENCE_MISMATCH", "PO lines must be exact LUZIONE_PROJECT Specification Lines."); return { objectId: id(ref.objectId, "lineRef.objectId"), objectType: "SPECIFICATION_LINE" as const, ownerProject: "LUZIONE_PROJECT" as const, version: id(ref.version, "lineRef.version") }; });
+  if (new Set(lineRefs.map((ref) => `${ref.objectId}@${ref.version}`)).size !== lineRefs.length) fail("INVALID_COMMAND", "PO lineRefs must be unique exact Specification Line versions.");
   const parsed = common(input);
   const bidComparisonId = id(input.bidComparisonId, "command.bidComparisonId");
   const selectionDecisionId = id(input.selectionDecisionId, "command.selectionDecisionId");

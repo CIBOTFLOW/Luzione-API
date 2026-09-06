@@ -196,6 +196,17 @@ export const mutationPathFindings = Object.freeze([
     status: "PENDING_MUTATION_PATH_COLLISION",
     subject: "LifecycleCommand",
   },
+  {
+    findingId: "SEED_PROPOSAL_OWNER_A2P_M001",
+    paths: [
+      "src/app/api/v1/proposals/commands/route.ts#POST",
+      "src/app/api/v1/commands/quotes/route.ts#POST",
+      "src/app/api/v1/commands/proposal-reviews/route.ts#POST",
+      "CIBOTFLOW/Luzione-UI:P15_P16_PROPOSAL_WRITER_INVENTORY_PENDING"
+    ],
+    status: "PENDING_MUTATION_PATH_COLLISION",
+    subject: "Proposal",
+  },
 ]);
 
 export function truthRegistryViolations(

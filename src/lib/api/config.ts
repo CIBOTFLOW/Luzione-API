@@ -87,6 +87,12 @@ export function seedProcurementEnabledForTenant(tenantId: string) {
     && allowlist("LUZIONE_API_SEED_PROCUREMENT_TENANTS").has(tenantId);
 }
 
+export function seedProposalCommandsEnabledForTenant(tenantId: string) {
+  return runtimeConfig().mutationsEnabled
+    && process.env.LUZIONE_API_SEED_PROPOSAL_COMMANDS_ENABLED === "true"
+    && allowlist("LUZIONE_API_SEED_PROPOSAL_COMMAND_TENANTS").has(tenantId);
+}
+
 export function seedSupplierIdentityCommandsEnabledForTenant(tenantId: string) {
   return runtimeConfig().mutationsEnabled
     && process.env.LUZIONE_API_SEED_SUPPLIER_IDENTITY_COMMANDS_ENABLED === "true"

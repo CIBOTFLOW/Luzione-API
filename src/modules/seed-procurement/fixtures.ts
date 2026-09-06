@@ -87,7 +87,7 @@ export const seedProcurementPositiveFixture = createSeedProcurementReadModel({
   acknowledgements: [],
   bidComparisons: [],
   blockedDependencies: [
-    { affectedCapabilities: ["purchase_order.create_draft", "purchase_order_acknowledgement.record"], code: "PROPOSAL_CANONICAL_READER_UNAVAILABLE", requiredContract: "ProposalVersion/v1 canonical API readback", summary: "A canonical tenant and project-bound ProposalVersion reader is not admitted." },
+    { affectedCapabilities: ["purchase_order_acknowledgement.record", "purchase_order.release", "purchase_order.send"], code: "PURCHASE_ORDER_EFFECT_ADMISSION_HELD", requiredContract: "approved external-effect admission plus provider readback", summary: "PO drafts are canonical, but acknowledgement, release, send, and provider finality remain held." },
   ],
   evidenceArtifacts: [{ projectId: "project-1", resource: correctedEvidenceArtifactFixture }],
   productCandidates: [{ conflictRefs: [], duplicateOfCandidateId: null, extractionProvenance: ["fixture-parser:row-1"], fit: { ...objectiveFitFixture, score: 0.865 }, projectId: "project-1", resource: correctedProductCandidateFixture }],

@@ -12,6 +12,7 @@ import {
   parseBidComparisonV1,
   parseProductCandidateV1,
   parseProductSourceV1,
+  parsePurchaseOrderV1,
   parseRFQV1,
   parseSupplierQuoteV1,
   parseTimelineEventV1,
@@ -21,6 +22,7 @@ import {
   type EvidenceArtifactV1,
   type BidComparisonV1,
   type RFQV1,
+  type PurchaseOrderV1,
   type SeedAuthorityBoundaryV1,
   type SeedMutationBoundaryV1,
   type SeedReceiptReadbackV1,
@@ -37,6 +39,7 @@ import {
   type ProcurementSelectionRecordCommand,
   type ProductCandidateRecordCommand,
   type ProductSourceRecordCommand,
+  type PurchaseOrderDraftCreateCommand,
   type RFQDraftCreateCommand,
   type SeedProcurementCommand,
   type SupplierQuoteNormalizeCommand,
@@ -50,6 +53,7 @@ import {
   productCandidateIdFor,
   productSourceReadbackDefects,
   productSourceIdFor,
+  purchaseOrderIdFor,
   procurementVersions,
   rfqIdFor,
   selectionDecisionIdFor,
@@ -62,9 +66,10 @@ import { requireEligibleSupplier } from "@/modules/seed-supplier-identity/store"
 import { SUPPLIER_PROFILE_OWNER } from "@/modules/seed-supplier-identity/contracts";
 import { createUniversalEventEnvelope, sha256 } from "@/modules/platform-guarantees/eventContract";
 import type { LifecycleCommandRequest } from "@/modules/platform-guarantees/types";
+import { requireAcceptedCanonicalProposalVersion, SeedProposalDomainError as CanonicalProposalDomainError } from "@/modules/seed-proposal-owner/store";
 
 type Row = Record<string, unknown>;
-type Hooks = { afterOwnerWrites?: (point: "BID_COMPARISON" | "EVIDENCE" | "PRODUCT_CANDIDATE" | "PRODUCT_SOURCE" | "RFQ" | "SELECTION" | "SUPPLIER_QUOTE", client: PoolClient) => Promise<void> };
+type Hooks = { afterOwnerWrites?: (point: "BID_COMPARISON" | "EVIDENCE" | "PRODUCT_CANDIDATE" | "PRODUCT_SOURCE" | "PURCHASE_ORDER" | "RFQ" | "SELECTION" | "SUPPLIER_QUOTE", client: PoolClient) => Promise<void> };
 
 const RECEIPT_COLUMNS = `r.receipt_id, r.idempotency_key, r.payload_hash,
   r.expected_object_version, r.policy_version, r.actor_id, r.actor_type,
@@ -287,6 +292,31 @@ function selectionFromRow(row: Row) {
   };
 }
 
+function purchaseOrderFromRow(row: Row): PurchaseOrderV1 {
+  const tenantId = String(row.tenant_id);
+  const id = String(row.purchase_order_id);
+  const version = String(row.object_version);
+  assertOwnerReceipt(row, { commandType: "purchase_order.create_draft", id, objectType: "purchase_order", version });
+  const data = json<PurchaseOrderV1["data"]>(row.canonical_payload);
+  if (data.bidComparisonId !== String(row.bid_comparison_id)
+    || data.proposalVersionId !== String(row.proposal_version_id)
+    || data.supplierQuoteId !== String(row.supplier_quote_id)
+    || data.supplierId !== String(row.supplier_id)
+    || data.currency !== String(row.currency)
+    || data.totalMinor !== Number(row.total_minor)
+    || data.releaseApprovalRef !== null
+    || row.external_effect_authorized !== false) {
+    throw new SeedProcurementDomainError("CANONICAL_READBACK_CORRUPT", "Purchase Order draft payload diverges from its relational no-effect owner facts.", 500);
+  }
+  return parsePurchaseOrderV1({
+    ...boundaries(row, version, "purchase_order.create_draft"),
+    contractVersion: SEED_PRODUCT_CONTRACT_VERSIONS.purchaseOrder,
+    createdAt: iso(row.created_at), data,
+    resource: { archivedAt: null, id, status: "DRAFT", type: "PURCHASE_ORDER", version },
+    sourceRefs: json<SeedSourceRefV1[]>(row.source_refs), tenantId, updatedAt: iso(row.created_at),
+  });
+}
+
 async function bindRead(client: PoolClient, tenantId: string) { await client.query("begin read only"); await client.query("select set_config('app.tenant_id', $1, true)", [tenantId]); }
 async function advisory(client: PoolClient, tenantId: string, key: string) { await client.query("select pg_advisory_xact_lock(hashtextextended($1 || ':' || $2, 0))", [tenantId, key]); }
 
@@ -310,8 +340,8 @@ export class SeedProcurementStore {
       case "supplier_quote.normalize": return this.executeSupplierQuote({ ...input, command: input.command });
       case "bid_comparison.create": return this.executeBidComparison({ ...input, command: input.command });
       case "procurement_selection.record": return this.executeSelection({ ...input, command: input.command, human: input.human });
-      case "purchase_order.create_draft": throw new SeedProcurementDomainError("PROPOSAL_CANONICAL_READER_UNAVAILABLE", "PO preparation is blocked because no API-owned tenant/project/version-matched ProposalVersion reader is admitted.", 409);
-      case "purchase_order_acknowledgement.record": throw new SeedProcurementDomainError("PURCHASE_ORDER_NOT_AVAILABLE", "PO acknowledgement requires an exact canonical PO draft, which A3 cannot create until ProposalVersion readback is admitted.", 409);
+      case "purchase_order.create_draft": return this.executePurchaseOrder({ ...input, command: input.command });
+      case "purchase_order_acknowledgement.record": throw new SeedProcurementDomainError("PURCHASE_ORDER_NOT_AVAILABLE", "PO acknowledgement, release, send, and provider finality remain held pending external-effect admission and authoritative readback.", 409);
     }
   }
 
@@ -328,10 +358,10 @@ export class SeedProcurementStore {
       const quotes = await client.query(`select q.*, ${RECEIPT_COLUMNS} from public.seed_supplier_quotes q join public.p110_command_receipts r on r.tenant_id=q.tenant_id and r.command_id=q.created_command_id where q.tenant_id=$1 and q.project_id=$2 order by q.created_at,q.supplier_quote_id`, [actor.tenantId, projectId]);
       const bids = await client.query(`select b.*, ${RECEIPT_COLUMNS} from public.seed_bid_comparisons b join public.p110_command_receipts r on r.tenant_id=b.tenant_id and r.command_id=b.created_command_id where b.tenant_id=$1 and b.project_id=$2 order by b.created_at,b.bid_comparison_id,b.version`, [actor.tenantId, projectId]);
       const selections = await client.query(`select s.*, ${RECEIPT_COLUMNS} from public.seed_procurement_selection_decisions s join public.p110_command_receipts r on r.tenant_id=s.tenant_id and r.command_id=s.created_command_id where s.tenant_id=$1 and s.project_id=$2 order by s.decided_at,s.selection_decision_id`, [actor.tenantId, projectId]);
-      const heldRows = await client.query(`select
-        (select count(*) from public.seed_purchase_order_drafts where tenant_id=$1 and project_id=$2) pos,
-        (select count(*) from public.seed_purchase_order_acknowledgements where tenant_id=$1 and project_id=$2) acks`, [actor.tenantId, projectId]);
-      if (Object.values(heldRows.rows[0] as Row).some((value) => Number(value) !== 0)) throw new Error("Dependency-held A3 downstream tables unexpectedly contain canonical rows.");
+      const proposalOwnerAvailable = Boolean((await client.query("select to_regclass('public.commercial_case_proposal_v1_identity_map') is not null available")).rows[0].available);
+      const purchaseOrders = await client.query(`select p.*, ${RECEIPT_COLUMNS} from public.seed_purchase_order_drafts p join public.p110_command_receipts r on r.tenant_id=p.tenant_id and r.command_id=p.created_command_id where p.tenant_id=$1 and p.project_id=$2 order by p.created_at,p.purchase_order_id`, [actor.tenantId, projectId]);
+      const heldRows = await client.query("select count(*) acknowledgements from public.seed_purchase_order_acknowledgements where tenant_id=$1 and project_id=$2", [actor.tenantId, projectId]);
+      if (Number(heldRows.rows[0].acknowledgements) !== 0) throw new Error("Dependency-held Purchase Order acknowledgement table unexpectedly contains canonical rows.");
       const timelineRows = await client.query(`select e.*, r.receipt_id, r.expected_object_version, r.committed_object_version, r.policy_version, r.actor_id, r.actor_type, r.idempotency_key, r.payload_hash, r.command_type, r.correlation_id
         from public.p110_event_envelopes e join public.p110_command_receipts r on r.tenant_id=e.tenant_id and r.event_id=e.event_id
         where e.tenant_id=$1 and r.command_id in (
@@ -342,10 +372,12 @@ export class SeedProcurementStore {
           union select created_command_id from public.seed_supplier_quotes where tenant_id=$1 and project_id=$2
           union select created_command_id from public.seed_bid_comparisons where tenant_id=$1 and project_id=$2
           union select created_command_id from public.seed_procurement_selection_decisions where tenant_id=$1 and project_id=$2
+          union select created_command_id from public.seed_purchase_order_drafts where tenant_id=$1 and project_id=$2
         ) order by e.recorded_at,e.event_id`, [actor.tenantId, projectId]);
-      return { acknowledgements: [], bidComparisons: bids.rows.map((row) => bidFromRow(row as Row)), blockedDependencies: [
-        { affectedCapabilities: ["purchase_order.create_draft", "purchase_order_acknowledgement.record"], code: "PROPOSAL_CANONICAL_READER_UNAVAILABLE", requiredContract: "ProposalVersion/v1 canonical API readback", summary: "The API publishes a ProposalVersion contract but does not yet own a tenant/project/version-matched Proposal runtime reader." },
-      ], evidenceArtifacts: evidence.rows.map((row) => ({ projectId: nullableText(row.project_id), resource: evidenceFromRow(row as Row) })), productCandidates: candidates.rows.map((row) => candidateFromRow(row as Row)), productSources: sources.rows.map((row) => sourceFromRow(row as Row)), purchaseOrders: [], rfqs: rfqs.rows.map((row) => rfqFromRow(row as Row)), selectionDecisions: selections.rows.map((row) => selectionFromRow(row as Row)), supplierQuotes: quotes.rows.map((row) => quoteFromRow(row as Row)), timeline: timelineRows.rows.map((row) => timelineFromRow(row as Row, projectId, timelineProjectVersion(projectId, project.rows[0].version))) };
+      return { acknowledgements: [], bidComparisons: bids.rows.map((row) => bidFromRow(row as Row)), blockedDependencies: [proposalOwnerAvailable
+        ? { affectedCapabilities: ["purchase_order_acknowledgement.record", "purchase_order.release", "purchase_order.send"], code: "PURCHASE_ORDER_EFFECT_ADMISSION_HELD", requiredContract: "approved external-effect admission plus provider readback", summary: "PO drafts are canonical, but acknowledgement, release, send, and provider finality remain held." }
+        : { affectedCapabilities: ["purchase_order.create_draft", "purchase_order_acknowledgement.record"], code: "PROPOSAL_CANONICAL_READER_UNAVAILABLE", requiredContract: "ProposalVersion/v1 canonical API readback", summary: "The A2P canonical Proposal Version owner is not installed; PO preparation remains held." },
+      ], evidenceArtifacts: evidence.rows.map((row) => ({ projectId: nullableText(row.project_id), resource: evidenceFromRow(row as Row) })), productCandidates: candidates.rows.map((row) => candidateFromRow(row as Row)), productSources: sources.rows.map((row) => sourceFromRow(row as Row)), purchaseOrders: purchaseOrders.rows.map((row) => purchaseOrderFromRow(row as Row)), rfqs: rfqs.rows.map((row) => rfqFromRow(row as Row)), selectionDecisions: selections.rows.map((row) => selectionFromRow(row as Row)), supplierQuotes: quotes.rows.map((row) => quoteFromRow(row as Row)), timeline: timelineRows.rows.map((row) => timelineFromRow(row as Row, projectId, timelineProjectVersion(projectId, project.rows[0].version))) };
     });
   }
 
@@ -397,6 +429,13 @@ export class SeedProcurementStore {
     return this.readTransaction(actor.tenantId, async (client) => {
       const result = await client.query(`select s.*, ${RECEIPT_COLUMNS} from public.seed_procurement_selection_decisions s join public.p110_command_receipts r on r.tenant_id=s.tenant_id and r.command_id=s.created_command_id where s.tenant_id=$1 and s.selection_decision_id=$2 limit 1`, [actor.tenantId, selectionId]);
       return result.rows[0] ? selectionFromRow(result.rows[0] as Row) : null;
+    });
+  }
+
+  async readPurchaseOrder(actor: ApiActor, purchaseOrderId: string) {
+    return this.readTransaction(actor.tenantId, async (client) => {
+      const result = await client.query(`select p.*, ${RECEIPT_COLUMNS} from public.seed_purchase_order_drafts p join public.p110_command_receipts r on r.tenant_id=p.tenant_id and r.command_id=p.created_command_id where p.tenant_id=$1 and p.purchase_order_id=$2 limit 1`, [actor.tenantId, purchaseOrderId]);
+      return result.rows[0] ? purchaseOrderFromRow(result.rows[0] as Row) : null;
     });
   }
 
@@ -650,6 +689,60 @@ export class SeedProcurementStore {
     return this.confirmReadback(receipt, await this.readSelection(input.actor, id), (readback) => readback.resource.version);
   }
 
+  async executePurchaseOrder(input: { actor: ApiActor; command: PurchaseOrderDraftCreateCommand; correlationId: string; requestedAt: string }) {
+    this.requireTransportActor(input.actor);
+    this.requireCanonicalInstant(input.requestedAt, "requestedAt");
+    const id = purchaseOrderIdFor(input.actor.tenantId, { bidComparisonId: input.command.bidComparisonId, selectionDecisionId: input.command.selectionDecisionId });
+    const receipt = await this.executeKernel(input, { id, objectType: "purchase_order", sourceRefs: [input.command.bidComparisonId, input.command.selectionDecisionId, input.command.proposalVersionId, ...input.command.lineRefs.map((ref) => ref.objectId)] }, async (transaction) => {
+      const proposalOwner = await transaction.client.query("select to_regclass('public.commercial_case_proposal_v1_identity_map') is not null available");
+      if (!proposalOwner.rows[0].available) throw new SeedProcurementDomainError("PROPOSAL_CANONICAL_READER_UNAVAILABLE", "PO preparation is blocked because the A2P API-owned tenant/project/version-matched ProposalVersion reader is not installed.", 409);
+      await this.requireProject(transaction.client, input.actor.tenantId, input.command.projectId, input.command.projectVersion);
+      await advisory(transaction.client, input.actor.tenantId, `purchase-order:${input.command.bidComparisonId}`);
+      const bid = await this.requireApprovedBidRow(transaction.client, input.actor.tenantId, input.command.bidComparisonId, input.command.expectedVersion);
+      const selection = await this.requireSelectionRow(transaction.client, input.actor.tenantId, input.command.selectionDecisionId, input.command.selectionDecisionVersion);
+      if (String(bid.project_id) !== input.command.projectId || String(selection.project_id) !== input.command.projectId
+        || String(bid.selected_by_human_approval_ref) !== input.command.selectionDecisionId
+        || String(selection.bid_comparison_id) !== input.command.bidComparisonId) {
+        throw new SeedProcurementDomainError("REFERENCE_MISMATCH", "PO draft must bind the exact Project, approved Bid Comparison, and immutable human selection.", 409);
+      }
+      const quoteId = String(selection.selected_supplier_quote_id);
+      const quote = await this.requireQuoteRow(transaction.client, input.actor.tenantId, quoteId, null);
+      if (String(quote.project_id) !== input.command.projectId || !json<string[]>(bid.supplier_quote_ids).includes(quoteId)) throw new SeedProcurementDomainError("REFERENCE_MISMATCH", "PO draft selected Supplier Quote is outside its approved Bid Comparison.", 409);
+      const supplier = await requireEligibleSupplier(transaction.client, { accountId: String(quote.supplier_id), capability: "QUOTE_SUBMISSION", observedAt: input.requestedAt, tenantId: input.actor.tenantId });
+      let proposal;
+      try {
+        proposal = await requireAcceptedCanonicalProposalVersion(transaction.client, { projectId: input.command.projectId, projectVersion: input.command.projectVersion, proposalId: input.command.proposalVersionId, proposalVersion: input.command.proposalVersion, tenantId: input.actor.tenantId });
+      } catch (error) {
+        if (error instanceof CanonicalProposalDomainError) throw new SeedProcurementDomainError(error.code, error.message, error.status);
+        throw error;
+      }
+      if (proposal.currency !== String(quote.basis_currency)) throw new SeedProcurementDomainError("CURRENCY_MISMATCH", "Accepted Proposal and selected Supplier Quote currencies must match.", 409);
+      const quoteLineIds = new Set(json<SupplierQuoteV1["data"]>(quote.canonical_payload).lines.map((line) => line.rfqLineId));
+      for (const ref of input.command.lineRefs) {
+        const line = await transaction.client.query("select version from public.seed_specification_lines where tenant_id=$1 and project_id=$2 and specification_line_id=$3 limit 1", [input.actor.tenantId, input.command.projectId, ref.objectId]);
+        if (!line.rows[0] || specificationLineVersion(ref.objectId, Number(line.rows[0].version)) !== ref.version || !quoteLineIds.has(ref.objectId)) throw new SeedProcurementDomainError("VERSION_CONFLICT", "PO line is stale, outside the selected quote, or outside the Project.", 409);
+        const proposalLine = await transaction.client.query("select 1 from public.commercial_case_proposal_line_versions where tenant_id=$1 and proposal_id=$2 and proposal_revision=$3 and specification_line_ref->>'objectId'=$4 and specification_line_ref->>'version'=$5 limit 1", [input.actor.tenantId, input.command.proposalVersionId, proposal.revision, ref.objectId, ref.version]);
+        if (!proposalLine.rows[0]) throw new SeedProcurementDomainError("REFERENCE_MISMATCH", "PO line is not included in the exact accepted Proposal Version.", 409);
+      }
+      const version = procurementVersions.purchaseOrder(id);
+      const lineRefs = input.command.lineRefs.map((ref) => sourceRef(input.actor.tenantId, ref));
+      const data: PurchaseOrderV1["data"] = { bidComparisonId: input.command.bidComparisonId, currency: String(quote.basis_currency), lineRefs, proposalVersionId: input.command.proposalVersionId, releaseApprovalRef: null, supplierId: String(quote.supplier_id), supplierQuoteId: quoteId, totalMinor: Number(quote.supplier_cost_total_minor) };
+      const sourceRefs = [
+        sourceRef(input.actor.tenantId, { objectId: input.command.bidComparisonId, objectType: "BID_COMPARISON", ownerProject: SEED_PROCUREMENT_OWNER, version: input.command.expectedVersion }),
+        sourceRef(input.actor.tenantId, { objectId: input.command.selectionDecisionId, objectType: "PROCUREMENT_SELECTION", ownerProject: SEED_PROCUREMENT_OWNER, version: input.command.selectionDecisionVersion }),
+        sourceRef(input.actor.tenantId, { objectId: quoteId, objectType: "SUPPLIER_QUOTE", ownerProject: SEED_PROCUREMENT_OWNER, version: String(quote.object_version) }),
+        sourceRef(input.actor.tenantId, { objectId: input.command.proposalVersionId, objectType: "PROPOSAL_VERSION", ownerProject: "LUZIONE_COMMERCIAL_CASE_PROPOSAL", version: input.command.proposalVersion }),
+        sourceRef(input.actor.tenantId, { objectId: proposal.decisionId, objectType: "APPROVAL_DECISION", ownerProject: "LUZIONE_COMMERCIAL_CASE_PROPOSAL", version: `approval-decision:${proposal.decisionId}:v1` }),
+        sourceRef(input.actor.tenantId, { objectId: supplier.resource.id, objectType: "SUPPLIER_PROFILE", ownerProject: SUPPLIER_PROFILE_OWNER, version: supplier.resource.version }),
+        ...lineRefs,
+      ];
+      await transaction.client.query(`insert into public.seed_purchase_order_drafts (tenant_id,purchase_order_id,project_id,project_version,bid_comparison_id,bid_comparison_version,selection_decision_id,selection_decision_version,supplier_quote_id,supplier_quote_version,supplier_id,proposal_version_id,proposal_version,proposal_decision_id,status,currency,total_minor,line_refs,source_refs,canonical_payload,command_payload,command_payload_hash,release_approval_ref,external_effect_authorized,object_version,created_command_id,created_by,created_by_type,created_at) values ($1,$2,$3,$4,$5,2,$6,$7,$8,$9,$10,$11,$12,$13,'DRAFT',$14,$15,$16::jsonb,$17::jsonb,$18::jsonb,$19::jsonb,$20,null,false,$21,$22,$23,$24,$25)`, [input.actor.tenantId, id, input.command.projectId, input.command.projectVersion, input.command.bidComparisonId, input.command.selectionDecisionId, input.command.selectionDecisionVersion, quoteId, String(quote.object_version), String(quote.supplier_id), input.command.proposalVersionId, input.command.proposalVersion, proposal.decisionId, data.currency, data.totalMinor, JSON.stringify(lineRefs), JSON.stringify(sourceRefs), JSON.stringify(data), JSON.stringify(input.command), canonicalSeedProcurementPayloadHash(input.command), version, input.command.commandId, input.actor.actorId, input.actor.actorType, input.requestedAt]);
+      await this.hooks.afterOwnerWrites?.("PURCHASE_ORDER", transaction.client);
+      return { evidenceRefs: [proposal.decisionId, input.command.selectionDecisionId, quoteId, ...input.command.lineRefs.map((ref) => ref.objectId)], objectVersion: version };
+    });
+    return this.confirmReadback(receipt, await this.readPurchaseOrder(input.actor, id), (readback) => readback.resource.version);
+  }
+
   private executeKernel(
     input: { actor: ApiActor; command: SeedProcurementCommand; correlationId: string; requestedAt: string },
     target: { id: string; objectType: string; sourceRefs: string[] },
@@ -719,6 +812,18 @@ export class SeedProcurementStore {
     const result = await client.query("select * from public.seed_bid_comparisons where tenant_id=$1 and bid_comparison_id=$2 and version=1 limit 1", [tenantId, id]);
     if (!result.rows[0]) throw new SeedProcurementDomainError("BID_COMPARISON_NOT_FOUND", "Canonical Bid Comparison v1 not found for this tenant.", 404);
     if (String(result.rows[0].object_version) !== version) throw new SeedProcurementDomainError("VERSION_CONFLICT", "Canonical Bid Comparison version is stale.", 409);
+    return result.rows[0] as Row;
+  }
+  private async requireApprovedBidRow(client: PoolClient, tenantId: string, id: string, version: string) {
+    const result = await client.query("select * from public.seed_bid_comparisons where tenant_id=$1 and bid_comparison_id=$2 and version=2 limit 1", [tenantId, id]);
+    if (!result.rows[0]) throw new SeedProcurementDomainError("BID_COMPARISON_NOT_APPROVED", "Canonical approved Bid Comparison v2 not found for this tenant.", 404);
+    if (String(result.rows[0].object_version) !== version || result.rows[0].status !== "APPROVED") throw new SeedProcurementDomainError("VERSION_CONFLICT", "Approved Bid Comparison version is stale.", 409);
+    return result.rows[0] as Row;
+  }
+  private async requireSelectionRow(client: PoolClient, tenantId: string, id: string, version: string) {
+    const result = await client.query("select * from public.seed_procurement_selection_decisions where tenant_id=$1 and selection_decision_id=$2 limit 1", [tenantId, id]);
+    if (!result.rows[0]) throw new SeedProcurementDomainError("PROCUREMENT_SELECTION_NOT_FOUND", "Canonical procurement selection was not found for this tenant.", 404);
+    if (String(result.rows[0].object_version) !== version || result.rows[0].status !== "ACTIVE") throw new SeedProcurementDomainError("VERSION_CONFLICT", "Procurement selection version is stale.", 409);
     return result.rows[0] as Row;
   }
   private async requireSpecification(client: PoolClient, tenantId: string, projectId: string, specificationId: string, expectedVersion: string) {

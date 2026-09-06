@@ -30,7 +30,7 @@ export function bidComparisonIdFor(tenantId: string, input: { projectId: string;
 export function selectionDecisionIdFor(tenantId: string, input: { actorId: string; bidComparisonId: string; selectedSupplierQuoteId: string }) {
   return stableId("procurement_selection", { ...input, tenantId });
 }
-export function purchaseOrderIdFor(tenantId: string, input: { bidComparisonId: string; selectionDecisionId: string; supplierQuoteId: string }) {
+export function purchaseOrderIdFor(tenantId: string, input: { bidComparisonId: string; selectionDecisionId: string }) {
   return stableId("purchase_order", { ...input, tenantId });
 }
 export function purchaseOrderAcknowledgementIdFor(tenantId: string, input: { evidenceArtifactId: string; purchaseOrderId: string }) {

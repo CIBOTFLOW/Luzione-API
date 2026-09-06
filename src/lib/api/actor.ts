@@ -57,6 +57,8 @@ const PRODUCTION_VERCEL_CALLERS: readonly VercelCaller[] = Object.freeze([
       "platform.guarantees.read",
       "procurement.command",
       "procurement.read",
+      "proposal.command",
+      "proposal.read",
       "project.command",
       "project.read",
       "project_package.publish",

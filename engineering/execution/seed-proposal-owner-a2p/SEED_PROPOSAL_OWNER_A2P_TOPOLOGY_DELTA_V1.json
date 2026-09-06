@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "artifact_id": "SEED_PROPOSAL_OWNER_A2P_TOPOLOGY_DELTA_V1",
+  "project_id": "SEED-PROPOSAL-OWNER-A2P",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "base_topology": "engineering/execution/seed-procurement-a3-correction-01/SEED_PROCUREMENT_A3_CORRECTION_01_TOPOLOGY_DELTA_V1.json",
+  "base_proof_sha": "f77d68daca1ce897d498e9661bceeee9554a579c",
+  "seed_product_contract_producer_sha": "e14b405d58a293c002f5676984a95e55372b3bd2",
+  "schedule_contract_producer_sha": "265724e528502b44a1250efea551539d74cb0bbd",
+  "supplier_identity_contract_producer_sha": "6467b989db7422c45935dcec3ad334b4fe99ce5f",
+  "historical_procurement_contract_producer_sha": "777e0d471d2ecf02294fffb7562761d6f8a36dbd",
+  "procurement_correction_contract_producer_sha": "A2P_IMPLEMENTATION_SHA_PENDING",
+  "proposal_contract_producer_sha": "A2P_IMPLEMENTATION_SHA_PENDING",
+  "effect_authority": "NO_EFFECT",
+  "http_surfaces": [
+    {
+      "route_id": "seed-proposal-command-v1",
+      "method": "POST",
+      "path": "/api/v1/proposals/commands",
+      "source_path": "src/app/api/v1/proposals/commands/route.ts",
+      "authentication": "credential-bound same-tenant service actor and exact default-off tenant admission; client decisions additionally require a signed same-tenant human and an admitted server-derived Portal object grant adapter",
+      "canonical_readback": "one DOMAIN_COMMITTED P110 receipt plus exact immutable template, Proposal Version, scoped Approval Decision, or render-preparation readback; the HTTP client-decision path remains dependency-held",
+      "effect": "DEFAULT_OFF_NO_EFFECT_INTERNAL_MUTATION",
+      "external_effect_authorized": false
+    },
+    {
+      "route_id": "project-proposals-read-v1",
+      "method": "GET",
+      "path": "/api/v1/projects/{projectId}/proposals",
+      "source_path": "src/app/api/v1/projects/[projectId]/proposals/route.ts",
+      "authentication": "credential-bound same-tenant actor with proposal.read",
+      "canonical_readback": "SeedProposalReadModel/v1 with exact Project, template, document/economics, typed-line, decision, render-preparation, receipt, and producer lineage",
+      "effect": "NO_EFFECT"
+    },
+    {
+      "route_id": "proposal-version-read-v1",
+      "method": "GET",
+      "path": "/api/v1/proposals/{proposalId}",
+      "source_path": "src/app/api/v1/proposals/[proposalId]/route.ts",
+      "authentication": "credential-bound same-tenant actor with proposal.read",
+      "canonical_readback": "one exact ProposalVersion/v1 owner readback, optionally selected by exact version, or a tenant-scoped not-found result",
+      "effect": "NO_EFFECT"
+    }
+  ],
+  "relations": [
+    {
+      "name": "commercial_case_proposal_template_versions",
+      "state": "DEFAULT_OFF_API_OWNER",
+      "write": "INSERT_ONLY_APPEND_ONLY",
+      "effect": "NO_EFFECT",
+      "canonical_dependency": "exact clean EvidenceArtifact/v1 plus immutable private object reference"
+    },
+    {
+      "name": "commercial_case_proposal_document_versions",
+      "state": "API_PC_009_PROPOSAL_VERSION_LINEAGE_EXTENDED",
+      "write": "INSERT_ONLY_FOR_A2P_ROWS",
+      "effect": "NO_EFFECT",
+      "canonical_dependency": "exact quote_economics_versions snapshot and Project/Specification/Product versions"
+    },
+    {
+      "name": "commercial_case_proposal_v1_identity_map",
+      "state": "IMMUTABLE_IDENTITY_BRIDGE_NOT_PARALLEL_TRUTH",
+      "write": "INSERT_ONLY_APPEND_ONLY",
+      "effect": "NO_EFFECT"
+    },
+    {
+      "name": "commercial_case_proposal_line_versions",
+      "state": "DEFAULT_OFF_API_OWNED_PROPOSAL_VERSION_CHILD",
+      "write": "INSERT_ONLY_APPEND_ONLY",
+      "effect": "NO_EFFECT"
+    },
+    {
+      "name": "commercial_case_proposal_client_decision_versions",
+      "state": "SERVER_DERIVED_PORTAL_GRANT_DEPENDENCY_HELD_AT_HTTP",
+      "write": "INSERT_ONLY_APPEND_ONLY",
+      "effect": "NO_EFFECT"
+    },
+    {
+      "name": "commercial_case_proposal_render_preparations",
+      "state": "PREPARATION_ONLY",
+      "write": "INSERT_ONLY_APPEND_ONLY",
+      "effect": "NO_EFFECT"
+    },
+    {
+      "name": "seed_purchase_order_drafts",
+      "state": "DEFAULT_OFF_API_OWNER_DRAFT_ONLY",
+      "write": "INSERT_ONLY_APPEND_ONLY",
+      "effect": "NO_EFFECT",
+      "release_hold": "release approval, send, acknowledgement, and provider finality remain unavailable"
+    },
+    {
+      "name": "seed_purchase_order_acknowledgements",
+      "state": "DATABASE_DEPENDENCY_HELD",
+      "missing_dependency": "effect-admitted PO release/send and supplier acknowledgement normalization"
+    }
+  ],
+  "runtime_configuration_keys": [
+    "LUZIONE_API_SEED_PROPOSAL_COMMANDS_ENABLED",
+    "LUZIONE_API_SEED_PROPOSAL_COMMAND_TENANTS"
+  ],
+  "blocked_dependencies": [
+    "D1C must return a server-derived Portal object-grant adapter before the HTTP client-decision route can write.",
+    "Private object upload, malware service, DOCX/PDF render provider, proposal send, Shopify publishing, and all external effects remain absent.",
+    "API-PC-013 revokes prerequisite Account/Opportunity reads without restoring bounded API runtime SELECT; A2P proof supplies SELECT-only disposable fixture grants and makes no managed-integration claim.",
+    "No managed migration or deployed runtime has been observed for this candidate."
+  ],
+  "prohibited_effects": [
+    "template_upload",
+    "document_render",
+    "proposal_send",
+    "client_binding_acceptance",
+    "shopify_publish",
+    "purchase_order_release_or_send",
+    "supplier_acknowledgement",
+    "payment",
+    "managed_migration",
+    "deployment"
+  ]
+}
