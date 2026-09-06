@@ -1,12 +1,18 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import test from "node:test";
 
 import { killState } from "@/modules/effect-admission/contracts";
 import { CORE_CONTRACT_VERSIONS, type ConnectorBindingV1 } from "@/modules/luzione-core-contracts/contracts";
 import { sha256 } from "@/modules/platform-guarantees/eventContract";
+import {
+  CONNECTOR_CREDENTIAL_HANDLE_VERSION,
+  ConnectorRevocationContractError,
+  issueConnectorRevocationReceipt,
+  parseConnectorRevocationReceipt,
+} from "@/modules/connector-revocation/contracts";
 import {
   CONNECTOR_CREDENTIAL_HANDLE_V2,
   CONNECTOR_REVOCATION_RECEIPT_V2,
@@ -411,6 +417,73 @@ test("v3 adverse 3: current and locator-bearing legacy receipts project only clo
   assert.equal(redacted.sourceReceiptVersion, "ConnectorRevocationReceipt/v2");
 });
 
+test("correction 01: valid v1 parses but public projection fails closed without invented lineage", () => {
+  const legacyReceiptV1 = issueConnectorRevocationReceipt({
+    acknowledgement: { providerAcknowledgementRef: null, sourceReadbackRef: null },
+    actor: {
+      humanActorId: "user_human-proof",
+      humanAuthenticationRef: "supabase-session:human-proof",
+      requestActorClass: "service",
+      requestActorId: "service:sultan-os",
+    },
+    binding: {
+      bindingContractVersion: CORE_CONTRACT_VERSIONS.connectorBinding,
+      bindingId: v3BindingId,
+      connectorProvider: "GOOGLE_WORKSPACE",
+      credentialHandle: {
+        contractVersion: CONNECTOR_CREDENTIAL_HANDLE_VERSION,
+        reference: "secret-ref:legacy.hidden",
+        version: "credential-generation:987",
+      },
+      providerAccountRef: "provider-account:google:legacy-v1",
+    },
+    commandReceiptRef: "p110-command:legacy-v1",
+    containmentKillVersion: v3Kill.containmentKillVersion,
+    localCredentialDisposition: "RETAINED",
+    normalKillVersion: v3Kill.normalKillVersion,
+    operation: {
+      key: "connector-revocation-v1-legacy-proof",
+      kind: "REQUEST_REMOTE_REVOCATION",
+      payloadDigest: "9".repeat(64),
+    },
+    priorReceiptId: null,
+    reconciliation: { reconciliationRef: null, result: "NOT_ATTEMPTED" },
+    recordedAt: "2026-09-05T15:02:00.000Z",
+    recoveryState: "NORMAL",
+    remoteFinality: "REQUESTED",
+    tenantId,
+  });
+
+  assert.equal(legacyReceiptV1.binding.credentialHandle.version, "credential-generation:987");
+  assert.deepEqual(parseConnectorRevocationReceipt(legacyReceiptV1), legacyReceiptV1);
+  assert.throws(
+    () => projectConnectorRevocationReadbackV1(legacyReceiptV1),
+    (error: unknown) => {
+      assert.ok(error instanceof ConnectorRevocationV3Error);
+      assert.equal(error.code, "LEGACY_V1_READBACK_UNAVAILABLE");
+      assert.equal(error.status, 409);
+      for (const field of ["binding", "bindingHeadDigest", "bindingVersion", "credentialGeneration", "destination"]) {
+        assert.equal(field in error, false, `legacy projection error must not expose ${field}`);
+      }
+      return true;
+    },
+  );
+
+  const malformed = { ...legacyReceiptV1, unexpected: "surplus" };
+  assert.throws(
+    () => parseConnectorRevocationReceipt(malformed),
+    (error: unknown) => error instanceof ConnectorRevocationContractError && error.code === "FIELD_SET_MISMATCH",
+  );
+
+  const source = readFileSync("src/modules/connector-revocation/v3/contracts.ts", "utf8");
+  const projectionSource = source.slice(source.indexOf("function readbackUnsigned"), source.indexOf("export function parseConnectorRevocationReadbackV1"));
+  assert.doesNotMatch(projectionSource, /luzione\.connector-revocation-legacy-redaction\/v1/);
+  assert.doesNotMatch(projectionSource, /credentialGeneration:\s*1/);
+  assert.doesNotMatch(projectionSource, /bindingContractVersion/);
+  assert.match(projectionSource, /parseConnectorRevocationReceipt\(value\)/);
+  assert.match(projectionSource, /LEGACY_V1_READBACK_UNAVAILABLE/);
+});
+
 test("v3 adverse 4: public route retires v1 and limits v2 to exact read-only replay", () => {
   const route = readFileSync("src/app/api/v1/connectors/revocations/route.ts", "utf8");
   const service = readFileSync("src/modules/connector-revocation/v3/service.ts", "utf8");
@@ -480,14 +553,28 @@ test("v3 receipt/readback finality remains source-confirmed and erasure remains 
   assert.doesNotThrow(() => parseConnectorRevocationReceiptV3(revoked));
 });
 
-test("v3 manifest pins exact schema, parser, resolver, service, migration and reverse bytes", () => {
+test("v3 predecessor manifest stays frozen and correction manifest pins the successor parser when sealed", () => {
   const manifest = JSON.parse(readFileSync("contracts/connector-revocation/v3/connector-revocation-v3.manifest.json", "utf8")) as {
     contracts: Array<{ schema: string; sha256: string; version: string }>;
     implementation: Record<string, { path: string; sha256: string }>;
   };
   const entries = [...manifest.contracts.map(({ schema: path, sha256: expected }) => ({ path, expected })), ...Object.values(manifest.implementation).map(({ path, sha256: expected }) => ({ path, expected }))];
   for (const { path, expected } of entries) {
+    if (path === "src/modules/connector-revocation/v3/contracts.ts") {
+      assert.equal(expected, "09b907ddd25cb5d5de2ea2aa98c8b002ae04366305255cce7c9830231f71f2db", "released predecessor parser pin must remain immutable");
+      continue;
+    }
     assert.equal(createHash("sha256").update(readFileSync(path)).digest("hex"), expected, path);
   }
   assert.deepEqual(manifest.contracts.map(({ version }) => version), [CONNECTOR_BINDING_READBACK_V1, "ConnectorRevocationRequest/v3", CONNECTOR_REVOCATION_RECEIPT_V3, CONNECTOR_REVOCATION_READBACK_V1]);
+
+  const correctionManifestPath = "contracts/connector-revocation/v3/connector-revocation-v3-correction-01.manifest.json";
+  if (existsSync(correctionManifestPath)) {
+    const correction = JSON.parse(readFileSync(correctionManifestPath, "utf8")) as {
+      correctedParser: { path: string; sha256: string };
+      predecessorManifest: { path: string; sha256: string };
+    };
+    assert.equal(createHash("sha256").update(readFileSync(correction.correctedParser.path)).digest("hex"), correction.correctedParser.sha256);
+    assert.equal(createHash("sha256").update(readFileSync(correction.predecessorManifest.path)).digest("hex"), correction.predecessorManifest.sha256);
+  }
 });

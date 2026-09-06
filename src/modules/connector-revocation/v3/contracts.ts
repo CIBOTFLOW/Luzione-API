@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 
-import { CONNECTOR_REVOCATION_RECEIPT_VERSION, parseConnectorRevocationReceipt, type ConnectorRevocationReceiptV1 } from "../contracts";
+import { CONNECTOR_REVOCATION_RECEIPT_VERSION, parseConnectorRevocationReceipt } from "../contracts";
 import {
   CONNECTOR_REVOCATION_RECEIPT_V2,
   parseConnectorRevocationReceiptV2,
@@ -341,27 +341,22 @@ export function parseConnectorRevocationReceiptV3(value: unknown): ConnectorRevo
   return Object.freeze(parsed);
 }
 
-function readbackUnsigned(receipt: ConnectorRevocationReceiptV3 | ConnectorRevocationReceiptV2 | ConnectorRevocationReceiptV1) {
+function readbackUnsigned(receipt: ConnectorRevocationReceiptV3 | ConnectorRevocationReceiptV2) {
   const v3 = receipt.contractVersion === CONNECTOR_REVOCATION_RECEIPT_V3 ? receipt : null;
   const v2 = receipt.contractVersion === CONNECTOR_REVOCATION_RECEIPT_V2 ? receipt : null;
-  const v1 = receipt.contractVersion === CONNECTOR_REVOCATION_RECEIPT_VERSION ? receipt : null;
   const binding = v3 ? {
     bindingHeadDigest: v3.bindingReadback.bindingHeadDigest, bindingId: v3.bindingReadback.bindingId, bindingVersion: v3.bindingReadback.bindingVersion,
     credentialGeneration: v3.bindingReadback.credential.generation, destination: v3.bindingReadback.destination, provider: v3.bindingReadback.provider, providerAccountRef: v3.bindingReadback.providerAccountRef,
-  } : v2 ? {
-    bindingHeadDigest: v2.bindingResolution.resolutionDigest, bindingId: v2.bindingResolution.binding.bindingId, bindingVersion: v2.bindingResolution.bindingVersion,
-    credentialGeneration: v2.bindingResolution.credentialHandle.generation, destination: v2.bindingResolution.destination, provider: v2.bindingResolution.binding.provider, providerAccountRef: v2.bindingResolution.providerAccountRef,
   } : {
-    bindingHeadDigest: sha256({ domain: "luzione.connector-revocation-legacy-redaction/v1", tenantId: v1!.tenantId, receiptDigest: v1!.receiptDigest }),
-    bindingId: v1!.binding.bindingId, bindingVersion: v1!.binding.bindingContractVersion, credentialGeneration: 1,
-    destination: "sandbox.connector-revocation", provider: v1!.binding.connectorProvider, providerAccountRef: v1!.binding.providerAccountRef,
+    bindingHeadDigest: v2!.bindingResolution.resolutionDigest, bindingId: v2!.bindingResolution.binding.bindingId, bindingVersion: v2!.bindingResolution.bindingVersion,
+    credentialGeneration: v2!.bindingResolution.credentialHandle.generation, destination: v2!.bindingResolution.destination, provider: v2!.bindingResolution.binding.provider, providerAccountRef: v2!.bindingResolution.providerAccountRef,
   };
   return {
     binding,
     contractVersion: CONNECTOR_REVOCATION_READBACK_V1,
     localCredentialDisposition: receipt.localCredentialDisposition,
-    operationKey: v3 ? v3.operation.key : v2 ? v2.operation.key : v1!.operation.key,
-    operationKind: v3 ? v3.operation.kind : v2 ? v2.operation.kind : v1!.operation.kind,
+    operationKey: v3 ? v3.operation.key : v2!.operation.key,
+    operationKind: v3 ? v3.operation.kind : v2!.operation.kind,
     providerAcknowledged: receipt.acknowledgement.providerAcknowledgementRef !== null,
     reconciliationResult: receipt.reconciliation.result,
     recordedAt: receipt.recordedAt,
@@ -374,16 +369,23 @@ function readbackUnsigned(receipt: ConnectorRevocationReceiptV3 | ConnectorRevoc
   };
 }
 
-function projectionDigest(input: ReturnType<typeof readbackUnsigned>) {
+function projectionDigest(input: Omit<ConnectorRevocationReadbackV1, "projectionDigest" | "readbackId">) {
   return sha256({ domain: "luzione.connector-revocation-readback/v1", tenantId: input.tenantId, value: input });
 }
 
 export function projectConnectorRevocationReadbackV1(value: unknown): ConnectorRevocationReadbackV1 {
   const row = record(value, "receipt");
+  if (row.contractVersion === CONNECTOR_REVOCATION_RECEIPT_VERSION) {
+    parseConnectorRevocationReceipt(value);
+    throw new ConnectorRevocationV3Error(
+      "LEGACY_V1_READBACK_UNAVAILABLE",
+      "ConnectorRevocationReceipt/v1 lacks source-owned binding lineage and cannot produce a public readback.",
+      409,
+    );
+  }
   const receipt = row.contractVersion === CONNECTOR_REVOCATION_RECEIPT_V3 ? parseConnectorRevocationReceiptV3(value)
     : row.contractVersion === CONNECTOR_REVOCATION_RECEIPT_V2 ? parseConnectorRevocationReceiptV2(value)
-      : row.contractVersion === CONNECTOR_REVOCATION_RECEIPT_VERSION ? parseConnectorRevocationReceipt(value)
-        : (() => { throw new ConnectorRevocationV3Error("READBACK_WRONG_VERSION", "Stored receipt version is not admitted.", 503); })();
+      : (() => { throw new ConnectorRevocationV3Error("READBACK_WRONG_VERSION", "Stored receipt version is not admitted.", 503); })();
   const unsigned = readbackUnsigned(receipt);
   const digestValue = projectionDigest(unsigned);
   return parseConnectorRevocationReadbackV1({ ...unsigned, projectionDigest: digestValue, readbackId: `connector-revocation-readback:${digestValue}` });
