@@ -12,24 +12,31 @@ import {
   makeVerifiedIncidentResetOperationsEvidenceLedgerV3Fixture,
   operationsEvidenceLedgerV3FixtureClock,
 } from "../v3/fixtures";
-import type { LuzioneOperationsEvidenceLedgerV3, OperationsEvidenceAppendStateV1, OperationsEvidenceAuthorityRecoverySourceSnapshotV1 } from "../v3/contracts";
-import { OPS_CORRECTION_03_ADVERSE_PROBES, OPS_LEDGER_V3_SCHEMA_KEYS } from "../v3/rules";
+import type { G2EffectAuthorityGrantV2, IncidentRecoverySourceBindingV1, LuzioneOperationsEvidenceLedgerV3, OperationsEvidenceAppendStateV1, OperationsEvidenceAppendStateV2, OperationsEvidenceAuthorityRecoverySourceSnapshotV1 } from "../v3/contracts";
+import { OPS_CORRECTION_04_ADVERSE_PROBES, OPS_LEDGER_V3_SCHEMA_KEYS } from "../v3/rules";
 import {
   calculateOperationsEvidenceAppendStateDigest,
+  calculateOperationsEvidenceAppendStateDigestV2,
   calculateSourceSnapshotDigest,
-  createInMemoryOperationsEvidenceAppendStateStoreV1,
+  createGenesisOperationsEvidenceAppendStateV1,
+  createInMemoryOperationsEvidenceAppendStateStoreV2,
   parseLuzioneOperationsEvidenceLedgerManifestV3,
   parseOperationsEvidenceAppendStateV1,
+  parseOperationsEvidenceAppendStateV2,
   parseOperationsEvidenceLedgerV3,
+  reinitializeEmptySyntheticAppendStateV1AsV2,
+  sealG2EffectAuthorityGrantV2,
+  sealIncidentRecoverySourceBindingV1,
   sealOperationsEvidenceLedgerV3,
 } from "../v3/sdk";
 
 const schemaPath = "contracts/operations-evidence/v3/luzione-operations-evidence-ledger-v3.schema.json";
-const appendSchemaPath = "contracts/operations-evidence/v3/operations-evidence-append-state-v1.schema.json";
+const appendSchemaPath = "contracts/operations-evidence/v3/operations-evidence-append-state-v2.schema.json";
+const stableIdentitySchemaPath = "contracts/operations-evidence/v3/stable-signed-source-readback-identity-v1.schema.json";
 const sourceSchemaPath = "contracts/operations-evidence/v3/operations-evidence-canonical-source-attestation-v1.schema.json";
 const sourceObjectsSchemaPath = "contracts/operations-evidence/v3/operations-evidence-canonical-source-objects-v1.schema.json";
 const manifestPath = "contracts/operations-evidence/luzione-operations-evidence-ledger-v3.manifest.json";
-const adverseFixturesPath = "contracts/operations-evidence/v3/ops-contracts-correction-03-adverse-fixtures.json";
+const adverseFixturesPath = "contracts/operations-evidence/v3/ops-contracts-correction-04-adverse-fixtures.json";
 
 test("D01/B07 stable grant identity is append-only across parser invocations and exact replay is idempotent", () => {
   const fixture = makeSourceBoundReadyOperationsEvidenceLedgerV3Fixture();
@@ -39,8 +46,7 @@ test("D01/B07 stable grant identity is append-only across parser invocations and
   assert.equal(replay.appendDisposition, "EXACT_REPLAY");
   assert.equal(replay.appendState.stateDigest, first.appendState.stateDigest);
 
-  const changes: Array<(row: OperationsEvidenceAppendStateV1["g2GrantIdentities"][number]) => void> = [
-    (row) => { (row as { approvalSourceDigest: string }).approvalSourceDigest = "f".repeat(64); },
+  const changes: Array<(row: OperationsEvidenceAppendStateV2["g2GrantIdentities"][number]) => void> = [
     (row) => { (row as { issuerSubjectId: string }).issuerSubjectId = "human:alternate"; },
     (row) => { (row as { actionId: string }).actionId = "g2:changed-action"; },
     (row) => { (row as { requestedStage: string }).requestedStage = "FORMAL_PROOF"; },
@@ -51,14 +57,14 @@ test("D01/B07 stable grant identity is append-only across parser invocations and
   for (const change of changes) {
     const conflicting = structuredClone(first.appendState);
     change(conflicting.g2GrantIdentities[0]);
-    conflicting.stateDigest = calculateOperationsEvidenceAppendStateDigest(withoutStateDigest(conflicting));
-    const context = { ...fixture.context, appendStateStore: createInMemoryOperationsEvidenceAppendStateStoreV1([conflicting]) };
+    conflicting.stateDigest = calculateOperationsEvidenceAppendStateDigestV2(withoutStateDigest(conflicting));
+    const context = { ...fixture.context, appendStateStore: createInMemoryOperationsEvidenceAppendStateStoreV2([conflicting]) };
     assertOpsError(() => parseOperationsEvidenceLedgerV3(fixture.ledger, context), "OPS_AUTHORITY_DENIED");
   }
   const changedState = structuredClone(first.appendState) as unknown as Record<string, unknown>;
   ((changedState.g2GrantIdentities as Array<Record<string, unknown>>)[0]).state = "REVOKED";
-  changedState.stateDigest = calculateOperationsEvidenceAppendStateDigest(withoutStateDigest(changedState as unknown as OperationsEvidenceAppendStateV1));
-  assertOpsError(() => parseOperationsEvidenceAppendStateV1(changedState), "OPS_VALUE_INVALID");
+  changedState.stateDigest = calculateOperationsEvidenceAppendStateDigestV2(withoutStateDigest(changedState as unknown as OperationsEvidenceAppendStateV2));
+  assertOpsError(() => parseOperationsEvidenceAppendStateV2(changedState), "OPS_VALUE_INVALID");
 });
 
 test("D02/B08 authenticated canonical bytes reject caller tamper and coherent re-seal", () => {
@@ -97,8 +103,8 @@ test("D04/B10 a durable prior successor rejects a later cross-ledger fork from t
   forkedHistory.epochSuccessors[0].resetId = "reset:already-committed-other-ledger";
   forkedHistory.epochSuccessors[0].resetDigest = "c".repeat(64);
   forkedHistory.epochSuccessors[0].newEpochId = "epoch:already-committed-other-ledger";
-  forkedHistory.stateDigest = calculateOperationsEvidenceAppendStateDigest(withoutStateDigest(forkedHistory));
-  const context = { ...fixture.context, appendStateStore: createInMemoryOperationsEvidenceAppendStateStoreV1([forkedHistory]) };
+  forkedHistory.stateDigest = calculateOperationsEvidenceAppendStateDigestV2(withoutStateDigest(forkedHistory));
+  const context = { ...fixture.context, appendStateStore: createInMemoryOperationsEvidenceAppendStateStoreV2([forkedHistory]) };
   const separateLedger = structuredClone(fixture.ledger);
   separateLedger.ledgerId = "ledger:separate-document-same-tenant";
   separateLedger.baseLedger = resealV2({ ...separateLedger.baseLedger, ledgerId: separateLedger.ledgerId });
@@ -136,7 +142,7 @@ test("B11 object version/hash/readback drift fails before any append", () => {
 test("gap, cycle, duplicate successor and reused new epoch fail in durable state", () => {
   const fixture = makeVerifiedIncidentResetOperationsEvidenceLedgerV3Fixture();
   const first = parseOperationsEvidenceLedgerV3(fixture.ledger, fixture.context);
-  const mutations: Array<(state: OperationsEvidenceAppendStateV1) => void> = [
+  const mutations: Array<(state: OperationsEvidenceAppendStateV2) => void> = [
     (state) => { (state.epochSuccessors[0] as { newEpochSequence: number }).newEpochSequence = 3; },
     (state) => { (state.epochSuccessors[0] as { newEpochId: string }).newEpochId = state.epochSuccessors[0].priorEpochId; },
     (state) => { state.epochSuccessors = [...state.epochSuccessors, structuredClone(state.epochSuccessors[0])] as never; },
@@ -144,21 +150,136 @@ test("gap, cycle, duplicate successor and reused new epoch fail in durable state
   for (const mutate of mutations) {
     const state = structuredClone(first.appendState);
     mutate(state);
-    state.stateDigest = calculateOperationsEvidenceAppendStateDigest(withoutStateDigest(state));
-    assertOpsError(() => parseOperationsEvidenceAppendStateV1(state), "OPS_REFERENCE_MISMATCH");
+    state.stateDigest = calculateOperationsEvidenceAppendStateDigestV2(withoutStateDigest(state));
+    assertOpsError(() => parseOperationsEvidenceAppendStateV2(state), "OPS_REFERENCE_MISMATCH");
   }
+});
+
+test("E01 signed approval readback time cannot be rebound by resealing caller wrappers", () => {
+  const fixture = makeSourceBoundReadyOperationsEvidenceLedgerV3Fixture();
+  const before = canonical(fixture.context.appendStateStore.load(fixture.ledger.tenantId, fixture.ledger.ledgerId));
+  const ledger = structuredClone(fixture.ledger);
+  const changed = structuredClone(ledger.g2EffectAuthorityGrants[0]);
+  changed.approvalSource.readbackAt = "2026-09-05T03:01:00.000Z";
+  ledger.g2EffectAuthorityGrants = [resealGrant(changed), ...ledger.g2EffectAuthorityGrants.slice(1)];
+  const snapshot = structuredClone(fixture.context.sourceSnapshot);
+  snapshot.g2EffectAuthorityGrants = ledger.g2EffectAuthorityGrants.map((grant) => structuredClone(grant));
+  snapshot.snapshotDigest = calculateSourceSnapshotDigest(withoutSnapshotDigest(snapshot));
+  assertOpsError(() => parseOperationsEvidenceLedgerV3(reseal(ledger), { ...fixture.context, sourceSnapshot: snapshot }), "OPS_AUTHORITY_DENIED");
+  assert.equal(canonical(fixture.context.appendStateStore.load(ledger.tenantId, ledger.ledgerId)), before);
+});
+
+test("E02 one signed approval/readback identity cannot be appended under a new grant ID", () => {
+  const fixture = makeSourceBoundReadyOperationsEvidenceLedgerV3Fixture();
+  parseOperationsEvidenceLedgerV3(fixture.ledger, fixture.context);
+  const ledger = structuredClone(fixture.ledger);
+  const changed = structuredClone(ledger.g2EffectAuthorityGrants[0]);
+  changed.grantId = `${changed.grantId}:alternate`;
+  ledger.g2EffectAuthorityGrants = [resealGrant(changed), ...ledger.g2EffectAuthorityGrants.slice(1)];
+  const snapshot = structuredClone(fixture.context.sourceSnapshot);
+  snapshot.g2EffectAuthorityGrants = ledger.g2EffectAuthorityGrants.map((grant) => structuredClone(grant));
+  snapshot.snapshotDigest = calculateSourceSnapshotDigest(withoutSnapshotDigest(snapshot));
+  const before = canonical(fixture.context.appendStateStore.load(ledger.tenantId, ledger.ledgerId));
+  assertOpsError(() => parseOperationsEvidenceLedgerV3(reseal(ledger), { ...fixture.context, sourceSnapshot: snapshot }), "OPS_AUTHORITY_DENIED");
+  assert.equal(canonical(fixture.context.appendStateStore.load(ledger.tenantId, ledger.ledgerId)), before);
+});
+
+test("E03 one signed approval cannot be rebound to changed action, stage, or effect scope", () => {
+  const mutations: Array<(grant: G2EffectAuthorityGrantV2) => void> = [
+    (grant) => { grant.actionId = "g2:open-formal-proof"; },
+    (grant) => { grant.requestedStage = "FORMAL_PROOF"; },
+    (grant) => { grant.effect = "FORMAL_PROOF_OPEN"; },
+  ];
+  for (const mutate of mutations) {
+    const fixture = makeSourceBoundReadyOperationsEvidenceLedgerV3Fixture();
+    const ledger = structuredClone(fixture.ledger);
+    const changed = structuredClone(ledger.g2EffectAuthorityGrants[0]);
+    mutate(changed);
+    ledger.g2EffectAuthorityGrants = [resealGrant(changed), ...ledger.g2EffectAuthorityGrants.slice(1)];
+    const snapshot = structuredClone(fixture.context.sourceSnapshot);
+    snapshot.g2EffectAuthorityGrants = ledger.g2EffectAuthorityGrants.map((grant) => structuredClone(grant));
+    snapshot.snapshotDigest = calculateSourceSnapshotDigest(withoutSnapshotDigest(snapshot));
+    const before = canonical(fixture.context.appendStateStore.load(ledger.tenantId, ledger.ledgerId));
+    assertOpsError(() => parseOperationsEvidenceLedgerV3(reseal(ledger), { ...fixture.context, sourceSnapshot: snapshot }), "OPS_AUTHORITY_DENIED");
+    assert.equal(canonical(fixture.context.appendStateStore.load(ledger.tenantId, ledger.ledgerId)), before);
+  }
+});
+
+test("E04-E05 signed incident and recovery readback times cannot be rebound", () => {
+  for (const sourceKey of ["incidentSource", "recoverySource"] as const) {
+    const fixture = makeVerifiedIncidentResetOperationsEvidenceLedgerV3Fixture();
+    const ledger = structuredClone(fixture.ledger);
+    const changed = structuredClone(ledger.incidentRecoverySourceBindings[0]);
+    changed[sourceKey].readbackAt = sourceKey === "incidentSource"
+      ? "2026-09-04T03:31:00.000Z"
+      : "2026-09-04T04:11:00.000Z";
+    ledger.incidentRecoverySourceBindings = [resealIncidentBinding(changed), ...ledger.incidentRecoverySourceBindings.slice(1)];
+    const snapshot = structuredClone(fixture.context.sourceSnapshot);
+    snapshot.incidentRecoverySourceBindings = ledger.incidentRecoverySourceBindings.map((binding) => structuredClone(binding));
+    snapshot.snapshotDigest = calculateSourceSnapshotDigest(withoutSnapshotDigest(snapshot));
+    const before = canonical(fixture.context.appendStateStore.load(ledger.tenantId, ledger.ledgerId));
+    assertOpsError(() => parseOperationsEvidenceLedgerV3(reseal(ledger), { ...fixture.context, sourceSnapshot: snapshot }), "OPS_AUTHORITY_DENIED");
+    assert.equal(canonical(fixture.context.appendStateStore.load(ledger.tenantId, ledger.ledgerId)), before);
+  }
+});
+
+test("E06-E07 exact replay is byte-idempotent and every rejected call leaves state byte-identical", () => {
+  const fixture = makeSourceBoundReadyOperationsEvidenceLedgerV3Fixture();
+  const first = parseOperationsEvidenceLedgerV3(fixture.ledger, fixture.context);
+  const beforeReplay = canonical(fixture.context.appendStateStore.load(fixture.ledger.tenantId, fixture.ledger.ledgerId));
+  const replay = parseOperationsEvidenceLedgerV3(fixture.ledger, fixture.context);
+  assert.equal(replay.appendDisposition, "EXACT_REPLAY");
+  assert.equal(canonical(replay.appendState), beforeReplay);
+
+  const changed = structuredClone(fixture.ledger);
+  changed.g2EffectAuthorityGrants[0].approvalSource.readbackAt = "2026-09-05T03:02:00.000Z";
+  changed.g2EffectAuthorityGrants = [resealGrant(changed.g2EffectAuthorityGrants[0]), ...changed.g2EffectAuthorityGrants.slice(1)];
+  const snapshot = structuredClone(fixture.context.sourceSnapshot);
+  snapshot.g2EffectAuthorityGrants = changed.g2EffectAuthorityGrants.map((grant) => structuredClone(grant));
+  snapshot.snapshotDigest = calculateSourceSnapshotDigest(withoutSnapshotDigest(snapshot));
+  assertOpsError(() => parseOperationsEvidenceLedgerV3(reseal(changed), { ...fixture.context, sourceSnapshot: snapshot }), "OPS_AUTHORITY_DENIED");
+  assert.equal(canonical(fixture.context.appendStateStore.load(changed.tenantId, changed.ledgerId)), beforeReplay);
+  assert.equal(first.appendState.stateDigest, replay.appendState.stateDigest);
+});
+
+test("E08-E09 populated v1 history is denied while empty synthetic v1 can initialize zero-credit v2", () => {
+  const fixture = makeBasicOperationsEvidenceLedgerV3Fixture();
+  const emptyV1 = createGenesisOperationsEvidenceAppendStateV1(fixture.ledger.tenantId, fixture.ledger.ledgerId);
+  const populatedV1 = structuredClone(emptyV1);
+  populatedV1.appliedLedgerDigests = ["a".repeat(64)];
+  populatedV1.priorStateDigest = emptyV1.stateDigest;
+  populatedV1.revision = 1;
+  populatedV1.stateDigest = calculateOperationsEvidenceAppendStateDigest(withoutStateDigestV1(populatedV1));
+  assert.doesNotThrow(() => parseOperationsEvidenceAppendStateV1(populatedV1));
+  assertOpsError(() => reinitializeEmptySyntheticAppendStateV1AsV2(populatedV1), "OPS_AUTHORITY_DENIED");
+
+  const v2 = reinitializeEmptySyntheticAppendStateV1AsV2(emptyV1);
+  assert.equal(v2.contractVersion, "OperationsEvidenceAppendState/v2");
+  assert.equal(v2.revision, 0);
+  assert.deepEqual(v2.appliedLedgerDigests, []);
+  const parsed = parseOperationsEvidenceLedgerV3(fixture.ledger, {
+    ...fixture.context,
+    appendStateStore: createInMemoryOperationsEvidenceAppendStateStoreV2([v2]),
+  });
+  assert.deepEqual(parsed.decision, {
+    decisionBearingUse: "PROHIBITED_PENDING_ASSURANCE_04_AND_CANONICAL_SOURCES",
+    g2Credit: 0, productionCredit: 0, proofDayCredit: 0,
+  });
 });
 
 test("schema/SDK parity exposes exact append/source field sets and all D01-D06/B07-B11 probes", () => {
   const schema = JSON.parse(readFileSync(schemaPath, "utf8"));
   const appendSchema = JSON.parse(readFileSync(appendSchemaPath, "utf8"));
+  const stableIdentitySchema = JSON.parse(readFileSync(stableIdentitySchemaPath, "utf8"));
   const sourceSchema = JSON.parse(readFileSync(sourceSchemaPath, "utf8"));
   const sourceObjectsSchema = JSON.parse(readFileSync(sourceObjectsSchemaPath, "utf8"));
   assert.deepEqual([...schema.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.ledger].sort());
   assert.deepEqual([...schema.$defs.SourceSnapshot.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.sourceSnapshot].sort());
-  assert.deepEqual([...appendSchema.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.appendState].sort());
-  assert.deepEqual([...appendSchema.$defs.EpochSuccessor.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.epochSuccessorIdentity].sort());
-  assert.deepEqual([...appendSchema.$defs.G2GrantIdentity.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.g2GrantIdentity].sort());
+  assert.deepEqual([...appendSchema.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.appendStateV2].sort());
+  assert.deepEqual([...appendSchema.$defs.EpochSuccessor.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.epochSuccessorIdentityV2].sort());
+  assert.deepEqual([...appendSchema.$defs.G2GrantIdentity.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.g2GrantIdentityV2].sort());
+  assert.deepEqual([...appendSchema.$defs.StableSignedSourceReadbackIdentity.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.stableSignedSourceReadbackIdentity].sort());
+  assert.deepEqual([...stableIdentitySchema.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.stableSignedSourceReadbackIdentity].sort());
   assert.deepEqual([...sourceSchema.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.canonicalSourceAttestation].sort());
   assert.deepEqual([...sourceObjectsSchema.$defs.TenantMembership.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.canonicalTenantMembership].sort());
   assert.deepEqual([...sourceObjectsSchema.$defs.G2Approval.required].sort(), [...OPS_LEDGER_V3_SCHEMA_KEYS.canonicalG2Approval].sort());
@@ -168,14 +289,14 @@ test("schema/SDK parity exposes exact append/source field sets and all D01-D06/B
   assert.equal(schema.properties.decisionPolicy.const, "ZERO_CREDIT_PENDING_ASSURANCE_04");
   assert.equal(schema["x-luzione-semanticRules"].proofDayCreditCeiling, 0);
   const adverseFixtures = JSON.parse(readFileSync(adverseFixturesPath, "utf8"));
-  assert.deepEqual(adverseFixtures.fixtures.map((fixture: { id: string }) => fixture.id), [...OPS_CORRECTION_03_ADVERSE_PROBES]);
+  assert.deepEqual(adverseFixtures.fixtures.map((fixture: { id: string }) => fixture.id), [...OPS_CORRECTION_04_ADVERSE_PROBES]);
   assert.deepEqual(adverseFixtures.creditCeiling, { proofDays: 0, g2: 0, production: 0 });
 });
 
 test("D06 manifest and immutable handoff contain exact truthful evidence modes without self-hash placeholders", () => {
   const manifest = parseLuzioneOperationsEvidenceLedgerManifestV3(JSON.parse(readFileSync(manifestPath, "utf8")));
-  assert.equal(manifest.controllerAuthority, "b20899aa38b3e57aa809924266d9f68a94495468");
-  assert.equal(manifest.assuranceFingerprintSha256, "02c7b353f9fbc43cd78f0af096c55a9622a68158794f1735924a29aa036af4a8");
+  assert.equal(manifest.controllerAuthority, "48b8e76d510bd5f8bbc06510ad0ba7df9b39315b");
+  assert.equal(manifest.assuranceFingerprintSha256, "d122a74f54fa03fb4d60214363e84608888cda5f54a80457fad7ce96b8c08764");
   assert.deepEqual(manifest.sourceAvailability, {
     canonicalG2Approval: "ABSENT", canonicalHumanMembership: "ABSENT", incidentBoundRecovery: "ABSENT", resolvedVerifiedIncident: "ABSENT",
   });
@@ -219,7 +340,25 @@ function resealV2(ledger: LuzioneOperationsEvidenceLedgerV2): LuzioneOperationsE
   });
 }
 
-function withoutStateDigest(state: OperationsEvidenceAppendStateV1): Omit<OperationsEvidenceAppendStateV1, "stateDigest"> {
+function resealGrant(grant: G2EffectAuthorityGrantV2): G2EffectAuthorityGrantV2 {
+  const copy = structuredClone(grant) as unknown as Record<string, unknown>;
+  delete copy.grantDigest;
+  return sealG2EffectAuthorityGrantV2(copy as Omit<G2EffectAuthorityGrantV2, "grantDigest">);
+}
+
+function resealIncidentBinding(binding: IncidentRecoverySourceBindingV1): IncidentRecoverySourceBindingV1 {
+  const copy = structuredClone(binding) as unknown as Record<string, unknown>;
+  delete copy.bindingDigest;
+  return sealIncidentRecoverySourceBindingV1(copy as Omit<IncidentRecoverySourceBindingV1, "bindingDigest">);
+}
+
+function withoutStateDigest(state: OperationsEvidenceAppendStateV2): Omit<OperationsEvidenceAppendStateV2, "stateDigest"> {
+  const copy = structuredClone(state) as unknown as Record<string, unknown>;
+  delete copy.stateDigest;
+  return copy as Omit<OperationsEvidenceAppendStateV2, "stateDigest">;
+}
+
+function withoutStateDigestV1(state: OperationsEvidenceAppendStateV1): Omit<OperationsEvidenceAppendStateV1, "stateDigest"> {
   const copy = structuredClone(state) as unknown as Record<string, unknown>;
   delete copy.stateDigest;
   return copy as Omit<OperationsEvidenceAppendStateV1, "stateDigest">;

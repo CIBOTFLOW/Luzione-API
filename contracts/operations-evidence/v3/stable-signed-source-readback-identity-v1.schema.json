@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/operations-evidence/v3/stable-signed-source-readback-identity-v1.schema.json",
+  "title": "Stable Signed Source Readback Identity v1",
+  "description": "Immutable identity derived only from authenticated canonical source object and readback bytes. Mutable wrapper digests are not authority identity.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "contractVersion": { "const": "StableSignedSourceReadbackIdentity/v1" },
+    "objectHash": { "$ref": "#/$defs/Sha256" },
+    "objectId": { "$ref": "#/$defs/Id" },
+    "objectType": { "enum": ["G2_APPROVAL", "RECOVERY_RECEIPT", "PROOF_INCIDENT", "TENANT_MEMBERSHIP"] },
+    "objectVersion": { "$ref": "#/$defs/Id" },
+    "readbackAt": { "$ref": "#/$defs/Timestamp" },
+    "readbackHash": { "$ref": "#/$defs/Sha256" },
+    "readbackId": { "$ref": "#/$defs/Id" },
+    "sourceSystem": { "enum": ["LUZIONE_CORE", "LUZIONE_CRM_APP"] },
+    "tenantId": { "$ref": "#/$defs/Id" }
+  },
+  "required": ["contractVersion", "objectHash", "objectId", "objectType", "objectVersion", "readbackAt", "readbackHash", "readbackId", "sourceSystem", "tenantId"],
+  "$defs": {
+    "Id": { "type": "string", "minLength": 3, "maxLength": 240, "pattern": "^\\S(?:.*\\S)?$" },
+    "Sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "Timestamp": { "type": "string", "format": "date-time", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$" }
+  },
+  "x-luzione-authority-source": "AUTHENTICATED_SIGNED_BYTES_ONLY",
+  "x-luzione-effect-authority": "NO_EFFECT"
+}

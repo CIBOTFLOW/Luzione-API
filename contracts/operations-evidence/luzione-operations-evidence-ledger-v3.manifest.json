@@ -3,8 +3,8 @@
   "ledgerVersion": "LuzioneOperationsEvidenceLedger/v3",
   "baseLedgerVersion": "LuzioneOperationsEvidenceLedger/v2",
   "candidateSha": "f801ebfee1668ec822a4e41d5aedc7cd62b876c5",
-  "controllerAuthority": "b20899aa38b3e57aa809924266d9f68a94495468",
-  "assuranceFingerprintSha256": "02c7b353f9fbc43cd78f0af096c55a9622a68158794f1735924a29aa036af4a8",
+  "controllerAuthority": "48b8e76d510bd5f8bbc06510ad0ba7df9b39315b",
+  "assuranceFingerprintSha256": "d122a74f54fa03fb4d60214363e84608888cda5f54a80457fad7ce96b8c08764",
   "sourceMapFingerprintSha256": "66ca2ccbaca70ef60b407be7ac9230184b55cdeccbd9c50fdc67566802d72959",
   "effectAuthority": "NO_EFFECT",
   "runtimeActivation": "NOT_IMPLEMENTED",
@@ -16,7 +16,7 @@
     "resolvedVerifiedIncident": "ABSENT"
   },
   "artifacts": {
-    "appendStateSchema": "contracts/operations-evidence/v3/operations-evidence-append-state-v1.schema.json",
+    "appendStateSchema": "contracts/operations-evidence/v3/operations-evidence-append-state-v2.schema.json",
     "canonicalSourceObjectsSchema": "contracts/operations-evidence/v3/operations-evidence-canonical-source-objects-v1.schema.json",
     "l2SourcePacket": "contracts/operations-evidence/consumer-mappings/l2-ops-ledger-v3.json",
     "l3SourcePacket": "contracts/operations-evidence/consumer-mappings/l3-ops-ledger-v3.json",
@@ -24,6 +24,7 @@
     "schemaBundle": "contracts/operations-evidence/v3/luzione-operations-evidence-ledger-v3.schema.json",
     "semanticFixtures": "src/modules/operations-evidence-contracts/v3/fixtures.ts",
     "sourceAttestationSchema": "contracts/operations-evidence/v3/operations-evidence-canonical-source-attestation-v1.schema.json",
+    "stableSignedSourceReadbackIdentitySchema": "contracts/operations-evidence/v3/stable-signed-source-readback-identity-v1.schema.json",
     "strictConsumerSdk": "src/modules/operations-evidence-contracts/v3/index.ts"
   },
   "compatibility": {
@@ -32,7 +33,9 @@
     "decisionBearingV1UseProhibited": true,
     "decisionBearingV2UseProhibited": true,
     "exactFieldSets": true,
+    "populatedV1StateMigrationDenied": true,
     "resetCalendarDayExcluded": true,
+    "signedReadbackTimeBound": true,
     "sourceBindingsRequired": true,
     "unknownVersionsRejected": true
   }

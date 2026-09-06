@@ -35,8 +35,8 @@ import {
   calculateCanonicalSourceAttestationDigest,
   calculateExactSourceBytesHash,
   calculateSourceSnapshotDigest,
-  createGenesisOperationsEvidenceAppendStateV1,
-  createInMemoryOperationsEvidenceAppendStateStoreV1,
+  createGenesisOperationsEvidenceAppendStateV2,
+  createInMemoryOperationsEvidenceAppendStateStoreV2,
   deriveCapabilityEpochResetV2,
   sealG2EffectAuthorityGrantV2,
   sealHumanAuthoritySourceBindingV1,
@@ -212,7 +212,7 @@ export const operationsEvidenceLedgerV3Fixture: LuzioneOperationsEvidenceLedgerV
 function contextFor(ledgerId: string, snapshot: OperationsEvidenceAuthorityRecoverySourceSnapshotV1, anchors: readonly CapabilityEpochAnchorV1[] = []): OperationsEvidenceLedgerParseContextV3 {
   return {
     assessmentTime: operationsEvidenceLedgerV3FixtureClock.assessmentTime,
-    appendStateStore: createInMemoryOperationsEvidenceAppendStateStoreV1([createGenesisOperationsEvidenceAppendStateV1(operationsEvidenceLedgerV3TenantId, ledgerId, anchors)]),
+    appendStateStore: createInMemoryOperationsEvidenceAppendStateStoreV2([createGenesisOperationsEvidenceAppendStateV2(operationsEvidenceLedgerV3TenantId, ledgerId, anchors)]),
     sourceSnapshot: snapshot,
   };
 }

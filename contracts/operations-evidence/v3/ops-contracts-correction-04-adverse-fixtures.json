@@ -1,0 +1,27 @@
+{
+  "packetId": "OPS-CONTRACTS-CORRECTION-04-L1-G0/v1",
+  "controllerAuthority": "48b8e76d510bd5f8bbc06510ad0ba7df9b39315b",
+  "implementationPacketFingerprintSha256": "8ad158c14f990459fa2902f7e5aa5e6691185e729c31af76915979f68d7de0da",
+  "assuranceFingerprintSha256": "d122a74f54fa03fb4d60214363e84608888cda5f54a80457fad7ce96b8c08764",
+  "effectAuthority": "NO_EFFECT",
+  "creditCeiling": { "proofDays": 0, "g2": 0, "production": 0 },
+  "fixtures": [
+    { "id": "E01_APPROVAL_SIGNED_READBACK_TIME_REBIND", "expected": "OPS_AUTHORITY_DENIED" },
+    { "id": "E02_APPROVAL_IDENTITY_REUSE_NEW_GRANT", "expected": "OPS_AUTHORITY_DENIED" },
+    { "id": "E03_APPROVAL_IDENTITY_REUSE_CHANGED_SCOPE", "variants": ["action", "stage", "effect"], "expected": "OPS_AUTHORITY_DENIED" },
+    { "id": "E04_INCIDENT_SIGNED_READBACK_TIME_REBIND", "expected": "OPS_AUTHORITY_DENIED" },
+    { "id": "E05_RECOVERY_SIGNED_READBACK_TIME_REBIND", "expected": "OPS_AUTHORITY_DENIED" },
+    { "id": "E06_EXACT_REPLAY_NO_MUTATION", "expected": "EXACT_REPLAY" },
+    { "id": "E07_ATOMIC_REJECTION_NO_MUTATION", "expected": "STATE_BYTE_IDENTICAL" },
+    { "id": "E08_POPULATED_V1_HISTORY_MIGRATION_DENIED", "expected": "OPS_AUTHORITY_DENIED" },
+    { "id": "E09_EMPTY_SYNTHETIC_V2_GENESIS", "expected": "ZERO_CREDIT_V2_GENESIS" }
+  ],
+  "regressions": [
+    "D03_GENERIC_RECOVERY_RELABEL",
+    "D04_CROSS_LEDGER_EPOCH_FORK",
+    "D05_RESET_DAY_CAPABILITY_CREDIT",
+    "B11_SOURCE_VERSION_HASH_READBACK_DRIFT",
+    "L2_L3_ABSENT_DISCONNECTED",
+    "ZERO_DECISION_PROOF_G2_PRODUCTION_CREDIT"
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.luzione.com/contracts/operations-evidence/v3/operations-evidence-append-state-v2.schema.json",
+  "title": "Operations Evidence Append State v2",
+  "description": "Compare-and-append state keyed by stable authenticated signed source/readback identities. Populated v1 history cannot be inferred as v2.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "appliedLedgerDigests": { "type": "array", "items": { "$ref": "#/$defs/Sha256" }, "uniqueItems": true },
+    "contractVersion": { "const": "OperationsEvidenceAppendState/v2" },
+    "epochAnchors": { "type": "array", "items": { "$ref": "#/$defs/EpochAnchor" }, "uniqueItems": true },
+    "epochSuccessors": { "type": "array", "items": { "$ref": "#/$defs/EpochSuccessor" }, "uniqueItems": true },
+    "g2GrantIdentities": { "type": "array", "items": { "$ref": "#/$defs/G2GrantIdentity" }, "uniqueItems": true },
+    "priorStateDigest": { "oneOf": [{ "$ref": "#/$defs/Sha256" }, { "type": "null" }] },
+    "revision": { "type": "integer", "minimum": 0 },
+    "stateDigest": { "$ref": "#/$defs/Sha256" },
+    "stateScopeId": { "$ref": "#/$defs/Id" },
+    "tenantId": { "$ref": "#/$defs/Id" }
+  },
+  "required": ["appliedLedgerDigests", "contractVersion", "epochAnchors", "epochSuccessors", "g2GrantIdentities", "priorStateDigest", "revision", "stateDigest", "stateScopeId", "tenantId"],
+  "$defs": {
+    "Id": { "type": "string", "minLength": 3, "maxLength": 240, "pattern": "^\\S(?:.*\\S)?$" },
+    "Sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "Timestamp": { "type": "string", "format": "date-time", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$" },
+    "StableSignedSourceReadbackIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contractVersion": { "const": "StableSignedSourceReadbackIdentity/v1" },
+        "objectHash": { "$ref": "#/$defs/Sha256" },
+        "objectId": { "$ref": "#/$defs/Id" },
+        "objectType": { "enum": ["G2_APPROVAL", "RECOVERY_RECEIPT", "PROOF_INCIDENT", "TENANT_MEMBERSHIP"] },
+        "objectVersion": { "$ref": "#/$defs/Id" },
+        "readbackAt": { "$ref": "#/$defs/Timestamp" },
+        "readbackHash": { "$ref": "#/$defs/Sha256" },
+        "readbackId": { "$ref": "#/$defs/Id" },
+        "sourceSystem": { "enum": ["LUZIONE_CORE", "LUZIONE_CRM_APP"] },
+        "tenantId": { "$ref": "#/$defs/Id" }
+      },
+      "required": ["contractVersion", "objectHash", "objectId", "objectType", "objectVersion", "readbackAt", "readbackHash", "readbackId", "sourceSystem", "tenantId"]
+    },
+    "EpochAnchor": {
+      "type": "object", "additionalProperties": false,
+      "properties": { "capabilityId": { "$ref": "#/$defs/Id" }, "epochId": { "$ref": "#/$defs/Id" }, "epochSequence": { "type": "integer", "minimum": 0 }, "tenantId": { "$ref": "#/$defs/Id" } },
+      "required": ["capabilityId", "epochId", "epochSequence", "tenantId"]
+    },
+    "EpochSuccessor": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "capabilityId": { "$ref": "#/$defs/Id" },
+        "incidentRecoveryBindingDigest": { "$ref": "#/$defs/Sha256" },
+        "incidentSourceIdentity": { "$ref": "#/$defs/StableSignedSourceReadbackIdentity" },
+        "incidentSourceIdentityDigest": { "$ref": "#/$defs/Sha256" },
+        "newEpochId": { "$ref": "#/$defs/Id" },
+        "newEpochSequence": { "type": "integer", "minimum": 1 },
+        "priorEpochId": { "$ref": "#/$defs/Id" },
+        "priorEpochSequence": { "type": "integer", "minimum": 0 },
+        "recoverySourceIdentity": { "$ref": "#/$defs/StableSignedSourceReadbackIdentity" },
+        "recoverySourceIdentityDigest": { "$ref": "#/$defs/Sha256" },
+        "resetDigest": { "$ref": "#/$defs/Sha256" },
+        "resetId": { "$ref": "#/$defs/Id" }
+      },
+      "required": ["capabilityId", "incidentRecoveryBindingDigest", "incidentSourceIdentity", "incidentSourceIdentityDigest", "newEpochId", "newEpochSequence", "priorEpochId", "priorEpochSequence", "recoverySourceIdentity", "recoverySourceIdentityDigest", "resetDigest", "resetId"]
+    },
+    "G2GrantIdentity": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "actionId": { "$ref": "#/$defs/Id" },
+        "approvalSourceIdentity": { "$ref": "#/$defs/StableSignedSourceReadbackIdentity" },
+        "approvalSourceIdentityDigest": { "$ref": "#/$defs/Sha256" },
+        "effect": { "enum": ["TENANT_LIVE_READ", "TENANT_REVERSIBLE_WRITE", "BOUNDED_PROVIDER_ACTION", "FORMAL_PROOF_OPEN"] },
+        "expiresAt": { "$ref": "#/$defs/Timestamp" },
+        "grantDigest": { "$ref": "#/$defs/Sha256" },
+        "grantId": { "$ref": "#/$defs/Id" },
+        "issuerSubjectId": { "$ref": "#/$defs/Id" },
+        "requestedStage": { "enum": ["READS", "REVERSIBLE_WRITES", "BOUNDED_PROVIDER_ACTIONS", "FORMAL_PROOF"] },
+        "state": { "const": "GRANTED" }
+      },
+      "required": ["actionId", "approvalSourceIdentity", "approvalSourceIdentityDigest", "effect", "expiresAt", "grantDigest", "grantId", "issuerSubjectId", "requestedStage", "state"]
+    }
+  },
+  "x-luzione-v1-transition": "EMPTY_SYNTHETIC_ONLY_ZERO_CREDIT",
+  "x-luzione-effect-authority": "NO_EFFECT"
+}

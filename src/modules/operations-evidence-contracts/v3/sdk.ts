@@ -18,9 +18,11 @@ import {
   OPERATIONS_EVIDENCE_LEDGER_V3_VERSION,
   type CapabilityEpochAnchorV1,
   type CapabilityEpochSuccessorIdentityV1,
+  type CapabilityEpochSuccessorIdentityV2,
   type CapabilityEpochResetV2,
   type ExactAuthorityRecoverySourceReadbackV1,
   type G2GrantAppendIdentityV1,
+  type G2GrantAppendIdentityV2,
   type G2EffectAuthorityGrantV2,
   type HumanAuthoritySourceBindingV1,
   type IncidentRecoverySourceBindingV1,
@@ -28,16 +30,19 @@ import {
   type LuzioneOperationsEvidenceLedgerV3,
   type OperationsEvidenceAuthorityRecoverySourceSnapshotV1,
   type OperationsEvidenceAppendStateStoreV1,
+  type OperationsEvidenceAppendStateStoreV2,
   type OperationsEvidenceAppendStateV1,
+  type OperationsEvidenceAppendStateV2,
   type OperationsEvidenceCanonicalSourceAttestationV1,
   type OperationsEvidenceCanonicalSourceObjectV1,
   type OperationsEvidenceCanonicalSourceReadbackV1,
   type OperationsEvidenceLedgerParseContextV3,
   type ParsedOperationsEvidenceLedgerV3,
+  type StableSignedSourceReadbackIdentityV1,
 } from "./contracts";
 import {
   OPS_CORRECTION_02_ASSURANCE,
-  OPS_CORRECTION_03_ASSURANCE,
+  OPS_CORRECTION_04_ASSURANCE,
   OPS_LEDGER_V3_SCHEMA_KEYS,
   OWNER_FUNCTIONS_BY_ROLE_V3,
   OPS_V3_SYNTHETIC_SOURCE_TRUST_ROOT,
@@ -66,6 +71,31 @@ export function calculateSourceSnapshotDigest(
     incidentRecoverySourceBindings: [...snapshot.incidentRecoverySourceBindings].sort((a, b) => a.bindingId.localeCompare(b.bindingId)),
     sourceAttestations: [...snapshot.sourceAttestations].sort((a, b) => a.attestationId.localeCompare(b.attestationId)),
   });
+}
+
+export function calculateStableSignedSourceReadbackIdentityDigest(
+  identity: StableSignedSourceReadbackIdentityV1,
+): string {
+  return calculateContentDigest(parseStableSignedSourceReadbackIdentityV1(identity));
+}
+
+export function parseStableSignedSourceReadbackIdentityV1(
+  value: unknown,
+): StableSignedSourceReadbackIdentityV1 {
+  const raw = exact(value, OPS_LEDGER_V3_SCHEMA_KEYS.stableSignedSourceReadbackIdentity, "stableSignedSourceReadbackIdentity");
+  literal(raw.contractVersion, OPERATIONS_EVIDENCE_LEDGER_V3_AUXILIARY_VERSIONS.stableSignedSourceReadbackIdentity, "stableSignedSourceReadbackIdentity.contractVersion", "OPS_WRONG_VERSION");
+  return {
+    contractVersion: OPERATIONS_EVIDENCE_LEDGER_V3_AUXILIARY_VERSIONS.stableSignedSourceReadbackIdentity,
+    objectHash: sha(raw.objectHash, "stableSignedSourceReadbackIdentity.objectHash"),
+    objectId: id(raw.objectId, "stableSignedSourceReadbackIdentity.objectId"),
+    objectType: enumeration(raw.objectType, ["G2_APPROVAL", "RECOVERY_RECEIPT", "PROOF_INCIDENT", "TENANT_MEMBERSHIP"], "stableSignedSourceReadbackIdentity.objectType"),
+    objectVersion: id(raw.objectVersion, "stableSignedSourceReadbackIdentity.objectVersion"),
+    readbackAt: timestamp(raw.readbackAt, "stableSignedSourceReadbackIdentity.readbackAt"),
+    readbackHash: sha(raw.readbackHash, "stableSignedSourceReadbackIdentity.readbackHash"),
+    readbackId: id(raw.readbackId, "stableSignedSourceReadbackIdentity.readbackId"),
+    sourceSystem: enumeration(raw.sourceSystem, ["LUZIONE_CORE", "LUZIONE_CRM_APP"], "stableSignedSourceReadbackIdentity.sourceSystem"),
+    tenantId: id(raw.tenantId, "stableSignedSourceReadbackIdentity.tenantId"),
+  };
 }
 
 export function calculateOperationsEvidenceAppendStateDigest(
@@ -206,6 +236,8 @@ function ensureAppendOnlyState(current: OperationsEvidenceAppendStateV1, next: O
   }
 }
 
+// Compatibility-only v1 algorithm retained for byte/semantic archaeology; v3 decision parsing requires v2 state.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function appendLedgerState(
   current: OperationsEvidenceAppendStateV1,
   ledger: LuzioneOperationsEvidenceLedgerV3,
@@ -285,6 +317,273 @@ function validateStoredEpochLineage(
     }
   }
   if (successors.some((item) => !anchors.some((anchor) => anchor.capabilityId === item.capabilityId))) mismatch("Append-state successor lacks a genesis capability anchor.");
+}
+
+export function calculateOperationsEvidenceAppendStateDigestV2(
+  state: Omit<OperationsEvidenceAppendStateV2, "stateDigest">,
+): string {
+  return calculateContentDigest({
+    ...state,
+    appliedLedgerDigests: [...state.appliedLedgerDigests].sort(),
+    epochAnchors: [...state.epochAnchors].sort((a, b) => a.capabilityId.localeCompare(b.capabilityId)),
+    epochSuccessors: [...state.epochSuccessors].sort((a, b) => a.resetId.localeCompare(b.resetId)),
+    g2GrantIdentities: [...state.g2GrantIdentities].sort((a, b) => a.grantId.localeCompare(b.grantId)),
+  });
+}
+
+export function createGenesisOperationsEvidenceAppendStateV2(
+  tenantIdValue: string,
+  stateScopeIdValue: string,
+  epochAnchorsValue: readonly CapabilityEpochAnchorV1[] = [],
+): OperationsEvidenceAppendStateV2 {
+  const tenantId = id(tenantIdValue, "appendStateV2.tenantId");
+  const stateScopeId = id(stateScopeIdValue, "appendStateV2.stateScopeId");
+  const epochAnchors = epochAnchorsValue.map((anchor, index) => parseEpochAnchor(anchor, tenantId, `appendStateV2.epochAnchors[${index}]`));
+  const withoutDigest: Omit<OperationsEvidenceAppendStateV2, "stateDigest"> = {
+    appliedLedgerDigests: [],
+    contractVersion: OPERATIONS_EVIDENCE_LEDGER_V3_AUXILIARY_VERSIONS.appendStateV2,
+    epochAnchors,
+    epochSuccessors: [],
+    g2GrantIdentities: [],
+    priorStateDigest: null,
+    revision: 0,
+    stateScopeId,
+    tenantId,
+  };
+  return { ...withoutDigest, stateDigest: calculateOperationsEvidenceAppendStateDigestV2(withoutDigest) };
+}
+
+export function reinitializeEmptySyntheticAppendStateV1AsV2(
+  value: unknown,
+): OperationsEvidenceAppendStateV2 {
+  const legacy = parseOperationsEvidenceAppendStateV1(value);
+  if (legacy.revision !== 0 || legacy.priorStateDigest !== null || legacy.appliedLedgerDigests.length !== 0
+    || legacy.g2GrantIdentities.length !== 0 || legacy.epochSuccessors.length !== 0) {
+    authority("Populated OperationsEvidenceAppendState/v1 cannot be inferred, migrated, or credited as v2 history.");
+  }
+  return createGenesisOperationsEvidenceAppendStateV2(legacy.tenantId, legacy.stateScopeId, legacy.epochAnchors);
+}
+
+export function createInMemoryOperationsEvidenceAppendStateStoreV2(
+  initialStates: readonly OperationsEvidenceAppendStateV2[],
+): OperationsEvidenceAppendStateStoreV2 {
+  const states = new Map<string, OperationsEvidenceAppendStateV2>();
+  for (const candidate of initialStates) {
+    const parsed = parseOperationsEvidenceAppendStateV2(candidate);
+    const key = appendStateKey(parsed.tenantId);
+    if (states.has(key)) mismatch(`Duplicate v2 append-state identity ${key}.`);
+    states.set(key, parsed);
+  }
+  return {
+    contractVersion: "OperationsEvidenceAppendStateStore/v2",
+    compareAndAppend(expectedStateDigest, nextState) {
+      const parsed = parseOperationsEvidenceAppendStateV2(nextState);
+      const key = appendStateKey(parsed.tenantId);
+      const current = states.get(key);
+      if (!current || current.stateDigest !== expectedStateDigest || parsed.priorStateDigest !== current.stateDigest
+        || parsed.revision !== current.revision + 1) {
+        mismatch("V2 append-state compare-and-append rejected stale, missing or non-contiguous state.");
+      }
+      ensureAppendOnlyStateV2(current, parsed);
+      states.set(key, parsed);
+      return { disposition: "APPENDED", state: structuredClone(parsed) };
+    },
+    load(tenantId) {
+      const current = states.get(appendStateKey(tenantId));
+      if (!current) mismatch("V2 append-state store has no exact tenant/ledger genesis state.");
+      return structuredClone(current);
+    },
+  };
+}
+
+export function parseOperationsEvidenceAppendStateV2(value: unknown): OperationsEvidenceAppendStateV2 {
+  const raw = exact(value, OPS_LEDGER_V3_SCHEMA_KEYS.appendStateV2, "appendStateV2");
+  literal(raw.contractVersion, OPERATIONS_EVIDENCE_LEDGER_V3_AUXILIARY_VERSIONS.appendStateV2, "appendStateV2.contractVersion", "OPS_WRONG_VERSION");
+  const tenantId = id(raw.tenantId, "appendStateV2.tenantId");
+  const stateScopeId = id(raw.stateScopeId, "appendStateV2.stateScopeId");
+  const epochAnchors = array(raw.epochAnchors, "appendStateV2.epochAnchors")
+    .map((item, index) => parseEpochAnchor(item, tenantId, `appendStateV2.epochAnchors[${index}]`));
+  const epochSuccessors = array(raw.epochSuccessors, "appendStateV2.epochSuccessors").map((item, index) => {
+    const label = `appendStateV2.epochSuccessors[${index}]`;
+    const row = exact(item, OPS_LEDGER_V3_SCHEMA_KEYS.epochSuccessorIdentityV2, label);
+    const incidentSourceIdentity = parseStableSignedSourceReadbackIdentityV1(row.incidentSourceIdentity);
+    const recoverySourceIdentity = parseStableSignedSourceReadbackIdentityV1(row.recoverySourceIdentity);
+    literal(incidentSourceIdentity.tenantId, tenantId, `${label}.incidentSourceIdentity.tenantId`, "OPS_REFERENCE_MISMATCH");
+    literal(recoverySourceIdentity.tenantId, tenantId, `${label}.recoverySourceIdentity.tenantId`, "OPS_REFERENCE_MISMATCH");
+    const incidentSourceIdentityDigest = sha(row.incidentSourceIdentityDigest, `${label}.incidentSourceIdentityDigest`);
+    const recoverySourceIdentityDigest = sha(row.recoverySourceIdentityDigest, `${label}.recoverySourceIdentityDigest`);
+    if (calculateStableSignedSourceReadbackIdentityDigest(incidentSourceIdentity) !== incidentSourceIdentityDigest
+      || calculateStableSignedSourceReadbackIdentityDigest(recoverySourceIdentity) !== recoverySourceIdentityDigest) {
+      drift(`${label} stable signed source identity digest mismatch.`);
+    }
+    return {
+      capabilityId: id(row.capabilityId, `${label}.capabilityId`),
+      incidentRecoveryBindingDigest: sha(row.incidentRecoveryBindingDigest, `${label}.incidentRecoveryBindingDigest`),
+      incidentSourceIdentity, incidentSourceIdentityDigest,
+      newEpochId: id(row.newEpochId, `${label}.newEpochId`),
+      newEpochSequence: nonnegativeInteger(row.newEpochSequence, `${label}.newEpochSequence`),
+      priorEpochId: id(row.priorEpochId, `${label}.priorEpochId`),
+      priorEpochSequence: nonnegativeInteger(row.priorEpochSequence, `${label}.priorEpochSequence`),
+      recoverySourceIdentity, recoverySourceIdentityDigest,
+      resetDigest: sha(row.resetDigest, `${label}.resetDigest`),
+      resetId: id(row.resetId, `${label}.resetId`),
+    } satisfies CapabilityEpochSuccessorIdentityV2;
+  });
+  const g2GrantIdentities = array(raw.g2GrantIdentities, "appendStateV2.g2GrantIdentities").map((item, index) => {
+    const label = `appendStateV2.g2GrantIdentities[${index}]`;
+    const row = exact(item, OPS_LEDGER_V3_SCHEMA_KEYS.g2GrantIdentityV2, label);
+    const approvalSourceIdentity = parseStableSignedSourceReadbackIdentityV1(row.approvalSourceIdentity);
+    literal(approvalSourceIdentity.tenantId, tenantId, `${label}.approvalSourceIdentity.tenantId`, "OPS_REFERENCE_MISMATCH");
+    const approvalSourceIdentityDigest = sha(row.approvalSourceIdentityDigest, `${label}.approvalSourceIdentityDigest`);
+    if (calculateStableSignedSourceReadbackIdentityDigest(approvalSourceIdentity) !== approvalSourceIdentityDigest) {
+      drift(`${label} stable approval source identity digest mismatch.`);
+    }
+    return {
+      actionId: id(row.actionId, `${label}.actionId`), approvalSourceIdentity, approvalSourceIdentityDigest,
+      effect: enumeration(row.effect, ["BOUNDED_PROVIDER_ACTION", "FORMAL_PROOF_OPEN", "TENANT_LIVE_READ", "TENANT_REVERSIBLE_WRITE"], `${label}.effect`),
+      expiresAt: timestamp(row.expiresAt, `${label}.expiresAt`), grantDigest: sha(row.grantDigest, `${label}.grantDigest`),
+      grantId: id(row.grantId, `${label}.grantId`), issuerSubjectId: genuineHumanId(row.issuerSubjectId, `${label}.issuerSubjectId`),
+      requestedStage: enumeration(row.requestedStage, ["READS", "REVERSIBLE_WRITES", "BOUNDED_PROVIDER_ACTIONS", "FORMAL_PROOF"], `${label}.requestedStage`),
+      state: enumeration(row.state, ["GRANTED"], `${label}.state`),
+    } satisfies G2GrantAppendIdentityV2;
+  });
+  const appliedLedgerDigests = array(raw.appliedLedgerDigests, "appendStateV2.appliedLedgerDigests")
+    .map((item, index) => sha(item, `appendStateV2.appliedLedgerDigests[${index}]`));
+  const priorStateDigest = raw.priorStateDigest === null ? null : sha(raw.priorStateDigest, "appendStateV2.priorStateDigest");
+  const revision = nonnegativeInteger(raw.revision, "appendStateV2.revision");
+  if ((revision === 0) !== (priorStateDigest === null)) mismatch("V2 append-state genesis and prior-state identity disagree.");
+  const withoutDigest: Omit<OperationsEvidenceAppendStateV2, "stateDigest"> = {
+    appliedLedgerDigests, contractVersion: OPERATIONS_EVIDENCE_LEDGER_V3_AUXILIARY_VERSIONS.appendStateV2,
+    epochAnchors, epochSuccessors, g2GrantIdentities, priorStateDigest, revision, stateScopeId, tenantId,
+  };
+  const stateDigest = sha(raw.stateDigest, "appendStateV2.stateDigest");
+  if (calculateOperationsEvidenceAppendStateDigestV2(withoutDigest) !== stateDigest) drift("V2 append-state digest mismatch.");
+  if (new Set(appliedLedgerDigests).size !== appliedLedgerDigests.length) mismatch("V2 append-state repeats an applied ledger digest.");
+  if (new Set(g2GrantIdentities.map((item) => item.grantId)).size !== g2GrantIdentities.length
+    || new Set(g2GrantIdentities.map((item) => item.approvalSourceIdentityDigest)).size !== g2GrantIdentities.length) {
+    authority("V2 append-state repeats a stable grant or signed approval/readback identity.");
+  }
+  validateStoredEpochLineageV2(epochAnchors, epochSuccessors);
+  return { ...withoutDigest, stateDigest };
+}
+
+function ensureAppendOnlyStateV2(current: OperationsEvidenceAppendStateV2, next: OperationsEvidenceAppendStateV2): void {
+  if (current.tenantId !== next.tenantId || current.stateScopeId !== next.stateScopeId) mismatch("V2 append-state successor changed tenant or durable state scope.");
+  if (canonical(current.epochAnchors) !== canonical(next.epochAnchors)) mismatch("V2 append-state successor changed immutable epoch anchors.");
+  for (const digest of current.appliedLedgerDigests) if (!next.appliedLedgerDigests.includes(digest)) mismatch("V2 append-state successor removed applied ledger history.");
+  for (const identity of current.g2GrantIdentities) {
+    const candidate = next.g2GrantIdentities.find((item) => item.grantId === identity.grantId);
+    if (!candidate || canonical(candidate) !== canonical(identity)) authority(`V2 append-state successor overwrote stable G2 grant ${identity.grantId}.`);
+  }
+  for (const identity of current.epochSuccessors) {
+    const candidate = next.epochSuccessors.find((item) => item.resetId === identity.resetId);
+    if (!candidate || canonical(candidate) !== canonical(identity)) mismatch(`V2 append-state successor overwrote epoch reset ${identity.resetId}.`);
+  }
+}
+
+function appendLedgerStateV2(
+  current: OperationsEvidenceAppendStateV2,
+  ledger: LuzioneOperationsEvidenceLedgerV3,
+): { disposition: "APPENDED" | "EXACT_REPLAY"; state: OperationsEvidenceAppendStateV2 } {
+  const grants = ledger.g2EffectAuthorityGrants.map(g2GrantAppendIdentityV2);
+  const incidentIndex = new Map(ledger.incidentRecoverySourceBindings.map((binding) => [binding.bindingId, binding]));
+  const resets = ledger.capabilityEpochResets.map((reset) => {
+    const binding = incidentIndex.get(reset.incidentRecoveryBindingId);
+    if (!binding) mismatch(`Reset ${reset.resetId} lacks its exact incident/recovery source binding.`);
+    return epochSuccessorIdentityV2(reset, binding);
+  });
+  for (const grant of grants) {
+    const existing = current.g2GrantIdentities.find((item) => item.grantId === grant.grantId);
+    if (existing && canonical(existing) !== canonical(grant)) authority(`Stable G2 grant ${grant.grantId} conflicts with v2 append-only history.`);
+    const reusedApproval = current.g2GrantIdentities.find((item) => item.approvalSourceIdentityDigest === grant.approvalSourceIdentityDigest && item.grantId !== grant.grantId);
+    if (reusedApproval) authority(`Signed G2 approval/readback identity is already bound to ${reusedApproval.grantId}.`);
+  }
+  for (const reset of resets) {
+    const existing = current.epochSuccessors.find((item) => item.resetId === reset.resetId);
+    if (existing && canonical(existing) !== canonical(reset)) mismatch(`Stable reset ${reset.resetId} conflicts with v2 append-only history.`);
+  }
+  if (current.appliedLedgerDigests.includes(ledger.ledgerDigest)) {
+    if (grants.some((grant) => !current.g2GrantIdentities.some((item) => canonical(item) === canonical(grant)))
+      || resets.some((reset) => !current.epochSuccessors.some((item) => canonical(item) === canonical(reset)))) {
+      mismatch("Applied ledger replay does not match its committed v2 append identities.");
+    }
+    return { disposition: "EXACT_REPLAY", state: current };
+  }
+  const withoutDigest: Omit<OperationsEvidenceAppendStateV2, "stateDigest"> = {
+    appliedLedgerDigests: [...current.appliedLedgerDigests, ledger.ledgerDigest],
+    contractVersion: OPERATIONS_EVIDENCE_LEDGER_V3_AUXILIARY_VERSIONS.appendStateV2,
+    epochAnchors: current.epochAnchors,
+    epochSuccessors: [...current.epochSuccessors, ...resets.filter((reset) => !current.epochSuccessors.some((item) => item.resetId === reset.resetId))],
+    g2GrantIdentities: [...current.g2GrantIdentities, ...grants.filter((grant) => !current.g2GrantIdentities.some((item) => item.grantId === grant.grantId))],
+    priorStateDigest: current.stateDigest, revision: current.revision + 1,
+    stateScopeId: current.stateScopeId, tenantId: current.tenantId,
+  };
+  const state = { ...withoutDigest, stateDigest: calculateOperationsEvidenceAppendStateDigestV2(withoutDigest) };
+  validateStoredEpochLineageV2(state.epochAnchors, state.epochSuccessors);
+  return { disposition: "APPENDED", state };
+}
+
+function stableSignedIdentity(source: ExactAuthorityRecoverySourceReadbackV1): StableSignedSourceReadbackIdentityV1 {
+  return {
+    contractVersion: OPERATIONS_EVIDENCE_LEDGER_V3_AUXILIARY_VERSIONS.stableSignedSourceReadbackIdentity,
+    objectHash: source.objectHash, objectId: source.objectId, objectType: source.objectType,
+    objectVersion: source.objectVersion, readbackAt: source.readbackAt, readbackHash: source.readbackHash,
+    readbackId: source.readbackId, sourceSystem: source.sourceSystem, tenantId: source.tenantId,
+  };
+}
+
+function g2GrantAppendIdentityV2(grant: G2EffectAuthorityGrantV2): G2GrantAppendIdentityV2 {
+  const approvalSourceIdentity = stableSignedIdentity(grant.approvalSource);
+  return {
+    actionId: grant.actionId, approvalSourceIdentity,
+    approvalSourceIdentityDigest: calculateStableSignedSourceReadbackIdentityDigest(approvalSourceIdentity),
+    effect: grant.effect, expiresAt: grant.expiresAt, grantDigest: grant.grantDigest, grantId: grant.grantId,
+    issuerSubjectId: grant.issuerSubjectId, requestedStage: grant.requestedStage, state: grant.state,
+  };
+}
+
+function epochSuccessorIdentityV2(
+  reset: CapabilityEpochResetV2,
+  binding: IncidentRecoverySourceBindingV1,
+): CapabilityEpochSuccessorIdentityV2 {
+  const incidentSourceIdentity = stableSignedIdentity(binding.incidentSource);
+  const recoverySourceIdentity = stableSignedIdentity(binding.recoverySource);
+  return {
+    capabilityId: reset.capabilityId, incidentRecoveryBindingDigest: reset.incidentRecoveryBindingDigest,
+    incidentSourceIdentity, incidentSourceIdentityDigest: calculateStableSignedSourceReadbackIdentityDigest(incidentSourceIdentity),
+    newEpochId: reset.newEpochId, newEpochSequence: reset.newEpochSequence, priorEpochId: reset.priorEpochId,
+    priorEpochSequence: reset.priorEpochSequence, recoverySourceIdentity,
+    recoverySourceIdentityDigest: calculateStableSignedSourceReadbackIdentityDigest(recoverySourceIdentity),
+    resetDigest: reset.resetDigest, resetId: reset.resetId,
+  };
+}
+
+function validateStoredEpochLineageV2(
+  anchors: readonly CapabilityEpochAnchorV1[],
+  successors: readonly CapabilityEpochSuccessorIdentityV2[],
+): void {
+  if (new Set(anchors.map((item) => item.capabilityId)).size !== anchors.length) mismatch("V2 append-state repeats a capability epoch anchor.");
+  if (new Set(successors.map((item) => item.resetId)).size !== successors.length
+    || new Set(successors.map((item) => item.resetDigest)).size !== successors.length
+    || new Set(successors.map((item) => `${item.capabilityId}:${item.newEpochId}`)).size !== successors.length
+    || new Set(successors.map((item) => item.incidentSourceIdentityDigest)).size !== successors.length
+    || new Set(successors.map((item) => item.recoverySourceIdentityDigest)).size !== successors.length) {
+    mismatch("V2 append-state repeats an epoch or signed incident/recovery source identity.");
+  }
+  for (const anchor of anchors) {
+    let current = anchor;
+    const chain = successors.filter((item) => item.capabilityId === anchor.capabilityId)
+      .sort((left, right) => left.newEpochSequence - right.newEpochSequence);
+    const seen = new Set([anchor.epochId]);
+    for (const successor of chain) {
+      if (successor.priorEpochId !== current.epochId || successor.priorEpochSequence !== current.epochSequence
+        || successor.newEpochSequence !== current.epochSequence + 1 || successor.newEpochId === successor.priorEpochId
+        || seen.has(successor.newEpochId)) mismatch(`Stored v2 epoch lineage for ${anchor.capabilityId} has a gap, fork, cycle or reused successor.`);
+      seen.add(successor.newEpochId);
+      current = { capabilityId: anchor.capabilityId, epochId: successor.newEpochId, epochSequence: successor.newEpochSequence, tenantId: anchor.tenantId };
+    }
+  }
+  if (successors.some((item) => !anchors.some((anchor) => anchor.capabilityId === item.capabilityId))) mismatch("V2 append-state successor lacks a genesis capability anchor.");
 }
 
 export function calculateHumanAuthoritySourceBindingDigest(
@@ -396,10 +695,10 @@ export function parseOperationsEvidenceLedgerV3(
   }
   const tenantId = id(raw.tenantId, "operationsEvidenceLedgerV3.tenantId");
   const ledgerId = id(raw.ledgerId, "operationsEvidenceLedgerV3.ledgerId");
-  if (context.appendStateStore?.contractVersion !== "OperationsEvidenceAppendStateStore/v1") {
-    authority("The v3 parser requires the exact append-only state-store contract.");
+  if (context.appendStateStore?.contractVersion !== "OperationsEvidenceAppendStateStore/v2") {
+    authority("The v3 parser requires the exact signed-source-aware append-only state-store v2 contract.");
   }
-  const appendState = parseOperationsEvidenceAppendStateV1(context.appendStateStore.load(tenantId, ledgerId));
+  const appendState = parseOperationsEvidenceAppendStateV2(context.appendStateStore.load(tenantId, ledgerId));
   if (appendState.tenantId !== tenantId) {
     mismatch("Append state must match the exact ledger tenant.");
   }
@@ -410,6 +709,8 @@ export function parseOperationsEvidenceLedgerV3(
   const sourcePackets = exact(raw.sourcePackets, OPS_LEDGER_V3_SCHEMA_KEYS.sourcePackets, "operationsEvidenceLedgerV3.sourcePackets");
   literal(sourcePackets.l2, "ABSENT", "sourcePackets.l2", "OPS_AUTHORITY_DENIED");
   literal(sourcePackets.l3, "ABSENT", "sourcePackets.l3", "OPS_AUTHORITY_DENIED");
+
+  prevalidateStableSignedSourceBindings(raw, context.sourceSnapshot, tenantId, assessmentTime);
 
   const base = parseOperationsEvidenceLedgerV2(raw.baseLedger, {
     assessmentTime,
@@ -455,10 +756,10 @@ export function parseOperationsEvidenceLedgerV3(
   const ledgerDigest = sha(raw.ledgerDigest, "operationsEvidenceLedgerV3.ledgerDigest");
   if (calculateOperationsEvidenceLedgerV3Digest(withoutDigest) !== ledgerDigest) drift("v3 ledger digest mismatch.");
   const ledger = { ...withoutDigest, ledgerDigest };
-  const appendResult = appendLedgerState(appendState, ledger);
+  const appendResult = appendLedgerStateV2(appendState, ledger);
   if (appendResult.disposition === "APPENDED") {
     const committed = context.appendStateStore.compareAndAppend(appendState.stateDigest, appendResult.state);
-    const committedState = parseOperationsEvidenceAppendStateV1(committed.state);
+    const committedState = parseOperationsEvidenceAppendStateV2(committed.state);
     if (committed.disposition !== "APPENDED" || canonical(committedState) !== canonical(appendResult.state)) {
       mismatch("Append-state store did not return the exact committed successor.");
     }
@@ -489,19 +790,19 @@ export function parseLuzioneOperationsEvidenceLedgerManifestV3(
   literal(raw.schemaVersion, OPERATIONS_EVIDENCE_LEDGER_V3_MANIFEST_VERSION, "manifest.schemaVersion", "OPS_WRONG_VERSION");
   literal(raw.ledgerVersion, OPERATIONS_EVIDENCE_LEDGER_V3_VERSION, "manifest.ledgerVersion", "OPS_WRONG_VERSION");
   literal(raw.baseLedgerVersion, "LuzioneOperationsEvidenceLedger/v2", "manifest.baseLedgerVersion");
-  literal(raw.controllerAuthority, OPS_CORRECTION_03_ASSURANCE.controllerAuthority, "manifest.controllerAuthority", "OPS_MANIFEST_DRIFT");
-  literal(raw.assuranceFingerprintSha256, OPS_CORRECTION_03_ASSURANCE.assuranceCanonicalJsonSha256, "manifest.assuranceFingerprintSha256", "OPS_MANIFEST_DRIFT");
+  literal(raw.controllerAuthority, OPS_CORRECTION_04_ASSURANCE.controllerAuthority, "manifest.controllerAuthority", "OPS_MANIFEST_DRIFT");
+  literal(raw.assuranceFingerprintSha256, OPS_CORRECTION_04_ASSURANCE.assuranceFingerprintSha256, "manifest.assuranceFingerprintSha256", "OPS_MANIFEST_DRIFT");
   literal(raw.sourceMapFingerprintSha256, OPS_CORRECTION_02_ASSURANCE.sourceMapFingerprintSha256, "manifest.sourceMapFingerprintSha256", "OPS_MANIFEST_DRIFT");
   literal(raw.effectAuthority, "NO_EFFECT", "manifest.effectAuthority");
   literal(raw.runtimeActivation, "NOT_IMPLEMENTED", "manifest.runtimeActivation");
   literal(raw.productionReady, false, "manifest.productionReady");
   const candidateSha = sha(raw.candidateSha, "manifest.candidateSha", 40);
   if (expectedCandidateSha && candidateSha !== expectedCandidateSha) drift("Manifest candidate SHA mismatch.");
-  const compatibility = exact(raw.compatibility, ["appendStateRequired", "canonicalSourceBytesAuthenticated", "decisionBearingV1UseProhibited", "decisionBearingV2UseProhibited", "exactFieldSets", "resetCalendarDayExcluded", "sourceBindingsRequired", "unknownVersionsRejected"], "manifest.compatibility");
+  const compatibility = exact(raw.compatibility, ["appendStateRequired", "canonicalSourceBytesAuthenticated", "decisionBearingV1UseProhibited", "decisionBearingV2UseProhibited", "exactFieldSets", "populatedV1StateMigrationDenied", "resetCalendarDayExcluded", "signedReadbackTimeBound", "sourceBindingsRequired", "unknownVersionsRejected"], "manifest.compatibility");
   for (const [key, item] of Object.entries(compatibility)) literal(item, true, `manifest.compatibility.${key}`);
   const availability = exact(raw.sourceAvailability, ["canonicalG2Approval", "canonicalHumanMembership", "incidentBoundRecovery", "resolvedVerifiedIncident"], "manifest.sourceAvailability");
   for (const [key, item] of Object.entries(availability)) literal(item, "ABSENT", `manifest.sourceAvailability.${key}`);
-  const artifacts = exact(raw.artifacts, ["appendStateSchema", "canonicalSourceObjectsSchema", "l2SourcePacket", "l3SourcePacket", "ruleSource", "schemaBundle", "semanticFixtures", "sourceAttestationSchema", "strictConsumerSdk"], "manifest.artifacts");
+  const artifacts = exact(raw.artifacts, ["appendStateSchema", "canonicalSourceObjectsSchema", "l2SourcePacket", "l3SourcePacket", "ruleSource", "schemaBundle", "semanticFixtures", "sourceAttestationSchema", "stableSignedSourceReadbackIdentitySchema", "strictConsumerSdk"], "manifest.artifacts");
   for (const [key, item] of Object.entries(artifacts)) id(item, `manifest.artifacts.${key}`);
   return raw as unknown as LuzioneOperationsEvidenceLedgerManifestV3;
 }
@@ -749,19 +1050,66 @@ function bindCanonicalSourceAttestations(
   if (consumed.size !== attestations.length) authority("Canonical source snapshot contains an unreferenced attestation.");
 }
 
+function prevalidateStableSignedSourceBindings(
+  ledgerRaw: JsonObject,
+  snapshotValue: unknown,
+  tenantId: string,
+  assessmentTime: string,
+): void {
+  const snapshotRaw = exact(snapshotValue, OPS_LEDGER_V3_SCHEMA_KEYS.sourceSnapshot, "sourceSnapshotStableIdentityGate");
+  literal(snapshotRaw.tenantId, tenantId, "sourceSnapshotStableIdentityGate.tenantId", "OPS_REFERENCE_MISMATCH");
+  const attestations = array(snapshotRaw.sourceAttestations, "sourceSnapshotStableIdentityGate.sourceAttestations")
+    .map((item, index) => parseCanonicalSourceAttestationV1(item, tenantId, assessmentTime, `sourceSnapshotStableIdentityGate.sourceAttestations[${index}]`));
+  const byIdentity = new Map(attestations.map((attestation) => {
+    const identity = stableSignedIdentityFromAttestation(attestation);
+    return [calculateStableSignedSourceReadbackIdentityDigest(identity), identity] as const;
+  }));
+  if (byIdentity.size !== attestations.length) authority("Authenticated source attestations repeat one stable signed object/readback identity.");
+
+  const compare = (value: unknown, objectType: ExactAuthorityRecoverySourceReadbackV1["objectType"], label: string): void => {
+    const caller = parseSourceReadback(value, tenantId, objectType, label, assessmentTime);
+    const callerIdentity = stableSignedIdentity(caller);
+    const signed = byIdentity.get(calculateStableSignedSourceReadbackIdentityDigest(callerIdentity));
+    if (!signed || canonical(signed) !== canonical(callerIdentity)) {
+      authority(`${label} does not exactly match the authenticated signed source/readback identity.`);
+    }
+  };
+  const scan = (container: JsonObject, label: string): void => {
+    array(container.humanAuthoritySourceBindings, `${label}.humanAuthoritySourceBindings`).forEach((item, index) => {
+      const row = object(item, `${label}.humanAuthoritySourceBindings[${index}]`);
+      compare(row.membershipSource, "TENANT_MEMBERSHIP", `${label}.humanAuthoritySourceBindings[${index}].membershipSource`);
+    });
+    array(container.g2EffectAuthorityGrants, `${label}.g2EffectAuthorityGrants`).forEach((item, index) => {
+      const row = object(item, `${label}.g2EffectAuthorityGrants[${index}]`);
+      compare(row.approvalSource, "G2_APPROVAL", `${label}.g2EffectAuthorityGrants[${index}].approvalSource`);
+    });
+    array(container.incidentRecoverySourceBindings, `${label}.incidentRecoverySourceBindings`).forEach((item, index) => {
+      const row = object(item, `${label}.incidentRecoverySourceBindings[${index}]`);
+      compare(row.incidentSource, "PROOF_INCIDENT", `${label}.incidentRecoverySourceBindings[${index}].incidentSource`);
+      compare(row.recoverySource, "RECOVERY_RECEIPT", `${label}.incidentRecoverySourceBindings[${index}].recoverySource`);
+    });
+  };
+  scan(ledgerRaw, "operationsEvidenceLedgerV3StableIdentityGate");
+  scan(snapshotRaw, "sourceSnapshotStableIdentityGate");
+}
+
 function sourceReadbackKey(source: ExactAuthorityRecoverySourceReadbackV1): string {
-  return canonical({
-    objectHash: source.objectHash, objectId: source.objectId, objectType: source.objectType,
-    objectVersion: source.objectVersion, readbackHash: source.readbackHash, readbackId: source.readbackId,
-    sourceSystem: source.sourceSystem, tenantId: source.tenantId,
-  });
+  return canonical(stableSignedIdentity(source));
 }
 
 function sourceAttestationKey(source: OperationsEvidenceCanonicalSourceAttestationV1): string {
-  return canonical({
+  return canonical(stableSignedIdentityFromAttestation(source));
+}
+
+function stableSignedIdentityFromAttestation(
+  source: OperationsEvidenceCanonicalSourceAttestationV1,
+): StableSignedSourceReadbackIdentityV1 {
+  const readback = JSON.parse(source.readbackBytes) as OperationsEvidenceCanonicalSourceReadbackV1;
+  return parseStableSignedSourceReadbackIdentityV1({
+    contractVersion: OPERATIONS_EVIDENCE_LEDGER_V3_AUXILIARY_VERSIONS.stableSignedSourceReadbackIdentity,
     objectHash: source.objectHash, objectId: source.objectId, objectType: source.objectType,
-    objectVersion: source.objectVersion, readbackHash: source.readbackHash, readbackId: source.readbackId,
-    sourceSystem: source.sourceSystem, tenantId: source.tenantId,
+    objectVersion: source.objectVersion, readbackAt: readback.readbackAt, readbackHash: source.readbackHash,
+    readbackId: source.readbackId, sourceSystem: source.sourceSystem, tenantId: source.tenantId,
   });
 }
 
@@ -907,7 +1255,7 @@ function parseEpochResets(
   value: unknown,
   tenantId: string,
   incidents: ReadonlyMap<string, IncidentRecoverySourceBindingV1>,
-  appendState: OperationsEvidenceAppendStateV1,
+  appendState: OperationsEvidenceAppendStateV2,
 ): CapabilityEpochResetV2[] {
   const anchors = appendState.epochAnchors.map((item, index) => parseEpochAnchor(item, tenantId, `appendState.epochAnchors[${index}]`));
   const anchorIndex = new Map<string, CapabilityEpochAnchorV1>();

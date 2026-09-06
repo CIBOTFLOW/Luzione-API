@@ -11,6 +11,7 @@ export const OPERATIONS_EVIDENCE_LEDGER_V3_MANIFEST_VERSION = "LuzioneOperations
 
 export const OPERATIONS_EVIDENCE_LEDGER_V3_AUXILIARY_VERSIONS = Object.freeze({
   appendState: "OperationsEvidenceAppendState/v1",
+  appendStateV2: "OperationsEvidenceAppendState/v2",
   capabilityEpochReset: "CapabilityEpochReset/v2",
   canonicalSourceAttestation: "OperationsEvidenceCanonicalSourceAttestation/v1",
   canonicalSourceReadback: "OperationsEvidenceCanonicalSourceReadback/v1",
@@ -22,6 +23,7 @@ export const OPERATIONS_EVIDENCE_LEDGER_V3_AUXILIARY_VERSIONS = Object.freeze({
   humanAuthoritySourceBinding: "HumanAuthoritySourceBinding/v1",
   incidentRecoverySourceBinding: "IncidentRecoverySourceBinding/v1",
   sourceSnapshot: "OperationsEvidenceAuthorityRecoverySourceSnapshot/v2",
+  stableSignedSourceReadbackIdentity: "StableSignedSourceReadbackIdentity/v1",
 } as const);
 
 export type CanonicalHumanFunctionV3 = "FOUNDER" | "PLATFORM_OPERATIONS" | "SUPPORT_OPERATIONS";
@@ -39,6 +41,19 @@ export type ExactAuthorityRecoverySourceReadbackV1 = {
   readbackId: string;
   readbackObjectId: string;
   readbackObjectVersion: string;
+  sourceSystem: AuthorityRecoverySourceSystem;
+  tenantId: string;
+};
+
+export type StableSignedSourceReadbackIdentityV1 = {
+  contractVersion: typeof OPERATIONS_EVIDENCE_LEDGER_V3_AUXILIARY_VERSIONS.stableSignedSourceReadbackIdentity;
+  objectHash: string;
+  objectId: string;
+  objectType: AuthorityRecoverySourceObjectType;
+  objectVersion: string;
+  readbackAt: string;
+  readbackHash: string;
+  readbackId: string;
   sourceSystem: AuthorityRecoverySourceSystem;
   tenantId: string;
 };
@@ -252,6 +267,34 @@ export type CapabilityEpochSuccessorIdentityV1 = {
   resetId: string;
 };
 
+export type G2GrantAppendIdentityV2 = {
+  actionId: string;
+  approvalSourceIdentity: StableSignedSourceReadbackIdentityV1;
+  approvalSourceIdentityDigest: string;
+  effect: G2Effect;
+  expiresAt: string;
+  grantDigest: string;
+  grantId: string;
+  issuerSubjectId: string;
+  requestedStage: CustomerZeroStage;
+  state: "GRANTED";
+};
+
+export type CapabilityEpochSuccessorIdentityV2 = {
+  capabilityId: string;
+  incidentRecoveryBindingDigest: string;
+  incidentSourceIdentity: StableSignedSourceReadbackIdentityV1;
+  incidentSourceIdentityDigest: string;
+  newEpochId: string;
+  newEpochSequence: number;
+  priorEpochId: string;
+  priorEpochSequence: number;
+  recoverySourceIdentity: StableSignedSourceReadbackIdentityV1;
+  recoverySourceIdentityDigest: string;
+  resetDigest: string;
+  resetId: string;
+};
+
 export type OperationsEvidenceAppendStateV1 = {
   appliedLedgerDigests: readonly string[];
   contractVersion: typeof OPERATIONS_EVIDENCE_LEDGER_V3_AUXILIARY_VERSIONS.appendState;
@@ -276,6 +319,30 @@ export interface OperationsEvidenceAppendStateStoreV1 {
   load(tenantId: string, ledgerId: string): unknown;
 }
 
+export type OperationsEvidenceAppendStateV2 = {
+  appliedLedgerDigests: readonly string[];
+  contractVersion: typeof OPERATIONS_EVIDENCE_LEDGER_V3_AUXILIARY_VERSIONS.appendStateV2;
+  epochAnchors: readonly CapabilityEpochAnchorV1[];
+  epochSuccessors: readonly CapabilityEpochSuccessorIdentityV2[];
+  g2GrantIdentities: readonly G2GrantAppendIdentityV2[];
+  stateScopeId: string;
+  priorStateDigest: string | null;
+  revision: number;
+  stateDigest: string;
+  tenantId: string;
+};
+
+export type OperationsEvidenceAppendStateCommitV2 = {
+  disposition: "APPENDED";
+  state: OperationsEvidenceAppendStateV2;
+};
+
+export interface OperationsEvidenceAppendStateStoreV2 {
+  readonly contractVersion: "OperationsEvidenceAppendStateStore/v2";
+  compareAndAppend(expectedStateDigest: string, nextState: OperationsEvidenceAppendStateV2): OperationsEvidenceAppendStateCommitV2;
+  load(tenantId: string, ledgerId: string): unknown;
+}
+
 export type LuzioneOperationsEvidenceLedgerV3 = {
   assessmentTime: string;
   baseLedger: LuzioneOperationsEvidenceLedgerV2;
@@ -295,7 +362,7 @@ export type LuzioneOperationsEvidenceLedgerV3 = {
 
 export type OperationsEvidenceLedgerParseContextV3 = {
   assessmentTime: string;
-  appendStateStore: OperationsEvidenceAppendStateStoreV1;
+  appendStateStore: OperationsEvidenceAppendStateStoreV2;
   priorSet?: OperationsEvidenceLedgerPriorSetV2;
   sourceSnapshot: OperationsEvidenceAuthorityRecoverySourceSnapshotV1;
 };
@@ -308,7 +375,7 @@ export type ParsedOperationsEvidenceLedgerV3 = {
     proofDayCredit: 0;
   };
   appendDisposition: "APPENDED" | "EXACT_REPLAY";
-  appendState: OperationsEvidenceAppendStateV1;
+  appendState: OperationsEvidenceAppendStateV2;
   ledger: LuzioneOperationsEvidenceLedgerV3;
   structurallyValidatedBaseVersion: "LuzioneOperationsEvidenceLedger/v2";
 };
@@ -323,6 +390,7 @@ export type LuzioneOperationsEvidenceLedgerManifestV3 = {
     schemaBundle: string;
     semanticFixtures: string;
     sourceAttestationSchema: string;
+    stableSignedSourceReadbackIdentitySchema: string;
     strictConsumerSdk: string;
   };
   assuranceFingerprintSha256: string;
@@ -334,7 +402,9 @@ export type LuzioneOperationsEvidenceLedgerManifestV3 = {
     decisionBearingV1UseProhibited: true;
     decisionBearingV2UseProhibited: true;
     exactFieldSets: true;
+    populatedV1StateMigrationDenied: true;
     resetCalendarDayExcluded: true;
+    signedReadbackTimeBound: true;
     sourceBindingsRequired: true;
     unknownVersionsRejected: true;
   };

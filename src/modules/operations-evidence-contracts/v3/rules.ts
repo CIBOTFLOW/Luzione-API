@@ -14,6 +14,13 @@ export const OPS_CORRECTION_03_ASSURANCE = Object.freeze({
   packetId: "OPS-CONTRACTS-CORRECTION-03/v1",
 } as const);
 
+export const OPS_CORRECTION_04_ASSURANCE = Object.freeze({
+  assuranceFingerprintSha256: "d122a74f54fa03fb4d60214363e84608888cda5f54a80457fad7ce96b8c08764",
+  controllerAuthority: "48b8e76d510bd5f8bbc06510ad0ba7df9b39315b",
+  implementationPacketFingerprintSha256: "8ad158c14f990459fa2902f7e5aa5e6691185e729c31af76915979f68d7de0da",
+  packetId: "OPS-CONTRACTS-CORRECTION-04-L1-G0/v1",
+} as const);
+
 export const OPS_V3_SYNTHETIC_SOURCE_TRUST_ROOT = Object.freeze({
   algorithm: "Ed25519",
   creditAuthority: "ZERO",
@@ -57,6 +64,10 @@ export const OPS_LEDGER_V3_SCHEMA_KEYS = Object.freeze({
   sourceReadback: Object.freeze(["objectHash", "objectId", "objectType", "objectVersion", "readbackAt", "readbackHash", "readbackId", "readbackObjectId", "readbackObjectVersion", "sourceSystem", "tenantId"]),
   epochSuccessorIdentity: Object.freeze(["capabilityId", "incidentRecoveryBindingDigest", "newEpochId", "newEpochSequence", "priorEpochId", "priorEpochSequence", "resetDigest", "resetId"]),
   g2GrantIdentity: Object.freeze(["actionId", "approvalSourceDigest", "effect", "expiresAt", "grantDigest", "grantId", "issuerSubjectId", "requestedStage", "state"]),
+  stableSignedSourceReadbackIdentity: Object.freeze(["contractVersion", "objectHash", "objectId", "objectType", "objectVersion", "readbackAt", "readbackHash", "readbackId", "sourceSystem", "tenantId"]),
+  appendStateV2: Object.freeze(["appliedLedgerDigests", "contractVersion", "epochAnchors", "epochSuccessors", "g2GrantIdentities", "priorStateDigest", "revision", "stateDigest", "stateScopeId", "tenantId"]),
+  epochSuccessorIdentityV2: Object.freeze(["capabilityId", "incidentRecoveryBindingDigest", "incidentSourceIdentity", "incidentSourceIdentityDigest", "newEpochId", "newEpochSequence", "priorEpochId", "priorEpochSequence", "recoverySourceIdentity", "recoverySourceIdentityDigest", "resetDigest", "resetId"]),
+  g2GrantIdentityV2: Object.freeze(["actionId", "approvalSourceIdentity", "approvalSourceIdentityDigest", "effect", "expiresAt", "grantDigest", "grantId", "issuerSubjectId", "requestedStage", "state"]),
   sourceSnapshot: Object.freeze(["contractVersion", "g2EffectAuthorityGrants", "humanAuthoritySourceBindings", "incidentRecoverySourceBindings", "resolvedBy", "snapshotAt", "snapshotDigest", "sourceAttestations", "tenantId"]),
 } as const);
 
@@ -86,4 +97,16 @@ export const OPS_CORRECTION_03_ADVERSE_PROBES = Object.freeze([
   "B09_INCIDENT_RECOVERY_TYPED_BINDING",
   "B10_EPOCH_CROSS_LEDGER_CONTINUITY",
   "B11_SOURCE_VERSION_HASH_READBACK_DRIFT",
+] as const);
+
+export const OPS_CORRECTION_04_ADVERSE_PROBES = Object.freeze([
+  "E01_APPROVAL_SIGNED_READBACK_TIME_REBIND",
+  "E02_APPROVAL_IDENTITY_REUSE_NEW_GRANT",
+  "E03_APPROVAL_IDENTITY_REUSE_CHANGED_SCOPE",
+  "E04_INCIDENT_SIGNED_READBACK_TIME_REBIND",
+  "E05_RECOVERY_SIGNED_READBACK_TIME_REBIND",
+  "E06_EXACT_REPLAY_NO_MUTATION",
+  "E07_ATOMIC_REJECTION_NO_MUTATION",
+  "E08_POPULATED_V1_HISTORY_MIGRATION_DENIED",
+  "E09_EMPTY_SYNTHETIC_V2_GENESIS",
 ] as const);
