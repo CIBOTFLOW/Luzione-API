@@ -1,0 +1,120 @@
+{
+  "schemaVersion": "OPS_CONTRACTS_CORRECTION_04_ARTIFACT_DIGESTS/v2",
+  "recordedAt": "2026-09-06T03:41:50Z",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "branch": "codex/ops-contracts-correction-05-scope-conformance-2ae7eb6",
+  "project": "OPS-CONTRACTS-CORRECTION-05-SCOPE-CONFORMANCE",
+  "acceptedAssuranceFingerprintSha256": "2ae7eb6f562adbb88bb5ebb6aacff162b7e9b12c6433a4bf31ce0e92c7420548",
+  "predecessorTuple": {
+    "acceptedSemanticImplementation": "a8ba3b771156a682cfff42e0076b1eea3860daf8",
+    "acceptedSemanticImplementationTree": "e485a53c7597ee18d875682d3cda99eef74d217e",
+    "priorEvidenceCommit": "7196bc875ac49ad7116a21eadc7949fce8aa47ed",
+    "priorEvidenceTree": "603e8bf35d5455ca8166699d5ef15e727b5e5c41",
+    "priorAnnotatedTag": "ops-contracts-correction-04-l1-g0-exact-final",
+    "priorAnnotatedTagObject": "e546317c738a3cc05103de51011e798224132c8e",
+    "priorAnnotatedTagPeel": "7196bc875ac49ad7116a21eadc7949fce8aa47ed"
+  },
+  "scopeImplementation": {
+    "commit": "8f1d042aa1711bb4a8316a0a59dfc7e60dbe2a8c",
+    "tree": "a10ea10645fded079c7ad13499daf93ad83bf6e8"
+  },
+  "finalEvidenceBinding": {
+    "mode": "DETACHED_ANNOTATED_TAG",
+    "tag": "ops-contracts-correction-05-scope-conformance-g0-exact-final"
+  },
+  "scopeConformance": {
+    "removedStandalonePublicSchema": "contracts/operations-evidence/v3/stable-signed-source-readback-identity-v1.schema.json",
+    "removedSchemaPredecessorSha256": "160634624d882a08639033f4aec5c76083b7bc2f62ea2430e25b89a8e8a77351",
+    "removedSchemaPredecessorBlob": "db210c147a36cb92a52f17a03104961f20e93e05",
+    "manifestPublication": "REMOVED",
+    "manifestTypePublication": "REMOVED",
+    "manifestParserPublication": "REMOVED",
+    "focusedStandaloneSchemaRead": "REMOVED",
+    "internalTypeAndSemanticParser": "PRESERVED",
+    "embeddedAppendStateV2Definition": "PRESERVED",
+    "operationsV1V2Semantics": "PRESERVED",
+    "l2SourcePacket": "ABSENT",
+    "l3SourcePacket": "ABSENT"
+  },
+  "changedPaths": {
+    "implementation": [
+      "contracts/operations-evidence/luzione-operations-evidence-ledger-v3.manifest.json",
+      "contracts/operations-evidence/v3/stable-signed-source-readback-identity-v1.schema.json",
+      "src/modules/operations-evidence-contracts/tests/operations-evidence-ledger-v3.test.ts",
+      "src/modules/operations-evidence-contracts/v3/contracts.ts",
+      "src/modules/operations-evidence-contracts/v3/sdk.ts"
+    ],
+    "finalEvidenceAddition": "engineering/execution/ops-contracts-correction-04/OPS_CONTRACTS_CORRECTION_04_ARTIFACT_DIGESTS_V2.json",
+    "implementationCount": 5,
+    "finalCount": 6
+  },
+  "algorithm": "SHA-256",
+  "publishedArtifactDigests": {
+    "contracts/operations-evidence/v3/luzione-operations-evidence-ledger-v3.schema.json": "9614f1f783833cc4b021e322920bbea90ffdd386b4c1715bd4aaac19f95396d7",
+    "contracts/operations-evidence/v3/operations-evidence-append-state-v1.schema.json": "86e5d92c4a8a491c1be61e8de02ac3289bacf68ce8e2c3ac927fe14852ea45a7",
+    "contracts/operations-evidence/v3/operations-evidence-append-state-v2.schema.json": "71b046a3cb383d14a8b5e43c938aa7a39170266fca0adba71880ca71a17b376c",
+    "contracts/operations-evidence/v3/operations-evidence-canonical-source-attestation-v1.schema.json": "33db35ed25a4f140ae0c65adb65d17be845861e3a92814b3f7f865ae8f6d7815",
+    "contracts/operations-evidence/v3/operations-evidence-canonical-source-objects-v1.schema.json": "271b8017c6f5f925195c15c99290bb72aa53f877fa75c60d335aedc6094ebf51",
+    "contracts/operations-evidence/v3/ops-contracts-correction-04-adverse-fixtures.json": "bd71ebda5f3a87bc4294cc57868073ac561e5018be44b0b148e3443663b05fd2",
+    "contracts/operations-evidence/luzione-operations-evidence-ledger-v3.manifest.json": "44cea724511ffed987a11e0d878449d4eafc9ced6c232bff67ea3e49749bb8b2",
+    "contracts/operations-evidence/consumer-mappings/l2-ops-ledger-v3.json": "6d4c5d7a85871fc0d5bbd984b66168395acf1e4744840d739191c09bfccbfb7f",
+    "contracts/operations-evidence/consumer-mappings/l3-ops-ledger-v3.json": "23afbf3d96540cb5bbef04113cb435f11188f12e00ccebf87bf066778c495eae",
+    "src/modules/operations-evidence-contracts/v3/contracts.ts": "e5c2c8c2c0b8c8ffc782455756d5a389a43e0f525c8fc4349152712b72551cae",
+    "src/modules/operations-evidence-contracts/v3/rules.ts": "70b3b04fe7f7c816533cfd5af014cd5e800227db721eb1af11b73ee3e2107737",
+    "src/modules/operations-evidence-contracts/v3/sdk.ts": "cd30c4419e150d3827798a937f18a5e152e46180bf969615eaaa6acfcfa36c1f",
+    "src/modules/operations-evidence-contracts/v3/generatedSdk.ts": "058b05a73f10e77665ff3749d2d072857b3a48f09ba51f6273f5c4badf1e69cd",
+    "src/modules/operations-evidence-contracts/v3/index.ts": "c769fea0fb97dd94cabd78ea456f82ba65e05746c7f4fd44c9d47e8058ebea51",
+    "src/modules/operations-evidence-contracts/v3/fixtures.ts": "7406f21c3df5b32da8b095a005627be4de80f9ff66821382f5b79f84d4ae3ae8",
+    "src/modules/operations-evidence-contracts/tests/operations-evidence-ledger-v3.test.ts": "70545ab1b4111b15f1559415fe301f778f594e30a6a40a57d008c7f756e4891c"
+  },
+  "immutablePredecessorEvidence": {
+    "path": "engineering/execution/ops-contracts-correction-04/OPS_CONTRACTS_CORRECTION_04_ARTIFACT_DIGESTS_V1.json",
+    "sha256": "5a669ad6db3703d4179cafcb1a0f24aeae4335b0a8efc1ce55a3cf5952bfdbcc",
+    "blob": "0cb2ca6bb76faa50116609ae089e93f9c3daa28e",
+    "disposition": "IMMUTABLE_SUPERSEDED_FOR_SCOPE_PUBLICATION_ONLY"
+  },
+  "frozenTrees": {
+    "operationsEvidenceV1Contracts": "c0e4a96c26d25f2c1994e05fa2fe1da07f4f7838",
+    "operationsEvidenceV2Contracts": "ae9d356484ced3f547059ae74a9ad92a8c00f6c3",
+    "operationsEvidenceV2TypeScript": "a503d433bcc2249924773b550622d9794d2969d5",
+    "supportBundleV1": "3e0649d6aa9a0862c39d62a2f75508c81d791974",
+    "luzioneCoreSdk": "d594fa014d7020fdf8386c7a6926ff9b573ac355",
+    "onboardCore": "a4ba4366b3b2af4337806c2709dbcdeab29b4d8c",
+    "effectAdmission": "b14044b0da3d0eb7c1a2fa855ddf24da13797239",
+    "connectorRevocation": "d83670d1af832160b61dda7ef395ea1cf711bb3a"
+  },
+  "localVerification": {
+    "focusedCriticalSemanticRegressions": "PASS_16_OF_16_ZERO_SKIPS",
+    "operationsEvidenceAll": "PASS_52_OF_52_ZERO_SKIPS",
+    "fullRepository": "PASS_462_OF_462_ZERO_SKIPS",
+    "compliance": "PASS_7_OF_7",
+    "typecheck": "PASS_SEQUENTIAL_AFTER_BUILD",
+    "lint": "PASS_ZERO_WARNINGS",
+    "build": "PASS_NEXTJS_16_3_4_WEBPACK",
+    "manifestExportParity": "PASS_STANDALONE_SCHEMA_UNPUBLISHED_INTERNAL_TYPE_AND_EMBEDDED_DEFINITION_PRESERVED",
+    "exactChangedPathGate": "PASS_IMPLEMENTATION_5_FINAL_6",
+    "frozenTreeGate": "PASS",
+    "implementationGitReverseCheck": "PASS_EXIT_0",
+    "finalEvidenceGitReverseCheck": "PASS_EXIT_0"
+  },
+  "releaseEvidence": "LOCAL_PROVEN",
+  "engineeringState": "BOUNDED_PASS",
+  "finality": "BOUNDED_CLAIM",
+  "effectAuthority": "NO_EFFECT",
+  "credit": {
+    "proofDays": 0,
+    "g1": 0,
+    "g2": 0,
+    "production": 0,
+    "rollback": 0
+  },
+  "hostedAutomation": "NOT_POLLED",
+  "preview": "NOT_POLLED",
+  "productionReady": false,
+  "unresolvedRisks": [
+    "Independent OPS-CONTRACTS-ASSURE-06 has not evaluated this scope-conformance candidate.",
+    "L2 and L3 canonical source packets remain ABSENT and disconnected; no consumer may mint authority.",
+    "Local validation does not prove hosted CI, preview readback, canonical production sources, managed recovery or production behavior."
+  ],
+  "nextAction": "Run independent OPS-CONTRACTS-ASSURE-06 against the exact implementation, final, tag and v2 digest-ledger tuple."
+}
