@@ -1938,15 +1938,15 @@
       "expected": "RFQ, supplier quote, bid comparison and procurement-selection state is linked to an API-owned, tenant-bound supplier eligibility record.",
       "actual": "A3 verifies the Account tenant before accepting a claimed vendor reference, marks stored vendor-linked candidates REVIEW_REQUIRED and rejects all downstream supplier commands before owner writes.",
       "classification": {"domain":"DEPENDENCY","class":"UNAVAILABLE","retry":"RECONCILE_FIRST","severity":"DEGRADED"},
-      "evidence_refs": ["src/modules/seed-procurement/store.ts", "supabase/migrations/20260905091246_seed_procurement_a3.sql", "npm-script:proof:seed-procurement"],
-      "repair_attempts": ["Reused the existing canonical Account identity solely for same-tenant readback.", "Added application fail-closed decisions and database dependency-hold triggers instead of creating duplicate Supplier truth."],
+      "evidence_refs": ["src/modules/seed-procurement/store.ts", "supabase/migrations/20260905091246_seed_procurement_a3.sql", "npm-script:proof:seed-procurement", "engineering/execution/handoffs/SEED_SUPPLIER_IDENTITY_A2S_CONSUMER_HANDOFF.json"],
+      "repair_attempts": ["Reused the existing canonical Account identity solely for same-tenant readback.", "Added application fail-closed decisions and database dependency-hold triggers instead of creating duplicate Supplier truth.", "Implemented and locally proved the separate API-owned A2S SupplierProfile/v1 owner; deliberately left A3 holds unchanged until the serialized A3C integration proves exact consumption."],
       "strategy_reset": "A2S must own supplier qualification; A3 will not infer eligibility from a generic Account or an opaque client-provided ID.",
       "quarantine_scope": ["rfq.create_draft", "supplier_quote.normalize", "bid_comparison.create", "procurement_selection.record", "vendor-linked ProductCandidate/v1 approval"],
       "deferred_external_infra": ["supplier invitations, Portal quote submission, supplier email normalization and RFQ send"],
       "resolved": false,
       "resolution_ref": null,
-      "remaining_uncertainty": ["The future SupplierProfile/v1 schema, lifecycle and authoritative owner remain unimplemented."],
-      "next_action": "Implement and independently prove API-owned SupplierProfile/v1 in A2S, then replace the A3 dependency hold with exact tenant, status and version checks."
+      "remaining_uncertainty": ["A2S is producer-locally proven at f5ba514482bb7e5eb43190f89ac381ade59f460d, but A3 does not yet consume its exact Account/profile/version eligibility readback."],
+      "next_action": "Run SEED-PROCUREMENT-A3-CORRECTION-01 from the accepted A2S proof head, replace only the supplier dependency hold with exact tenant/status/version/capability checks, preserve the ProposalVersion hold and rerun the full disposable proof."
     },
     {
       "failure_id": "SEED_PROCUREMENT_A3_PROPOSAL_READER_GAP_20260905",
@@ -1969,6 +1969,28 @@
       "resolution_ref": null,
       "remaining_uncertainty": ["The future proposal persistence route, approval linkage and exact project/version read semantics remain unimplemented."],
       "next_action": "Implement and independently prove API-owned ProposalVersion/v1 persistence/readback in SEED-PROPOSAL-OWNER-A2P, then prove tenant/project/version and approval linkage before lifting the PO dependency hold."
+    },
+    {
+      "failure_id": "SEED_SUPPLIER_IDENTITY_A2S_PORTAL_CREDENTIAL_MAPPING_GAP_20260905",
+      "project_id": "SEED-SUPPLIER-IDENTITY-A2S",
+      "observed_at": "2026-09-05T18:50:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "f5ba514482bb7e5eb43190f89ac381ade59f460d",
+      "environment": "local",
+      "layer": "portal-workload-credential-reachability",
+      "symptom": "The API defines a strict service:luzione-supplier-portal workload boundary for Portal Account access-binding commands, but no admitted deployed Vercel OIDC caller or exact service-token identity maps to that actor and capability.",
+      "expected": "A separately reviewed credential mapping derives the exact Portal workload actor, tenant and supplier.portal.account_binding.command capability before the default-off route can be activated.",
+      "actual": "Disposable tests use a bounded test identity only. The route and its read gate remain default-off, and A2S does not invent a Portal project identity or claim production authentication.",
+      "classification": {"domain":"AUTH","class":"UNAVAILABLE","retry":"RECONCILE_FIRST","severity":"DEGRADED"},
+      "evidence_refs": ["src/lib/api/actor.ts", "src/modules/seed-supplier-identity/portalAccessBinding.ts", "engineering/execution/handoffs/SEED_SUPPLIER_IDENTITY_A2S_CONSUMER_HANDOFF.json"],
+      "repair_attempts": ["Kept Portal binding read and command admission behind separate explicit default-off tenant gates.", "Required exact workload and signed-human attribution in application, receipt, persisted row and Timeline readback.", "Recorded the missing runtime credential path rather than weakening the actor boundary or fabricating a Vercel caller."],
+      "strategy_reset": "Portal consumer admission must return its exact deployment identity and credential mapping; API ownership does not authorize the Portal to call it.",
+      "quarantine_scope": ["POST /api/v1/supplier-portal-account-bindings/commands", "GET /api/v1/supplier-portal-account-bindings/:bindingId in deployed Portal journeys"],
+      "deferred_external_infra": ["Portal deployment identity, OIDC/service-token mapping, authenticated preview and production observation"],
+      "resolved": false,
+      "resolution_ref": null,
+      "remaining_uncertainty": ["The final deployed Portal caller mechanism and tenant/capability mapping have not been selected or observed."],
+      "next_action": "Have the Portal consumer lane return an exact credential-reachability proposal and independent denied/allowed authentication proof before any runtime gate is enabled."
     }
   ]
 }

@@ -7,11 +7,22 @@
   "base_sha": "5cc727ac0cfb3f8f7fa75015246486bf7f7089f5",
   "implementation_sha": "9ad995ef52dcc8c39698a165095658bc756a295f",
   "correction_sha": "6467b989db7422c45935dcec3ad334b4fe99ce5f",
-  "exact_candidate_sha": null,
+  "route_authorization_correction_sha": "21d020120063e32362939d8ee1e59075ce67874b",
+  "exact_candidate_sha": "f5ba514482bb7e5eb43190f89ac381ade59f460d",
   "seed_product_contract_producer_sha": "e14b405d58a293c002f5676984a95e55372b3bd2",
   "schedule_contract_producer_sha": "265724e528502b44a1250efea551539d74cb0bbd",
   "procurement_contract_producer_sha": "777e0d471d2ecf02294fffb7562761d6f8a36dbd",
   "supplier_identity_contract_producer_sha": "6467b989db7422c45935dcec3ad334b4fe99ce5f",
+  "producer_identity_semantics": {
+    "seed_product_contract_producer_sha": "e14b405d58a293c002f5676984a95e55372b3bd2",
+    "schedule_contract_producer_sha": "265724e528502b44a1250efea551539d74cb0bbd",
+    "procurement_contract_producer_sha": "777e0d471d2ecf02294fffb7562761d6f8a36dbd",
+    "supplier_identity_contract_producer_sha": "6467b989db7422c45935dcec3ad334b4fe99ce5f",
+    "route_authorization_correction_sha": "21d020120063e32362939d8ee1e59075ce67874b",
+    "exact_candidate_sha": "f5ba514482bb7e5eb43190f89ac381ade59f460d",
+    "runtime_release_identity": null,
+    "rule": "Validate inherited resource contracts, the A2S Supplier Profile contract/read model, the route authorization correction, the complete candidate tree and any deployed runtime release independently; none substitutes for another."
+  },
   "contracts": {
     "supplier_profile": "SupplierProfile/v1",
     "supplier_command": "SeedSupplierIdentityCommand/v1",
@@ -51,11 +62,24 @@
     "Treat all supplied HTTP fixtures as apiResponse({ok,result,...}) bodies; clients must not invent a top-level local envelope.",
     "A3 RFQ/quote/bid/selection/PO holds remain active; A2S does not silently lift them.",
     "Portal binding routes are G0/default-off. No admitted Vercel caller maps service:luzione-supplier-portal; disposable service-token proof does not establish production Portal authentication.",
+    "A signed human from another tenant is rejected as the typed HUMAN_TENANT_MISMATCH domain denial with HTTP 403; it is never collapsed into a generic 503 boundary failure.",
     "No client may infer invite, RFQ send, PO release, supplier commitment, provider acknowledgement, payment, or any live effect from this handoff."
   ],
-  "release_state": "LOCAL_IMPLEMENTED_DEFAULT_OFF_NO_EFFECT_PROOF_PENDING",
+  "release_state": "LOCAL_PROVEN_DEFAULT_OFF_NO_EFFECT_BOUNDARY",
   "deployment_sha": null,
   "managed_migration": "NOT_RUN",
   "push_or_merge": "NOT_PERFORMED",
-  "local_verification": {"typecheck":"PASS","focused_tests":"PASS_9_OF_9","taxonomy":"PASS_4_OF_4","disposable_postgres":"PASS_PRE_CANDIDATE","lint":"PENDING_CANDIDATE","full_tests":"PENDING_CANDIDATE","production_build":"PENDING_CANDIDATE"}
+  "local_verification": {
+    "supabase_cli_2_116_0_help": "PASS",
+    "supabase_cli_migration_new_help": "PASS",
+    "cli_generated_migration": "20260905171927_seed_supplier_identity_a2s.sql",
+    "typecheck": "PASS",
+    "focused_tests": "PASS_11_OF_11",
+    "registry_topology": "PASS_14_OF_14",
+    "taxonomy": "PASS_4_OF_4",
+    "full_tests": "PASS_544_OF_544",
+    "lint": "PASS_ZERO_WARNINGS",
+    "production_build": "PASS_NEXTJS_16_3_4_WEBPACK",
+    "disposable_postgres": "PASS_13_RECEIPTS_13_EVENTS_ZERO_BAD_EFFECTS_FORCED_RLS_2_EXPLICIT_POLICIES_2_UNSAFE_WRITER_GRANTS_0_PUBLIC_TRIGGER_EXECUTE_0_ROLLBACK_GUARD_1"
+  }
 }
