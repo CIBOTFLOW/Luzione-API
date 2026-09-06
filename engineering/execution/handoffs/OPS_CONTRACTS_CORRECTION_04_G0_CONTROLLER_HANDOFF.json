@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "OPS_CONTRACTS_CORRECTION_04_G0_CONTROLLER_HANDOFF/v1",
+  "projectId": "OPS-CONTRACTS-CORRECTION-04-L1-G0",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "controllerAuthority": "CIBOTFLOW/Luzione-platform-program@48b8e76d510bd5f8bbc06510ad0ba7df9b39315b",
+  "branch": "codex/ops-contracts-correction-04-l1-g0-8ad158c",
+  "packetBaseSha": "c7a0b46dbc3b776f49fd8d151c221c9d023a85d8",
+  "baseSha": "cc2f562d3902998b7edf5c0ae8a2e3cc1ccc500a",
+  "implementationSha": "a8ba3b771156a682cfff42e0076b1eea3860daf8",
+  "implementationTree": "e485a53c7597ee18d875682d3cda99eef74d217e",
+  "finalEvidenceBinding": { "mode": "DETACHED_ANNOTATED_TAG", "tag": "ops-contracts-correction-04-l1-g0-exact-final" },
+  "versions": [
+    "LuzioneOperationsEvidenceLedger/v3",
+    "StableSignedSourceReadbackIdentity/v1",
+    "OperationsEvidenceAppendState/v2"
+  ],
+  "sourcePins": {
+    "implementationPacketFingerprintSha256": "8ad158c14f990459fa2902f7e5aa5e6691185e729c31af76915979f68d7de0da",
+    "assuranceFingerprintSha256": "d122a74f54fa03fb4d60214363e84608888cda5f54a80457fad7ce96b8c08764"
+  },
+  "baseReconciliation": "PASS_ZERO_OPERATIONS_CONE_DIFF_PACKET_BASE_TO_CURRENT_BASE",
+  "localVerification": ["focused 16/16", "full repository 462/462", "compliance 7/7", "sequential typecheck pass", "lint pass zero warnings", "Next.js webpack build pass", "reverse check exit 0"],
+  "ci": "NOT_OBSERVED_AT_LOCAL_EVIDENCE_SEAL",
+  "preview": "NOT_REQUESTED_NO_ROUTE_OR_HOSTED_EFFECT",
+  "reverseProof": "PASS_GIT_DIFF_BASE_TO_IMPLEMENTATION_APPLY_REVERSE_CHECK_EXIT_0",
+  "recoveryBoundary": "GIT_REVERSAL_SAFE_BEFORE_CONSUMER_PIN_AND_EMPTY_STATE_ONLY; FORWARD_CORRECTION_REQUIRED_AFTER_ANY_V2_HISTORY_OR_CONSUMER_PIN",
+  "sourceAvailability": { "l2": "ABSENT_DISCONNECTED", "l3": "ABSENT_DISCONNECTED" },
+  "credit": { "proofDays": 0, "g2": 0, "production": 0 },
+  "effectAuthority": "NO_EFFECT",
+  "engineeringState": "BOUNDED_PASS",
+  "releaseEvidence": "LOCAL_PROVEN",
+  "finality": "BOUNDED_CLAIM",
+  "remainingStops": ["independent OPS-CONTRACTS-ASSURE-05", "real signed canonical source authority", "durable v2 store integration", "exact L2/L3 consumer compatibility returns", "exact-head CI/readback until independently observed", "all G1/G2 and production prerequisites"],
+  "nextAction": "OPS-CONTRACTS-ASSURE-05 independently verifies the exact implementation/final/tag tuple while L2 and L3 remain ABSENT and all credit remains zero."
+}

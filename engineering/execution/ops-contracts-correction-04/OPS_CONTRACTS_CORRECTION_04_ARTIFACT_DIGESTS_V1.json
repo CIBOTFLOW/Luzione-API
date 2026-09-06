@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "OPS_CONTRACTS_CORRECTION_04_ARTIFACT_DIGESTS/v1",
+  "controllerAuthority": "48b8e76d510bd5f8bbc06510ad0ba7df9b39315b",
+  "implementationSha": "a8ba3b771156a682cfff42e0076b1eea3860daf8",
+  "implementationTree": "e485a53c7597ee18d875682d3cda99eef74d217e",
+  "algorithm": "SHA-256",
+  "artifacts": {
+    "contracts/operations-evidence/v3/luzione-operations-evidence-ledger-v3.schema.json": "9614f1f783833cc4b021e322920bbea90ffdd386b4c1715bd4aaac19f95396d7",
+    "contracts/operations-evidence/v3/operations-evidence-append-state-v1.schema.json": "86e5d92c4a8a491c1be61e8de02ac3289bacf68ce8e2c3ac927fe14852ea45a7",
+    "contracts/operations-evidence/v3/operations-evidence-append-state-v2.schema.json": "71b046a3cb383d14a8b5e43c938aa7a39170266fca0adba71880ca71a17b376c",
+    "contracts/operations-evidence/v3/operations-evidence-canonical-source-attestation-v1.schema.json": "33db35ed25a4f140ae0c65adb65d17be845861e3a92814b3f7f865ae8f6d7815",
+    "contracts/operations-evidence/v3/operations-evidence-canonical-source-objects-v1.schema.json": "271b8017c6f5f925195c15c99290bb72aa53f877fa75c60d335aedc6094ebf51",
+    "contracts/operations-evidence/v3/stable-signed-source-readback-identity-v1.schema.json": "160634624d882a08639033f4aec5c76083b7bc2f62ea2430e25b89a8e8a77351",
+    "contracts/operations-evidence/v3/ops-contracts-correction-04-adverse-fixtures.json": "bd71ebda5f3a87bc4294cc57868073ac561e5018be44b0b148e3443663b05fd2",
+    "contracts/operations-evidence/luzione-operations-evidence-ledger-v3.manifest.json": "e1baa1dd26131202d1ed8ee60761c475e991fac5bccdbd16e587aaef8b17d241",
+    "contracts/operations-evidence/consumer-mappings/l2-ops-ledger-v3.json": "6d4c5d7a85871fc0d5bbd984b66168395acf1e4744840d739191c09bfccbfb7f",
+    "contracts/operations-evidence/consumer-mappings/l3-ops-ledger-v3.json": "23afbf3d96540cb5bbef04113cb435f11188f12e00ccebf87bf066778c495eae",
+    "src/modules/operations-evidence-contracts/v3/contracts.ts": "8b3cd99ddfd790f99961defa4367aedcc70a0feca817505dabea59dc53f68289",
+    "src/modules/operations-evidence-contracts/v3/rules.ts": "70b3b04fe7f7c816533cfd5af014cd5e800227db721eb1af11b73ee3e2107737",
+    "src/modules/operations-evidence-contracts/v3/sdk.ts": "23a854ad1bff5592e84dd9d10b34d853a793f27209c48c509eaec96490978612",
+    "src/modules/operations-evidence-contracts/v3/generatedSdk.ts": "058b05a73f10e77665ff3749d2d072857b3a48f09ba51f6273f5c4badf1e69cd",
+    "src/modules/operations-evidence-contracts/v3/index.ts": "c769fea0fb97dd94cabd78ea456f82ba65e05746c7f4fd44c9d47e8058ebea51",
+    "src/modules/operations-evidence-contracts/v3/fixtures.ts": "7406f21c3df5b32da8b095a005627be4de80f9ff66821382f5b79f84d4ae3ae8",
+    "src/modules/operations-evidence-contracts/tests/operations-evidence-ledger-v3.test.ts": "9662c99153a43275c066f32c1be9b707e082412f18fbfc5a38028e5d9d7e3999"
+  },
+  "sourcePins": {
+    "implementationPacketFingerprintSha256": "8ad158c14f990459fa2902f7e5aa5e6691185e729c31af76915979f68d7de0da",
+    "assuranceFingerprintSha256": "d122a74f54fa03fb4d60214363e84608888cda5f54a80457fad7ce96b8c08764"
+  },
+  "credit": { "proofDays": 0, "g2": 0, "production": 0 },
+  "effectAuthority": "NO_EFFECT"
+}

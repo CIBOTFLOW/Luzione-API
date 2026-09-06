@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "OPS_CONTRACTS_CORRECTION_04_ASSURANCE_MATRIX/v1",
+  "implementationSha": "a8ba3b771156a682cfff42e0076b1eea3860daf8",
+  "assuranceTarget": "OPS-CONTRACTS-ASSURE-05",
+  "adverse": {
+    "approvalSignedReadbackTimeRebind": "PASS_FAIL_CLOSED",
+    "sameApprovalNewGrantId": "PASS_FAIL_CLOSED",
+    "sameApprovalChangedActionStageEffect": "PASS_FAIL_CLOSED_3_VARIANTS",
+    "incidentSignedReadbackTimeRebind": "PASS_FAIL_CLOSED",
+    "recoverySignedReadbackTimeRebind": "PASS_FAIL_CLOSED",
+    "exactReplay": "PASS_BYTE_IDEMPOTENT",
+    "atomicRejection": "PASS_STATE_BYTE_IDENTICAL",
+    "populatedV1Transition": "PASS_DENIED",
+    "emptySyntheticGenesis": "PASS_V2_ZERO_CREDIT"
+  },
+  "regression": {
+    "typedRecoveryRelabel": "PASS_FAIL_CLOSED",
+    "sharedEpochTopology": "PASS_FAIL_CLOSED",
+    "resetCalendarDay": "PASS_FAIL_CLOSED",
+    "typedSourceVersionHashReadbackDrift": "PASS_FAIL_CLOSED",
+    "l2L3SourcePackets": "ABSENT_DISCONNECTED",
+    "credit": { "proofDays": 0, "g2": 0, "production": 0 }
+  },
+  "localGates": {
+    "focused": "PASS_16_OF_16",
+    "fullRepository": "PASS_462_OF_462",
+    "compliance": "PASS_7_OF_7",
+    "typecheckSequential": "PASS",
+    "lint": "PASS_ZERO_WARNINGS",
+    "build": "PASS_NEXTJS_WEBPACK",
+    "reverseCheck": "PASS_EXIT_0"
+  },
+  "boundedFailure": "ONE_PARALLEL_TYPECHECK_BUILD_RACE_ON_DOT_NEXT_TYPES; BUILD_TYPESCRIPT_AND_SEQUENTIAL_TYPECHECK_PASS",
+  "effectAuthority": "NO_EFFECT",
+  "productionCredit": 0
+}

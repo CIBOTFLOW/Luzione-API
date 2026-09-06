@@ -2,7 +2,7 @@
   "schemaVersion": "LuzioneOperationsEvidenceLedgerManifest/v3",
   "ledgerVersion": "LuzioneOperationsEvidenceLedger/v3",
   "baseLedgerVersion": "LuzioneOperationsEvidenceLedger/v2",
-  "candidateSha": "f801ebfee1668ec822a4e41d5aedc7cd62b876c5",
+  "candidateSha": "a8ba3b771156a682cfff42e0076b1eea3860daf8",
   "controllerAuthority": "48b8e76d510bd5f8bbc06510ad0ba7df9b39315b",
   "assuranceFingerprintSha256": "d122a74f54fa03fb4d60214363e84608888cda5f54a80457fad7ce96b8c08764",
   "sourceMapFingerprintSha256": "66ca2ccbaca70ef60b407be7ac9230184b55cdeccbd9c50fdc67566802d72959",
