@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 
 import { purchaseOrderAcknowledgementFixture } from "@/modules/luzione-core-contracts/seedProductFixtures";
+import { sha256 } from "@/modules/platform-guarantees/eventContract";
 import {
   SEED_PROCUREMENT_COMMAND_VERSION,
   SeedProcurementContractError,
@@ -35,12 +36,28 @@ import {
   SeedProcurementReadModelError,
   parseSeedProcurementReadModel,
 } from "@/modules/seed-procurement/readModel";
+import { seedProcurementA3V1KnownBadFixture, SEED_PROCUREMENT_A3_V1_KNOWN_BAD_DIGEST_SHA256 } from "@/modules/seed-procurement/fixtures/a3-v1-known-bad";
 
-test("A3 strict parser covers artifact, product, RFQ, quote, bid, human selection, PO draft and acknowledgement commands", () => {
+test("A3C v2 strict parser covers artifact, product, RFQ, quote, bid, human selection, PO draft and acknowledgement commands", () => {
   const commands = [evidenceRegisterCommandFixture, productSourceCommandFixture, productCandidateCommandFixture, rfqDraftCommandFixture, supplierQuoteCommandFixture, bidComparisonCommandFixture, procurementSelectionCommandFixture, purchaseOrderDraftCommandFixture, purchaseOrderAcknowledgementCommandFixture];
   assert.deepEqual(commands.map((command) => parseSeedProcurementCommand(command).commandType), commands.map((command) => command.commandType));
   assert.equal(parseSeedProcurementCommand(productSourceCommandFixture).contractVersion, SEED_PROCUREMENT_COMMAND_VERSION);
   assert.equal(parseSeedProcurementCommand(productSourceCommandFixture).commandType, "product_source.record");
+});
+
+test("A3C source-kind matrix preserves URL-to-PDF two-artifact lineage and rejects semantic drift", () => {
+  for (const [ingestionFormat, kind] of [["CSV", "XLSX"], ["MANUAL", "MANUAL"], ["PDF", "PDF"], ["ROOM_PLANNER", "ROOM_PLANNER"], ["SHOPIFY", "SHOPIFY"], ["URL", "URL"], ["XLSX", "XLSX"]] as const) {
+    const command = parseSeedProcurementCommand({ ...productSourceCommandFixture, ingestionFormat, source: { ...productSourceCommandFixture.source, kind } });
+    assert.equal(command.commandType, "product_source.record");
+  }
+  const urlArtifactId = "evidence-artifact-url";
+  const pdf = parseSeedProcurementCommand({ ...productSourceCommandFixture, ingestionFormat: "PDF", source: { ...productSourceCommandFixture.source, kind: "PDF" }, upstreamArtifactRefs: [{ artifactId: urlArtifactId, artifactVersion: `evidence-artifact:${urlArtifactId}:v1` }] });
+  assert.equal(pdf.commandType, "product_source.record");
+  assert.deepEqual(pdf.upstreamArtifactRefs, [{ artifactId: urlArtifactId, artifactVersion: `evidence-artifact:${urlArtifactId}:v1` }]);
+  assert.throws(() => parseSeedProcurementCommand({ ...productSourceCommandFixture, ingestionFormat: "URL", source: { ...productSourceCommandFixture.source, kind: "PDF" } }), (error: unknown) => error instanceof SeedProcurementContractError && error.code === "SOURCE_KIND_MISMATCH");
+  assert.throws(() => parseSeedProcurementCommand({ ...productSourceCommandFixture, upstreamArtifactRefs: [{ artifactId: productSourceCommandFixture.artifactId, artifactVersion: productSourceCommandFixture.artifactVersion }] }), (error: unknown) => error instanceof SeedProcurementContractError && error.code === "INVALID_COMMAND");
+  assert.throws(() => parseSeedProcurementCommand({ ...productSourceCommandFixture, artifactId: ` ${productSourceCommandFixture.artifactId}` }), (error: unknown) => error instanceof SeedProcurementContractError && error.code === "INVALID_COMMAND");
+  assert.throws(() => parseSeedProcurementCommand({ ...productSourceCommandFixture, source: { ...productSourceCommandFixture.source, observedAt: "2026-02-30T09:30:00.000Z" } }), (error: unknown) => error instanceof SeedProcurementContractError && error.code === "INVALID_COMMAND");
 });
 
 test("caller identity, authority, tenant, finality, changed field sets and stale create versions fail closed", () => {
@@ -71,15 +88,33 @@ test("objective score and quote landed economics reconcile from disclosed inputs
   assert.equal(economics.lines[0].landedTotalMinor, economics.lines[0].supplierCostTotalMinor + economics.lines[0].freightMinor + economics.lines[0].dutyMinor + economics.lines[0].reserveMinor);
 });
 
-test("A3 read model pins API producer layers, exact apiResponse envelope and explicit dependency holds", () => {
+test("A3C read model pins historical, correction, and supplier producers with only the Proposal hold", () => {
   const parsed = parseSeedProcurementReadModel(seedProcurementPositiveFixture);
-  assert.equal(parsed.blockedDependencies.length, 2);
+  assert.equal(parsed.blockedDependencies.length, 1);
   assert.equal(parsed.purchaseOrders.length, 0);
   assert.deepEqual(Object.keys(seedProcurementHttpResponsePositiveFixture).sort(), ["correlationId", "ok", "requestId", "requestIdentityContractVersion", "responseContractVersion", "result", "traceId"]);
   assert.equal(SEED_PROCUREMENT_HTTP_ROUTES.commandCollection, "/api/v1/procurement/commands");
   assert.equal(SEED_PROCUREMENT_HTTP_ROUTES.projectProcurement, "/api/v1/projects/:projectId/procurement");
   assert.notEqual(parsed.metadata.seedProductContractProducerSha, parsed.metadata.scheduleContractProducerSha);
   assert.notEqual(parsed.metadata.procurementContractProducerSha, parsed.metadata.releaseIdentity.exactSha);
+  assert.notEqual(parsed.metadata.procurementCorrectionContractProducerSha, parsed.metadata.procurementContractProducerSha);
+  assert.notEqual(parsed.metadata.supplierIdentityContractProducerSha, parsed.metadata.procurementCorrectionContractProducerSha);
+});
+
+test("published A3 v1 known-bad input keeps its exact digest and remains rejected", () => {
+  assert.equal(sha256(seedProcurementA3V1KnownBadFixture), SEED_PROCUREMENT_A3_V1_KNOWN_BAD_DIGEST_SHA256);
+  assert.throws(() => parseSeedProcurementReadModel(seedProcurementA3V1KnownBadFixture.result), (error: unknown) => error instanceof SeedProcurementReadModelError && error.code === "UNSUPPORTED_CONTRACT_VERSION");
+  const lineage = structuredClone(seedProcurementA3V1KnownBadFixture.result) as unknown as Record<string, unknown>;
+  lineage.contractVersion = "SeedProcurementReadModel/v2";
+  const metadata = lineage.metadata as Record<string, unknown>;
+  metadata.procurementCorrectionContractProducerSha = seedProcurementPositiveFixture.metadata.procurementCorrectionContractProducerSha;
+  metadata.supplierIdentityContractProducerSha = seedProcurementPositiveFixture.metadata.supplierIdentityContractProducerSha;
+  (metadata.releaseIdentity as { contractComponents: string[] }).contractComponents = [...seedProcurementPositiveFixture.metadata.releaseIdentity.contractComponents];
+  const sources = lineage.productSources as Array<Record<string, unknown>>;
+  sources[0].upstreamArtifactRefs = [];
+  assert.throws(() => parseSeedProcurementReadModel(lineage), (error: unknown) => error instanceof SeedProcurementReadModelError && error.code === "SOURCE_KIND_MISMATCH");
+  sources[0].ingestionFormat = "PDF";
+  assert.throws(() => parseSeedProcurementReadModel(lineage), (error: unknown) => error instanceof SeedProcurementReadModelError && error.code === "REFERENCE_MISMATCH");
 });
 
 test("hostile cross-tenant, wrong producer, corrupt objective score and false source finality fail readback", () => {
@@ -169,10 +204,13 @@ test("known-bad tenant predicate, stale version and corrupt landed total control
   assert.deepEqual(procurementInvariantDefects({ actualVersion: "spec:v1", expectedVersion: "spec:v1", landedTotalMinor: 110, query: "select * from seed_supplier_quotes where tenant_id=$1 and supplier_quote_id=$2", supplierCostTotalMinor: 100 }), []);
 });
 
-test("migration and store enforce forced RLS, explicit runtime role, immutable rows, dependency holds and no effects", () => {
+test("A3C migration admits exactly four owner writes while preserving RLS, append-only rows, PO holds and no effects", () => {
   const migration = readFileSync("supabase/migrations/20260905091246_seed_procurement_a3.sql", "utf8");
+  const correction = readFileSync("supabase/migrations/20260906003727_seed_procurement_a3_correction_01.sql", "utf8");
+  const rollback = readFileSync("scripts/validation/rollback-seed-procurement-a3-correction-01.sql", "utf8");
   const store = readFileSync("src/modules/seed-procurement/store.ts", "utf8");
   const route = readFileSync("src/app/api/v1/procurement/commands/route.ts", "utf8");
+  const routeSupport = readFileSync("src/modules/seed-procurement/routeSupport.ts", "utf8");
   assert.equal((migration.match(/force row level security/g) ?? []).length, 9);
   assert.equal((migration.match(/to luzione_api_runtime using/g) ?? []).length, 9);
   assert.match(migration, /set search_path = ''/);
@@ -182,7 +220,18 @@ test("migration and store enforce forced RLS, explicit runtime role, immutable r
   assert.match(migration, /grant select, insert on table/);
   assert.doesNotMatch(migration, /grant select, insert on table public\.seed_rfq_drafts/);
   assert.doesNotMatch(migration, /grant[^;]*\bupdate\b/i);
-  assert.match(store, /SUPPLIER_ELIGIBILITY_UNVERIFIED/);
+  assert.equal((correction.match(/drop trigger seed_(?:rfq|supplier_quote|bid_comparison|selection_decision)_dependency_hold/g) ?? []).length, 4);
+  assert.doesNotMatch(correction, /drop trigger seed_purchase_order_(?:dependency_hold|ack_dependency_hold)/);
+  assert.match(correction, /grant select,insert on table public\.seed_rfq_drafts,public\.seed_supplier_quotes,public\.seed_bid_comparisons,public\.seed_procurement_selection_decisions/);
+  assert.match(correction, /create constraint trigger seed_rfq_a3c_integrity[\s\S]*deferrable initially deferred/);
+  assert.match(correction, /roles @> array\['luzione_api_runtime'\]::name\[\]/);
+  assert.match(correction, /capabilities \? 'QUOTE_SUBMISSION'/);
+  assert.match(correction, /capabilities \? case when tg_table_name='seed_rfq_drafts' then 'RFQ_RESPONSE' else 'QUOTE_SUBMISSION' end/);
+  assert.match(rollback, /rollback refused/);
+  assert.doesNotMatch(rollback, /drop trigger seed_purchase_order_(?:dependency_hold|ack_dependency_hold)/);
+  assert.match(store, /requireEligibleSupplier/);
+  assert.match(store, /bid_comparison\.approve_from_selection/);
+  assert.match(store, /write\.receipt\.state = "DOMAIN_COMMITTED"/);
   assert.match(store, /PROPOSAL_CANONICAL_READER_UNAVAILABLE/);
   assert.match(store, /if \(!readback \|\| !readbackMatchesReceipt\)/);
   assert.match(store, /s\.project_id=\$2/);
@@ -190,7 +239,9 @@ test("migration and store enforce forced RLS, explicit runtime role, immutable r
   assert.match(store, /artifact_content_digest/);
   assert.match(store, /product_source_status/);
   assert.match(store, /r\.correlation_id/);
-  assert.match(store, /where tenant_id=\$1 and id::text=\$2/);
   assert.match(route, /A1_NO_EFFECT/);
+  assert.match(route, /A2_HUMAN_APPROVAL_NO_EFFECT/);
+  assert.match(routeSupport, /SeedSupplierIdentityDomainError/);
+  assert.match(routeSupport, /status: error\.status/);
   assert.doesNotMatch(`${store}\n${route}`, /fetch\(|EXTERNAL_EFFECT|supplier_rfq_email|sendRfq|releasePurchaseOrder/);
 });

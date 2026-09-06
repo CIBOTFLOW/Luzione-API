@@ -823,18 +823,49 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
     compatibility: "EXACT_VERSION",
     consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS", "CIBOTFLOW/Supplier-Designer-Portal"],
     contractId: "seed-procurement-command",
+    currentRuntime: false,
+    maturity: "IMPLEMENTED_TRANSITIONAL",
+    name: "Historical v1 procurement command retained as a known-bad compatibility control",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: ["controller:SEED-PROCUREMENT-A3:SUPERSEDED_BY_CORRECTION_01"],
+    sourcePaths: [
+      "src/modules/seed-procurement/fixtures/a3-v1-known-bad.ts",
+      "engineering/execution/handoffs/SEED_PROCUREMENT_A3_CONSUMER_HANDOFF.json"
+    ],
+    version: "SeedProcurementCommand/v1",
+  },
+  {
+    compatibility: "EXACT_VERSION",
+    consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS", "CIBOTFLOW/Supplier-Designer-Portal"],
+    contractId: "seed-procurement-command",
     currentRuntime: true,
     maturity: "IMPLEMENTED",
-    name: "Default-off NO_EFFECT product intelligence commands with dependency-held RFQ-to-PO boundary",
+    name: "Default-off NO_EFFECT product intelligence, supplier-gated sourcing and immutable human-selection commands",
     ownerRepository: "CIBOTFLOW/Luzione-API",
-    pendingChangeRefs: ["controller:SEED-PROCUREMENT-A3:G0_CANDIDATE", "controller:SEED-SUPPLIER-IDENTITY-A2S:BLOCKED_DEPENDENCY", "controller:SEED-PROPOSAL-OWNER-A2P:BLOCKED_DEPENDENCY"],
+    pendingChangeRefs: ["controller:SEED-PROCUREMENT-A3-CORRECTION-01:G0_CANDIDATE", "controller:SEED-PROPOSAL-OWNER-A2P:BLOCKED_DEPENDENCY"],
     sourcePaths: [
       "src/modules/seed-procurement/contracts.ts",
       "src/modules/seed-procurement/store.ts",
       "src/app/api/v1/procurement/commands/route.ts",
-      "supabase/migrations/20260905091246_seed_procurement_a3.sql"
+      "supabase/migrations/20260905091246_seed_procurement_a3.sql",
+      "supabase/migrations/20260906003727_seed_procurement_a3_correction_01.sql"
     ],
-    version: "SeedProcurementCommand/v1",
+    version: "SeedProcurementCommand/v2",
+  },
+  {
+    compatibility: "EXACT_VERSION",
+    consumers: ["CIBOTFLOW/Luzione-UI", "CIBOTFLOW/Sultan-OS"],
+    contractId: "seed-procurement-read-model",
+    currentRuntime: false,
+    maturity: "IMPLEMENTED_TRANSITIONAL",
+    name: "Historical v1 procurement read model retained as a known-bad compatibility control",
+    ownerRepository: "CIBOTFLOW/Luzione-API",
+    pendingChangeRefs: ["controller:SEED-PROCUREMENT-A3:SUPERSEDED_BY_CORRECTION_01"],
+    sourcePaths: [
+      "src/modules/seed-procurement/fixtures/a3-v1-known-bad.ts",
+      "engineering/execution/handoffs/SEED_PROCUREMENT_A3_CONSUMER_HANDOFF.json"
+    ],
+    version: "SeedProcurementReadModel/v1",
   },
   {
     compatibility: "EXACT_VERSION",
@@ -842,15 +873,15 @@ export const platformContractRegistry: readonly PlatformContractDescriptor[] = O
     contractId: "seed-procurement-read-model",
     currentRuntime: true,
     maturity: "IMPLEMENTED",
-    name: "Tenant-bound product source and candidate read model with explicit downstream dependency holds",
+    name: "Tenant-bound procurement graph read model with exact source, supplier, receipt and human-selection provenance",
     ownerRepository: "CIBOTFLOW/Luzione-API",
-    pendingChangeRefs: ["controller:SEED-PROCUREMENT-A3:G0_CANDIDATE"],
+    pendingChangeRefs: ["controller:SEED-PROCUREMENT-A3-CORRECTION-01:G0_CANDIDATE", "controller:SEED-PROPOSAL-OWNER-A2P:BLOCKED_DEPENDENCY"],
     sourcePaths: [
       "src/modules/seed-procurement/readModel.ts",
       "src/modules/seed-procurement/fixtures.ts",
       "src/app/api/v1/projects/[projectId]/procurement/route.ts"
     ],
-    version: "SeedProcurementReadModel/v1",
+    version: "SeedProcurementReadModel/v2",
   },
   {
     compatibility: "EXACT_VERSION",

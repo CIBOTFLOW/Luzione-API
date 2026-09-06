@@ -1,8 +1,8 @@
 import { canonicalJson, sha256 } from "@/modules/platform-guarantees/eventContract";
 
-export const SEED_PROCUREMENT_COMMAND_VERSION = "SeedProcurementCommand/v1";
-export const SEED_PROCUREMENT_READ_MODEL_VERSION = "SeedProcurementReadModel/v1";
-export const SEED_PROCUREMENT_POLICY_VERSION = "2026-09-05.seed-procurement.no-effect.v1";
+export const SEED_PROCUREMENT_COMMAND_VERSION = "SeedProcurementCommand/v2";
+export const SEED_PROCUREMENT_READ_MODEL_VERSION = "SeedProcurementReadModel/v2";
+export const SEED_PROCUREMENT_POLICY_VERSION = "2026-09-05.seed-procurement.no-effect.v2";
 export const SEED_PROCUREMENT_OWNER = "LUZIONE_PROCUREMENT";
 
 const ID = /^[A-Za-z0-9][A-Za-z0-9._:-]{2,511}$/;
@@ -11,6 +11,7 @@ const CURRENCIES = /^[A-Z]{3}$/;
 
 export type ExactProjectRef = { projectId: string; projectVersion: string };
 export type ExactSpecificationRef = ExactProjectRef & { specificationId: string; specificationVersion: string };
+export type ExactEvidenceArtifactRef = { artifactId: string; artifactVersion: string };
 export type ObjectiveComponent = "leadTime" | "margin" | "price" | "sourceFreshness" | "specificationMatch" | "supplierReliability";
 export type ObjectiveFit = {
   inputs: Record<ObjectiveComponent, number>;
@@ -51,6 +52,7 @@ export type ProductSourceRecordCommand = CommonCommand & {
   duplicateOfSourceId: string | null;
   extractionProvenance: string[];
   ingestionFormat: "CSV" | "MANUAL" | "PDF" | "ROOM_PLANNER" | "SHOPIFY" | "URL" | "XLSX";
+  upstreamArtifactRefs: ExactEvidenceArtifactRef[];
   source: {
     contentDigest: string;
     kind: "MANUAL" | "PDF" | "ROOM_PLANNER" | "SHOPIFY" | "URL" | "XLSX";
@@ -206,6 +208,7 @@ function nullableText(value: unknown, path: string, max = 1_000) {
   return value === null ? null : text(value, path, max);
 }
 function id(value: unknown, path: string) {
+  if (typeof value !== "string" || value !== value.trim()) fail("INVALID_COMMAND", `${path} must not contain surrounding whitespace.`);
   const parsed = text(value, path, 512);
   if (!ID.test(parsed)) fail("INVALID_COMMAND", `${path} must be a stable canonical identifier.`);
   return parsed;
@@ -216,9 +219,10 @@ function digest(value: unknown, path: string) {
   return value;
 }
 function timestamp(value: unknown, path: string) {
-  const parsed = text(value, path, 100);
-  if (!Number.isFinite(Date.parse(parsed))) fail("INVALID_COMMAND", `${path} must be an ISO timestamp.`);
-  return new Date(parsed).toISOString();
+  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(value)) fail("INVALID_COMMAND", `${path} must be canonical RFC3339 UTC with millisecond precision.`);
+  const parsed = Date.parse(value);
+  if (!Number.isFinite(parsed) || new Date(parsed).toISOString() !== value) fail("INVALID_COMMAND", `${path} must be a real canonical calendar timestamp.`);
+  return value;
 }
 function timestampOrNull(value: unknown, path: string) { return value === null ? null : timestamp(value, path); }
 function score(value: unknown, path: string) {
@@ -299,13 +303,20 @@ function parseEvidence(input: JsonObject): EvidenceArtifactRegisterCommand {
   } };
 }
 function parseProductSource(input: JsonObject): ProductSourceRecordCommand {
-  exact(input, ["artifactId", "artifactVersion", "commandId", "commandType", "conflictRefs", "contractVersion", "duplicateOfSourceId", "expectedVersion", "extractionProvenance", "idempotencyKey", "ingestionFormat", "projectRef", "source"], "command");
+  exact(input, ["artifactId", "artifactVersion", "commandId", "commandType", "conflictRefs", "contractVersion", "duplicateOfSourceId", "expectedVersion", "extractionProvenance", "idempotencyKey", "ingestionFormat", "projectRef", "source", "upstreamArtifactRefs"], "command");
   const source = exact(input.source, ["contentDigest", "kind", "locator", "observedAt", "validUntil"], "command.source");
   const ingestionFormat = enumValue(input.ingestionFormat, ["CSV", "MANUAL", "PDF", "ROOM_PLANNER", "SHOPIFY", "URL", "XLSX"], "command.ingestionFormat");
   const kind = enumValue(source.kind, ["MANUAL", "PDF", "ROOM_PLANNER", "SHOPIFY", "URL", "XLSX"], "command.source.kind");
   if (ingestionFormat === "CSV" && kind !== "XLSX") fail("SOURCE_KIND_MISMATCH", "CSV uses the ProductSource/v1 spreadsheet lane and therefore requires source.kind XLSX.");
   if (ingestionFormat !== "CSV" && ingestionFormat !== kind) fail("SOURCE_KIND_MISMATCH", "ingestionFormat and ProductSource/v1 kind must agree.");
-  return { ...common(input), commandType: "product_source.record", expectedVersion: absent(input), projectRef: optionalProjectRef(input.projectRef), artifactId: id(input.artifactId, "command.artifactId"), artifactVersion: id(input.artifactVersion, "command.artifactVersion"), conflictRefs: strings(input.conflictRefs, "command.conflictRefs"), duplicateOfSourceId: idOrNull(input.duplicateOfSourceId, "command.duplicateOfSourceId"), extractionProvenance: strings(input.extractionProvenance, "command.extractionProvenance", true), ingestionFormat, source: { contentDigest: digest(source.contentDigest, "command.source.contentDigest"), kind, locator: text(source.locator, "command.source.locator", 2_000), observedAt: timestamp(source.observedAt, "command.source.observedAt"), validUntil: timestampOrNull(source.validUntil, "command.source.validUntil") } };
+  if (!Array.isArray(input.upstreamArtifactRefs)) fail("INVALID_COMMAND", "command.upstreamArtifactRefs must be an array.");
+  const upstreamArtifactRefs = input.upstreamArtifactRefs.map((value, index) => {
+    const ref = exact(value, ["artifactId", "artifactVersion"], `command.upstreamArtifactRefs[${index}]`);
+    return { artifactId: id(ref.artifactId, `command.upstreamArtifactRefs[${index}].artifactId`), artifactVersion: id(ref.artifactVersion, `command.upstreamArtifactRefs[${index}].artifactVersion`) };
+  });
+  const directArtifactId = id(input.artifactId, "command.artifactId");
+  if (upstreamArtifactRefs.some((ref) => ref.artifactId === directArtifactId) || new Set(upstreamArtifactRefs.map((ref) => ref.artifactId)).size !== upstreamArtifactRefs.length) fail("INVALID_COMMAND", "Product Source evidence lineage must not repeat direct or upstream Evidence Artifacts.");
+  return { ...common(input), commandType: "product_source.record", expectedVersion: absent(input), projectRef: optionalProjectRef(input.projectRef), artifactId: directArtifactId, artifactVersion: id(input.artifactVersion, "command.artifactVersion"), conflictRefs: strings(input.conflictRefs, "command.conflictRefs"), duplicateOfSourceId: idOrNull(input.duplicateOfSourceId, "command.duplicateOfSourceId"), extractionProvenance: strings(input.extractionProvenance, "command.extractionProvenance", true), ingestionFormat, upstreamArtifactRefs, source: { contentDigest: digest(source.contentDigest, "command.source.contentDigest"), kind, locator: text(source.locator, "command.source.locator", 2_000), observedAt: timestamp(source.observedAt, "command.source.observedAt"), validUntil: timestampOrNull(source.validUntil, "command.source.validUntil") } };
 }
 function parseCandidate(input: JsonObject): ProductCandidateRecordCommand {
   exact(input, ["candidate", "commandId", "commandType", "conflictRefs", "contractVersion", "duplicateOfCandidateId", "expectedVersion", "extractionProvenance", "fit", "idempotencyKey", "productIdentityRef", "productSourceId", "productSourceVersion", "projectRef"], "command");

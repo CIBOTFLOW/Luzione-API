@@ -18,6 +18,7 @@ import type {
   PurchaseOrderV1,
   RFQV1,
   SupplierQuoteV1,
+  SeedSourceRefV1,
   TimelineEventV1,
 } from "@/modules/luzione-core-contracts/seedProductContracts";
 import { releaseIdentityViolations, type ReleaseIdentity } from "@/modules/production-convergence/releaseIdentity";
@@ -29,6 +30,8 @@ import { objectiveScore, type NormalizedQuoteEconomics } from "@/modules/seed-pr
 import { API_HTTP_RESPONSE_VERSION, PROJECT_SPECIFICATION_SCHEDULE_CONTRACT_PRODUCER_SHA, SEED_PRODUCT_CONTRACT_PRODUCER_SHA } from "@/modules/seed-project-publication/readModel";
 
 export const SEED_PROCUREMENT_CONTRACT_PRODUCER_SHA = "777e0d471d2ecf02294fffb7562761d6f8a36dbd";
+export const SEED_PROCUREMENT_CORRECTION_CONTRACT_PRODUCER_SHA = "0000000000000000000000000000000000000000";
+export const SEED_SUPPLIER_IDENTITY_CONTRACT_PRODUCER_SHA = "6467b989db7422c45935dcec3ad334b4fe99ce5f";
 export const PROCUREMENT_SELECTION_DECISION_VERSION = "ProcurementSelectionDecision/v1";
 
 export const SEED_PROCUREMENT_HTTP_ROUTES = Object.freeze({
@@ -58,7 +61,7 @@ export type SeedProcurementReadModelData = {
   blockedDependencies: Array<{ affectedCapabilities: string[]; code: string; requiredContract: string; summary: string }>;
   evidenceArtifacts: Array<{ projectId: string | null; resource: EvidenceArtifactV1 }>;
   productCandidates: Array<{ conflictRefs: string[]; duplicateOfCandidateId: string | null; extractionProvenance: string[]; fit: ObjectiveFit & { score: number }; projectId: string | null; resource: ProductCandidateV1 }>;
-  productSources: Array<{ conflictRefs: string[]; duplicateOfSourceId: string | null; extractionProvenance: string[]; ingestionFormat: string; projectId: string | null; resource: ProductSourceV1 }>;
+  productSources: Array<{ conflictRefs: string[]; duplicateOfSourceId: string | null; extractionProvenance: string[]; ingestionFormat: string; projectId: string | null; resource: ProductSourceV1; upstreamArtifactRefs: SeedSourceRefV1[] }>;
   purchaseOrders: PurchaseOrderV1[];
   rfqs: RFQV1[];
   selectionDecisions: ProcurementSelectionDecisionV1[];
@@ -66,17 +69,19 @@ export type SeedProcurementReadModelData = {
   timeline: TimelineEventV1[];
 };
 
-export type SeedProcurementReadModelV1 = SeedProcurementReadModelData & {
+export type SeedProcurementReadModelV2 = SeedProcurementReadModelData & {
   contractVersion: typeof SEED_PROCUREMENT_READ_MODEL_VERSION;
   metadata: {
     apiResponseContractVersion: typeof API_HTTP_RESPONSE_VERSION;
     observedAt: string;
+    procurementCorrectionContractProducerSha: typeof SEED_PROCUREMENT_CORRECTION_CONTRACT_PRODUCER_SHA;
     procurementContractProducerSha: typeof SEED_PROCUREMENT_CONTRACT_PRODUCER_SHA;
     producerRepository: "CIBOTFLOW/Luzione-API";
     projectId: string;
     releaseIdentity: ReleaseIdentity;
     scheduleContractProducerSha: typeof PROJECT_SPECIFICATION_SCHEDULE_CONTRACT_PRODUCER_SHA;
     seedProductContractProducerSha: typeof SEED_PRODUCT_CONTRACT_PRODUCER_SHA;
+    supplierIdentityContractProducerSha: typeof SEED_SUPPLIER_IDENTITY_CONTRACT_PRODUCER_SHA;
     tenantId: string;
   };
 };
@@ -94,11 +99,21 @@ function object(value: unknown, path: string): JsonObject { if (!value || typeof
 function exact(value: unknown, keys: readonly string[], path: string) { const parsed = object(value, path); const expected = [...keys].sort(); const actual = Object.keys(parsed).sort(); if (actual.length !== expected.length || actual.some((key, index) => key !== expected[index])) fail("FIELD_SET_MISMATCH", `${path} fields must be exactly ${expected.join(", ")}.`); return parsed; }
 function array(value: unknown, path: string) { if (!Array.isArray(value)) fail("INVALID_VALUE", `${path} must be an array.`); return value; }
 function bounded(value: unknown, path: string) { if (typeof value !== "string" || value.length < 2 || value.length > 512) fail("INVALID_VALUE", `${path} must be bounded text.`); return value; }
-function nullableId(value: unknown, path: string) { return value === null ? null : bounded(value, path); }
+function stableId(value: unknown, path: string) { const parsed = bounded(value, path); if (parsed !== parsed.trim() || !/^[A-Za-z0-9][A-Za-z0-9._:-]{2,511}$/.test(parsed)) fail("INVALID_VALUE", `${path} must be an unpadded stable identifier.`); return parsed; }
+function nullableId(value: unknown, path: string) { return value === null ? null : stableId(value, path); }
 function strings(value: unknown, path: string) { return array(value, path).map((item, index) => bounded(item, `${path}[${index}]`)); }
-function timestamp(value: unknown, path: string) { const parsed = bounded(value, path); if (!Number.isFinite(Date.parse(parsed))) fail("INVALID_VALUE", `${path} must be an ISO timestamp.`); return parsed; }
+function timestamp(value: unknown, path: string) { if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(value)) fail("INVALID_VALUE", `${path} must be canonical RFC3339 UTC with millisecond precision.`); const instant = Date.parse(value); if (!Number.isFinite(instant) || new Date(instant).toISOString() !== value) fail("INVALID_VALUE", `${path} must be a real canonical calendar timestamp.`); return value; }
 function sameTenant(tenantId: string, resource: { tenantId: string }, path: string) { if (resource.tenantId !== tenantId) fail("TENANT_MISMATCH", `${path} crosses the authenticated tenant.`); }
 function unitInterval(value: unknown, path: string) { if (typeof value !== "number" || !Number.isFinite(value) || value < 0 || value > 1) fail("INVALID_VALUE", `${path} must be a finite number from zero through one.`); return value; }
+function exactRef(value: unknown, tenantId: string, path: string, expected: { objectId?: string; objectType: string; ownerProject: string; version?: string }): SeedSourceRefV1 {
+  const ref = exact(value, ["objectId", "objectType", "ownerProject", "tenantId", "version"], path);
+  const parsed = { objectId: stableId(ref.objectId, `${path}.objectId`), objectType: stableId(ref.objectType, `${path}.objectType`), ownerProject: stableId(ref.ownerProject, `${path}.ownerProject`), tenantId: stableId(ref.tenantId, `${path}.tenantId`), version: stableId(ref.version, `${path}.version`) };
+  if (parsed.tenantId !== tenantId || parsed.objectType !== expected.objectType || parsed.ownerProject !== expected.ownerProject || (expected.objectId && parsed.objectId !== expected.objectId) || (expected.version && parsed.version !== expected.version)) fail("REFERENCE_MISMATCH", `${path} does not bind the exact canonical resource.`);
+  return parsed;
+}
+function sameRef(left: SeedSourceRefV1, right: SeedSourceRefV1) {
+  return left.objectId === right.objectId && left.objectType === right.objectType && left.ownerProject === right.ownerProject && left.tenantId === right.tenantId && left.version === right.version;
+}
 
 function parseFit(value: unknown, path: string) {
   const parsed = exact(value, ["inputs", "score", "weights"], path);
@@ -142,14 +157,15 @@ function parseSelection(value: unknown, tenantId: string, projectId: string): Pr
   return { actor: { actorId: bounded(actor.actorId, "actorId"), actorType: "HUMAN", serverDerivedIdentityRef: bounded(actor.serverDerivedIdentityRef, "identityRef") }, bidComparisonId: bounded(input.bidComparisonId, "bidComparisonId"), contractVersion: PROCUREMENT_SELECTION_DECISION_VERSION, createdAt: timestamp(input.createdAt, "createdAt"), decision: "SELECT", evidenceRefs: strings(input.evidenceRefs, "evidenceRefs"), mutation: { expectedVersion: bounded(mutation.expectedVersion, "expectedVersion"), idempotencyKey: bounded(mutation.idempotencyKey, "idempotencyKey"), payloadHash: bounded(mutation.payloadHash, "payloadHash") }, projectId, rationale: bounded(input.rationale, "rationale"), receipt: { committedVersion: bounded(receipt.committedVersion, "committedVersion"), finality: "DOMAIN_COMMITTED", receiptId: bounded(receipt.receiptId, "receiptId") }, resource: { id: bounded(resource.id, "resource.id"), status: "ACTIVE", version: bounded(resource.version, "resource.version") }, selectedSupplierQuoteId: bounded(input.selectedSupplierQuoteId, "selectedSupplierQuoteId"), tenantId };
 }
 
-export function parseSeedProcurementReadModel(value: unknown): SeedProcurementReadModelV1 {
+export function parseSeedProcurementReadModel(value: unknown): SeedProcurementReadModelV2 {
   const input = exact(value, ["acknowledgements", "bidComparisons", "blockedDependencies", "contractVersion", "evidenceArtifacts", "metadata", "productCandidates", "productSources", "purchaseOrders", "rfqs", "selectionDecisions", "supplierQuotes", "timeline"], "procurement");
   if (input.contractVersion !== SEED_PROCUREMENT_READ_MODEL_VERSION) fail("UNSUPPORTED_CONTRACT_VERSION", `contractVersion must be ${SEED_PROCUREMENT_READ_MODEL_VERSION}.`);
-  const metadata = exact(input.metadata, ["apiResponseContractVersion", "observedAt", "procurementContractProducerSha", "producerRepository", "projectId", "releaseIdentity", "scheduleContractProducerSha", "seedProductContractProducerSha", "tenantId"], "procurement.metadata");
+  const metadata = exact(input.metadata, ["apiResponseContractVersion", "observedAt", "procurementContractProducerSha", "procurementCorrectionContractProducerSha", "producerRepository", "projectId", "releaseIdentity", "scheduleContractProducerSha", "seedProductContractProducerSha", "supplierIdentityContractProducerSha", "tenantId"], "procurement.metadata");
   if (metadata.apiResponseContractVersion !== API_HTTP_RESPONSE_VERSION || metadata.producerRepository !== "CIBOTFLOW/Luzione-API") fail("PRODUCER_MISMATCH", "Unexpected API response producer.");
-  if (metadata.seedProductContractProducerSha !== SEED_PRODUCT_CONTRACT_PRODUCER_SHA || metadata.scheduleContractProducerSha !== PROJECT_SPECIFICATION_SCHEDULE_CONTRACT_PRODUCER_SHA || metadata.procurementContractProducerSha !== SEED_PROCUREMENT_CONTRACT_PRODUCER_SHA) fail("PRODUCER_MISMATCH", "Procurement read model has an unadmitted producer SHA.");
-  const tenantId = bounded(metadata.tenantId, "metadata.tenantId");
-  const projectId = bounded(metadata.projectId, "metadata.projectId");
+  if (metadata.seedProductContractProducerSha !== SEED_PRODUCT_CONTRACT_PRODUCER_SHA || metadata.scheduleContractProducerSha !== PROJECT_SPECIFICATION_SCHEDULE_CONTRACT_PRODUCER_SHA || metadata.procurementContractProducerSha !== SEED_PROCUREMENT_CONTRACT_PRODUCER_SHA || metadata.procurementCorrectionContractProducerSha !== SEED_PROCUREMENT_CORRECTION_CONTRACT_PRODUCER_SHA || metadata.supplierIdentityContractProducerSha !== SEED_SUPPLIER_IDENTITY_CONTRACT_PRODUCER_SHA) fail("PRODUCER_MISMATCH", "Procurement read model has an unadmitted producer SHA.");
+  const tenantId = stableId(metadata.tenantId, "metadata.tenantId");
+  const projectId = stableId(metadata.projectId, "metadata.projectId");
+  const observedAt = timestamp(metadata.observedAt, "metadata.observedAt");
   const releaseIdentity = metadata.releaseIdentity as ReleaseIdentity;
   const violations = releaseIdentityViolations(releaseIdentity);
   if (violations.length) fail("DEPLOYMENT_IDENTITY_INVALID", violations.join(", "));
@@ -159,18 +175,33 @@ export function parseSeedProcurementReadModel(value: unknown): SeedProcurementRe
     if (recordProjectId !== projectId) fail("REFERENCE_MISMATCH", "Evidence Artifact crosses the Project read boundary.");
     const resource = parseEvidenceArtifactV1(record.resource);
     sameTenant(tenantId, resource, `evidenceArtifacts[${index}]`);
+    if (Date.parse(resource.data.capturedAt) > Date.parse(observedAt)) fail("FUTURE_OBSERVATION", "Evidence Artifact capturedAt cannot be later than read-model observedAt.");
+    if (resource.resource.status === "ACTIVE" && (resource.data.promptInjectionState !== "CLEAR" || resource.receipt.finality !== "DOMAIN_COMMITTED")) fail("FINALITY_MISMATCH", "Active evidence requires completed review and DOMAIN_COMMITTED finality.");
     return { projectId: recordProjectId, resource };
   });
   const productSources = array(input.productSources, "productSources").map((item, index) => {
-    const record = exact(item, ["conflictRefs", "duplicateOfSourceId", "extractionProvenance", "ingestionFormat", "projectId", "resource"], `productSources[${index}]`);
+    const record = exact(item, ["conflictRefs", "duplicateOfSourceId", "extractionProvenance", "ingestionFormat", "projectId", "resource", "upstreamArtifactRefs"], `productSources[${index}]`);
     const recordProjectId = nullableId(record.projectId, `productSources[${index}].projectId`);
     if (recordProjectId !== projectId) fail("REFERENCE_MISMATCH", "Product Source crosses the Project read boundary.");
     const resource = parseProductSourceV1(record.resource);
     sameTenant(tenantId, resource, `productSources[${index}]`);
     const evidence = evidenceArtifacts.find((item) => item.resource.resource.id === resource.data.sourceArtifactRef);
     if (!evidence || evidence.projectId !== recordProjectId || evidence.resource.data.contentDigest !== resource.data.contentDigest) fail("REFERENCE_MISMATCH", "Product Source must bind an exact same-Project Evidence Artifact and content digest.");
+    const ingestionFormat = stableId(record.ingestionFormat, "ingestionFormat");
+    if ((ingestionFormat === "CSV" && resource.data.kind !== "XLSX") || (ingestionFormat !== "CSV" && ingestionFormat !== resource.data.kind)) fail("SOURCE_KIND_MISMATCH", "Product Source ingestion format and source kind are inconsistent.");
+    const upstreamArtifactRefs = array(record.upstreamArtifactRefs, "upstreamArtifactRefs").map((ref, refIndex) => exactRef(ref, tenantId, `productSources[${index}].upstreamArtifactRefs[${refIndex}]`, { objectType: "EVIDENCE_ARTIFACT", ownerProject: "LUZIONE_PROCUREMENT" }));
+    if (new Set(upstreamArtifactRefs.map((ref) => ref.objectId)).size !== upstreamArtifactRefs.length || upstreamArtifactRefs.some((ref) => ref.objectId === evidence.resource.resource.id)) fail("REFERENCE_MISMATCH", "Product Source upstream Evidence Artifact refs must be unique and exclude the direct artifact.");
+    for (const ref of upstreamArtifactRefs) {
+      const upstream = evidenceArtifacts.find((item) => item.resource.resource.id === ref.objectId);
+      if (!upstream || upstream.projectId !== recordProjectId || upstream.resource.resource.version !== ref.version) fail("REFERENCE_MISMATCH", "Product Source upstream Evidence Artifact is dangling or crosses Project scope.");
+    }
+    const expectedRefs = [exactRef(resource.sourceRefs[0], tenantId, `productSources[${index}].resource.sourceRefs[0]`, { objectId: evidence.resource.resource.id, objectType: "EVIDENCE_ARTIFACT", ownerProject: "LUZIONE_PROCUREMENT", version: evidence.resource.resource.version }), ...upstreamArtifactRefs];
+    if (resource.sourceRefs.length !== expectedRefs.length || resource.sourceRefs.some((ref, refIndex) => !sameRef(ref, expectedRefs[refIndex]))) fail("REFERENCE_MISMATCH", "Product Source sourceRefs must exactly equal direct then upstream Evidence Artifact lineage.");
+    if (Date.parse(resource.data.observedAt) > Date.parse(observedAt)) fail("FUTURE_OBSERVATION", "Product Source observedAt cannot be later than read-model observedAt.");
+    if (resource.resource.status === "ACTIVE" && resource.data.validUntil !== null && Date.parse(resource.data.validUntil) <= Date.parse(observedAt)) fail("FINALITY_MISMATCH", "Expired Product Source cannot remain ACTIVE.");
+    if (resource.resource.status === "ACTIVE" && resource.receipt.finality !== "DOMAIN_COMMITTED") fail("FINALITY_MISMATCH", "Active Product Source requires DOMAIN_COMMITTED finality.");
     if (evidence.resource.resource.status !== "ACTIVE" && resource.resource.status === "ACTIVE") fail("FINALITY_MISMATCH", "Product Source cannot promote review or quarantined evidence to ACTIVE.");
-    return { conflictRefs: strings(record.conflictRefs, "conflictRefs"), duplicateOfSourceId: nullableId(record.duplicateOfSourceId, "duplicateOfSourceId"), extractionProvenance: strings(record.extractionProvenance, "extractionProvenance"), ingestionFormat: bounded(record.ingestionFormat, "ingestionFormat"), projectId: recordProjectId, resource };
+    return { conflictRefs: strings(record.conflictRefs, "conflictRefs"), duplicateOfSourceId: nullableId(record.duplicateOfSourceId, "duplicateOfSourceId"), extractionProvenance: strings(record.extractionProvenance, "extractionProvenance"), ingestionFormat, projectId: recordProjectId, resource, upstreamArtifactRefs };
   });
   for (const source of productSources) {
     if (source.duplicateOfSourceId === null) continue;
@@ -188,8 +219,11 @@ export function parseSeedProcurementReadModel(value: unknown): SeedProcurementRe
     if (!source || source.projectId !== recordProjectId) fail("REFERENCE_MISMATCH", "Product Candidate must bind an exact Product Source inside the same Project graph.");
     const resource = parseProductCandidateV1(record.resource, source.resource);
     sameTenant(tenantId, resource, `productCandidates[${index}]`);
+    if (resource.sourceRefs.length !== 1) fail("REFERENCE_MISMATCH", "Product Candidate must name exactly one Product Source.");
+    exactRef(resource.sourceRefs[0], tenantId, `productCandidates[${index}].resource.sourceRefs[0]`, { objectId: source.resource.resource.id, objectType: "PRODUCT_SOURCE", ownerProject: "LUZIONE_PROCUREMENT", version: source.resource.resource.version });
     if (resource.data.lane === "APPROVED_VENDOR" && resource.data.vendorId === null) fail("REFERENCE_MISMATCH", "APPROVED_VENDOR Product Candidate requires vendorId.");
     if (source.resource.resource.status !== "ACTIVE" && ["ELIGIBLE", "SELECTED"].includes(resource.resource.status)) fail("FINALITY_MISMATCH", "Product Candidate cannot become eligible from a non-active Product Source.");
+    if (["ELIGIBLE", "SELECTED"].includes(resource.resource.status) && resource.receipt.finality !== "DOMAIN_COMMITTED") fail("FINALITY_MISMATCH", "Eligible Product Candidate requires DOMAIN_COMMITTED finality.");
     return { conflictRefs: strings(record.conflictRefs, "conflictRefs"), duplicateOfCandidateId: nullableId(record.duplicateOfCandidateId, "duplicateOfCandidateId"), extractionProvenance: strings(record.extractionProvenance, "extractionProvenance"), fit: parseFit(record.fit, "fit"), projectId: recordProjectId, resource };
   });
   for (const candidate of productCandidates) {
@@ -210,9 +244,9 @@ export function parseSeedProcurementReadModel(value: unknown): SeedProcurementRe
   const purchaseOrders = array(input.purchaseOrders, "purchaseOrders").map((item, index) => { const parsed = parsePurchaseOrderV1(item); sameTenant(tenantId, parsed, `purchaseOrders[${index}]`); if (parsed.resource.status !== "DRAFT" || parsed.data.releaseApprovalRef !== null) fail("EFFECT_NOT_ALLOWED", "A3 may expose PO drafts only."); return parsed; });
   const acknowledgements = array(input.acknowledgements, "acknowledgements").map((item, index) => { const parsed = parsePurchaseOrderAcknowledgementV1(item); sameTenant(tenantId, parsed, `acknowledgements[${index}]`); if (parsed.resource.status === "SOURCE_CONFIRMED" || parsed.receipt.finality === "SOURCE_CONFIRMED") fail("FALSE_FINALITY", "A3 acknowledgements cannot be source-confirmed."); return parsed; });
   const timeline = array(input.timeline, "timeline").map((item, index) => { const parsed = parseTimelineEventV1(item); sameTenant(tenantId, parsed, `timeline[${index}]`); return parsed; });
-  return { acknowledgements, bidComparisons, blockedDependencies, contractVersion: SEED_PROCUREMENT_READ_MODEL_VERSION, evidenceArtifacts, metadata: { apiResponseContractVersion: API_HTTP_RESPONSE_VERSION, observedAt: timestamp(metadata.observedAt, "metadata.observedAt"), procurementContractProducerSha: SEED_PROCUREMENT_CONTRACT_PRODUCER_SHA, producerRepository: "CIBOTFLOW/Luzione-API", projectId, releaseIdentity, scheduleContractProducerSha: PROJECT_SPECIFICATION_SCHEDULE_CONTRACT_PRODUCER_SHA, seedProductContractProducerSha: SEED_PRODUCT_CONTRACT_PRODUCER_SHA, tenantId }, productCandidates, productSources, purchaseOrders, rfqs, selectionDecisions, supplierQuotes, timeline };
+  return { acknowledgements, bidComparisons, blockedDependencies, contractVersion: SEED_PROCUREMENT_READ_MODEL_VERSION, evidenceArtifacts, metadata: { apiResponseContractVersion: API_HTTP_RESPONSE_VERSION, observedAt, procurementContractProducerSha: SEED_PROCUREMENT_CONTRACT_PRODUCER_SHA, procurementCorrectionContractProducerSha: SEED_PROCUREMENT_CORRECTION_CONTRACT_PRODUCER_SHA, producerRepository: "CIBOTFLOW/Luzione-API", projectId, releaseIdentity, scheduleContractProducerSha: PROJECT_SPECIFICATION_SCHEDULE_CONTRACT_PRODUCER_SHA, seedProductContractProducerSha: SEED_PRODUCT_CONTRACT_PRODUCER_SHA, supplierIdentityContractProducerSha: SEED_SUPPLIER_IDENTITY_CONTRACT_PRODUCER_SHA, tenantId }, productCandidates, productSources, purchaseOrders, rfqs, selectionDecisions, supplierQuotes, timeline };
 }
 
 export function createSeedProcurementReadModel(data: SeedProcurementReadModelData, metadata: { observedAt: string; projectId: string; releaseIdentity: ReleaseIdentity; tenantId: string }) {
-  return parseSeedProcurementReadModel({ ...data, contractVersion: SEED_PROCUREMENT_READ_MODEL_VERSION, metadata: { apiResponseContractVersion: API_HTTP_RESPONSE_VERSION, observedAt: metadata.observedAt, procurementContractProducerSha: SEED_PROCUREMENT_CONTRACT_PRODUCER_SHA, producerRepository: "CIBOTFLOW/Luzione-API", projectId: metadata.projectId, releaseIdentity: metadata.releaseIdentity, scheduleContractProducerSha: PROJECT_SPECIFICATION_SCHEDULE_CONTRACT_PRODUCER_SHA, seedProductContractProducerSha: SEED_PRODUCT_CONTRACT_PRODUCER_SHA, tenantId: metadata.tenantId } });
+  return parseSeedProcurementReadModel({ ...data, contractVersion: SEED_PROCUREMENT_READ_MODEL_VERSION, metadata: { apiResponseContractVersion: API_HTTP_RESPONSE_VERSION, observedAt: metadata.observedAt, procurementContractProducerSha: SEED_PROCUREMENT_CONTRACT_PRODUCER_SHA, procurementCorrectionContractProducerSha: SEED_PROCUREMENT_CORRECTION_CONTRACT_PRODUCER_SHA, producerRepository: "CIBOTFLOW/Luzione-API", projectId: metadata.projectId, releaseIdentity: metadata.releaseIdentity, scheduleContractProducerSha: PROJECT_SPECIFICATION_SCHEDULE_CONTRACT_PRODUCER_SHA, seedProductContractProducerSha: SEED_PRODUCT_CONTRACT_PRODUCER_SHA, supplierIdentityContractProducerSha: SEED_SUPPLIER_IDENTITY_CONTRACT_PRODUCER_SHA, tenantId: metadata.tenantId } });
 }

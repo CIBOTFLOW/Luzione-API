@@ -3,6 +3,8 @@ import type { RequestIdentityEnvelope } from "@/modules/platform-contracts/reque
 import { IdempotencyConflictError } from "@/modules/platform-guarantees/commandKernel";
 import { SeedProcurementContractError } from "@/modules/seed-procurement/contracts";
 import { SeedProcurementDomainError } from "@/modules/seed-procurement/store";
+import { OnboardCoreContractError } from "@/modules/onboard-core/contracts";
+import { SeedSupplierIdentityDomainError } from "@/modules/seed-supplier-identity/store";
 
 const ID = /^[A-Za-z0-9][A-Za-z0-9._:-]{2,511}$/;
 
@@ -12,7 +14,7 @@ export function procurementRouteId(value: string, field: string) {
 }
 
 export function seedProcurementRouteFailure(error: unknown, identity: RequestIdentityEnvelope) {
-  if (error instanceof SeedProcurementContractError || error instanceof SeedProcurementDomainError) {
+  if (error instanceof SeedProcurementContractError || error instanceof SeedProcurementDomainError || error instanceof SeedSupplierIdentityDomainError || error instanceof OnboardCoreContractError) {
     return apiResponse({ ok: false, code: error.code, message: error.message, ...(error instanceof SeedProcurementDomainError && error.recovery ? { recovery: error.recovery } : {}) }, { requestIdentity: identity, status: error.status });
   }
   if (error instanceof IdempotencyConflictError) return apiResponse({ ok: false, code: "IDEMPOTENCY_CONFLICT", message: "The idempotency key was already used for a different command payload." }, { requestIdentity: identity, status: 409 });

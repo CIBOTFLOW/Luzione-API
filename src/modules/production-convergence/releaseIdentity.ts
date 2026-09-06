@@ -5,8 +5,8 @@ export const API_CONTRACT_RELEASE_COMPONENTS = Object.freeze([
   "api-http-response/1.0",
   "ProjectSpecificationScheduleReadModel/v1",
   "SeedProjectPublicationCommand/v1",
-  "SeedProcurementCommand/v1",
-  "SeedProcurementReadModel/v1",
+  "SeedProcurementCommand/v2",
+  "SeedProcurementReadModel/v2",
   "ProcurementSelectionDecision/v1",
   "luzione-request-identity/v1",
   "luzione-table-object-registry/v1",
@@ -36,6 +36,8 @@ export const API_SCHEMA_VERSIONS = Object.freeze([
   "20260902010100_sultan_stage5_post_inference_receipt_constraints",
   "20260905083212_seed_project_publication_a2",
   "20260905091246_seed_procurement_a3",
+  "20260905171927_seed_supplier_identity_a2s",
+  "20260906003727_seed_procurement_a3_correction_01",
 ]);
 
 const SHA = /^[a-f0-9]{40}$/;

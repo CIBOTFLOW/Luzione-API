@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import test from "node:test";
@@ -248,7 +249,7 @@ test("canonical read admission is independent of mutation admission and all A2S 
   }
 });
 
-test("A2S additive evidence manifest seals current artifacts without rewriting historical bundles", () => {
+test("A2S additive evidence manifest seals the exact immutable candidate tree while allowing successor overlays", () => {
   const manifest = JSON.parse(readFileSync("engineering/execution/seed-supplier-identity-a2s/SEED_SUPPLIER_IDENTITY_A2S_ARTIFACT_DIGESTS_V1.json", "utf8")) as {
     artifacts: Array<{ path: string; sha256: string }>;
     base_sha: string;
@@ -256,8 +257,11 @@ test("A2S additive evidence manifest seals current artifacts without rewriting h
   };
   assert.equal(manifest.base_sha, "5cc727ac0cfb3f8f7fa75015246486bf7f7089f5");
   assert.equal(manifest.implementation_sha, "6467b989db7422c45935dcec3ad334b4fe99ce5f");
+  const exactCandidateSha = "f5ba514482bb7e5eb43190f89ac381ade59f460d";
   for (const artifact of manifest.artifacts) {
-    assert.equal(createHash("sha256").update(readFileSync(artifact.path)).digest("hex"), artifact.sha256, artifact.path);
+    const immutableBytes = execFileSync("git", ["show", `${exactCandidateSha}:${artifact.path}`]);
+    assert.equal(createHash("sha256").update(immutableBytes).digest("hex"), artifact.sha256, artifact.path);
   }
+  assert.equal(createHash("sha256").update(execFileSync("git", ["show", `${exactCandidateSha}:engineering/execution/seed-supplier-identity-a2s/SEED_SUPPLIER_IDENTITY_A2S_ARTIFACT_DIGESTS_V1.json`])).digest("hex"), "89a92ea977613a7aca9cb829ea2755984ef225f2d7c71a673db717eea5f2c8ea");
   assert.equal(createHash("sha256").update(readFileSync("engineering/execution/seed-procurement-a3/SEED_PROCUREMENT_A3_ARTIFACT_DIGESTS_V1.json")).digest("hex"), "f836268c84cc7f5e8d3fbfd75e43fed2e2ec5c627e96849e20a2773fd233e7cf");
 });

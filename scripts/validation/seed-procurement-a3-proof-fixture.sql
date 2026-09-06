@@ -25,6 +25,8 @@ end $$;
 
 insert into public.accounts (tenant_id,id,name,status,version,updated_at) values
   ('tenant-proof-a','supplier-account-a','Supplier Account A','active',1,'2026-09-05T09:00:00.000Z'),
+  ('tenant-proof-a','supplier-account-a2','Supplier Account A2','active',1,'2026-09-05T09:00:00.000Z'),
+  ('tenant-proof-a','supplier-account-a3','Supplier Account A3','active',1,'2026-09-05T09:00:00.000Z'),
   ('tenant-proof-b','supplier-account-b','Supplier Account B','active',1,'2026-09-05T09:00:00.000Z'),
   ('tenant-proof-b','supplier-cross-tenant','Other Tenant Supplier','active',1,'2026-09-05T09:00:00.000Z');
 

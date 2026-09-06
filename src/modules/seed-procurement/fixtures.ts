@@ -36,6 +36,7 @@ export const productSourceCommandFixture = {
   ingestionFormat: "CSV",
   projectRef: projectRefFixture,
   source: { contentDigest: "a".repeat(64), kind: "XLSX", locator: "private-object:upload-product-1", observedAt: "2026-09-05T09:30:00.000Z", validUntil: "2026-10-05T09:30:00.000Z" },
+  upstreamArtifactRefs: [],
 };
 
 export const productCandidateCommandFixture = {
@@ -70,18 +71,29 @@ export const procurementSelectionCommandFixture = { ...common("selection-1", "pr
 export const purchaseOrderDraftCommandFixture = { ...common("po-1", "purchase_order.create_draft"), ...projectRefFixture, bidComparisonId: "bid-comparison-1", expectedVersion: "bid-comparison:bid-comparison-1:v2", lineRefs: [{ objectId: "specification-line-1", objectType: "SPECIFICATION_LINE", ownerProject: "LUZIONE_PROJECT", version: "specification-line:specification-line-1:v1" }], proposalVersion: "proposal-version:proposal-1:v3", proposalVersionId: "proposal-1", selectionDecisionId: "selection-1", selectionDecisionVersion: "procurement-selection:selection-1:v1" };
 export const purchaseOrderAcknowledgementCommandFixture = { ...common("po-ack-1", "purchase_order_acknowledgement.record"), ...projectRefFixture, acknowledgementState: "PROVIDER_ACKNOWLEDGED", evidenceArtifactId: "evidence-artifact-ack-1", evidenceArtifactVersion: "evidence-artifact:evidence-artifact-ack-1:v1", expectedReadyAt: "2026-10-20T00:00:00.000Z", expectedVersion: "purchase-order:purchase-order-1:v1", purchaseOrderId: "purchase-order-1", supplierId: "supplier-account-1", variances: [] };
 
+const correctedEvidenceArtifactFixture = structuredClone(evidenceArtifactFixture);
+correctedEvidenceArtifactFixture.data = { ...correctedEvidenceArtifactFixture.data, capturedAt: "2026-09-05T08:00:00.000Z", contentDigest: "a".repeat(64), kind: "UPLOAD", mimeType: "text/csv", promptInjectionState: "CLEAR", provider: "OPERATOR_UPLOAD", sourceRecordRef: "upload-product-1", storageRef: "private-object:upload-product-1" };
+correctedEvidenceArtifactFixture.sourceRefs = [{ objectId: "upload-product-1", objectType: "SOURCE_RECORD", ownerProject: "OPERATOR_UPLOAD", tenantId: correctedEvidenceArtifactFixture.tenantId, version: "a".repeat(64) }];
+
+const correctedProductSourceFixture = structuredClone(productSourceFixture);
+correctedProductSourceFixture.data = { ...correctedProductSourceFixture.data, contentDigest: correctedEvidenceArtifactFixture.data.contentDigest, kind: "XLSX", locator: "private-object:upload-product-1", sourceArtifactRef: correctedEvidenceArtifactFixture.resource.id };
+correctedProductSourceFixture.sourceRefs = [{ objectId: correctedEvidenceArtifactFixture.resource.id, objectType: "EVIDENCE_ARTIFACT", ownerProject: "LUZIONE_PROCUREMENT", tenantId: correctedProductSourceFixture.tenantId, version: correctedEvidenceArtifactFixture.resource.version }];
+
+const correctedProductCandidateFixture = structuredClone(productCandidateFixture);
+correctedProductCandidateFixture.data = { ...correctedProductCandidateFixture.data, lane: "OUTSIDE_PRODUCT", productSourceId: correctedProductSourceFixture.resource.id, vendorId: null };
+correctedProductCandidateFixture.sourceRefs = [{ objectId: correctedProductSourceFixture.resource.id, objectType: "PRODUCT_SOURCE", ownerProject: "LUZIONE_PROCUREMENT", tenantId: correctedProductCandidateFixture.tenantId, version: correctedProductSourceFixture.resource.version }];
+
 export const seedProcurementPositiveFixture = createSeedProcurementReadModel({
   acknowledgements: [],
   bidComparisons: [],
   blockedDependencies: [
-    { affectedCapabilities: ["rfq.create_draft", "supplier_quote.normalize"], code: "SUPPLIER_ELIGIBILITY_UNVERIFIED", requiredContract: "SupplierProfile/v1", summary: "Tenant Account identity does not attest supplier eligibility." },
     { affectedCapabilities: ["purchase_order.create_draft", "purchase_order_acknowledgement.record"], code: "PROPOSAL_CANONICAL_READER_UNAVAILABLE", requiredContract: "ProposalVersion/v1 canonical API readback", summary: "A canonical tenant and project-bound ProposalVersion reader is not admitted." },
   ],
-  evidenceArtifacts: [{ projectId: "project-1", resource: evidenceArtifactFixture }],
-  productCandidates: [{ conflictRefs: [], duplicateOfCandidateId: null, extractionProvenance: ["fixture-parser:row-1"], fit: { ...objectiveFitFixture, score: 0.865 }, projectId: "project-1", resource: productCandidateFixture }],
-  productSources: [{ conflictRefs: [], duplicateOfSourceId: null, extractionProvenance: ["fixture-parser:v1"], ingestionFormat: "URL", projectId: "project-1", resource: productSourceFixture }],
+  evidenceArtifacts: [{ projectId: "project-1", resource: correctedEvidenceArtifactFixture }],
+  productCandidates: [{ conflictRefs: [], duplicateOfCandidateId: null, extractionProvenance: ["fixture-parser:row-1"], fit: { ...objectiveFitFixture, score: 0.865 }, projectId: "project-1", resource: correctedProductCandidateFixture }],
+  productSources: [{ conflictRefs: [], duplicateOfSourceId: null, extractionProvenance: ["fixture-parser:v2"], ingestionFormat: "CSV", projectId: "project-1", resource: correctedProductSourceFixture, upstreamArtifactRefs: [] }],
   purchaseOrders: [], rfqs: [], selectionDecisions: [], supplierQuotes: [], timeline: [],
-}, { observedAt: "2026-09-05T09:30:00.000Z", projectId: "project-1", releaseIdentity: createReleaseIdentity({ environment: { LUZIONE_BUILD_TIME: "2026-09-05T09:29:00.000Z", VERCEL_GIT_COMMIT_SHA: "1111111111111111111111111111111111111111" }, mutationsEnabled: false }), tenantId: productSourceFixture.tenantId });
+}, { observedAt: "2026-09-05T09:30:00.000Z", projectId: "project-1", releaseIdentity: createReleaseIdentity({ environment: { LUZIONE_BUILD_TIME: "2026-09-05T09:29:00.000Z", VERCEL_GIT_COMMIT_SHA: "1111111111111111111111111111111111111111" }, mutationsEnabled: false }), tenantId: correctedProductSourceFixture.tenantId });
 
 export const seedProcurementHttpResponsePositiveFixture = {
   correlationId: "correlation-seed-procurement-fixture",
