@@ -1,0 +1,23 @@
+name: Luzione recovery audit
+on:
+  push:
+    branches:
+      - audit/luzione-internal-recovery-2026-09-08
+permissions:
+  contents: read
+jobs:
+  source-snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Archive exact tracked source without Git credentials
+        run: git archive --format=tar.gz --output=luzione-api-source.tar.gz HEAD
+      - uses: actions/upload-artifact@v4
+        with:
+          name: luzione-api-recovery-source
+          path: luzione-api-source.tar.gz
+          retention-days: 1
+          if-no-files-found: error
