@@ -1,0 +1,151 @@
+{
+  "schema_version": 1,
+  "handoff_id": "SGO_C02_RECEIPT_INTEGRATION_20260911",
+  "task_id": "SGO-C02",
+  "build_program": "SGO-20260911-01",
+  "lane": "L1",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "branch": "codex/sgo-c02-receipt-integration-20260911",
+  "writer_lease": "SGO-20260911-01-L1",
+  "writer_lease_owner": "01a0916a-b5c4-79c3-b299-d26e1a6fd79f",
+  "writer_lease_expires_at": "2026-09-11T19:08:29Z",
+  "controller_transfer": {
+    "repository": "Luzione platform program",
+    "branch": "codex/sgo-20260911-controller",
+    "sha": "0e4810b4fef6ed69b252c397b92edc043238260d",
+    "evidence": "evidence/SGO_VISIBLE_LANE_TRANSFERS_20260911T170829Z.md"
+  },
+  "predecessor": {
+    "branch": "codex/sgo-c02-record-context-20260911",
+    "final_sha": "a543da02c91d72057c67712890fd2fe1dce50ecc",
+    "implementation_sha": "b60a5a8f2b6c8824c0c482760412afe9d760a6bf",
+    "pull_request": 82,
+    "preservation": "The predecessor commit and draft PR are unchanged; this branch is an isolated descendant of its recorded final SHA."
+  },
+  "implementation_sha": "20038b5f792216ecb896745315d31fdafa33b723",
+  "evidence_head_binding": "This handoff binds all implementation claims to exact SHA 20038b5f792216ecb896745315d31fdafa33b723. The evidence commit is a descendant and is anchored separately by the published branch head and exact-head CI.",
+  "contract_versions": {
+    "consumed_context": "luzione-sultan-record-context/v1-draft.1",
+    "published_preparation": "luzione-sultan-record-context-receipt-preparation/v1-draft.1",
+    "preserved_stage5_receipt": "luzione-canonical-business-readback/v1",
+    "source": "luzione-lead-commercial-case/v0.1"
+  },
+  "implemented": [
+    "An unmounted SultanStage5Service seam uses the existing authorized Lead/Commercial Case source adapter and exact Stage 5 workload boundary.",
+    "Verified immutable context-draft evidence is transformed into deterministic receipt material bound to tenant, consumer actor/release, API release, idempotency identity, subject, source version and exact hashes.",
+    "Only statuses already representable by the canonical Stage 5 receipt semantics can produce material; unsupported source, invalid source and source-version mismatch fail closed without receipt material.",
+    "The preparation names the incompatible v1 subject boundary and requires a new receipt version plus additive storage migration before any persisted receipt can exist.",
+    "No receipt ID, persistence, HTTP route, admission authority, business authority or business-state mutation was added."
+  ],
+  "source_digests": [
+    {
+      "path": "src/modules/sultan-stage5/recordContextDraft.ts",
+      "sha256": "a6ae02ecf4804db8c4d0c5938a8bd51525613e197bbaeb1ec737543d20046aa0"
+    },
+    {
+      "path": "src/modules/sultan-stage5/recordContextIntegration.ts",
+      "sha256": "5caaa47ce306b1ac7d6e048ce36051268dd59258a55311ac97e9dcb09bfe90c9"
+    },
+    {
+      "path": "src/modules/sultan-stage5/service.ts",
+      "sha256": "cf9456ade8de6542a86690f43c568c707d1494163fa3b20ec409dea7d2243f43"
+    },
+    {
+      "path": "src/modules/sultan-stage5/recordContextDraft.manifest.json",
+      "sha256": "8409d6620205e8bd5b3950f18f24419ef9791c7c618cff8e0b2e872b6744846f"
+    },
+    {
+      "path": "src/modules/sultan-stage5/tests/sultan-stage5.test.ts",
+      "sha256": "851a5382697863f9a331bb4d8a6be94985b0b8b8b09d74487ee15ac8c542ade6"
+    },
+    {
+      "path": "engineering/execution/handoffs/SGO_C02_WORKING_CONTRACT.md",
+      "sha256": "2ebcdbce22d2b90d3746724a5ce3fa87747a9b74c272e792166bb137c22f1269"
+    }
+  ],
+  "stage5_v1_preservation": [
+    {
+      "path": "src/modules/sultan-stage5/contracts.ts",
+      "predecessor_and_candidate_sha256": "9e9ea0c5d7071dd3142c6464e4567e5f43ce2e6c49eef8737cab8ccdbbb810b3"
+    },
+    {
+      "path": "src/modules/sultan-stage5/parser.ts",
+      "predecessor_and_candidate_sha256": "23a414f96a79210ceff16a6fb613115661f67d68a113cb4fcef0d2c9bd1866be"
+    },
+    {
+      "path": "src/app/api/v1/sultan/canonical-readbacks/route.ts",
+      "predecessor_and_candidate_sha256": "e79e5eaa5f86c7777b5f9da860ccc2b5409064cded18d7671de32392e2cd4752"
+    },
+    {
+      "path": "contracts/sultan/canonical-business-readback-v1.schema.json",
+      "predecessor_and_candidate_sha256": "aba2e16b423a7a5593047c445b00f4aa3714f072a9dee4ff1bb9fbf72e566f72"
+    },
+    {
+      "path": "supabase/migrations/20260902010000_sultan_stage5_authority_outcomes.sql",
+      "predecessor_and_candidate_sha256": "3305d5850499b21a86b20e81400c069ce790ea54e608a3754947c2e671a39403"
+    }
+  ],
+  "verification": {
+    "dependency_install": "PASS_390_PACKAGES_ZERO_VULNERABILITIES",
+    "focused": {
+      "command": "node --import tsx --test src/modules/sultan-stage5/tests/sultan-stage5.test.ts",
+      "result": "PASS_33_OF_33"
+    },
+    "typecheck": {
+      "command": "npm run typecheck",
+      "result": "PASS"
+    },
+    "lint": {
+      "command": "npm run lint",
+      "result": "PASS"
+    },
+    "repository_tests": {
+      "command": "npm test",
+      "result": "PASS_275_OF_275"
+    },
+    "production_build": {
+      "command": "npm run build",
+      "result": "PASS_NEXTJS_16_3_4_WEBPACK_NO_NEW_ROUTE"
+    },
+    "negative_sensitivity": "Temporarily mapping VERSION_MISMATCH to SOURCE_UNAVAILABLE made the focused fail-closed status test fail; restoring the exact guard made it pass.",
+    "recovery": "A simulated unavailable-to-available source recovery retains the request identity under the same key but changes the evidence hash, explicitly requiring a persisted store to replay or conflict; a new read uses a new key and identity.",
+    "v1_byte_comparison": "PASS_ALL_FIVE_RECORDED_STAGE5_V1_FILES_MATCH_PREDECESSOR_SHA256"
+  },
+  "changed_paths": [
+    "engineering/execution/handoffs/SGO_C02_WORKING_CONTRACT.md",
+    "src/modules/sultan-stage5/recordContextDraft.manifest.json",
+    "src/modules/sultan-stage5/recordContextDraft.ts",
+    "src/modules/sultan-stage5/recordContextIntegration.ts",
+    "src/modules/sultan-stage5/service.ts",
+    "src/modules/sultan-stage5/tests/sultan-stage5.test.ts"
+  ],
+  "engineering_state": "BOUNDED_PASS",
+  "release_evidence": "LOCAL_PROVEN",
+  "effect_authority": "NO_EFFECT",
+  "finality": "BOUNDED_CLAIM",
+  "score_effect": 0,
+  "failure_refs": [
+    "SGO_C02_PARTIAL_SOURCE_EXPORT_20260911",
+    "SGO_C02_SOURCE_VERSION_BINDING_REPAIRED_20260911"
+  ],
+  "deferred_external_infra": [
+    "durable receipt contract version and additive storage migration",
+    "authenticated real Postgres source readback",
+    "HTTP route and persisted idempotency/replay proof",
+    "independent UI and Sultan OS consumer integration",
+    "exact deployed preview and production observation"
+  ],
+  "remaining_uncertainty": [
+    "The source port is fixture-proven, not authenticated against the real database.",
+    "Receipt preparation is intentionally unpersisted and unmounted; it is not a receipt, readback or admission artifact.",
+    "The current Stage 5 v1 contract and storage do not admit LEAD or COMMERCIAL_CASE and were intentionally not changed.",
+    "No consumer, deployment or production-value claim is supported by this slice."
+  ],
+  "rollback": "Revert the additive implementation commit; no schema, durable data, route, provider or external state requires restoration.",
+  "next": {
+    "task_id": "SGO-C01",
+    "safe_action": "Read-only reconcile the exact active context, tool and action producer inventory.",
+    "write_gate": "Do not mutate SGO-C01 paths until the controller accepts this handoff and explicitly assigns a compatible task scope under the retained L1 repository lease.",
+    "legacy_parent": "A02_CONTEXT_ONLY_NEVER_EXECUTE"
+  }
+}

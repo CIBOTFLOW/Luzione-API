@@ -2427,6 +2427,68 @@
       "next_proof_needed": [
         "Exact-branch CI and source producer-owner inventory."
       ]
+    },
+    {
+      "proof_id": "SGO_C02_RECEIPT_INTEGRATION_20260911",
+      "project_id": "SGO-C02",
+      "recorded_at": "2026-09-11T17:28:40Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "20038b5f792216ecb896745315d31fdafa33b723",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The exact SGO-C02 implementation exposes the existing authorized Lead/Commercial Case context draft through an unmounted Stage 5 service seam and prepares deterministic receipt material without altering or impersonating the incompatible Stage 5 v1 receipt, persistence, route or admission path.",
+      "exercised_boundaries": [
+        "Exact Stage 5 workload, tenant and consumer-release checks execute before the existing Lead/Commercial Case source port is read.",
+        "Verified draft hashes, subject identity, canonical source version and refs, consumer/API releases and idempotency identity bind deterministic receipt material for Lead and Commercial Case.",
+        "Unsupported source, source-invalid and source-version-mismatch states fail closed without receipt material; unavailable evidence carries no claims, freshness or source authority.",
+        "Preparation is explicitly unpersisted and carries no receipt ID, admission eligibility, effect authority or business-state mutation.",
+        "A negative sensitivity mutation that made VERSION_MISMATCH receipt-compatible was caught by the focused fail-closed test before the guard was restored.",
+        "A simulated unavailable-to-available recovery proves stable request identity, changed evidence hash, replay-or-conflict requirements under the same key and new identity under a new key.",
+        "Focused tests passed 33/33; repository tests passed 275/275; typecheck, lint and the Next.js 16.3.4 webpack production build passed.",
+        "Stage 5 v1 TypeScript contract/parser, HTTP route, machine schema and durable migration match predecessor a543da02c91d72057c67712890fd2fe1dce50ecc byte-for-byte by SHA-256."
+      ],
+      "untested_boundaries": [
+        "authenticated source behavior against the real tenant-scoped Postgres tables",
+        "a new receipt contract version and additive durable storage migration",
+        "persisted idempotency replay/conflict and authoritative receipt readback",
+        "mounted HTTP entrypoint and independent UI/Sultan OS consumption",
+        "exact-SHA preview runtime, production deployment and production value"
+      ],
+      "evidence_refs": [
+        "engineering/execution/handoffs/SGO_C02_RECEIPT_INTEGRATION_HANDOFF.json",
+        "engineering/execution/handoffs/SGO_C02_WORKING_CONTRACT.md",
+        "src/modules/sultan-stage5/recordContextIntegration.ts",
+        "src/modules/sultan-stage5/tests/sultan-stage5.test.ts",
+        "commit:20038b5f792216ecb896745315d31fdafa33b723",
+        "controller-transfer:0e4810b4fef6ed69b252c397b92edc043238260d/evidence/SGO_VISIBLE_LANE_TRANSFERS_20260911T170829Z.md"
+      ],
+      "failure_refs": [
+        "SGO_C02_PARTIAL_SOURCE_EXPORT_20260911",
+        "SGO_C02_SOURCE_VERSION_BINDING_REPAIRED_20260911"
+      ],
+      "cross_repo_handoffs": [
+        "CIBOTFLOW/Luzione-UI: current source write ownership remains unchanged; no API receipt cutover exists",
+        "CIBOTFLOW/Sultan-OS: preparation is not a persisted receipt and is never admission evidence"
+      ],
+      "deferred_external_infra": [
+        "authenticated real Postgres source readback",
+        "new durable receipt version and additive storage migration",
+        "persisted replay/conflict and route readback",
+        "independent consumer and deployment evidence"
+      ],
+      "remaining_uncertainty": [
+        "Fixture-backed source proof does not establish real database authorization or source shape.",
+        "The intentionally unmounted preparation cannot be claimed as a persisted receipt or canonical readback.",
+        "Stage 5 v1 still excludes Lead and Commercial Case; any durable evolution is a separately gated package.",
+        "No production or value score claim is supported."
+      ],
+      "next_proof_needed": [
+        "controller acceptance of the exact implementation and evidence branch head",
+        "explicit compatible scope before any SGO-C01 mutation",
+        "later separately versioned persistence and authenticated consumer proof without weakening G1/G2"
+      ]
     }
   ]
 }
