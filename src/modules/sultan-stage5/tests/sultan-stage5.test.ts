@@ -46,6 +46,13 @@ import {
   RecordContextDraftError,
   type RecordContextSource,
 } from "@/modules/sultan-stage5/recordContextDraft";
+import {
+  buildRecordContextReceiptPreparation,
+  prepareRecordContextReceipt,
+  RECORD_CONTEXT_RECEIPT_PREPARATION_VERSION,
+  RecordContextReceiptPreparationError,
+  verifyRecordContextReceiptPreparation,
+} from "@/modules/sultan-stage5/recordContextIntegration";
 
 const NOW = "2026-09-02T12:00:00.000Z";
 const API_SHA = "a".repeat(40);
@@ -215,6 +222,136 @@ test("record context draft rejects stale source versions and preserves microseco
   const result = await buildDraft({ source, request: draftRequest("LEAD", { expectedSourceVersion: objectVersion }) });
   assert.equal(result.status, "AVAILABLE");
   assert.equal(result.provenance.sourceVersion, objectVersion);
+});
+
+function prepareContext(overrides: Partial<Parameters<typeof prepareRecordContextReceipt>[0]> = {}) {
+  return prepareRecordContextReceipt({
+    actor: actor(),
+    idempotencyKey: "context-read-001",
+    now: NOW,
+    pins: pins(),
+    request: draftRequest(),
+    source: draftSource(),
+    ...overrides,
+  });
+}
+
+test("record context integration prepares deterministic receipt material without minting a v1 receipt", async () => {
+  const result = await prepareContext();
+  assert.equal(result.contractVersion, RECORD_CONTEXT_RECEIPT_PREPARATION_VERSION);
+  assert.equal(result.receiptCompatibility.materialState, "RECEIPT_MATERIAL_PREPARED");
+  assert.equal(result.receiptCompatibility.currentContractVersion, SULTAN_STAGE5_CANONICAL_READBACK_CONTRACT_VERSION);
+  assert.equal(result.receiptCompatibility.currentPersistenceCompatible, false);
+  assert.ok(result.receiptCompatibility.blockers.includes("CURRENT_STAGE5_V1_SUBJECT_TYPE_UNSUPPORTED"));
+  assert.ok(result.receiptCompatibility.blockers.includes("DURABLE_PERSISTENCE_NOT_IMPLEMENTED"));
+  assert.equal(result.receiptMaterial?.subjectType, "LEAD");
+  assert.equal(result.receiptMaterial?.status, "AVAILABLE");
+  assert.equal(result.receiptMaterial?.provenance.authority, "CANONICAL_POSTGRES");
+  assert.equal(result.receiptMaterial?.provenance.sourceVersion, draftLead().objectVersion);
+  assert.equal(result.receiptMaterial?.claims.find((claim) => claim.claimId === "lead.accountId")?.value, "account-001");
+  assert.equal(result.persistence, "UNPERSISTED_PREPARATION");
+  assert.equal(result.admissionEligible, false);
+  assert.equal(result.grantsAuthority, false);
+  assert.equal(result.businessStateMutated, false);
+  assert.equal("readbackReceiptId" in result, false);
+  assert.equal(verifyRecordContextReceiptPreparation(result), true);
+  assert.deepEqual(await prepareContext(), result);
+  assert.ok(Object.isFrozen(result) && Object.isFrozen(result.receiptCompatibility.blockers) && Object.isFrozen(result.receiptMaterial));
+});
+
+test("record context integration preserves Commercial Case source lineage without economic claims", async () => {
+  const result = await prepareContext({
+    idempotencyKey: "context-case-001",
+    request: draftRequest("COMMERCIAL_CASE"),
+  });
+  assert.equal(result.receiptMaterial?.subjectType, "COMMERCIAL_CASE");
+  assert.equal(result.receiptMaterial?.provenance.sourceVersion, "commercial-case:record-001:v2");
+  assert.deepEqual(result.receiptMaterial?.provenance.sourceRefs, ["postgres:public.commercial_cases"]);
+  assert.ok(result.receiptMaterial?.claims.every((claim) => !/amount|currency|margin/i.test(claim.claimId)));
+});
+
+test("record context integration rejects identity and idempotency faults before reading the source", async () => {
+  let reads = 0;
+  const source = draftSource({ readLead: async () => { reads++; return draftLead(); } });
+  await assert.rejects(
+    prepareContext({ actor: { ...actor(), tenantId: "other" }, idempotencyKey: "!", source }),
+    (error) => error instanceof RecordContextDraftError && error.code === "WORKLOAD_IDENTITY_DENIED",
+  );
+  await assert.rejects(
+    prepareContext({ idempotencyKey: "!", source }),
+    (error) => error instanceof RecordContextReceiptPreparationError && error.code === "INVALID_IDEMPOTENCY_KEY",
+  );
+  assert.equal(reads, 0);
+});
+
+test("record context integration blocks draft-only failure statuses from receipt material", async () => {
+  const unsupported = await prepareContext({ request: draftRequest("TASK") });
+  assert.equal(unsupported.receiptMaterial, null);
+  assert.equal(unsupported.receiptCompatibility.materialState, "BLOCKED_BY_DRAFT_STATUS");
+  assert.ok(unsupported.receiptCompatibility.blockers.includes("DRAFT_STATUS_NOT_CANONICAL_RECEIPT_COMPATIBLE"));
+
+  const mismatch = await prepareContext({ request: draftRequest("LEAD", { expectedSourceVersion: "stale" }) });
+  assert.equal(mismatch.contextDraft.status, "VERSION_MISMATCH");
+  assert.equal(mismatch.receiptMaterial, null);
+
+  const invalid = await prepareContext({
+    source: draftSource({ readLead: async () => ({ ...draftLead(), objectVersion: "wrong" }) }),
+  });
+  assert.equal(invalid.contextDraft.status, "SOURCE_INVALID");
+  assert.equal(invalid.receiptMaterial, null);
+});
+
+test("record context integration retains unavailable readback semantics without claims", async () => {
+  const result = await prepareContext({
+    source: draftSource({ readLead: async () => { throw Object.assign(new Error("database unavailable"), { code: "08006" }); } }),
+  });
+  assert.equal(result.contextDraft.status, "SOURCE_UNAVAILABLE");
+  assert.equal(result.receiptMaterial?.status, "SOURCE_UNAVAILABLE");
+  assert.deepEqual(result.receiptMaterial?.claims, []);
+  assert.equal(result.receiptMaterial?.freshUntil, null);
+  assert.equal(result.receiptMaterial?.provenance.authority, "NONE");
+  assert.equal(result.receiptMaterial?.provenance.sourceVersion, null);
+});
+
+test("record context receipt preparation rejects a corrupted source draft", async () => {
+  const draft = await buildDraft();
+  const corrupted = {
+    ...draft,
+    claims: Object.freeze([{ ...draft.claims[0], value: "other-account" }, ...draft.claims.slice(1)]),
+  };
+  assert.throws(() => buildRecordContextReceiptPreparation({
+    actor: actor(),
+    contextDraft: corrupted,
+    idempotencyKey: "context-read-001",
+    parsedRequest: parseRecordContextDraftRequest(draftRequest()),
+    pins: pins(),
+  }), (error) => error instanceof RecordContextReceiptPreparationError && error.code === "CONTEXT_DRAFT_INTEGRITY_FAILED");
+});
+
+test("record context recovery preserves request identity and requires a new key for a new read", async () => {
+  let unavailable = true;
+  const source = draftSource({
+    readLead: async () => {
+      if (unavailable) throw Object.assign(new Error("temporary outage"), { code: "08006" });
+      return draftLead();
+    },
+  });
+  const first = await prepareContext({ source });
+  unavailable = false;
+  const changedObservation = await prepareContext({ source });
+  assert.equal(first.preparationId, changedObservation.preparationId);
+  assert.equal(first.requestHash, changedObservation.requestHash);
+  assert.notEqual(first.preparationHash, changedObservation.preparationHash);
+  assert.equal(first.idempotencySemantics, "PERSISTED_STORE_MUST_REPLAY_OR_CONFLICT");
+  const retried = await prepareContext({ idempotencyKey: "context-read-002", source });
+  assert.notEqual(retried.preparationId, first.preparationId);
+  assert.notEqual(retried.requestHash, first.requestHash);
+});
+
+test("Stage 5 service wires only the unmounted receipt preparation seam", () => {
+  const service = readFileSync("src/modules/sultan-stage5/service.ts", "utf8");
+  assert.match(service, /async prepareRecordContext[\s\S]*prepareRecordContextReceipt/);
+  assert.doesNotMatch(readFileSync("src/app/api/v1/sultan/canonical-readbacks/route.ts", "utf8"), /prepareRecordContext/);
 });
 
 function omitKeys<T extends object, K extends keyof T>(value: T, keys: readonly K[]): Omit<T, K> {
