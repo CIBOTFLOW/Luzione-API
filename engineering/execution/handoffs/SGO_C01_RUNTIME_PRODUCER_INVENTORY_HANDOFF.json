@@ -1,0 +1,144 @@
+{
+  "schema_version": 1,
+  "handoff_id": "SGO-C01-RUNTIME-PRODUCER-INVENTORY-G0-20260911",
+  "published_at": "2026-09-11T18:16:03Z",
+  "build_program": "SGO-20260911-01",
+  "task_id": "SGO-C01",
+  "controller": {
+    "branch": "codex/sgo-20260911-controller",
+    "decision_sha": "76d5e05078a71790b5babdfc5020c63ae8513f14",
+    "allowlist_count": 68,
+    "legacy_execution": "EXCLUDED"
+  },
+  "repository": "CIBOTFLOW/Luzione-API",
+  "branch": "codex/sgo-c01-runtime-producer-inventory-20260911",
+  "pull_request": {
+    "number": 84,
+    "url": "https://github.com/CIBOTFLOW/Luzione-API/pull/84",
+    "state": "OPEN_DRAFT",
+    "base_branch": "main"
+  },
+  "sha_lineage": {
+    "base_sha": "7ee5a0a53a3434c3e00969dc626a4daad33f9dc0",
+    "implementation_sha": "8e8cfbc7779f003f2804469a3f05358c4c1d6461",
+    "handoff_commit_parent_sha": "8e8cfbc7779f003f2804469a3f05358c4c1d6461",
+    "publication_head": "RESOLVE_EXACT_BRANCH_HEAD_CONTAINING_THIS_HANDOFF"
+  },
+  "writer_lease": {
+    "lease_id": "SGO-20260911-01-L1",
+    "owner_agent": "01a0916a-b5c4-79c3-b299-d26e1a6fd79f",
+    "state": "RETAINED_PENDING_CONTROLLER_ACCEPTANCE_OR_NEXT_PACKAGE",
+    "repository_switch_requires_release": true
+  },
+  "contract_versions": [
+    "sgo-c01-active-sultan-runtime-producers/v1"
+  ],
+  "changed_paths": [
+    "architecture/production-convergence/SGO_C01_WORKING_CONTRACT.md",
+    "engineering/execution/SGO_C01_ACTIVE_SULTAN_PATH_INVENTORY_V1.json",
+    "engineering/execution/CURRENT_HANDOFF.json",
+    "engineering/execution/SYSTEMS_ENGINEERING_PROOF_LEDGER.json",
+    "engineering/execution/handoffs/SGO_C01_RUNTIME_PRODUCER_INVENTORY_HANDOFF.json",
+    "src/modules/platform-testing/taxonomy.ts",
+    "src/modules/platform-topology/sgoC01ActivePathInventory.ts",
+    "src/modules/platform-topology/tests/sgo-c01-active-path-inventory.test.ts"
+  ],
+  "source_pins": [
+    {
+      "repository": "CIBOTFLOW/Luzione-UI",
+      "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214",
+      "access": "READ_ONLY_EVIDENCE"
+    },
+    {
+      "repository": "CIBOTFLOW/Sultan-OS",
+      "commit_sha": "ea50caa66f09b14b1ac2bcfdfb74cdf9f4c067f0",
+      "access": "READ_ONLY_EVIDENCE"
+    },
+    {
+      "repository": "CIBOTFLOW/Luzione-API",
+      "commit_sha": "7ee5a0a53a3434c3e00969dc626a4daad33f9dc0",
+      "access": "C01_EVIDENCE_BRANCH_BASE"
+    }
+  ],
+  "inventory_result": {
+    "inventory_path": "engineering/execution/SGO_C01_ACTIVE_SULTAN_PATH_INVENTORY_V1.json",
+    "active_surface_rows": 15,
+    "surface_kinds": [
+      "chat",
+      "quote-review",
+      "task-assist",
+      "simulation",
+      "memory",
+      "command"
+    ],
+    "drawer_command_action_types": 9,
+    "exact_commit_path_blob_pins": 44,
+    "uncredited_paths": [
+      "shadow.sultan_runtime_v2_from_visible_surfaces",
+      "shadow.api_sultan_tool_gateway_from_visible_drawer",
+      "ambiguous.sultan_memory_label",
+      "unavailable.quote_review_registry_disabled"
+    ],
+    "key_findings": [
+      "Main chat invokes Sultan OS runDoctrineChat while UI owns the visible transcript.",
+      "Quote review conditionally invokes the UI ModelRouter, not Sultan OS.",
+      "Task assist is a deterministic UI builder and makes no model/provider call.",
+      "Visible simulation invokes persisted Agent Case v1, not Runtime v2.",
+      "OS private working memory and UI governed object memory are separate owners and paths.",
+      "The nine drawer command types resolve to UI plan or action-intent executors; the visible drawer does not reach the OS Runtime v2/API tool-client chain."
+    ]
+  },
+  "verification": {
+    "exact_sha": "8e8cfbc7779f003f2804469a3f05358c4c1d6461",
+    "focused_validator": "PASS_13_OF_13",
+    "repository_tests": "PASS_270_OF_270",
+    "typescript": "PASS",
+    "eslint": "PASS_ZERO_WARNINGS",
+    "compliance": "PASS_7_OF_7",
+    "nextjs_build": "PASS_NEXTJS_16_3_4_WEBPACK",
+    "source_pin_reconciliation": "PASS_44_OF_44",
+    "ui_runtime_v2_visible_reference_search": "PASS_ZERO_MATCHES",
+    "initial_full_suite_repair": "The first full run passed 269/270 and correctly rejected the new unclassified suite; adding the suite to the existing canonical taxonomy produced the final 270/270 pass.",
+    "canonical_ci": "PENDING_EXACT_PUBLICATION_HEAD"
+  },
+  "negative_checks": [
+    "wrong build-program/task marker",
+    "source path/blob pin drift",
+    "omitted visible surface",
+    "multiple command actions in one producer row",
+    "name-only incomplete evidence chain",
+    "multiple canonical source owners",
+    "shadow Runtime v2 promotion",
+    "substitution of another legitimate but incorrect producer",
+    "ambiguous/shadow/unavailable capability promotion",
+    "route/runtime activation or authority expansion",
+    "cross-repository owner/pin mismatch",
+    "production-strength finality"
+  ],
+  "rollback": {
+    "method": "Apply the exact binary diff from base to implementation in reverse; reapply the same diff to restore the candidate.",
+    "reverse_to_base_tree": "PASS_EXACT_DIRECTORY_COMPARE",
+    "reapply_to_candidate_tree": "PASS_EXACT_DIRECTORY_COMPARE",
+    "database_or_provider_restore": "NOT_APPLICABLE_NO_DATABASE_OR_PROVIDER_EFFECT"
+  },
+  "maturity": {
+    "engineering_state": "CONTRACT_STABLE",
+    "release_evidence": "LOCAL_PROVEN",
+    "effect_authority": "NO_EFFECT",
+    "finality": "BOUNDED_CLAIM"
+  },
+  "gates": {
+    "g0": "CANDIDATE_SUBMITTED",
+    "g1": "HELD_FOR_CONTROLLER_ACCEPTANCE_AUTHENTICATED_SOURCE_READBACK_PERSISTED_RECEIPT_REPLAY_CONSUMER_INTEGRATION_AND_EXACT_PREVIEW_EXERCISE",
+    "g2": "HELD_NO_PRODUCTION_AUTHORITY"
+  },
+  "unexercised_boundaries": [
+    "authenticated deployed UI-to-OS and OS-to-API journeys",
+    "live registry/configuration/provider availability",
+    "persisted cross-system receipt and replay",
+    "consumer integration",
+    "exact preview runtime exercise",
+    "production observation or business effect"
+  ],
+  "next": "Controller must resolve the exact publication head and CI, accept or reject this bounded G0 handoff, and explicitly retain/advance the L1 lease before SGO-C03 work begins."
+}
