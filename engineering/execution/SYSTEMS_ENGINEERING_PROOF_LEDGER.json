@@ -2000,6 +2000,73 @@
         "exercise the exact preview boundary before any G1 claim",
         "advance to SGO-C03 only after the controller explicitly retains and advances the L1 lease"
       ]
+    },
+    {
+      "proof_id": "SGO_C03_LOCAL_LINKED_EVIDENCE_CONTEXT_20260911",
+      "project_id": "SGO-C03",
+      "recorded_at": "2026-09-11T19:03:55Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "74034e99ea0a111efbff663e269587ce11af8ff6",
+      "engineering_state": "CONTRACT_STABLE",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The exact accepted SGO-C01 head now has an unmounted API-owned linked-evidence context producer for Task, Commercial Case, Quote, Product and Supplier. The producer emits deterministic typed AVAILABLE, MISSING, DENIED, STALE, SOURCE_UNAVAILABLE or SOURCE_INVALID results with exact record/version citations and fail-closed source-owner metadata. It persists nothing, grants no authority, mounts no runtime and does not establish deployed readback, consumer integration, preview evidence or G1/G2.",
+      "exercised_boundaries": [
+        "Controller decision d49e6ec57b3e0645fa6b0109bbb723aa153ca0d2 was reconciled to build program SGO-20260911-01, exactly 68 admitted IDs, allowlisted SGO-C03 and the active L1 API writer lease owned by this task.",
+        "The isolated branch starts exactly from controller-accepted SGO-C01 PR #84 head b46f35b9b21f59ec19c3537b7568a86fa7ec24aa.",
+        "API and pinned read-only UI sources were reconciled into five explicit source profiles without treating a current writer or name as settled canonical authority.",
+        "All 15 declared repository/commit/path/blob pins matched their exact source objects.",
+        "The producer and validator proved subject-specific record/version/citation rules, deterministic hashing, sorted bounded output, known workload authorization and zero claim leakage for missing, denied, stale, unavailable or invalid sources.",
+        "Controller review held initial head 29aed7307dca7d8168e9d7d40af06f4b0a024e5b after reproducing acceptance of a malformed non-null Task expected version; corrected implementation 74034e99ea0a111efbff663e269587ce11af8ff6 validates all non-null expected versions against their subject identity/version grammar before source access.",
+        "Fourteen focused checks passed, including all five malformed expected-version grammars, a structurally malformed source return becoming SOURCE_INVALID, unknown workload, denied tenant/capability, cross-tenant result, record mismatch, stale/mismatched version, forged/partial citation, claim leakage, invalid claims, manifest drift, authority escalation and hash tampering.",
+        "At corrected implementation SHA 74034e99ea0a111efbff663e269587ce11af8ff6, the focused suite passed 14/14, the repository suite passed 284/284, TypeScript passed, ESLint passed with zero warnings, seven compliance documents passed and the Next.js 16.3.4 webpack production build passed.",
+        "Accepted SGO-C01 evidence plus Stage 5 contracts/parsers/schemas/routes/migrations, existing lead/quote/catalog sources, API routes and all migrations remained byte-identical.",
+        "An isolated archive check reversed the exact accepted-C01-to-C03 binary diff to a byte-equal base tree and reapplied it to a byte-equal candidate tree."
+      ],
+      "untested_boundaries": [
+        "runtime mounting or route activation",
+        "authenticated deployed Task, Commercial Case, Quote, Product or Supplier source readback",
+        "persisted linked context, cross-system receipt or replay",
+        "independent UI or Sultan OS consumer integration",
+        "exact preview exercise",
+        "migration, deployment, production observation or business effect"
+      ],
+      "evidence_refs": [
+        "architecture/production-convergence/SGO_C03_WORKING_CONTRACT.md",
+        "engineering/execution/SGO_C03_LINKED_EVIDENCE_CONTEXT_V1.json",
+        "src/modules/linked-evidence-context/producer.ts",
+        "src/modules/linked-evidence-context/tests/linked-evidence-context.test.ts",
+        "engineering/execution/handoffs/SGO_C03_LINKED_EVIDENCE_CONTEXT_HANDOFF.json",
+        "pull-request:CIBOTFLOW/Luzione-API#85",
+        "commit:8ecc49d85283a29b87be5ff20237f672afb0ce7d",
+        "commit:74034e99ea0a111efbff663e269587ce11af8ff6"
+      ],
+      "failure_refs": [
+        "SGO_C03_MALFORMED_EXPECTED_VERSION_BOUNDARY_20260911"
+      ],
+      "cross_repo_handoffs": [],
+      "deferred_external_infra": [
+        "authenticated exact-SHA API, UI and Sultan OS deployments",
+        "runtime mounting and server-side source adapters",
+        "persisted receipt/replay and authoritative deployed source readback",
+        "consumer integration and preview exercise",
+        "production observation"
+      ],
+      "remaining_uncertainty": [
+        "The producer is an unmounted source-port contract; it proves no deployed route, data availability or current database contents.",
+        "Task and Supplier semantic authority remain explicitly unresolved even though the pinned UI currently reads and writes their canonical Postgres rows.",
+        "Commercial Case and Quote remain transfer-pending with UI as the current writer.",
+        "Product remains provider-authoritative through a rebuildable API projection; live Shopify and projection freshness were not exercised.",
+        "No persisted receipt, replay, independent consumer or preview evidence exists for this context."
+      ],
+      "next_proof_needed": [
+        "obtain controller acceptance of the exact draft-PR head and canonical CI as bounded G0",
+        "mount only through a separately authorized package with authenticated tenant-scoped source adapters",
+        "prove authoritative source readback plus persisted receipt/replay without weakening source ownership",
+        "obtain independent consumer integration and exact preview evidence before any G1 claim",
+        "advance to SGO-V02 only after the controller explicitly retains and advances the L1 lease"
+      ]
     }
   ]
 }

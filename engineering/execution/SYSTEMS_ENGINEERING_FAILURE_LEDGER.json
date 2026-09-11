@@ -1270,6 +1270,51 @@
         "The code defect is locally and independently repaired, but production remains on the old SHA and can still reproduce it."
       ],
       "next_action": "After the managed recovery and Vercel access gates pass, canary and promote exact candidate 0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a, then prove repeated readyz=200 through the production pooler."
+    },
+    {
+      "failure_id": "SGO_C03_MALFORMED_EXPECTED_VERSION_BOUNDARY_20260911",
+      "project_id": "SGO-C03",
+      "observed_at": "2026-09-11T19:03:55Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "29aed7307dca7d8168e9d7d40af06f4b0a024e5b",
+      "environment": "local",
+      "layer": "linked-evidence-request-and-source-boundary",
+      "symptom": "Controller review reproduced that a non-null TASK expectedVersion of garbage passed request parsing; a null runtime return from the server-injected source port could also escape as a raw TypeError.",
+      "expected": "Every non-null expected-version precondition must satisfy the subject-specific identity/version grammar before source access, and every structurally malformed adapter result must become an explicit SOURCE_INVALID entry without claims or actual citation.",
+      "actual": "Initial exact head 29aed7307dca7d8168e9d7d40af06f4b0a024e5b bounded expectedVersion only by string length and dereferenced the source result before checking its runtime structure.",
+      "classification": {
+        "domain": "PLATFORM",
+        "class": "INVALID",
+        "retry": "NEVER",
+        "severity": "ERROR"
+      },
+      "evidence_refs": [
+        "controller-review-hold:01a09147-9f4a-7fa1-b133-d03c1705d039",
+        "pull-request:CIBOTFLOW/Luzione-API#85",
+        "commit:29aed7307dca7d8168e9d7d40af06f4b0a024e5b",
+        "src/modules/linked-evidence-context/producer.ts",
+        "src/modules/linked-evidence-context/tests/linked-evidence-context.test.ts"
+      ],
+      "repair_attempts": [
+        "Added subject-specific expected-version validation in parseReference before any source read.",
+        "Added a five-subject known-bad grammar matrix.",
+        "Added a runtime structural guard that maps a null source return to SOURCE_INVALID without claims or actual citation.",
+        "Ran 14/14 focused checks, 284/284 repository tests, TypeScript, zero-warning ESLint, 7/7 compliance, production build, 15/15 source-pin reconciliation and isolated reverse/reapply recovery."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [
+        "authenticated deployed source readback",
+        "persisted receipt/replay",
+        "consumer integration",
+        "exact preview exercise"
+      ],
+      "resolved": true,
+      "resolution_ref": "commit:74034e99ea0a111efbff663e269587ce11af8ff6",
+      "remaining_uncertainty": [
+        "The corrected source-port contract remains unmounted and has no deployed adapter evidence."
+      ],
+      "next_action": "Publish the corrected exact head, await canonical CI and obtain a new controller decision without advancing L1."
     }
   ]
 }

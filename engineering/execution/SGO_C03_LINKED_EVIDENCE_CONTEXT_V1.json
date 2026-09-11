@@ -1,0 +1,248 @@
+{
+  "schema_version": 1,
+  "manifest_id": "sgo-c03-linked-evidence-context/v1",
+  "build_program": "SGO-20260911-01",
+  "task_id": "SGO-C03",
+  "controller_sha": "d49e6ec57b3e0645fa6b0109bbb723aa153ca0d2",
+  "controller_allowlist_count": 68,
+  "repository": "CIBOTFLOW/Luzione-API",
+  "base_sha": "b46f35b9b21f59ec19c3537b7568a86fa7ec24aa",
+  "contract_version": "luzione-linked-evidence-context/v0.1-draft",
+  "entrypoint": "src/modules/linked-evidence-context/producer.ts#buildLinkedEvidenceContext",
+  "source_port": "src/modules/linked-evidence-context/producer.ts#LinkedEvidenceSource",
+  "state": "G0_UNMOUNTED_BOUNDED_SOURCE_PORT",
+  "source_repositories": [
+    {
+      "repository": "CIBOTFLOW/Luzione-API",
+      "commit_sha": "b46f35b9b21f59ec19c3537b7568a86fa7ec24aa",
+      "access": "WRITER_FOR_THIS_EVIDENCE_ONLY_BRANCH"
+    },
+    {
+      "repository": "CIBOTFLOW/Luzione-UI",
+      "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214",
+      "access": "READ_ONLY_EVIDENCE"
+    }
+  ],
+  "evidence_pins": [
+    {
+      "pin_id": "api-commercial-case-store",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "commit_sha": "b46f35b9b21f59ec19c3537b7568a86fa7ec24aa",
+      "path": "src/modules/lead-commercial-case/store.ts",
+      "blob_sha": "6e031a10a251bae78f07c369280c3f0263a08399"
+    },
+    {
+      "pin_id": "api-commercial-case-contract",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "commit_sha": "b46f35b9b21f59ec19c3537b7568a86fa7ec24aa",
+      "path": "src/modules/lead-commercial-case/contracts.ts",
+      "blob_sha": "39705d996a78940d53cdb03baa7357379b317b04"
+    },
+    {
+      "pin_id": "api-quote-store",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "commit_sha": "b46f35b9b21f59ec19c3537b7568a86fa7ec24aa",
+      "path": "src/modules/proposal-quote-approval/store.ts",
+      "blob_sha": "02e900d49b9c5132927b8364118f804db119daee"
+    },
+    {
+      "pin_id": "api-quote-contract",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "commit_sha": "b46f35b9b21f59ec19c3537b7568a86fa7ec24aa",
+      "path": "src/modules/proposal-quote-approval/contracts.ts",
+      "blob_sha": "ee7168b4fba717e9d387cb08ca09d169705ef7d2"
+    },
+    {
+      "pin_id": "api-catalog-runtime",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "commit_sha": "b46f35b9b21f59ec19c3537b7568a86fa7ec24aa",
+      "path": "src/modules/catalog-projection/runtime.ts",
+      "blob_sha": "911f9318de18d7e22a4481c066c7e10ff7dfa581"
+    },
+    {
+      "pin_id": "api-catalog-store",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "commit_sha": "b46f35b9b21f59ec19c3537b7568a86fa7ec24aa",
+      "path": "src/modules/catalog-projection/store.ts",
+      "blob_sha": "2fe0c0bdf8e51cfb420ba174be34d3e3f96c9840"
+    },
+    {
+      "pin_id": "api-truth-registry",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "commit_sha": "b46f35b9b21f59ec19c3537b7568a86fa7ec24aa",
+      "path": "src/modules/platform-contracts/truthRegistry.ts",
+      "blob_sha": "ee18798c841280d19dade86ca706ef1073401425"
+    },
+    {
+      "pin_id": "api-stage5-claims",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "commit_sha": "b46f35b9b21f59ec19c3537b7568a86fa7ec24aa",
+      "path": "src/modules/sultan-stage5/contracts.ts",
+      "blob_sha": "3fe0dba539769a685885ac61408b9ceb24a1d5c2"
+    },
+    {
+      "pin_id": "api-stage5-workload",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "commit_sha": "b46f35b9b21f59ec19c3537b7568a86fa7ec24aa",
+      "path": "src/modules/sultan-stage5/workload.ts",
+      "blob_sha": "c58e42fbff8bbd63ff2391cd20f50f6bef25d080"
+    },
+    {
+      "pin_id": "ui-task-store",
+      "repository": "CIBOTFLOW/Luzione-UI",
+      "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214",
+      "path": "src/lib/server/teamCoordinationStore.ts",
+      "blob_sha": "0152a947479e7665a8e09b3727cfc1cfff7e0b6e"
+    },
+    {
+      "pin_id": "ui-task-schema",
+      "repository": "CIBOTFLOW/Luzione-UI",
+      "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214",
+      "path": "packages/db-schema/089_team_coordination_request_path.sql",
+      "blob_sha": "9d5d8a12661caa67dd0079350bfa8226b44cc85c"
+    },
+    {
+      "pin_id": "ui-task-tenant-boundary",
+      "repository": "CIBOTFLOW/Luzione-UI",
+      "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214",
+      "path": "packages/db-schema/096_team_coordination_tenant_isolation.sql",
+      "blob_sha": "550f98f2663ef1d97a0485c87eeda88f97897757"
+    },
+    {
+      "pin_id": "ui-supplier-store",
+      "repository": "CIBOTFLOW/Luzione-UI",
+      "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214",
+      "path": "src/lib/suppliers/supplierDirectoryService.ts",
+      "blob_sha": "bbd9c4f92511fa7d19abc525027691c7e065d2c0"
+    },
+    {
+      "pin_id": "ui-supplier-schema",
+      "repository": "CIBOTFLOW/Luzione-UI",
+      "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214",
+      "path": "packages/db-schema/019_quote_order_state_machine.sql",
+      "blob_sha": "5fd8e43375f6215639d9aaaad772f94291399c28"
+    },
+    {
+      "pin_id": "ui-supplier-tenant-boundary",
+      "repository": "CIBOTFLOW/Luzione-UI",
+      "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214",
+      "path": "packages/db-schema/124_crm_identity_attachment_evidence.sql",
+      "blob_sha": "6ab31be0577905c4770efd222f7131da092305d3"
+    }
+  ],
+  "source_profiles": [
+    {
+      "subject_type": "TASK",
+      "profile_id": "sgo-c03-task-source/v1",
+      "source_of_truth": "canonical-postgres:public.team_coordination_tasks",
+      "read_producer_owner": "CIBOTFLOW/Luzione-UI",
+      "current_write_owner": "CIBOTFLOW/Luzione-UI",
+      "canonical_authority": "SEMANTIC_OWNER_UNRESOLVED",
+      "record_ref_prefix": "postgres:public.team_coordination_tasks/",
+      "allowed_ref_prefixes": ["postgres:public.team_coordination_tasks/"],
+      "version_rule": "task:<taskId>:v<positive integer>",
+      "evidence_pin_ids": ["ui-task-store", "ui-task-schema", "ui-task-tenant-boundary"]
+    },
+    {
+      "subject_type": "COMMERCIAL_CASE",
+      "profile_id": "sgo-c03-commercial-case-source/v1",
+      "source_of_truth": "canonical-postgres:public.commercial_cases",
+      "read_producer_owner": "CIBOTFLOW/Luzione-API",
+      "current_write_owner": "CIBOTFLOW/Luzione-UI",
+      "canonical_authority": "CANONICAL_POSTGRES_TRANSFER_PENDING",
+      "record_ref_prefix": "postgres:public.commercial_cases/",
+      "allowed_ref_prefixes": ["postgres:public.commercial_cases/"],
+      "version_rule": "commercial-case:<caseId>:v<positive integer>",
+      "evidence_pin_ids": ["api-commercial-case-store", "api-commercial-case-contract"]
+    },
+    {
+      "subject_type": "QUOTE",
+      "profile_id": "sgo-c03-quote-source/v1",
+      "source_of_truth": "canonical-postgres:public.quotes+public.quote_economics_versions",
+      "read_producer_owner": "CIBOTFLOW/Luzione-API",
+      "current_write_owner": "CIBOTFLOW/Luzione-UI",
+      "canonical_authority": "CANONICAL_POSTGRES_TRANSFER_PENDING",
+      "record_ref_prefix": "postgres:public.quotes/",
+      "allowed_ref_prefixes": [
+        "postgres:public.quotes/",
+        "postgres:public.quote_economics_versions/",
+        "postgres:public.quote_margin_approval_records/"
+      ],
+      "version_rule": "quote:<quoteId>:e<positive integer>:s<status>",
+      "evidence_pin_ids": ["api-quote-store", "api-quote-contract"]
+    },
+    {
+      "subject_type": "PRODUCT",
+      "profile_id": "sgo-c03-product-source/v1",
+      "source_of_truth": "external:shopify via rebuildable P113 projection",
+      "read_producer_owner": "CIBOTFLOW/Luzione-API",
+      "current_write_owner": "external:shopify",
+      "canonical_authority": "PROVIDER_AUTHORITATIVE_PROJECTION",
+      "record_ref_prefix": "postgres:public.p113_catalog_search_projections/",
+      "allowed_ref_prefixes": [
+        "postgres:public.p113_catalog_search_projections/",
+        "provider:shopify/"
+      ],
+      "version_rule": "exact P113 selectionKey plus 64-hex sourceVersion",
+      "evidence_pin_ids": ["api-catalog-runtime", "api-catalog-store", "api-truth-registry"]
+    },
+    {
+      "subject_type": "SUPPLIER",
+      "profile_id": "sgo-c03-supplier-source/v1",
+      "source_of_truth": "canonical-postgres:public.suppliers",
+      "read_producer_owner": "CIBOTFLOW/Luzione-UI",
+      "current_write_owner": "CIBOTFLOW/Luzione-UI",
+      "canonical_authority": "SEMANTIC_OWNER_UNRESOLVED",
+      "record_ref_prefix": "postgres:public.suppliers/",
+      "allowed_ref_prefixes": [
+        "postgres:public.suppliers/",
+        "postgres:public.supplier_products/"
+      ],
+      "version_rule": "supplier:<supplierId>@<exact UTC source timestamp>",
+      "evidence_pin_ids": ["ui-supplier-store", "ui-supplier-schema", "ui-supplier-tenant-boundary"]
+    }
+  ],
+  "request_boundary": {
+    "minimum_records": 1,
+    "maximum_records": 5,
+    "duplicates_allowed": false,
+    "caller_source_facts_allowed": false,
+    "consumer_release_pin_required": true,
+    "server_derived_actor_and_tenant_required": true
+  },
+  "result_states": {
+    "AVAILABLE": "Exact actual record/version citation and bounded claims are present.",
+    "MISSING": "No record was found; no actual version or claims are exposed.",
+    "DENIED": "Workload or source access was denied; no existence, actual version or claims are exposed.",
+    "STALE": "Expected version differs, the source declared staleness, or observation age expired; actual citation remains and claims are withheld.",
+    "SOURCE_UNAVAILABLE": "The source could not be read; no actual version or claims are exposed.",
+    "SOURCE_INVALID": "Source identity, version, citation or claim shape failed validation; claims are withheld."
+  },
+  "compatibility": {
+    "c01_files_changed": false,
+    "existing_domain_contracts_changed": false,
+    "stage5_v1_changed": false,
+    "http_route_mounted": false,
+    "runtime_registered": false,
+    "database_schema_changed": false,
+    "business_write_added": false
+  },
+  "effect_authority": "NO_EFFECT",
+  "persistence": "UNPERSISTED_DRAFT",
+  "admission_eligible": false,
+  "grants_authority": false,
+  "business_state_mutated": false,
+  "strongest_claim": {
+    "engineering_state": "CONTRACT_STABLE",
+    "release_evidence": "LOCAL_PROVEN",
+    "effect_authority": "NO_EFFECT",
+    "finality": "BOUNDED_CLAIM"
+  },
+  "remaining_uncertainty": [
+    "authenticated deployed source readback",
+    "Task and Supplier semantic owner resolution",
+    "persisted cross-system receipt and replay",
+    "consumer integration",
+    "exact preview exercise"
+  ]
+}

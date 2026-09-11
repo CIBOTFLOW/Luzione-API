@@ -1,0 +1,148 @@
+{
+  "schema_version": 1,
+  "handoff_id": "SGO-C03-LINKED-EVIDENCE-CONTEXT-G0-20260911",
+  "published_at": "2026-09-11T19:03:55Z",
+  "build_program": "SGO-20260911-01",
+  "task_id": "SGO-C03",
+  "controller": {
+    "branch": "codex/sgo-20260911-controller",
+    "decision_sha": "d49e6ec57b3e0645fa6b0109bbb723aa153ca0d2",
+    "allowlist_count": 68,
+    "legacy_execution": "EXCLUDED"
+  },
+  "repository": "CIBOTFLOW/Luzione-API",
+  "branch": "codex/sgo-c03-linked-evidence-context-20260911",
+  "pull_request": {
+    "number": 85,
+    "url": "https://github.com/CIBOTFLOW/Luzione-API/pull/85",
+    "state": "OPEN_DRAFT",
+    "base_branch": "codex/sgo-c01-runtime-producer-inventory-20260911"
+  },
+  "sha_lineage": {
+    "accepted_c01_base_sha": "b46f35b9b21f59ec19c3537b7568a86fa7ec24aa",
+    "initial_implementation_sha": "8ecc49d85283a29b87be5ff20237f672afb0ce7d",
+    "controller_held_head": "29aed7307dca7d8168e9d7d40af06f4b0a024e5b",
+    "corrected_implementation_sha": "74034e99ea0a111efbff663e269587ce11af8ff6",
+    "handoff_commit_parent_sha": "74034e99ea0a111efbff663e269587ce11af8ff6",
+    "publication_head": "RESOLVE_EXACT_BRANCH_HEAD_CONTAINING_THIS_HANDOFF"
+  },
+  "writer_lease": {
+    "lease_id": "SGO-20260911-01-L1",
+    "owner_agent": "01a0916a-b5c4-79c3-b299-d26e1a6fd79f",
+    "state": "RETAINED_PENDING_CONTROLLER_ACCEPTANCE_OR_NEXT_PACKAGE",
+    "repository_switch_requires_release": true
+  },
+  "contract_versions": [
+    "luzione-linked-evidence-context/v0.1-draft"
+  ],
+  "changed_paths": [
+    "architecture/production-convergence/SGO_C03_WORKING_CONTRACT.md",
+    "engineering/execution/CURRENT_HANDOFF.json",
+    "engineering/execution/SGO_C03_LINKED_EVIDENCE_CONTEXT_V1.json",
+    "engineering/execution/SYSTEMS_ENGINEERING_PROOF_LEDGER.json",
+    "engineering/execution/handoffs/SGO_C03_LINKED_EVIDENCE_CONTEXT_HANDOFF.json",
+    "src/modules/linked-evidence-context/producer.ts",
+    "src/modules/linked-evidence-context/tests/linked-evidence-context.test.ts",
+    "src/modules/platform-testing/taxonomy.ts"
+  ],
+  "source_pins": [
+    {
+      "repository": "CIBOTFLOW/Luzione-API",
+      "commit_sha": "b46f35b9b21f59ec19c3537b7568a86fa7ec24aa",
+      "access": "C03_ACCEPTED_C01_BASE_AND_SOURCE_EVIDENCE"
+    },
+    {
+      "repository": "CIBOTFLOW/Luzione-UI",
+      "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214",
+      "access": "READ_ONLY_TASK_AND_SUPPLIER_EVIDENCE"
+    }
+  ],
+  "context_result": {
+    "manifest_path": "engineering/execution/SGO_C03_LINKED_EVIDENCE_CONTEXT_V1.json",
+    "subject_types": [
+      "TASK",
+      "COMMERCIAL_CASE",
+      "QUOTE",
+      "PRODUCT",
+      "SUPPLIER"
+    ],
+    "result_states": [
+      "AVAILABLE",
+      "MISSING",
+      "DENIED",
+      "STALE",
+      "SOURCE_UNAVAILABLE",
+      "SOURCE_INVALID"
+    ],
+    "source_profiles": 5,
+    "exact_commit_path_blob_pins": 15,
+    "persistence": "UNPERSISTED_DRAFT",
+    "mounted_runtime": false,
+    "admission_eligible": false,
+    "key_findings": [
+      "Task and Supplier retain explicit SEMANTIC_OWNER_UNRESOLVED authority maturity rather than inferring ownership from names or current writers.",
+      "Commercial Case and Quote cite canonical Postgres records while preserving their transfer-pending UI write ownership.",
+      "Product cites the API P113 rebuildable projection and its provider-authoritative Shopify source version.",
+      "AVAILABLE entries require exact subject-specific record versions and canonical citations; stale entries preserve actual identity/version evidence but expose no claims.",
+      "Missing, denied, unavailable and invalid source states expose neither claims nor an actual record version.",
+      "The producer accepts only authenticated server-selected workload identities and a server-injected source port; callers cannot supply evidence facts, actor claims or tenant authority."
+    ]
+  },
+  "verification": {
+    "exact_sha": "74034e99ea0a111efbff663e269587ce11af8ff6",
+    "focused_validator": "PASS_14_OF_14",
+    "repository_tests": "PASS_284_OF_284",
+    "typescript": "PASS",
+    "eslint": "PASS_ZERO_WARNINGS",
+    "compliance": "PASS_7_OF_7",
+    "nextjs_build": "PASS_NEXTJS_16_3_4_WEBPACK",
+    "source_pin_reconciliation": "PASS_15_OF_15",
+    "accepted_c01_byte_identity": "PASS",
+    "stage5_domain_route_migration_byte_identity": "PASS",
+    "controller_hold_repair": "PASS_ALL_FIVE_EXPECTED_VERSION_GRAMMARS_AND_STRUCTURALLY_MALFORMED_SOURCE_RETURN",
+    "canonical_ci": "PENDING_CORRECTED_EXACT_FINAL_PUBLICATION_HEAD"
+  },
+  "negative_checks": [
+    "unknown workload identity",
+    "known workload missing tenant or capability authorization",
+    "cross-tenant source result",
+    "requested and actual record identity mismatch",
+    "missing expected version",
+    "expected-version mismatch and stale observation",
+    "forged, partial or wrong-prefix citation",
+    "subject-specific version grammar violation",
+    "structurally malformed server-injected source return",
+    "claim leakage from non-available states",
+    "invalid claim types and unbounded keys",
+    "manifest source-profile or source-pin drift",
+    "authority, persistence, admission or finality escalation",
+    "deterministic context hash tampering"
+  ],
+  "rollback": {
+    "method": "Apply the exact binary diff from accepted C01 base to C03 implementation in reverse; reapply the same diff to restore the candidate.",
+    "reverse_to_accepted_c01_tree": "PASS_EXACT_DIRECTORY_COMPARE",
+    "reapply_to_candidate_tree": "PASS_EXACT_DIRECTORY_COMPARE",
+    "isolated_path": "/private/tmp/sgo-c03-corrected-rollback.f5s0bd",
+    "database_or_provider_restore": "NOT_APPLICABLE_NO_DATABASE_OR_PROVIDER_EFFECT"
+  },
+  "maturity": {
+    "engineering_state": "CONTRACT_STABLE",
+    "release_evidence": "LOCAL_PROVEN",
+    "effect_authority": "NO_EFFECT",
+    "finality": "BOUNDED_CLAIM"
+  },
+  "gates": {
+    "g0": "CORRECTED_CANDIDATE_RESUBMITTED_AFTER_CONTROLLER_HOLD",
+    "g1": "HELD_FOR_AUTHENTICATED_DEPLOYED_SOURCE_READBACK_PERSISTED_CROSS_SYSTEM_RECEIPT_REPLAY_CONSUMER_INTEGRATION_AND_EXACT_PREVIEW_EXERCISE",
+    "g2": "HELD_NO_PRODUCTION_AUTHORITY"
+  },
+  "unexercised_boundaries": [
+    "runtime mounting or route activation",
+    "authenticated deployed Task, Commercial Case, Quote, Product or Supplier source readback",
+    "persisted context, cross-system receipt or replay",
+    "independent UI or Sultan OS consumer integration",
+    "exact preview exercise",
+    "migration, deployment, production observation or business effect"
+  ],
+  "next": "Controller must resolve the exact publication head and canonical CI, accept or reject this bounded G0 handoff, and explicitly retain and advance the L1 lease before SGO-V02 work begins."
+}
