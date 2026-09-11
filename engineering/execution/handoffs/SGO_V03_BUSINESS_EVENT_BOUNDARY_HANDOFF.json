@@ -1,6 +1,6 @@
 {
   "schema_version": "sgo.lane-handoff.v1",
-  "recorded_at": "2026-09-11T20:29:41Z",
+  "recorded_at": "2026-09-11T20:43:31Z",
   "build_program": "SGO-20260911-01",
   "task_id": "SGO-V03",
   "lane": "L1",
@@ -15,14 +15,15 @@
   "sha_lineage": {
     "accepted_v02_base_sha": "055bdaf20536c27cb8c016cbcd33c6f1fba52785",
     "accepted_c04_read_only_sha": "22d09b9d06fc60c79a0bcfa0c49a2f6967574cb0",
-    "implementation_sha": "f2643a08c85700cbf8b822884d4d75e88d1c9cf1",
-    "handoff_commit_parent_sha": "f2643a08c85700cbf8b822884d4d75e88d1c9cf1",
+    "held_head_sha": "43b16fbbd255993aa11eb7e23e646e0e43e815ae",
+    "implementation_sha": "7ff74306a81686eccaf1977883a68a571e829a74",
+    "handoff_commit_parent_sha": "7ff74306a81686eccaf1977883a68a571e829a74",
     "publication_head": "RESOLVE_EXACT_BRANCH_HEAD_CONTAINING_THIS_HANDOFF"
   },
   "controller": {
     "repository": "CIBOTFLOW/Luzione-platform-program",
     "branch": "codex/sgo-20260911-controller",
-    "decision_sha": "015add7d1aa68ec58835893f29e5204f4cca2ce9",
+    "decision_sha": "e6c3245429dc9281ceb575835b38b1f9346170f8",
     "allowlist_count": 68,
     "legacy_execution": "EXCLUDED"
   },
@@ -38,7 +39,7 @@
     "end_state": "Accepted ordered evidence, exact replay, business duplicate, explicit rejection, reconciliation required or exact source-confirmed bounded finality",
     "truth_owner": "The action's named canonical domain owner; the reducer is not a truth store",
     "write_path": "None. Durable reducer state, effect reservation, provider execution and canonical mutation are not mounted.",
-    "readback": "Only exact authoritative source, owner, record, expected result version, payload and citation may set businessFinal=true",
+    "readback": "Only exact authoritative source, owner, record, expected result version, payload and citation observed no later than processing now may set businessFinal=true",
     "irreversible_effects": []
   },
   "contract_versions": [
@@ -61,23 +62,23 @@
   "implementation_artifacts": [
     {
       "path": "architecture/production-convergence/SGO_V03_WORKING_CONTRACT.md",
-      "git_blob_sha1": "7fcf0b2fd2c990573333d2c5c795ac0c109b977c",
-      "raw_sha256": "6894b1b5d7197d3b2b2c2655e990c2fb4f308e28019a05fc107df961c2fd802e"
+      "git_blob_sha1": "9538c8d2b05de50d8531ebfcf9930677b58f5f99",
+      "raw_sha256": "44b2d2747284faaa0e3535c8f65a9299a2e905b5d5bc4607fa0d6af9865a230d"
     },
     {
       "path": "engineering/execution/SGO_V03_BUSINESS_EVENT_MATRIX_V1.json",
-      "git_blob_sha1": "6ff159f829c73944c2e16c8e2632347248fa2ead",
-      "raw_sha256": "25425124fc520ac774779f14884b88a1145ea8524fa4ccd523970ae31ab5306b"
+      "git_blob_sha1": "a018499eb21f9699b7ae62f518ad2c0855cea0aa",
+      "raw_sha256": "e18f95455c2133eafa06d3309f5d55d77bb8e84a4ebbb137908bc5da2bd8f2d3"
     },
     {
       "path": "src/modules/business-event-boundary/sgoV03BusinessEvent.ts",
-      "git_blob_sha1": "3d9281e7c7598e0f30c83fcf748800e2fe94e65c",
-      "raw_sha256": "d013455faaa4543715ae05e17df7f6aab5bab374c680c36acaccc623d139cda3"
+      "git_blob_sha1": "7625f70d00219a710966a202a39452f87452b552",
+      "raw_sha256": "a88b7dafe02c9ee9c44fad5954a8d500e7a5ecd60b93fa222eab2081bf44d8b4"
     },
     {
       "path": "src/modules/business-event-boundary/tests/sgo-v03-business-event.test.ts",
-      "git_blob_sha1": "e3c99901f98847c4819a0b94cc664a50de2f7efc",
-      "raw_sha256": "39228f9444bd6f502ad13b821e43e2ee1a765b8e221b78e97ab1e10fdf81dc78"
+      "git_blob_sha1": "bfe227061c259fb3951af25a78e05ba7cac8af62",
+      "raw_sha256": "00fbc8525eede9f26d71bd3d510af053db0e029b244630f1f81ed6da19fa968f"
     },
     {
       "path": "src/modules/platform-testing/taxonomy.ts",
@@ -107,9 +108,11 @@
     "business_duplicate_delivery": "ORIGINAL_RECEIPT_NO_COUNTER_CHANGE",
     "out_of_order_delivery": "REJECTED_NO_STATE_OR_COUNTER_CHANGE",
     "stale_approval_or_source": "REJECTED_BEFORE_RESERVATION_OR_FIRST_DISPATCH",
+    "post_event_approval_source": "REJECTED_NO_STATE_OR_COUNTER_CHANGE",
     "ambiguous_network_outcome": "RECONCILIATION_REQUIRED_SECOND_DISPATCH_REJECTED",
     "provider_acknowledgement_business_final": false,
-    "source_confirmation": "EXACT_OWNER_RECORD_RESULT_VERSION_PAYLOAD_SOURCE_AND_CITATION_REQUIRED",
+    "source_confirmation": "EXACT_OWNER_RECORD_RESULT_VERSION_PAYLOAD_SOURCE_AND_CITATION_OBSERVED_NO_LATER_THAN_PROCESSING_NOW_REQUIRED",
+    "future_dated_source_confirmation": "REJECTED_NO_STATE_COUNTER_OR_FINALITY_CHANGE",
     "runtime_mounting": false,
     "persistence_created": false,
     "provider_calls": false,
@@ -118,9 +121,9 @@
     "effect_authority": "NO_EFFECT"
   },
   "verification": {
-    "exact_implementation_sha": "f2643a08c85700cbf8b822884d4d75e88d1c9cf1",
-    "focused_negative_recovery": "PASS_16_OF_16",
-    "repository_tests": "PASS_315_OF_315",
+    "exact_implementation_sha": "7ff74306a81686eccaf1977883a68a571e829a74",
+    "focused_negative_recovery": "PASS_18_OF_18",
+    "repository_tests": "PASS_317_OF_317",
     "typescript": "PASS",
     "eslint": "PASS_ZERO_WARNINGS",
     "compliance": "PASS_7_OF_7",
@@ -138,9 +141,11 @@
     "future and stale sequence delivery changes no state or counter",
     "expired, future, missing, wrong-record, wrong-owner and wrong-version approval source evidence",
     "approval freshness recheck immediately before first dispatch",
+    "post-event source observations cannot retroactively authorize release or first dispatch and change no state or counter",
     "ambiguous network result requires reconciliation and rejects a second dispatch",
     "provider acknowledgement cannot claim business finality",
     "wrong source result version cannot claim business finality",
+    "future-dated authoritative readback cannot claim business finality and leaves state, counters and finality unchanged",
     "exact source confirmation recovers ambiguity without a new reservation or dispatch",
     "corrupt reducer state fails before evaluation",
     "C04 capability discovery cannot replace a release receipt or approval",
@@ -152,13 +157,19 @@
       "classification": "RESOLVED_LOCAL_VERIFICATION_ORCHESTRATION_RACE",
       "symptom": "Standalone tsc read .next/types while a concurrent Next build replaced that directory.",
       "resolution": "The build TypeScript phase passed and standalone npm run typecheck passed serially at exact head eedd798e9a10f2c32e9c143217020485532ed4bb without a source change."
+    },
+    {
+      "failure_id": "SGO_V03_TEMPORAL_EVIDENCE_ORDERING_20260911",
+      "classification": "RESOLVED_FAIL_OPEN_TEMPORAL_EVIDENCE_ORDERING",
+      "symptom": "Held head 43b16fbbd255993aa11eb7e23e646e0e43e815ae admitted post-event source evidence for release and future-dated readback for business finality.",
+      "resolution": "Implementation 7ff74306a81686eccaf1977883a68a571e829a74 requires source observedAt no later than release/first-dispatch occurredAt and readback observedAt no later than processing now; dedicated unchanged-state known-bads pass."
     }
   ],
   "rollback": {
     "method": "Apply the exact binary diff from accepted V02 base to V03 implementation in reverse; reapply the same diff to restore the candidate.",
     "reverse_to_accepted_v02_tree": "PASS_EXACT_DIRECTORY_COMPARE",
     "reapply_to_implementation_tree": "PASS_EXACT_DIRECTORY_COMPARE",
-    "isolated_path": "/private/tmp/sgo-v03-recovery.icDc7R",
+    "isolated_path": "/private/tmp/sgo-v03-correction-recovery.uKDXUd",
     "database_provider_or_external_restore": "NOT_APPLICABLE_NO_RUNTIME_OR_EXTERNAL_EFFECT"
   },
   "maturity": {
@@ -168,7 +179,7 @@
     "finality": "BOUNDED_CLAIM"
   },
   "gates": {
-    "g0": "CANDIDATE_PENDING_CONTROLLER_ACCEPTANCE",
+    "g0": "CORRECTED_CANDIDATE_PENDING_CONTROLLER_ACCEPTANCE",
     "g1": "HELD_FOR_DURABLE_ATOMIC_PERSISTENCE_CREDENTIAL_BOUND_RELEASE_APPROVAL_C04_CONSUMER_INTEGRATION_AUTHENTICATED_DEPLOYED_READBACK_AND_EXACT_PREVIEW",
     "g2": "HELD_NO_PRODUCTION_AUTHORITY"
   },
@@ -181,5 +192,5 @@
     "authenticated deployed source readback and exact preview",
     "migration, deployment, production observation and recovery"
   ],
-  "next": "Controller must resolve the exact publication head, validate canonical CI and accept or correct this bounded G0 handoff. L1 must not advance to another package or legacy A02 without a new explicit controller decision."
+  "next": "Controller must resolve the corrected exact publication head, validate canonical CI and accept or correct this bounded G0 handoff. L1 must not advance to another package or legacy A02 without a new explicit controller decision."
 }
