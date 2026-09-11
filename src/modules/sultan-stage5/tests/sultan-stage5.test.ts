@@ -39,12 +39,183 @@ import {
   verifyStage5AdmissionReceiptIntegrity,
 } from "@/modules/sultan-stage5/runtime";
 import { isExactStage5ConsumerWorkload } from "@/modules/sultan-stage5/workload";
+import {
+  buildRecordContextDraft,
+  parseRecordContextDraftRequest,
+  RECORD_CONTEXT_DRAFT_VERSION,
+  RecordContextDraftError,
+  type RecordContextSource,
+} from "@/modules/sultan-stage5/recordContextDraft";
 
 const NOW = "2026-09-02T12:00:00.000Z";
 const API_SHA = "a".repeat(40);
 const CONTRACT_SHA = "b".repeat(40);
 const SULTAN_SHA = "c".repeat(40);
 const UI_SHA = "d".repeat(40);
+
+function draftRequest(subjectType = "LEAD", overrides: Record<string, unknown> = {}) {
+  return { context: { contractVersion: RECORD_CONTEXT_DRAFT_VERSION, consumerDeploymentSha: SULTAN_SHA,
+    expectedSourceVersion: null, requestedAt: NOW, subjectId: "record-001", subjectType, ...overrides } };
+}
+
+function draftLead() {
+  return {
+    contractVersion: "luzione-lead-commercial-case/v0.1" as const,
+    sourceOfTruth: "crm_leads" as const, transferState: "UI_LEGACY_WRITER_API_DARK_PATH" as const,
+    objectVersion: `crm-lead:record-001@${NOW}`,
+    lead: { leadId: "record-001", accountId: "account-001", contactId: null, assignedOwnerId: "owner-001",
+      leadSource: "project-research", recommendedNextAction: "Review the project brief", stage: "validated_signal",
+      status: "active", vertical: "hospitality", version: 2, createdAt: NOW, updatedAt: NOW },
+  };
+}
+
+function draftCase() {
+  return {
+    contractVersion: "luzione-lead-commercial-case/v0.1" as const,
+    sourceOfTruth: "commercial_cases" as const, transferState: "UI_LEGACY_WRITER_API_DARK_PATH" as const,
+    objectVersion: "commercial-case:record-001:v2",
+    legacyCompatibility: { sourceLabel: "commercial_cases" as const, version: "2" },
+    commercialCase: { caseId: "record-001", accountId: "account-001", accountName: "Account One", amount: 2000,
+      primaryContactId: null, sourceLeadId: "lead-001", contactName: null, opportunityId: null,
+      title: "Lobby furniture", stage: "discovery", status: "active", owner: "Owner One",
+      nextAction: "Request dimensions", nextActionDueAt: null, relationshipIntegrityState: "valid",
+      version: 2, createdAt: NOW, updatedAt: NOW },
+  };
+}
+
+function draftSource(overrides: Partial<RecordContextSource> = {}): RecordContextSource {
+  return { readLead: async () => draftLead(), readCommercialCase: async () => draftCase(), ...overrides };
+}
+
+function buildDraft(overrides: Partial<Parameters<typeof buildRecordContextDraft>[0]> = {}) {
+  return buildRecordContextDraft({ actor: actor(), pins: pins(), now: NOW, request: draftRequest(), source: draftSource(), ...overrides });
+}
+
+test("record context draft reuses canonical lead read and emits minimized non-admission facts", async () => {
+  const calls: unknown[] = [];
+  const source = draftSource({ readLead: async (consumer, id) => { calls.push([consumer, id]); return draftLead(); } });
+  const result = await buildDraft({ source });
+  assert.equal(result.status, "AVAILABLE");
+  assert.deepEqual(calls, [[actor(), "record-001"]]);
+  assert.deepEqual(result.provenance.sourceRefs, ["postgres:public.crm_leads"]);
+  assert.equal(result.provenance.sourceVersion, draftLead().objectVersion);
+  assert.equal(result.claims.find((c) => c.claimId === "lead.recommendedNextAction")?.value, "Review the project brief");
+  assert.equal(result.admissionEligible, false);
+  assert.equal(result.persistence, "UNPERSISTED_DRAFT");
+  assert.equal(result.grantsAuthority, false);
+  assert.equal(result.businessStateMutated, false);
+  assert.equal("readbackReceiptId" in result, false);
+  const { draftHash, ...material } = result;
+  assert.equal(draftHash, sha256(material));
+  assert.deepEqual(await buildDraft({ source }), result);
+  assert.ok(Object.isFrozen(result) && Object.isFrozen(result.claims) && Object.isFrozen(result.claims[0]) && Object.isFrozen(result.provenance.sourceRefs));
+});
+
+test("record context draft reads Commercial Case without inventing currency or economic authority", async () => {
+  const result = await buildDraft({ request: draftRequest("COMMERCIAL_CASE") });
+  assert.equal(result.status, "AVAILABLE");
+  assert.equal(result.provenance.sourceVersion, "commercial-case:record-001:v2");
+  assert.deepEqual(result.provenance.sourceRefs, ["postgres:public.commercial_cases"]);
+  assert.equal(result.claims.find((c) => c.claimId === "commercialCase.nextAction")?.value, "Request dimensions");
+  assert.equal(result.claims.find((c) => c.claimId === "commercialCase.nextActionDueAt")?.value, null);
+  assert.ok(result.claims.every((c) => !/amount|currency|margin/i.test(c.claimId)));
+});
+
+test("record context draft denies untrusted identity and cross-tenant callers before source access", async () => {
+  let reads = 0;
+  const source = draftSource({ readLead: async () => { reads++; return draftLead(); } });
+  for (const change of [{ source: "service-token" }, { actorType: "user" }, { actorId: "service:other" }, { tenantId: "other" }, { capabilities: [] }]) {
+    await assert.rejects(buildDraft({ source, actor: { ...actor(), ...change } as ApiActor }), (error) => error instanceof RecordContextDraftError && error.code === "WORKLOAD_IDENTITY_DENIED");
+  }
+  assert.equal(reads, 0);
+});
+
+test("record context draft request rejects surplus authority, unknown subjects, version drift and invalid dates", () => {
+  for (const extra of [{ tenantId: "luzione" }, { actorId: "service:sultan-os" }, { claims: [] }, { approval: true }, { subjectType: "UNKNOWN" },
+    { subjectId: "x' OR true" }, { contractVersion: "luzione-canonical-business-readback/v1" }, { requestedAt: "2026-02-30T12:00:00.000Z" }]) {
+    assert.throws(() => parseRecordContextDraftRequest(draftRequest("LEAD", extra)), RecordContextDraftError);
+  }
+  assert.throws(() => parseRecordContextDraftRequest({ ...draftRequest(), tenantId: "luzione" }), RecordContextDraftError);
+  const missing = draftRequest();
+  delete (missing.context as Record<string, unknown>).subjectId;
+  assert.throws(() => parseRecordContextDraftRequest(missing), RecordContextDraftError);
+});
+
+test("record context draft checks exact pins and request freshness before source reads", async () => {
+  let reads = 0;
+  const source = draftSource({ readLead: async () => { reads++; return draftLead(); } });
+  for (const request of [draftRequest("LEAD", { consumerDeploymentSha: API_SHA }),
+    draftRequest("LEAD", { requestedAt: "2026-09-02T11:00:00.000Z" }), draftRequest("LEAD", { requestedAt: "2026-09-02T12:01:00.000Z" })]) {
+    await assert.rejects(buildDraft({ source, request }), RecordContextDraftError);
+  }
+  for (const change of [{ maximumEvidenceAgeMs: 0 }, { maximumEvidenceAgeMs: Infinity }, { apiDeploymentSha: "unbound" }]) {
+    await assert.rejects(buildDraft({ source, pins: { ...pins(), ...change } }), RecordContextDraftError);
+  }
+  assert.equal(reads, 0);
+  assert.equal((await buildDraft({ actor: actor("service:luzione-ui"), request: draftRequest("LEAD", { consumerDeploymentSha: UI_SHA }) })).status, "AVAILABLE");
+});
+
+test("record context draft unsupported object kinds perform no source calls and make no availability claim", async () => {
+  let reads = 0;
+  const source = draftSource({ readLead: async () => { reads++; return draftLead(); }, readCommercialCase: async () => { reads++; return draftCase(); } });
+  for (const subject of ["TASK", "PRODUCT", "SUPPLIER", "ACCOUNT"]) {
+    const result = await buildDraft({ source, request: draftRequest(subject) });
+    assert.equal(result.status, "UNSUPPORTED_SOURCE");
+    assert.deepEqual(result.claims, []);
+    assert.equal(result.freshUntil, null);
+    assert.equal(result.provenance.sourceVersion, null);
+  }
+  assert.equal(reads, 0);
+});
+
+test("record context draft distinguishes missing records, schema failure and unavailable source without leaking errors", async () => {
+  const missing = await buildDraft({ source: draftSource({ readLead: async () => null }) });
+  assert.equal(missing.status, "NOT_FOUND");
+  for (const [code, expected] of [["42703", "SCHEMA_MISMATCH"], ["42P01", "SOURCE_UNAVAILABLE"], ["42501", "SOURCE_UNAVAILABLE"], ["08006", "SOURCE_UNAVAILABLE"]]) {
+    const result = await buildDraft({ source: draftSource({ readLead: async () => { throw Object.assign(new Error("do-not-leak-connection-secret"), { code }); } }) });
+    assert.equal(result.status, expected);
+    assert.deepEqual(result.claims, []);
+    assert.equal(JSON.stringify(result).includes("do-not-leak"), false);
+  }
+});
+
+test("record context draft quarantines wrong owner, contract, identity, version and malformed source values", async () => {
+  const cases: Array<(row: ReturnType<typeof draftLead>) => unknown> = [
+    (row) => ({ ...row, sourceOfTruth: "leads_shadow" }), (row) => ({ ...row, contractVersion: "new" }),
+    (row) => ({ ...row, transferState: "API_WRITER" }), (row) => ({ ...row, objectVersion: "wrong" }),
+    (row) => ({ ...row, objectVersion: "crm-lead:record-001@invalid" }),
+    (row) => ({ ...row, lead: { ...row.lead, leadId: "other" } }), (row) => ({ ...row, lead: { ...row.lead, version: 0 } }),
+    (row) => ({ ...row, lead: { ...row.lead, status: undefined } }),
+    (row) => ({ ...row, lead: { ...row.lead, recommendedNextAction: "x".repeat(2049) } }),
+    (row) => ({ ...row, lead: { ...row.lead, updatedAt: "2026-09-03T12:00:00.000Z" } }),
+  ];
+  for (const change of cases) {
+    const source = { ...draftSource(), readLead: async () => change(draftLead()) } as RecordContextSource;
+    const result = await buildDraft({ source });
+    assert.equal(result.status, "SOURCE_INVALID");
+    assert.deepEqual(result.claims, []);
+  }
+  const source = { ...draftSource(), readCommercialCase: async () => ({ ...draftCase(), objectVersion: "commercial-case:record-001:v3" }) } as RecordContextSource;
+  assert.equal((await buildDraft({ source, request: draftRequest("COMMERCIAL_CASE") })).status, "SOURCE_INVALID");
+});
+
+test("record context draft cannot enter the unchanged v1 canonical receipt request parser", () => {
+  assert.throws(() => parseCanonicalReadbackRequest(draftRequest()), SultanStage5ContractError);
+  assert.throws(() => parseCanonicalReadbackRequest({ readback: { contractVersion: SULTAN_STAGE5_CANONICAL_READBACK_CONTRACT_VERSION,
+    consumerDeploymentSha: SULTAN_SHA, idempotencyKey: "readback-draft", requestedAt: NOW, subjectId: "record-001", subjectType: "LEAD" } }), SultanStage5ContractError);
+});
+
+test("record context draft rejects stale source versions and preserves microsecond lead versions", async () => {
+  const mismatch = await buildDraft({ request: draftRequest("LEAD", { expectedSourceVersion: "old-version" }) });
+  assert.equal(mismatch.status, "VERSION_MISMATCH");
+  assert.deepEqual(mismatch.claims, []);
+  assert.equal((await buildDraft({ request: draftRequest("LEAD", { expectedSourceVersion: draftLead().objectVersion }) })).status, "AVAILABLE");
+  const objectVersion = "crm-lead:record-001@2026-09-02T12:00:00.000123Z";
+  const source = draftSource({ readLead: async () => ({ ...draftLead(), objectVersion }) });
+  const result = await buildDraft({ source, request: draftRequest("LEAD", { expectedSourceVersion: objectVersion }) });
+  assert.equal(result.status, "AVAILABLE");
+  assert.equal(result.provenance.sourceVersion, objectVersion);
+});
 
 function omitKeys<T extends object, K extends keyof T>(value: T, keys: readonly K[]): Omit<T, K> {
   const copy = { ...value } as Partial<T>;
