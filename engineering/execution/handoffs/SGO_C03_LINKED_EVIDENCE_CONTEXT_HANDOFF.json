@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "handoff_id": "SGO-C03-LINKED-EVIDENCE-CONTEXT-G0-20260911",
-  "published_at": "2026-09-11T18:50:22Z",
+  "published_at": "2026-09-11T19:03:55Z",
   "build_program": "SGO-20260911-01",
   "task_id": "SGO-C03",
   "controller": {
@@ -20,8 +20,10 @@
   },
   "sha_lineage": {
     "accepted_c01_base_sha": "b46f35b9b21f59ec19c3537b7568a86fa7ec24aa",
-    "implementation_sha": "8ecc49d85283a29b87be5ff20237f672afb0ce7d",
-    "handoff_commit_parent_sha": "8ecc49d85283a29b87be5ff20237f672afb0ce7d",
+    "initial_implementation_sha": "8ecc49d85283a29b87be5ff20237f672afb0ce7d",
+    "controller_held_head": "29aed7307dca7d8168e9d7d40af06f4b0a024e5b",
+    "corrected_implementation_sha": "74034e99ea0a111efbff663e269587ce11af8ff6",
+    "handoff_commit_parent_sha": "74034e99ea0a111efbff663e269587ce11af8ff6",
     "publication_head": "RESOLVE_EXACT_BRANCH_HEAD_CONTAINING_THIS_HANDOFF"
   },
   "writer_lease": {
@@ -87,9 +89,9 @@
     ]
   },
   "verification": {
-    "exact_sha": "8ecc49d85283a29b87be5ff20237f672afb0ce7d",
-    "focused_validator": "PASS_13_OF_13",
-    "repository_tests": "PASS_283_OF_283",
+    "exact_sha": "74034e99ea0a111efbff663e269587ce11af8ff6",
+    "focused_validator": "PASS_14_OF_14",
+    "repository_tests": "PASS_284_OF_284",
     "typescript": "PASS",
     "eslint": "PASS_ZERO_WARNINGS",
     "compliance": "PASS_7_OF_7",
@@ -97,7 +99,8 @@
     "source_pin_reconciliation": "PASS_15_OF_15",
     "accepted_c01_byte_identity": "PASS",
     "stage5_domain_route_migration_byte_identity": "PASS",
-    "canonical_ci": "PENDING_EXACT_FINAL_PUBLICATION_HEAD"
+    "controller_hold_repair": "PASS_ALL_FIVE_EXPECTED_VERSION_GRAMMARS_AND_STRUCTURALLY_MALFORMED_SOURCE_RETURN",
+    "canonical_ci": "PENDING_CORRECTED_EXACT_FINAL_PUBLICATION_HEAD"
   },
   "negative_checks": [
     "unknown workload identity",
@@ -108,6 +111,7 @@
     "expected-version mismatch and stale observation",
     "forged, partial or wrong-prefix citation",
     "subject-specific version grammar violation",
+    "structurally malformed server-injected source return",
     "claim leakage from non-available states",
     "invalid claim types and unbounded keys",
     "manifest source-profile or source-pin drift",
@@ -118,7 +122,7 @@
     "method": "Apply the exact binary diff from accepted C01 base to C03 implementation in reverse; reapply the same diff to restore the candidate.",
     "reverse_to_accepted_c01_tree": "PASS_EXACT_DIRECTORY_COMPARE",
     "reapply_to_candidate_tree": "PASS_EXACT_DIRECTORY_COMPARE",
-    "isolated_path": "/private/tmp/sgo-c03-rollback.P2k4Qu",
+    "isolated_path": "/private/tmp/sgo-c03-corrected-rollback.f5s0bd",
     "database_or_provider_restore": "NOT_APPLICABLE_NO_DATABASE_OR_PROVIDER_EFFECT"
   },
   "maturity": {
@@ -128,7 +132,7 @@
     "finality": "BOUNDED_CLAIM"
   },
   "gates": {
-    "g0": "CANDIDATE_SUBMITTED",
+    "g0": "CORRECTED_CANDIDATE_RESUBMITTED_AFTER_CONTROLLER_HOLD",
     "g1": "HELD_FOR_AUTHENTICATED_DEPLOYED_SOURCE_READBACK_PERSISTED_CROSS_SYSTEM_RECEIPT_REPLAY_CONSUMER_INTEGRATION_AND_EXACT_PREVIEW_EXERCISE",
     "g2": "HELD_NO_PRODUCTION_AUTHORITY"
   },

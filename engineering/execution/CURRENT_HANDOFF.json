@@ -105,7 +105,7 @@
     "Supabase Pro plan entitlement indicates daily backups should exist, but the available management surface cannot list a project-specific backup receipt or PITR window; no production DDL is safe until that exact restore evidence is recorded."
   ],
   "stop_code": null,
-  "updated_at": "2026-09-11T18:50:22Z",
+  "updated_at": "2026-09-11T19:03:55Z",
   "sgo_c01": {
     "status": "CONTROLLER_ACCEPTED_BOUNDED_G0_INTEGRATION_CANDIDATE",
     "build_program": "SGO-20260911-01",
@@ -125,22 +125,24 @@
     "next": "Accepted as bounded G0; G1/G2 remain held while SGO-C03 proceeds from the exact accepted head."
   },
   "sgo_c03": {
-    "status": "LOCAL_CONTRACT_STABLE_G0_HANDOFF_PENDING_CONTROLLER",
+    "status": "CONTROLLER_HOLD_REPAIRED_LOCAL_CONTRACT_STABLE_G0_HANDOFF_PENDING_CONTROLLER",
     "build_program": "SGO-20260911-01",
     "controller_sha": "d49e6ec57b3e0645fa6b0109bbb723aa153ca0d2",
     "lease_id": "SGO-20260911-01-L1",
     "branch": "codex/sgo-c03-linked-evidence-context-20260911",
     "base_sha": "b46f35b9b21f59ec19c3537b7568a86fa7ec24aa",
-    "implementation_sha": "8ecc49d85283a29b87be5ff20237f672afb0ce7d",
+    "initial_implementation_sha": "8ecc49d85283a29b87be5ff20237f672afb0ce7d",
+    "controller_held_head": "29aed7307dca7d8168e9d7d40af06f4b0a024e5b",
+    "corrected_implementation_sha": "74034e99ea0a111efbff663e269587ce11af8ff6",
     "pull_request": 85,
     "manifest": "engineering/execution/SGO_C03_LINKED_EVIDENCE_CONTEXT_V1.json",
     "handoff": "engineering/execution/handoffs/SGO_C03_LINKED_EVIDENCE_CONTEXT_HANDOFF.json",
-    "local_verification": "PASS_13_OF_13_FOCUSED_283_OF_283_REPOSITORY_TYPESCRIPT_LINT_ZERO_WARNINGS_COMPLIANCE_7_OF_7_BUILD_15_OF_15_PINS_REVERSE_REAPPLY",
+    "local_verification": "PASS_14_OF_14_FOCUSED_284_OF_284_REPOSITORY_TYPESCRIPT_LINT_ZERO_WARNINGS_COMPLIANCE_7_OF_7_BUILD_15_OF_15_PINS_REVERSE_REAPPLY",
     "effect_authority": "NO_EFFECT",
     "runtime_mounting": "NOT_PERFORMED",
     "g1": "HELD",
     "g2": "HELD",
-    "next": "Controller exact-head and CI decision, then explicit lease advance before SGO-V02."
+    "next": "Controller must validate the corrected exact head and CI, then explicitly advance the lease before SGO-V02."
   },
   "api_stage5_001": {
     "status": "EXACT_IMPLEMENTATION_AND_MANAGED_RECOVERY_PASS_PUBLICATION_PENDING_PRODUCTION_BLOCKED",
