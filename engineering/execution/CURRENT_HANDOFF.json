@@ -4,7 +4,10 @@
   "repository": "CIBOTFLOW/Luzione-API",
   "program_state": "API_STAGE5_EXACT_SOURCE_AND_MANAGED_RECOVERY_PROVEN_PUBLICATION_PENDING_PRODUCTION_BLOCKED_NO_EFFECT",
   "current_project": "API_STAGE5_001",
-  "next_projects": ["API_STAGE5_001", "A02"],
+  "next_projects": [
+    "API_STAGE5_001",
+    "A02"
+  ],
   "next_action": "Publish the exact API Stage 5 implementation and machine handoff in a new pull request from merged main, run real-branch CI, repair any failure, and merge only the green exact head. Preserve draft PR #58 independently. Keep production DDL and deployment claims blocked until a named accessible backup/PITR and restore receipt, exact principal authority, writer exclusion, merged main SHA, and exact deployed readbacks all exist.",
   "canonical_program": "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md",
   "failure_ledger": "engineering/execution/SYSTEMS_ENGINEERING_FAILURE_LEDGER.json",
@@ -239,5 +242,17 @@
     "live_http_journey": "DEPLOYED_SIGNED_OIDC_NOT_RUN",
     "business_receipt_readback": "NOT_APPLICABLE_NO_EFFECT",
     "production_observation": "NOT_RUN"
+  },
+  "sgo_20260911_active_build": {
+    "controller_release_sha": "2f0d9818029cc79f1ca1058f735699fa33982b9b",
+    "task_id": "SGO-C02",
+    "branch": "codex/sgo-c02-record-context-20260911",
+    "implementation_sha": "b60a5a8f2b6c8824c0c482760412afe9d760a6bf",
+    "handoff": "engineering/execution/handoffs/SGO_C02_CONTROLLER_HANDOFF.json",
+    "state": "BOUNDED_G0_DRAFT_PR_OPEN",
+    "effect_authority": "NO_EFFECT",
+    "next_task": "SGO-C01",
+    "writer_lease": "SGO-20260911-01-L1",
+    "production_holds": "PRESERVED"
   }
 }
