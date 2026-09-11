@@ -1,0 +1,441 @@
+{
+  "schema_version": 1,
+  "inventory_id": "sgo-c01-active-sultan-runtime-producers/v1",
+  "build_program": "SGO-20260911-01",
+  "task_id": "SGO-C01",
+  "controller_sha": "76d5e05078a71790b5babdfc5020c63ae8513f14",
+  "controller_allowlist_count": 68,
+  "observed_at": "2026-09-11T17:59:24Z",
+  "inventory_effect_authority": "NO_EFFECT",
+  "runtime_activation": false,
+  "route_activation": false,
+  "deployment_performed": false,
+  "production_effect_performed": false,
+  "scope": {
+    "included": [
+      "visible main chat",
+      "visible quote review",
+      "visible task assist",
+      "visible agent-case simulation lab",
+      "memory consumed by chat and quote review",
+      "all nine action types accepted by the visible chat command route"
+    ],
+    "excluded": [
+      "runtime mounting or route activation",
+      "provider or production execution",
+      "deployed reachability claims",
+      "authenticated cross-system readback",
+      "legacy parent execution"
+    ]
+  },
+  "source_repositories": [
+    {
+      "repository": "CIBOTFLOW/Luzione-API",
+      "commit_sha": "7ee5a0a53a3434c3e00969dc626a4daad33f9dc0",
+      "access": "WRITER_FOR_THIS_EVIDENCE_ONLY_BRANCH"
+    },
+    {
+      "repository": "CIBOTFLOW/Luzione-UI",
+      "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214",
+      "access": "READ_ONLY_EVIDENCE"
+    },
+    {
+      "repository": "CIBOTFLOW/Sultan-OS",
+      "commit_sha": "ea50caa66f09b14b1ac2bcfdfb74cdf9f4c067f0",
+      "access": "READ_ONLY_EVIDENCE"
+    }
+  ],
+  "evidence_pins": [
+    { "pin_id": "api-p113-route", "repository": "CIBOTFLOW/Luzione-API", "commit_sha": "7ee5a0a53a3434c3e00969dc626a4daad33f9dc0", "path": "src/app/api/v1/catalog/shopify/projections/route.ts", "blob_sha": "88fc94db55d4f85a5755a52e91306153e3f1f5ac" },
+    { "pin_id": "api-p113-runtime", "repository": "CIBOTFLOW/Luzione-API", "commit_sha": "7ee5a0a53a3434c3e00969dc626a4daad33f9dc0", "path": "src/modules/catalog-projection/runtime.ts", "blob_sha": "911f9318de18d7e22a4481c066c7e10ff7dfa581" },
+    { "pin_id": "api-sultan-command-execute", "repository": "CIBOTFLOW/Luzione-API", "commit_sha": "7ee5a0a53a3434c3e00969dc626a4daad33f9dc0", "path": "src/app/api/v1/sultan/commands/execute/route.ts", "blob_sha": "5053758a960aa7ef77cb1f9d5f49ec638cc11975" },
+    { "pin_id": "api-sultan-command-prepare", "repository": "CIBOTFLOW/Luzione-API", "commit_sha": "7ee5a0a53a3434c3e00969dc626a4daad33f9dc0", "path": "src/app/api/v1/sultan/commands/prepare/route.ts", "blob_sha": "681e739c563f7c9ff3b30c7fddb80ae79d12f713" },
+    { "pin_id": "api-sultan-effect-readback", "repository": "CIBOTFLOW/Luzione-API", "commit_sha": "7ee5a0a53a3434c3e00969dc626a4daad33f9dc0", "path": "src/app/api/v1/sultan/effects/[receiptId]/readback/route.ts", "blob_sha": "b231a4ca6dfd94e816ab6c02b31ff40d690ba38c" },
+    { "pin_id": "api-sultan-tools", "repository": "CIBOTFLOW/Luzione-API", "commit_sha": "7ee5a0a53a3434c3e00969dc626a4daad33f9dc0", "path": "src/app/api/v1/sultan/tools/route.ts", "blob_sha": "c75cbf0a61004176186fd7a7a99fe9a80b821fa2" },
+    { "pin_id": "os-agent-case-persistence", "repository": "CIBOTFLOW/Sultan-OS", "commit_sha": "ea50caa66f09b14b1ac2bcfdfb74cdf9f4c067f0", "path": "src/lib/agentCasePersistence.ts", "blob_sha": "ba388a248f2826bfe1b8f6d7fe5c7b57491080f1" },
+    { "pin_id": "os-agent-case-route", "repository": "CIBOTFLOW/Sultan-OS", "commit_sha": "ea50caa66f09b14b1ac2bcfdfb74cdf9f4c067f0", "path": "src/app/api/system/agent-case-run/route.ts", "blob_sha": "a404e16f3931c118b5930b7af7ca5dc4cedd82d6" },
+    { "pin_id": "os-agent-case-runtime", "repository": "CIBOTFLOW/Sultan-OS", "commit_sha": "ea50caa66f09b14b1ac2bcfdfb74cdf9f4c067f0", "path": "src/lib/agentCaseRuntime.ts", "blob_sha": "4a12d9fb2126dfb6d4023097354210164b9f6940" },
+    { "pin_id": "os-api-tool-client", "repository": "CIBOTFLOW/Sultan-OS", "commit_sha": "ea50caa66f09b14b1ac2bcfdfb74cdf9f4c067f0", "path": "src/lib/luzioneAgentToolClientV1.ts", "blob_sha": "59cc78a8a564b93906dd2cb2c58c83c2afd46b7f" },
+    { "pin_id": "os-chat-route", "repository": "CIBOTFLOW/Sultan-OS", "commit_sha": "ea50caa66f09b14b1ac2bcfdfb74cdf9f4c067f0", "path": "src/app/api/system/developmental-participation/chat/route.ts", "blob_sha": "5825dea27b416ad22fe7b8c89bbdcd8edddd1d60" },
+    { "pin_id": "os-doctrine-chat", "repository": "CIBOTFLOW/Sultan-OS", "commit_sha": "ea50caa66f09b14b1ac2bcfdfb74cdf9f4c067f0", "path": "src/lib/doctrineChat.ts", "blob_sha": "df259b0c28cfb1c34a42a8b0a185cc7f2a9d3061" },
+    { "pin_id": "os-private-memory", "repository": "CIBOTFLOW/Sultan-OS", "commit_sha": "ea50caa66f09b14b1ac2bcfdfb74cdf9f4c067f0", "path": "src/lib/sultanInternalMemory.ts", "blob_sha": "306e4b1c454eafef5acfe464ba4576ef9d7b2e1b" },
+    { "pin_id": "os-runtime-v2", "repository": "CIBOTFLOW/Sultan-OS", "commit_sha": "ea50caa66f09b14b1ac2bcfdfb74cdf9f4c067f0", "path": "src/lib/agentRuntimeV2.ts", "blob_sha": "c6d44ec008d79f98e5d05e42f2c1122da09dbc5b" },
+    { "pin_id": "os-runtime-v2-persistence", "repository": "CIBOTFLOW/Sultan-OS", "commit_sha": "ea50caa66f09b14b1ac2bcfdfb74cdf9f4c067f0", "path": "src/lib/agentRuntimeV2Persistence.ts", "blob_sha": "910bf447c5f7a1dca6b7d37ff2e82b266030028c" },
+    { "pin_id": "ui-agent-runtime-repository", "repository": "CIBOTFLOW/Luzione-UI", "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214", "path": "src/modules/agent-runtime/repositories/AgentRuntimeRepository.ts", "blob_sha": "21cee212ded64c8eaaca28a7759142e40b088095" },
+    { "pin_id": "ui-agent-runtime-service", "repository": "CIBOTFLOW/Luzione-UI", "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214", "path": "src/modules/agent-runtime/services/AgentRuntimeService.ts", "blob_sha": "f98574ec00d8b3a4f99dbcfe4cc31e6b385b443b" },
+    { "pin_id": "ui-approval-service", "repository": "CIBOTFLOW/Luzione-UI", "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214", "path": "src/lib/approvals/approvalService.ts", "blob_sha": "b800e261425241d813112584bdc114ac74b72627" },
+    { "pin_id": "ui-chat-actions-route", "repository": "CIBOTFLOW/Luzione-UI", "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214", "path": "src/app/api/sultan/chat/actions/route.ts", "blob_sha": "6e0f98855c8b8bf66798b43723f8e698500718cc" },
+    { "pin_id": "ui-chat-route", "repository": "CIBOTFLOW/Luzione-UI", "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214", "path": "src/app/api/sultan/chat/route.ts", "blob_sha": "c981a1eb7c864d7e86cbcb6d7d675a8d90caf53b" },
+    { "pin_id": "ui-chat-store", "repository": "CIBOTFLOW/Luzione-UI", "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214", "path": "src/lib/server/sultanChatStore.ts", "blob_sha": "027b3b059d57d1d4fbcaa013bc6b3c134ff95540" },
+    { "pin_id": "ui-chat-workspace", "repository": "CIBOTFLOW/Luzione-UI", "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214", "path": "src/components/sultan/SultanChatWorkspace.tsx", "blob_sha": "fb750100544bf1520feb2adbf1dbf55eed87ddf1" },
+    { "pin_id": "ui-command-intent", "repository": "CIBOTFLOW/Luzione-UI", "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214", "path": "src/lib/sultan/commandIntent.ts", "blob_sha": "fd400dc0096f4200ee7da192ef53a041e409a2cd" },
+    { "pin_id": "ui-content-plan", "repository": "CIBOTFLOW/Luzione-UI", "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214", "path": "src/lib/marketing/sultanPlanService.ts", "blob_sha": "13be34b5c9ec41ac3f83cf8442b5f9a943b7a6ac" },
+    { "pin_id": "ui-execution-plan", "repository": "CIBOTFLOW/Luzione-UI", "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214", "path": "src/lib/sultan/sultanExecutionPlanService.ts", "blob_sha": "644483bd906097c525e5c068fad17577592c8f04" },
+    { "pin_id": "ui-executor-registry", "repository": "CIBOTFLOW/Luzione-UI", "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214", "path": "src/lib/governance/actionIntentExecutorRegistry.ts", "blob_sha": "9056e87d350b6eed009b488abc67874279318ffa" },
+    { "pin_id": "ui-governance-kernel", "repository": "CIBOTFLOW/Luzione-UI", "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214", "path": "src/lib/server/governanceKernel.ts", "blob_sha": "1dd8660c650ef32555fc1361f5886f86d4e4a11d" },
+    { "pin_id": "ui-governed-memory", "repository": "CIBOTFLOW/Luzione-UI", "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214", "path": "src/lib/memory/memoryPromotionService.ts", "blob_sha": "c0bfe37636dcc792345b0a6d2d9197f7f2698fd6" },
+    { "pin_id": "ui-marketing-store", "repository": "CIBOTFLOW/Luzione-UI", "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214", "path": "src/lib/server/marketingWorkspaceStore.ts", "blob_sha": "778db8ca7ec4efe05ce24d4161652467090dbb32" },
+    { "pin_id": "ui-model-router", "repository": "CIBOTFLOW/Luzione-UI", "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214", "path": "src/lib/ai/ModelRouter.ts", "blob_sha": "04650858b7765bcb73d7a7c97d0cfb8652191fa1" },
+    { "pin_id": "ui-object-memory", "repository": "CIBOTFLOW/Luzione-UI", "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214", "path": "src/lib/memory/objectMemoryContextService.ts", "blob_sha": "6dd420b6882a83e071d11eadd67c203f9906ecea" },
+    { "pin_id": "ui-proposal-document", "repository": "CIBOTFLOW/Luzione-UI", "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214", "path": "src/lib/commercial-case/proposalDocumentPreflightService.ts", "blob_sha": "dc470a689d2e6147f3fbc0b5555a33a449c45020" },
+    { "pin_id": "ui-quote-card", "repository": "CIBOTFLOW/Luzione-UI", "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214", "path": "src/components/operations/SultanQuoteReviewCard.tsx", "blob_sha": "f67fcd741281e95433d212f46b5b0dc64377d7e5" },
+    { "pin_id": "ui-quote-review-route", "repository": "CIBOTFLOW/Luzione-UI", "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214", "path": "src/app/api/quotes/[quoteId]/sultan-review/route.ts", "blob_sha": "3652777d41c2b8f3fb21d63ed4d18f974f1efd0f" },
+    { "pin_id": "ui-quote-review-service", "repository": "CIBOTFLOW/Luzione-UI", "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214", "path": "src/modules/agent-runtime/services/QuoteReviewAgentService.ts", "blob_sha": "598272b6ba546e41d958bc2079161e539f93c736" },
+    { "pin_id": "ui-quotes", "repository": "CIBOTFLOW/Luzione-UI", "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214", "path": "src/lib/server/quotes.ts", "blob_sha": "f589318b424c0b7ed3f4d614f02b275cdf7693e6" },
+    { "pin_id": "ui-shopify-store", "repository": "CIBOTFLOW/Luzione-UI", "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214", "path": "src/lib/server/shopifyReadModelStore.ts", "blob_sha": "02170c3f62cd4cdfada01ace4900dbe705f3649b" },
+    { "pin_id": "ui-simulation-lab", "repository": "CIBOTFLOW/Luzione-UI", "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214", "path": "src/components/sultan/SultanSimulationLab.tsx", "blob_sha": "7db209b30cad877407af001209d23d79be7361ab" },
+    { "pin_id": "ui-simulation-route", "repository": "CIBOTFLOW/Luzione-UI", "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214", "path": "src/app/api/sultan/agent-simulations/[scenarioId]/runs/route.ts", "blob_sha": "c891d7f89380a0abd39b2d44c7557313a3e37c34" },
+    { "pin_id": "ui-sultan-gateway", "repository": "CIBOTFLOW/Luzione-UI", "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214", "path": "src/lib/server/sultanAgentSimulationGateway.ts", "blob_sha": "a5a7259b7200c2b5f4a445998f0277d258e438c0" },
+    { "pin_id": "ui-task-assist-builder", "repository": "CIBOTFLOW/Luzione-UI", "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214", "path": "src/lib/tasks/sultanTaskAssistance.ts", "blob_sha": "5a3f3384ea1e7047d055be0d91bb76de0e2ca86d" },
+    { "pin_id": "ui-task-assist-route", "repository": "CIBOTFLOW/Luzione-UI", "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214", "path": "src/app/api/team-coordination/[taskId]/sultan-assist/route.ts", "blob_sha": "58c2c72b4cc903e4ab19435a6971a3fd3344171d" },
+    { "pin_id": "ui-task-page", "repository": "CIBOTFLOW/Luzione-UI", "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214", "path": "src/components/tasks/TaskDetailPage.tsx", "blob_sha": "a846d403388eeed7f10c32d12f02f3fe80a2c358" },
+    { "pin_id": "ui-team-task-store", "repository": "CIBOTFLOW/Luzione-UI", "commit_sha": "84f0dcecbe5aff2d29176433967a6ae0223d9214", "path": "src/lib/server/teamCoordinationStore.ts", "blob_sha": "0152a947479e7665a8e09b3727cfc1cfff7e0b6e" }
+  ],
+  "active_surfaces": [
+    {
+      "surface_id": "chat.main_drawer",
+      "surface_kind": "chat",
+      "action_types": [],
+      "reachability": "REACHABLE_ACTIVE",
+      "runtime_condition": "Verified UI operator identity, UI persistence and Sultan OS service availability are required.",
+      "capability_credited": true,
+      "runtime_producer": { "repository": "CIBOTFLOW/Sultan-OS", "component": "developmental doctrine chat", "entry_symbol": "runDoctrineChat", "evidence_pin_id": "os-doctrine-chat" },
+      "canonical_source_owner": { "repository": "CIBOTFLOW/Luzione-UI", "source_scope": "visible chat sessions and transcript messages", "readback": "getSultanChatSnapshot/listSultanChatMessages", "evidence_pin_id": "ui-chat-store" },
+      "evidence_chain": [
+        { "ordinal": 1, "role": "VISIBLE_ENTRYPOINT", "pin_id": "ui-chat-workspace", "observation": "The drawer posts prepared operator messages to /api/sultan/chat." },
+        { "ordinal": 2, "role": "SERVER_DISPATCH", "pin_id": "ui-chat-route", "observation": "The UI route reserves the operation and invokes createSultanAgentSimulationGateway().chat." },
+        { "ordinal": 3, "role": "SERVER_DISPATCH", "pin_id": "ui-sultan-gateway", "observation": "The gateway sends the typed request to the Sultan OS developmental chat route." },
+        { "ordinal": 4, "role": "SERVER_DISPATCH", "pin_id": "os-chat-route", "observation": "The Sultan OS route assembles current-source context before inference." },
+        { "ordinal": 5, "role": "RUNTIME_INVOCATION", "pin_id": "os-doctrine-chat", "observation": "The route directly invokes runDoctrineChat, which owns provider/model routing for this surface." },
+        { "ordinal": 6, "role": "CANONICAL_SOURCE_READBACK", "pin_id": "ui-chat-store", "observation": "The visible transcript is persisted and read back from the UI chat store." }
+      ],
+      "authority": { "authorized_by_inventory": false, "observed_runtime_effect": "NO_EFFECT_MODEL_RESPONSE; UI and OS persist interaction evidence." },
+      "limitations": ["No deployed authenticated request was exercised.", "The UI transcript owner does not make model statements canonical business truth."]
+    },
+    {
+      "surface_id": "quote_review.quote_detail",
+      "surface_kind": "quote-review",
+      "action_types": [],
+      "reachability": "REACHABLE_CONDITIONAL",
+      "runtime_condition": "The UI QUOTE_REVIEW_AGENT registry entry must exist and be enabled; otherwise the route fails unavailable.",
+      "capability_credited": true,
+      "runtime_producer": { "repository": "CIBOTFLOW/Luzione-UI", "component": "UI model router", "entry_symbol": "ModelRouter.runStructuredAgent", "evidence_pin_id": "ui-model-router" },
+      "canonical_source_owner": { "repository": "CIBOTFLOW/Luzione-UI", "source_scope": "tenant quote and quote-line records", "readback": "getQuote", "evidence_pin_id": "ui-quotes" },
+      "evidence_chain": [
+        { "ordinal": 1, "role": "VISIBLE_ENTRYPOINT", "pin_id": "ui-quote-card", "observation": "The quote card posts the selected quote ID to its Sultan review route." },
+        { "ordinal": 2, "role": "SERVER_DISPATCH", "pin_id": "ui-quote-review-route", "observation": "The route invokes AgentRuntimeService.runQuoteReview." },
+        { "ordinal": 3, "role": "SERVER_DISPATCH", "pin_id": "ui-agent-runtime-service", "observation": "The runtime service invokes QuoteReviewAgentService for the quote target." },
+        { "ordinal": 4, "role": "SERVER_DISPATCH", "pin_id": "ui-quote-review-service", "observation": "The service reads the quote/governance context and calls runStructuredAgent only after its registry gate." },
+        { "ordinal": 5, "role": "RUNTIME_INVOCATION", "pin_id": "ui-model-router", "observation": "The UI model router, not Sultan OS, selects and calls the model provider." },
+        { "ordinal": 6, "role": "CANONICAL_SOURCE_READBACK", "pin_id": "ui-quotes", "observation": "The review is grounded in the UI-owned quote and line-item store." }
+      ],
+      "authority": { "authorized_by_inventory": false, "observed_runtime_effect": "GOVERNED_RECOMMENDATION_RECORDS_ONLY; customerActionExecuted is false." },
+      "limitations": ["Provider choice is runtime configuration behind the UI model router.", "A registry name without an enabled record does not establish availability."]
+    },
+    {
+      "surface_id": "task_assist.task_detail",
+      "surface_kind": "task-assist",
+      "action_types": [],
+      "reachability": "REACHABLE_ACTIVE",
+      "runtime_condition": "An authenticated actor-scoped task must exist.",
+      "capability_credited": true,
+      "runtime_producer": { "repository": "CIBOTFLOW/Luzione-UI", "component": "deterministic task-assistance builder", "entry_symbol": "buildSultanTaskAssistancePlan", "evidence_pin_id": "ui-task-assist-builder" },
+      "canonical_source_owner": { "repository": "CIBOTFLOW/Luzione-UI", "source_scope": "team coordination task record", "readback": "getTeamCoordinationTaskForActor", "evidence_pin_id": "ui-team-task-store" },
+      "evidence_chain": [
+        { "ordinal": 1, "role": "VISIBLE_ENTRYPOINT", "pin_id": "ui-task-page", "observation": "The task detail page posts the selected task ID to the assist route." },
+        { "ordinal": 2, "role": "SERVER_DISPATCH", "pin_id": "ui-task-assist-route", "observation": "The route performs actor-scoped task readback before invoking the builder." },
+        { "ordinal": 3, "role": "RUNTIME_INVOCATION", "pin_id": "ui-task-assist-builder", "observation": "The producer is deterministic TypeScript; no model or provider is called." },
+        { "ordinal": 4, "role": "CANONICAL_SOURCE_READBACK", "pin_id": "ui-team-task-store", "observation": "The plan is derived from the UI-owned task record." }
+      ],
+      "authority": { "authorized_by_inventory": false, "observed_runtime_effect": "NO_EFFECT; the returned plan requires human review." },
+      "limitations": ["The Sultan label does not imply a model-backed capability."]
+    },
+    {
+      "surface_id": "simulation.agent_case_lab",
+      "surface_kind": "simulation",
+      "action_types": [],
+      "reachability": "REACHABLE_ACTIVE",
+      "runtime_condition": "Verified UI workload identity, exact grounding and Sultan OS persistence are required.",
+      "capability_credited": true,
+      "runtime_producer": { "repository": "CIBOTFLOW/Sultan-OS", "component": "Agent Case v1 runtime", "entry_symbol": "runAgentCaseRuntime", "evidence_pin_id": "os-agent-case-runtime" },
+      "canonical_source_owner": { "repository": "CIBOTFLOW/Sultan-OS", "source_scope": "persisted agent-case run and developmental interaction receipts", "readback": "createPostgresAgentCaseStore/readAgentCase", "evidence_pin_id": "os-agent-case-persistence" },
+      "evidence_chain": [
+        { "ordinal": 1, "role": "VISIBLE_ENTRYPOINT", "pin_id": "ui-simulation-lab", "observation": "The simulation lab posts the selected scenario to the UI run route." },
+        { "ordinal": 2, "role": "SERVER_DISPATCH", "pin_id": "ui-simulation-route", "observation": "The UI route assembles grounding and invokes the gateway runGrounded path." },
+        { "ordinal": 3, "role": "SERVER_DISPATCH", "pin_id": "ui-sultan-gateway", "observation": "The gateway targets /api/system/agent-case-run with the Agent Case v2 request envelope." },
+        { "ordinal": 4, "role": "SERVER_DISPATCH", "pin_id": "os-agent-case-route", "observation": "The Sultan OS route invokes runPersistedAgentCase." },
+        { "ordinal": 5, "role": "RUNTIME_INVOCATION", "pin_id": "os-agent-case-runtime", "observation": "runPersistedAgentCase directly calls runAgentCaseRuntime; Runtime v2 is not called." },
+        { "ordinal": 6, "role": "CANONICAL_SOURCE_READBACK", "pin_id": "os-agent-case-persistence", "observation": "The simulation run and interaction receipts are reserved, committed and read back by the OS store." }
+      ],
+      "authority": { "authorized_by_inventory": false, "observed_runtime_effect": "SIMULATION/A0; later dispositions are separate governed operations." },
+      "limitations": ["This source chain does not establish deployed reachability.", "API Stage 5 admission can be consumed post-inference but is not this surface's runtime producer."]
+    },
+    {
+      "surface_id": "memory.main_chat_private",
+      "surface_kind": "memory",
+      "action_types": [],
+      "reachability": "REACHABLE_ACTIVE",
+      "runtime_condition": "The Sultan OS chat route loads memory after current-source assembly and may persist a post-interaction decision.",
+      "capability_credited": true,
+      "runtime_producer": { "repository": "CIBOTFLOW/Sultan-OS", "component": "Sultan private working memory", "entry_symbol": "loadSultanInternalMemoryDirectory/persistSultanInternalMemoryDecision", "evidence_pin_id": "os-private-memory" },
+      "canonical_source_owner": { "repository": "CIBOTFLOW/Sultan-OS", "source_scope": "private Sultan memory directory and versions", "readback": "loadSultanInternalMemoryDirectory", "evidence_pin_id": "os-private-memory" },
+      "evidence_chain": [
+        { "ordinal": 1, "role": "VISIBLE_ENTRYPOINT", "pin_id": "ui-chat-workspace", "observation": "Memory is consumed behind the visible main chat surface." },
+        { "ordinal": 2, "role": "SERVER_DISPATCH", "pin_id": "ui-chat-route", "observation": "The main chat route dispatches to Sultan OS." },
+        { "ordinal": 3, "role": "SERVER_DISPATCH", "pin_id": "os-chat-route", "observation": "The OS route loads private memories before doctrine chat and persists a separate memory decision after the interaction." },
+        { "ordinal": 4, "role": "RUNTIME_INVOCATION", "pin_id": "os-private-memory", "observation": "The OS memory functions are directly invoked by the chat route." },
+        { "ordinal": 5, "role": "CANONICAL_SOURCE_READBACK", "pin_id": "os-private-memory", "observation": "Versioned private memory records are read back by their owning OS module." }
+      ],
+      "authority": { "authorized_by_inventory": false, "observed_runtime_effect": "PRIVATE_MEMORY_ONLY; canonicalMemoryChanged remains false and memory grants no authority." },
+      "limitations": ["Private memory is not canonical business truth.", "It is distinct from UI governed object memory."]
+    },
+    {
+      "surface_id": "memory.quote_review_object",
+      "surface_kind": "memory",
+      "action_types": [],
+      "reachability": "REACHABLE_CONDITIONAL",
+      "runtime_condition": "The quote-review registry gate must pass; semantic embedding may remain degraded while object-linked memory is available.",
+      "capability_credited": true,
+      "runtime_producer": { "repository": "CIBOTFLOW/Luzione-UI", "component": "governed object-memory context", "entry_symbol": "ObjectMemoryContextService.getObjectMemoryContext", "evidence_pin_id": "ui-object-memory" },
+      "canonical_source_owner": { "repository": "CIBOTFLOW/Luzione-UI", "source_scope": "governed memory records linked to the quote", "readback": "GovernedMemoryRepository.searchForObject", "evidence_pin_id": "ui-governed-memory" },
+      "evidence_chain": [
+        { "ordinal": 1, "role": "VISIBLE_ENTRYPOINT", "pin_id": "ui-quote-card", "observation": "Object memory is consumed behind the visible quote-review card." },
+        { "ordinal": 2, "role": "SERVER_DISPATCH", "pin_id": "ui-quote-review-route", "observation": "The quote-review route invokes the UI agent runtime service." },
+        { "ordinal": 3, "role": "SERVER_DISPATCH", "pin_id": "ui-quote-review-service", "observation": "The quote-review service directly requests quote-linked memory context." },
+        { "ordinal": 4, "role": "RUNTIME_INVOCATION", "pin_id": "ui-object-memory", "observation": "The object-memory service applies retrieval policy to repository results." },
+        { "ordinal": 5, "role": "CANONICAL_SOURCE_READBACK", "pin_id": "ui-governed-memory", "observation": "The UI governed-memory repository owns the object-linked records." }
+      ],
+      "authority": { "authorized_by_inventory": false, "observed_runtime_effect": "READ_ONLY_MEMORY_CONTEXT; memory cannot grant action authority." },
+      "limitations": ["This is not Sultan OS private working memory.", "Semantic retrieval availability may be false without hiding the object-linked path."]
+    },
+    {
+      "surface_id": "command.create_content_work",
+      "surface_kind": "command",
+      "action_types": ["create_content_work"],
+      "reachability": "REACHABLE_ACTIVE",
+      "runtime_condition": "Verified operator, owned chat session and UI persistence are required; autoPublish is fixed false by this drawer path.",
+      "capability_credited": true,
+      "runtime_producer": { "repository": "CIBOTFLOW/Luzione-UI", "component": "content plan executor", "entry_symbol": "createSultanContentPlan/executeSultanPlan", "evidence_pin_id": "ui-content-plan" },
+      "canonical_source_owner": { "repository": "CIBOTFLOW/Luzione-UI", "source_scope": "marketing content workspace item and Sultan plan events", "readback": "marketingWorkspaceStore and plan event readback", "evidence_pin_id": "ui-marketing-store" },
+      "evidence_chain": [
+        { "ordinal": 1, "role": "VISIBLE_ENTRYPOINT", "pin_id": "ui-chat-workspace", "observation": "The drawer posts the confirmed action type to /api/sultan/chat/actions." },
+        { "ordinal": 2, "role": "SERVER_DISPATCH", "pin_id": "ui-chat-actions-route", "observation": "The route selects the plan-first content branch." },
+        { "ordinal": 3, "role": "RUNTIME_INVOCATION", "pin_id": "ui-content-plan", "observation": "The UI content plan service creates and executes the workspace plan with autoPublish false." },
+        { "ordinal": 4, "role": "CANONICAL_SOURCE_READBACK", "pin_id": "ui-marketing-store", "observation": "The UI marketing workspace store owns the resulting content work item." }
+      ],
+      "authority": { "authorized_by_inventory": false, "observed_runtime_effect": "REVERSIBLE_INTERNAL_CONTENT_WORK; Shopify publication is not authorized by this path." },
+      "limitations": ["The model response does not itself create the work item; the confirmed UI command does."]
+    },
+    {
+      "surface_id": "command.draft_internal_email",
+      "surface_kind": "command",
+      "action_types": ["draft_internal_email"],
+      "reachability": "REACHABLE_ACTIVE",
+      "runtime_condition": "Verified operator, owned chat session and UI database are required.",
+      "capability_credited": true,
+      "runtime_producer": { "repository": "CIBOTFLOW/Luzione-UI", "component": "Sultan execution plan", "entry_symbol": "executeSultanGeneralAction", "evidence_pin_id": "ui-execution-plan" },
+      "canonical_source_owner": { "repository": "CIBOTFLOW/Luzione-UI", "source_scope": "Sultan execution plan, events and internal email receipt", "readback": "plan/event and sultan_email_effect_receipts readback", "evidence_pin_id": "ui-execution-plan" },
+      "evidence_chain": [
+        { "ordinal": 1, "role": "VISIBLE_ENTRYPOINT", "pin_id": "ui-chat-workspace", "observation": "The drawer posts the confirmed internal email draft action." },
+        { "ordinal": 2, "role": "SERVER_DISPATCH", "pin_id": "ui-chat-actions-route", "observation": "The route selects the plan-first internal email branch." },
+        { "ordinal": 3, "role": "RUNTIME_INVOCATION", "pin_id": "ui-execution-plan", "observation": "The UI execution-plan service persists a draft-ready receipt without a Gmail call." },
+        { "ordinal": 4, "role": "CANONICAL_SOURCE_READBACK", "pin_id": "ui-execution-plan", "observation": "The same tenant-scoped service reads back the durable plan and draft receipt." }
+      ],
+      "authority": { "authorized_by_inventory": false, "observed_runtime_effect": "REVERSIBLE_INTERNAL_DRAFT; no external send." },
+      "limitations": ["No provider delivery claim is made."]
+    },
+    {
+      "surface_id": "command.send_external_email",
+      "surface_kind": "command",
+      "action_types": ["send_external_email"],
+      "reachability": "REACHABLE_CONDITIONAL",
+      "runtime_condition": "A selected Lead, contactability, tenant policy, kill switch, Gmail connection and provider readback must all pass.",
+      "capability_credited": true,
+      "runtime_producer": { "repository": "CIBOTFLOW/Luzione-UI", "component": "Sultan execution plan", "entry_symbol": "executeSultanGeneralAction", "evidence_pin_id": "ui-execution-plan" },
+      "canonical_source_owner": { "repository": "CIBOTFLOW/Luzione-UI", "source_scope": "tenant Sultan plan and email effect receipt", "readback": "sultan_email_effect_receipts plus provider message readback", "evidence_pin_id": "ui-execution-plan" },
+      "evidence_chain": [
+        { "ordinal": 1, "role": "VISIBLE_ENTRYPOINT", "pin_id": "ui-chat-workspace", "observation": "The drawer posts the confirmed external email action." },
+        { "ordinal": 2, "role": "SERVER_DISPATCH", "pin_id": "ui-chat-actions-route", "observation": "The route requires selected Lead context and creates a plan-first command." },
+        { "ordinal": 3, "role": "RUNTIME_INVOCATION", "pin_id": "ui-execution-plan", "observation": "The UI service performs policy checks, creates a receipt, calls Gmail only when allowed and requires message readback." },
+        { "ordinal": 4, "role": "CANONICAL_SOURCE_READBACK", "pin_id": "ui-execution-plan", "observation": "The tenant plan/receipt records preserve finality and reconciliation state." }
+      ],
+      "authority": { "authorized_by_inventory": false, "observed_runtime_effect": "EXISTING_CONDITIONAL_EXTERNAL_EFFECT; this inventory grants and exercises none." },
+      "limitations": ["No Gmail credential, call or readback was exercised for this inventory.", "Provider acknowledgement alone is not treated as completion."]
+    },
+    {
+      "surface_id": "command.create_task",
+      "surface_kind": "command",
+      "action_types": ["create_task"],
+      "reachability": "REACHABLE_ACTIVE",
+      "runtime_condition": "Verified operator, owned chat session, policy and approval checks are required.",
+      "capability_credited": true,
+      "runtime_producer": { "repository": "CIBOTFLOW/Luzione-UI", "component": "registered follow-up task executor", "entry_symbol": "createTaskExecutor('followup_task')", "evidence_pin_id": "ui-executor-registry" },
+      "canonical_source_owner": { "repository": "CIBOTFLOW/Luzione-UI", "source_scope": "team coordination task record", "readback": "createTeamCoordinationTask/task readback", "evidence_pin_id": "ui-team-task-store" },
+      "evidence_chain": [
+        { "ordinal": 1, "role": "VISIBLE_ENTRYPOINT", "pin_id": "ui-chat-workspace", "observation": "The drawer posts create_task to the confirmed action route." },
+        { "ordinal": 2, "role": "SERVER_DISPATCH", "pin_id": "ui-chat-actions-route", "observation": "The route builds, approves when required and executes an action intent." },
+        { "ordinal": 3, "role": "SERVER_DISPATCH", "pin_id": "ui-command-intent", "observation": "create_task maps to create_followup_task." },
+        { "ordinal": 4, "role": "RUNTIME_INVOCATION", "pin_id": "ui-executor-registry", "observation": "The registered executor directly calls createTeamCoordinationTask." },
+        { "ordinal": 5, "role": "CANONICAL_SOURCE_READBACK", "pin_id": "ui-team-task-store", "observation": "The UI task store owns the created task." }
+      ],
+      "authority": { "authorized_by_inventory": false, "observed_runtime_effect": "REVERSIBLE_INTERNAL_TASK_CREATE behind UI governance." },
+      "limitations": ["The action intent and worker are governance/runtime intermediaries, not a second task owner."]
+    },
+    {
+      "surface_id": "command.create_google_doc",
+      "surface_kind": "command",
+      "action_types": ["create_google_doc"],
+      "reachability": "REACHABLE_CONDITIONAL",
+      "runtime_condition": "Verified operator, provider connection and action-intent governance are required.",
+      "capability_credited": true,
+      "runtime_producer": { "repository": "CIBOTFLOW/Luzione-UI", "component": "registered Google document draft executor", "entry_symbol": "create_google_document_draft executor", "evidence_pin_id": "ui-executor-registry" },
+      "canonical_source_owner": { "repository": "CIBOTFLOW/Luzione-UI", "source_scope": "canonical commercial proposal document version", "readback": "proposalDocumentPreflightService.listForCase", "evidence_pin_id": "ui-proposal-document" },
+      "evidence_chain": [
+        { "ordinal": 1, "role": "VISIBLE_ENTRYPOINT", "pin_id": "ui-chat-workspace", "observation": "The drawer posts create_google_doc to the confirmed action route." },
+        { "ordinal": 2, "role": "SERVER_DISPATCH", "pin_id": "ui-chat-actions-route", "observation": "For commercial-case context the route renders the latest canonical proposal artifact before staging the command." },
+        { "ordinal": 3, "role": "SERVER_DISPATCH", "pin_id": "ui-command-intent", "observation": "create_google_doc maps to the registered draft executor." },
+        { "ordinal": 4, "role": "RUNTIME_INVOCATION", "pin_id": "ui-executor-registry", "observation": "The UI executor calls the Google document adapter and records only a collaboration draft." },
+        { "ordinal": 5, "role": "CANONICAL_SOURCE_READBACK", "pin_id": "ui-proposal-document", "observation": "Canonical proposal truth remains the Luzione proposal document version, not the Google Doc." }
+      ],
+      "authority": { "authorized_by_inventory": false, "observed_runtime_effect": "EXISTING_CONDITIONAL_PROVIDER_DRAFT; no sharing or send authority." },
+      "limitations": ["A created Google Doc is explicitly noncanonical.", "No provider call was exercised for this inventory."]
+    },
+    {
+      "surface_id": "command.sync_shopify_catalog",
+      "surface_kind": "command",
+      "action_types": ["sync_shopify_catalog"],
+      "reachability": "REACHABLE_CONDITIONAL",
+      "runtime_condition": "Verified operator, Shopify read access, UI persistence and API P113 availability are required.",
+      "capability_credited": true,
+      "runtime_producer": { "repository": "CIBOTFLOW/Luzione-UI", "component": "registered Shopify reconciliation executor", "entry_symbol": "sync_shopify_catalog executor", "evidence_pin_id": "ui-executor-registry" },
+      "canonical_source_owner": { "repository": "CIBOTFLOW/Luzione-API", "source_scope": "P113 canonical quote-selection projection", "readback": "GET /api/v1/catalog/shopify/projections", "evidence_pin_id": "api-p113-runtime" },
+      "evidence_chain": [
+        { "ordinal": 1, "role": "VISIBLE_ENTRYPOINT", "pin_id": "ui-chat-workspace", "observation": "The drawer posts sync_shopify_catalog to the confirmed action route." },
+        { "ordinal": 2, "role": "SERVER_DISPATCH", "pin_id": "ui-chat-actions-route", "observation": "The route stages the action intent with externalWriteAuthorized false." },
+        { "ordinal": 3, "role": "RUNTIME_INVOCATION", "pin_id": "ui-executor-registry", "observation": "The registered UI executor invokes syncShopifyProducts." },
+        { "ordinal": 4, "role": "SERVER_DISPATCH", "pin_id": "ui-shopify-store", "observation": "The UI store reads Shopify and submits the P113 projection through the API client." },
+        { "ordinal": 5, "role": "SERVER_DISPATCH", "pin_id": "api-p113-route", "observation": "The authenticated API route parses the submitted source observations and invokes the P113 runtime." },
+        { "ordinal": 6, "role": "CANONICAL_SOURCE_READBACK", "pin_id": "api-p113-runtime", "observation": "The API P113 runtime owns the deterministic canonical projection semantics and completion state." }
+      ],
+      "authority": { "authorized_by_inventory": false, "observed_runtime_effect": "SHOPIFY_READ plus API-owned internal projection reconciliation; no Shopify product write." },
+      "limitations": ["No provider or API call was exercised for this inventory.", "A UI action label does not transfer P113 ownership from the API."]
+    },
+    {
+      "surface_id": "command.decision_draft",
+      "surface_kind": "command",
+      "action_types": ["decision_draft"],
+      "reachability": "REACHABLE_ACTIVE",
+      "runtime_condition": "Verified operator, owned chat session and action-intent governance are required.",
+      "capability_credited": true,
+      "runtime_producer": { "repository": "CIBOTFLOW/Luzione-UI", "component": "registered decision-draft executor", "entry_symbol": "save_sultan_decision_draft executor", "evidence_pin_id": "ui-executor-registry" },
+      "canonical_source_owner": { "repository": "CIBOTFLOW/Luzione-UI", "source_scope": "observed decision record", "readback": "upsertDecisionRecord", "evidence_pin_id": "ui-governance-kernel" },
+      "evidence_chain": [
+        { "ordinal": 1, "role": "VISIBLE_ENTRYPOINT", "pin_id": "ui-chat-workspace", "observation": "The drawer posts decision_draft to the confirmed action route." },
+        { "ordinal": 2, "role": "SERVER_DISPATCH", "pin_id": "ui-chat-actions-route", "observation": "The route stages and executes the governed action intent." },
+        { "ordinal": 3, "role": "SERVER_DISPATCH", "pin_id": "ui-command-intent", "observation": "decision_draft maps to save_sultan_decision_draft." },
+        { "ordinal": 4, "role": "RUNTIME_INVOCATION", "pin_id": "ui-executor-registry", "observation": "The registered executor upserts an observed decision draft." },
+        { "ordinal": 5, "role": "CANONICAL_SOURCE_READBACK", "pin_id": "ui-governance-kernel", "observation": "The UI governance kernel owns the decision record." }
+      ],
+      "authority": { "authorized_by_inventory": false, "observed_runtime_effect": "REVERSIBLE_INTERNAL_DECISION_DRAFT; not approved or executed." },
+      "limitations": ["Observed decision evidence is not approval or business execution."]
+    },
+    {
+      "surface_id": "command.request_approval",
+      "surface_kind": "command",
+      "action_types": ["request_approval"],
+      "reachability": "REACHABLE_ACTIVE",
+      "runtime_condition": "Verified operator, owned chat session and action-intent policy checks are required.",
+      "capability_credited": true,
+      "runtime_producer": { "repository": "CIBOTFLOW/Luzione-UI", "component": "registered approval-request executor", "entry_symbol": "request_sultan_human_approval executor", "evidence_pin_id": "ui-executor-registry" },
+      "canonical_source_owner": { "repository": "CIBOTFLOW/Luzione-UI", "source_scope": "human approval request record", "readback": "requestApproval result", "evidence_pin_id": "ui-approval-service" },
+      "evidence_chain": [
+        { "ordinal": 1, "role": "VISIBLE_ENTRYPOINT", "pin_id": "ui-chat-workspace", "observation": "The drawer posts request_approval to the confirmed action route." },
+        { "ordinal": 2, "role": "SERVER_DISPATCH", "pin_id": "ui-chat-actions-route", "observation": "The route stages and executes the governed action intent." },
+        { "ordinal": 3, "role": "SERVER_DISPATCH", "pin_id": "ui-command-intent", "observation": "request_approval maps to request_sultan_human_approval." },
+        { "ordinal": 4, "role": "RUNTIME_INVOCATION", "pin_id": "ui-executor-registry", "observation": "The registered executor calls the UI approval service." },
+        { "ordinal": 5, "role": "CANONICAL_SOURCE_READBACK", "pin_id": "ui-approval-service", "observation": "The UI approval service returns the canonical pending approval receipt." }
+      ],
+      "authority": { "authorized_by_inventory": false, "observed_runtime_effect": "REVERSIBLE_INTERNAL_APPROVAL_REQUEST; underlying work remains unapproved." },
+      "limitations": ["Creating a request does not grant approval."]
+    },
+    {
+      "surface_id": "command.committee_question",
+      "surface_kind": "command",
+      "action_types": ["committee_question"],
+      "reachability": "REACHABLE_ACTIVE",
+      "runtime_condition": "Verified operator, owned chat session and action-intent governance are required.",
+      "capability_credited": true,
+      "runtime_producer": { "repository": "CIBOTFLOW/Luzione-UI", "component": "registered committee-question executor", "entry_symbol": "route_sultan_committee_question executor", "evidence_pin_id": "ui-executor-registry" },
+      "canonical_source_owner": { "repository": "CIBOTFLOW/Luzione-UI", "source_scope": "committee question domain event", "readback": "appendDomainEvent", "evidence_pin_id": "ui-governance-kernel" },
+      "evidence_chain": [
+        { "ordinal": 1, "role": "VISIBLE_ENTRYPOINT", "pin_id": "ui-chat-workspace", "observation": "The drawer posts committee_question to the confirmed action route." },
+        { "ordinal": 2, "role": "SERVER_DISPATCH", "pin_id": "ui-chat-actions-route", "observation": "The route stages and executes the governed action intent." },
+        { "ordinal": 3, "role": "SERVER_DISPATCH", "pin_id": "ui-command-intent", "observation": "committee_question maps to route_sultan_committee_question." },
+        { "ordinal": 4, "role": "RUNTIME_INVOCATION", "pin_id": "ui-executor-registry", "observation": "The registered executor appends a committee work event." },
+        { "ordinal": 5, "role": "CANONICAL_SOURCE_READBACK", "pin_id": "ui-governance-kernel", "observation": "The UI governance kernel owns the domain event." }
+      ],
+      "authority": { "authorized_by_inventory": false, "observed_runtime_effect": "REVERSIBLE_INTERNAL_WORK_ROUTING." },
+      "limitations": ["Routing a question is not a committee decision."]
+    }
+  ],
+  "uncredited_paths": [
+    {
+      "path_id": "shadow.sultan_runtime_v2_from_visible_surfaces",
+      "status": "SHADOW_NOT_REACHED",
+      "capability_credited": false,
+      "candidate_producers": [
+        { "repository": "CIBOTFLOW/Sultan-OS", "component": "Runtime v2", "entry_symbol": "runSultanAgentRuntimeV2", "evidence_pin_id": "os-runtime-v2" }
+      ],
+      "evidence_pin_ids": ["os-runtime-v2", "os-runtime-v2-persistence", "ui-simulation-route", "ui-chat-route"],
+      "reason": "Runtime v2 exists and has tests/persistence, but the pinned visible chat and simulation routes do not invoke it; simulation reaches Agent Case v1 instead.",
+      "negative_check": "Pinned Luzione UI src/app, src/components and src/lib contain zero references to agent-runtime-v2, agentRuntimeV2 or runSultanAgentRuntimeV2."
+    },
+    {
+      "path_id": "shadow.api_sultan_tool_gateway_from_visible_drawer",
+      "status": "SHADOW_NOT_REACHED",
+      "capability_credited": false,
+      "candidate_producers": [
+        { "repository": "CIBOTFLOW/Sultan-OS", "component": "API tool client", "entry_symbol": "createLuzioneAgentToolClientV1", "evidence_pin_id": "os-api-tool-client" }
+      ],
+      "evidence_pin_ids": ["os-api-tool-client", "api-sultan-tools", "api-sultan-command-prepare", "api-sultan-command-execute", "api-sultan-effect-readback", "ui-chat-actions-route"],
+      "reason": "The OS client and API routes exist, but the pinned visible drawer command route executes UI plans/action intents and has no invocation chain into this client.",
+      "negative_check": "No current visible drawer entrypoint was observed invoking the OS Runtime v2/API tool-client chain."
+    },
+    {
+      "path_id": "ambiguous.sultan_memory_label",
+      "status": "AMBIGUOUS",
+      "capability_credited": false,
+      "candidate_producers": [
+        { "repository": "CIBOTFLOW/Sultan-OS", "component": "private working memory", "entry_symbol": "loadSultanInternalMemoryDirectory", "evidence_pin_id": "os-private-memory" },
+        { "repository": "CIBOTFLOW/Luzione-UI", "component": "governed object memory", "entry_symbol": "ObjectMemoryContextService.getObjectMemoryContext", "evidence_pin_id": "ui-object-memory" }
+      ],
+      "evidence_pin_ids": ["os-private-memory", "ui-object-memory", "ui-governed-memory"],
+      "reason": "The umbrella name Sultan memory denotes at least two separately owned and separately persisted systems; only their explicit surface-specific rows are credited.",
+      "negative_check": "The validator rejects an ambiguous umbrella path promoted to one active capability."
+    },
+    {
+      "path_id": "unavailable.quote_review_registry_disabled",
+      "status": "UNAVAILABLE",
+      "capability_credited": false,
+      "candidate_producers": [
+        { "repository": "CIBOTFLOW/Luzione-UI", "component": "quote review agent", "entry_symbol": "QuoteReviewAgentService.run", "evidence_pin_id": "ui-quote-review-service" }
+      ],
+      "evidence_pin_ids": ["ui-quote-review-route", "ui-quote-review-service", "ui-agent-runtime-repository"],
+      "reason": "When QUOTE_REVIEW_AGENT is absent, disabled or its domain is paused, the producer is unavailable and the route cannot claim review capability.",
+      "negative_check": "A registry label without the enabled runtime record is not credited."
+    }
+  ],
+  "strongest_claim": {
+    "engineering_state": "CONTRACT_STABLE",
+    "release_evidence": "LOCAL_PROVEN",
+    "effect_authority": "NO_EFFECT",
+    "finality": "BOUNDED_CLAIM",
+    "claim": "Pinned source-level active-path ownership inventory with fail-closed offline validation; no deployed or integration claim."
+  },
+  "remaining_uncertainty": [
+    "No authenticated deployed UI-to-OS or OS-to-API request was exercised.",
+    "Runtime configuration, enabled registry records, provider credentials and database contents were not observed.",
+    "No persisted cross-system receipt/replay or exact preview readback was exercised.",
+    "The inventory records existing command wiring but authorizes and executes no command or provider effect."
+  ]
+}

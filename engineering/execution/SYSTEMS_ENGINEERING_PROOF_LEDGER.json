@@ -1939,6 +1939,67 @@
         "promote exact candidate 0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a and record production readbacks",
         "exercise the approved rollback path and submit the resulting evidence to the controller"
       ]
+    },
+    {
+      "proof_id": "SGO_C01_LOCAL_RUNTIME_PRODUCER_INVENTORY_20260911",
+      "project_id": "SGO-C01",
+      "recorded_at": "2026-09-11T18:16:03Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "8e8cfbc7779f003f2804469a3f05358c4c1d6461",
+      "engineering_state": "CONTRACT_STABLE",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The exact pinned visible chat, quote-review, task-assist, simulation, memory and nine drawer-command paths are represented by fifteen machine-readable rows, each bound to one observed runtime producer and one canonical source owner. Shadow Runtime v2/API-tool paths, ambiguous memory naming and unavailable quote-review registry state remain explicitly uncredited. This is source-level evidence only and does not establish deployed reachability or integration.",
+      "exercised_boundaries": [
+        "Controller decision 76d5e05078a71790b5babdfc5020c63ae8513f14 was reconciled to build program SGO-20260911-01, allowlisted SGO-C01, exactly 68 admitted IDs and the active L1 writer lease owned by this task.",
+        "API base 7ee5a0a53a3434c3e00969dc626a4daad33f9dc0, UI source 84f0dcecbe5aff2d29176433967a6ae0223d9214 and Sultan OS source ea50caa66f09b14b1ac2bcfdfb74cdf9f4c067f0 were reconciled read-only.",
+        "All 44 declared repository/commit/path/blob pins matched their exact source objects.",
+        "The validator proved exact coverage of six surface kinds, fifteen active producer/owner rows and all nine drawer command action types.",
+        "Thirteen focused checks passed, including known-bad build marker, blob drift, omitted coverage, multiple actions/owners, names-only evidence, shadow Runtime v2 promotion, legitimate-but-wrong producer substitution, uncredited-path promotion, authority expansion, owner/pin mismatch and false finality.",
+        "The pinned Luzione UI app/component/library tree returned zero Runtime v2 references while the simulation gateway and Sultan OS route directly resolved to persisted Agent Case v1.",
+        "At exact implementation SHA 8e8cfbc7779f003f2804469a3f05358c4c1d6461, the focused suite passed 13/13, the repository suite passed 270/270, TypeScript passed, ESLint passed with zero warnings, seven compliance documents passed and the Next.js 16.3.4 webpack production build passed.",
+        "An isolated archive check reversed the exact base-to-implementation binary diff to a byte-equal base tree and reapplied it to a byte-equal candidate tree."
+      ],
+      "untested_boundaries": [
+        "authenticated deployed UI-to-Sultan OS chat or simulation request",
+        "authenticated deployed Sultan OS-to-API tool/readback request",
+        "current runtime configuration, registry enablement, provider credentials or database contents",
+        "persisted cross-system receipt and replay",
+        "consumer integration and exact preview exercise",
+        "production observation, command execution or provider effect"
+      ],
+      "evidence_refs": [
+        "architecture/production-convergence/SGO_C01_WORKING_CONTRACT.md",
+        "engineering/execution/SGO_C01_ACTIVE_SULTAN_PATH_INVENTORY_V1.json",
+        "src/modules/platform-topology/sgoC01ActivePathInventory.ts",
+        "src/modules/platform-topology/tests/sgo-c01-active-path-inventory.test.ts",
+        "engineering/execution/handoffs/SGO_C01_RUNTIME_PRODUCER_INVENTORY_HANDOFF.json",
+        "pull-request:CIBOTFLOW/Luzione-API#84",
+        "commit:8e8cfbc7779f003f2804469a3f05358c4c1d6461"
+      ],
+      "failure_refs": [],
+      "cross_repo_handoffs": [],
+      "deferred_external_infra": [
+        "authenticated exact-SHA UI, Sultan OS and API deployments",
+        "runtime configuration and enabled registry readback",
+        "persisted receipt/replay and canonical source readback",
+        "consumer integration and preview exercise",
+        "production observation"
+      ],
+      "remaining_uncertainty": [
+        "The inventory establishes source reachability at exact commits, not that the same commits are deployed or configured.",
+        "Quote review and external email remain conditional on registry, policy, connection and provider state that was not exercised.",
+        "Runtime v2 and the API tool gateway exist but are not credited to the current visible surfaces because no pinned invocation chain reaches them.",
+        "The inventory records existing command paths but grants and exercises no authority or effect."
+      ],
+      "next_proof_needed": [
+        "obtain controller acceptance of the exact draft-PR head and canonical CI as bounded G0",
+        "exercise an authenticated exact-SHA source readback and persisted receipt/replay without weakening source ownership",
+        "obtain independent UI/Sultan consumer integration evidence",
+        "exercise the exact preview boundary before any G1 claim",
+        "advance to SGO-C03 only after the controller explicitly retains and advances the L1 lease"
+      ]
     }
   ]
 }
