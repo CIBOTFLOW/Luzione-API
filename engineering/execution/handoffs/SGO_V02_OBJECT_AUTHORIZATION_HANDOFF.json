@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
   "handoff_id": "SGO-V02-OBJECT-AUTHORIZATION-G0-20260911",
-  "published_at": "2026-09-11T19:42:23Z",
+  "published_at": "2026-09-11T19:56:47Z",
   "build_program": "SGO-20260911-01",
   "task_id": "SGO-V02",
   "controller": {
     "repository": "CIBOTFLOW/Luzione-platform-program",
     "branch": "codex/sgo-20260911-controller",
-    "decision_sha": "065c41b59887c25b96617db429f447cc8221c372",
+    "decision_sha": "c8d2fa92db610cf70d88d16cb0d14337e3a8c7a2",
     "allowlist_count": 68,
     "legacy_execution": "EXCLUDED"
   },
@@ -21,8 +21,10 @@
   },
   "sha_lineage": {
     "accepted_c03_base_sha": "c6c4fa1f95649edfac120a0e796df641a9cdbbad",
-    "implementation_sha": "e5a328177cea4ee21b61e88c0e9caf15fad3fa7d",
-    "handoff_commit_parent_sha": "e5a328177cea4ee21b61e88c0e9caf15fad3fa7d",
+    "initial_implementation_sha": "e5a328177cea4ee21b61e88c0e9caf15fad3fa7d",
+    "controller_held_head": "a8ab99138f7026988e8a9273eff5aa9d706fc3a9",
+    "corrected_implementation_sha": "d782484519864c2bddde91d0b55cf7ebaa6ac99e",
+    "handoff_commit_parent_sha": "d782484519864c2bddde91d0b55cf7ebaa6ac99e",
     "publication_head": "RESOLVE_EXACT_BRANCH_HEAD_CONTAINING_THIS_HANDOFF"
   },
   "writer_lease": {
@@ -35,12 +37,14 @@
   "contract_versions": [
     "luzione-object-authorization/v0.1-draft",
     "luzione-object-authorization-scope/v0.1-draft",
-    "luzione-object-cache-binding/v0.1-draft"
+    "luzione-object-cache-binding/v0.1-draft",
+    "luzione-object-credential-attestation/v0.1-draft"
   ],
   "changed_paths": [
     "architecture/production-convergence/SGO_V02_WORKING_CONTRACT.md",
     "engineering/execution/CURRENT_HANDOFF.json",
     "engineering/execution/SGO_V02_AUTHORIZATION_MATRIX_V1.json",
+    "engineering/execution/SYSTEMS_ENGINEERING_FAILURE_LEDGER.json",
     "engineering/execution/SYSTEMS_ENGINEERING_PROOF_LEDGER.json",
     "engineering/execution/handoffs/SGO_V02_OBJECT_AUTHORIZATION_HANDOFF.json",
     "src/modules/authorization-proof/sgoV02Authorization.ts",
@@ -60,6 +64,10 @@
     "operations": ["READ", "RESUME", "MUTATE", "RECEIVE_CACHED_RESULT"],
     "api_contract_proof_rows": 3,
     "cross_repository_integration_holds": 3,
+    "credential_actor_ids": ["service:luzione-ui", "service:sultan-os"],
+    "credential_actor_source": "VERCEL_OIDC_PINNED_CALLERS",
+    "caller_constructed_actor": "DENY",
+    "end_user_actor_authorization": "INTEGRATION_HOLD_NOT_PRODUCIBLE_BY_PINNED_API",
     "runtime_mounting": false,
     "runtime_cache_created": false,
     "persistence": "NONE",
@@ -71,7 +79,7 @@
     "denial_payload": null
   },
   "verification": {
-    "exact_sha": "e5a328177cea4ee21b61e88c0e9caf15fad3fa7d",
+    "exact_sha": "d782484519864c2bddde91d0b55cf7ebaa6ac99e",
     "focused_adversarial": "PASS_15_OF_15",
     "repository_tests": "PASS_299_OF_299",
     "typescript": "PASS",
@@ -81,27 +89,30 @@
     "source_pin_reconciliation": "PASS_13_OF_13",
     "accepted_c03_route_contract_store_schema_migration_byte_identity": "PASS",
     "reverse_reapply": "PASS_EXACT_DIRECTORY_COMPARE",
+    "controller_hold_repair": "PASS_SIGNED_PINNED_WORKLOAD_IDENTITIES_FICTIONAL_AND_COPIED_ACTORS_DENIED_END_USER_HELD",
     "canonical_ci": "PENDING_EXACT_FINAL_PUBLICATION_HEAD"
   },
   "negative_checks": [
-    "cross-tenant read, resume, mutate and cached-result receipt",
-    "second-actor read, resume, mutate and cached-result receipt",
-    "explicitly permitted second actor receiving the first actor cache entry",
-    "requested-object mismatch",
+    "wrong signed-workload project claim",
+    "fictional caller-constructed user ApiActor and copied service attestation",
+    "credential-resolved service actor crossing a server-resolved tenant for read, resume, mutate and cached-result receipt",
+    "second credential-resolved service actor crossing object ownership for read, resume, mutate and cached-result receipt",
+    "explicitly permitted second credential-resolved service actor receiving the first actor cache entry",
+    "requested-object and surface-bound scope mismatch",
     "missing exact operation capability",
     "unsupported operation and unknown surface",
     "actor, tenant, surface, object, object-version, authorization-source, authorization-version and payload cache drift",
     "missing, malformed, tampered, expired and future-issued cache binding",
-    "malformed actor, object scope and cyclic cached payload",
+    "malformed object scope and cyclic cached payload",
     "unknown manifest authority fields and exact evidence-pin drift",
-    "integration-hold promotion through credentials, scope or cache-shaped payload",
+    "end-user integration-hold promotion through credentials, scope or cache-shaped payload",
     "denial payload disclosure"
   ],
   "rollback": {
     "method": "Apply the exact binary diff from accepted C03 base to V02 implementation in reverse; reapply the same diff to restore the candidate.",
     "reverse_to_accepted_c03_tree": "PASS_EXACT_DIRECTORY_COMPARE",
     "reapply_to_candidate_tree": "PASS_EXACT_DIRECTORY_COMPARE",
-    "isolated_path": "/private/tmp/sgo-v02-rollback.bRXfrb",
+    "isolated_path": "/private/tmp/sgo-v02-corrected-rollback.0X8Pgv",
     "database_cache_or_provider_restore": "NOT_APPLICABLE_NO_RUNTIME_OR_EXTERNAL_EFFECT"
   },
   "maturity": {
@@ -111,13 +122,14 @@
     "finality": "BOUNDED_CLAIM"
   },
   "gates": {
-    "g0": "CANDIDATE_SUBMITTED_PENDING_CONTROLLER_ACCEPTANCE",
+    "g0": "CORRECTED_CANDIDATE_RESUBMITTED_AFTER_CONTROLLER_HOLD",
     "g1": "HELD_FOR_RUNTIME_MOUNTING_AUTHENTICATED_DEPLOYED_READBACK_PERSISTED_RECEIPT_REPLAY_CONSUMER_INTEGRATION_AND_EXACT_PREVIEW",
     "g2": "HELD_NO_PRODUCTION_AUTHORITY"
   },
   "unexercised_boundaries": [
     "runtime mounting or route activation",
     "runtime object-scope adapter and authoritative deployed source readback",
+    "end-user credential resolution or end-user object authorization",
     "runtime cache creation or cached-result delivery",
     "UI attachment, thread or export consumer integration",
     "Sultan OS thread/resume consumer integration",

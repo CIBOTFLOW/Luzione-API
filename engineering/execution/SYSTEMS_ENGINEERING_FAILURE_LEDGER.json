@@ -1315,6 +1315,54 @@
         "The corrected source-port contract remains unmounted and has no deployed adapter evidence."
       ],
       "next_action": "Publish the corrected exact head, await canonical CI and obtain a new controller decision without advancing L1."
+    },
+    {
+      "failure_id": "SGO_V02_UNPRODUCIBLE_USER_ACTOR_FIXTURE_20260911",
+      "project_id": "SGO-V02",
+      "observed_at": "2026-09-11T19:49:38Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "a8ab99138f7026988e8a9273eff5aa9d706fc3a9",
+      "environment": "local",
+      "layer": "object-authorization-credential-boundary",
+      "symptom": "Controller review found that every positive and cross-actor V02 fixture constructed user_owner as a user/vercel-oidc ApiActor even though the pinned Vercel workload registry exposes no user caller.",
+      "expected": "Every credited API authorization proof actor must be produced by the pinned credential verifier; identities the API cannot produce must remain explicit integration holds.",
+      "actual": "Held head a8ab99138f7026988e8a9273eff5aa9d706fc3a9 accepted a structurally valid caller-provided ApiActor and therefore proved evaluator behavior for an invented internal object rather than a credential-resolved actor.",
+      "classification": {
+        "domain": "SECURITY",
+        "class": "INVALID",
+        "retry": "NEVER",
+        "severity": "ERROR"
+      },
+      "evidence_refs": [
+        "controller-decision:c8d2fa92db610cf70d88d16cb0d14337e3a8c7a2",
+        "controller-evidence:evidence/SGO_V02_OBJECT_AUTHORIZATION_HOLD_20260911T194938Z.md",
+        "pull-request:CIBOTFLOW/Luzione-API#86",
+        "commit:a8ab99138f7026988e8a9273eff5aa9d706fc3a9",
+        "src/lib/api/actor.ts",
+        "src/modules/authorization-proof/sgoV02Authorization.ts",
+        "src/modules/authorization-proof/tests/sgo-v02-authorization.test.ts"
+      ],
+      "repair_attempts": [
+        "Reused resolveVercelWorkloadIdentity and bindCredentialActor without mounting a route, and limited credited attestations to the exact service:luzione-ui and service:sultan-os Vercel workload identities.",
+        "Required an uncopyable process-local credential attestation at every evaluator/cache entrypoint so raw, fictional, copied or serialized ApiActor values fail closed.",
+        "Replaced all positive, second-actor, tenant-denial and cache fixtures with locally signed tokens that exercise the pinned signature and caller-claim verifier.",
+        "Marked end-user actor/object authorization as an explicit non-producible integration hold and bound object scopes to their exact surface.",
+        "Ran 15/15 focused checks, 299/299 repository tests, TypeScript, zero-warning ESLint, 7/7 compliance, production build, 13/13 source-pin reconciliation and isolated reverse/reapply recovery."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [
+        "deployed Vercel OIDC request",
+        "end-user identity and object-authorization integration",
+        "authenticated preview exercise"
+      ],
+      "resolved": true,
+      "resolution_ref": "commit:d782484519864c2bddde91d0b55cf7ebaa6ac99e",
+      "remaining_uncertainty": [
+        "The corrected credential proof uses local signing keys and an injected local JWK loader; it does not prove a deployed OIDC exchange.",
+        "The pinned API still cannot produce end-user identities, so UI-owned end-user authorization remains held."
+      ],
+      "next_action": "Publish the corrected exact head, await canonical CI and obtain controller acceptance without advancing beyond SGO-V02."
     }
   ]
 }
