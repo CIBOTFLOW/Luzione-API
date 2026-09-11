@@ -1,9 +1,14 @@
-import type { ApiActor } from "@/lib/api/actor";
+import {
+  bindCredentialActor,
+  resolveVercelWorkloadIdentity,
+  type ApiActor,
+} from "@/lib/api/actor";
 import { sha256 } from "@/modules/platform-guarantees/eventContract";
 
 export const SGO_V02_AUTHORIZATION_CONTRACT_VERSION = "luzione-object-authorization/v0.1-draft" as const;
 export const SGO_V02_AUTHORIZATION_SCOPE_VERSION = "luzione-object-authorization-scope/v0.1-draft" as const;
 export const SGO_V02_CACHE_BINDING_VERSION = "luzione-object-cache-binding/v0.1-draft" as const;
+export const SGO_V02_CREDENTIAL_ATTESTATION_VERSION = "luzione-object-credential-attestation/v0.1-draft" as const;
 
 export const sgoV02SurfaceKinds = ["CONTEXT", "ATTACHMENT", "ACTION", "THREAD", "EXPORT"] as const;
 export type SgoV02SurfaceKind = (typeof sgoV02SurfaceKinds)[number];
@@ -11,6 +16,7 @@ export const sgoV02Operations = ["READ", "RESUME", "MUTATE", "RECEIVE_CACHED_RES
 export type SgoV02Operation = (typeof sgoV02Operations)[number];
 
 type SgoV02Surface = {
+  actorBoundary: "END_USER_INTEGRATION_HOLD" | "VERCEL_WORKLOAD_SERVICE_ONLY";
   authorizationMode: "API_CONTRACT_PROOF" | "INTEGRATION_HOLD";
   evidencePinIds: readonly string[];
   limitation: string;
@@ -34,6 +40,7 @@ export const sgoV02AuthorizationMatrix: readonly SgoV02Surface[] = Object.freeze
     surfaceId: "api.context.linked-evidence.v0.1-draft",
     surfaceKind: "CONTEXT",
     owner: "CIBOTFLOW/Luzione-API",
+    actorBoundary: "VERCEL_WORKLOAD_SERVICE_ONLY",
     authorizationMode: "API_CONTRACT_PROOF",
     runtimeState: "UNMOUNTED_DRAFT",
     requiredCapabilities: {
@@ -47,6 +54,7 @@ export const sgoV02AuthorizationMatrix: readonly SgoV02Surface[] = Object.freeze
     surfaceId: "api.context.stage5-canonical-readback.v1",
     surfaceKind: "CONTEXT",
     owner: "CIBOTFLOW/Luzione-API",
+    actorBoundary: "VERCEL_WORKLOAD_SERVICE_ONLY",
     authorizationMode: "API_CONTRACT_PROOF",
     runtimeState: "EXISTING_RUNTIME_UNCHANGED",
     requiredCapabilities: {
@@ -60,6 +68,7 @@ export const sgoV02AuthorizationMatrix: readonly SgoV02Surface[] = Object.freeze
     surfaceId: "api.action.sultan-reservation-effect.v1",
     surfaceKind: "ACTION",
     owner: "CIBOTFLOW/Luzione-API",
+    actorBoundary: "VERCEL_WORKLOAD_SERVICE_ONLY",
     authorizationMode: "API_CONTRACT_PROOF",
     runtimeState: "EXISTING_RUNTIME_UNCHANGED",
     requiredCapabilities: {
@@ -82,6 +91,7 @@ export const sgoV02AuthorizationMatrix: readonly SgoV02Surface[] = Object.freeze
     surfaceId: "ui.attachment.sultan-chat",
     surfaceKind: "ATTACHMENT",
     owner: "CIBOTFLOW/Luzione-UI",
+    actorBoundary: "END_USER_INTEGRATION_HOLD",
     authorizationMode: "INTEGRATION_HOLD",
     runtimeState: "CROSS_REPOSITORY_READ_ONLY_EVIDENCE",
     requiredCapabilities: {},
@@ -92,6 +102,7 @@ export const sgoV02AuthorizationMatrix: readonly SgoV02Surface[] = Object.freeze
     surfaceId: "ui-os.thread.sultan-chat",
     surfaceKind: "THREAD",
     owner: "CIBOTFLOW/Luzione-UI+CIBOTFLOW/Sultan-OS",
+    actorBoundary: "END_USER_INTEGRATION_HOLD",
     authorizationMode: "INTEGRATION_HOLD",
     runtimeState: "CROSS_REPOSITORY_READ_ONLY_EVIDENCE",
     requiredCapabilities: {},
@@ -102,6 +113,7 @@ export const sgoV02AuthorizationMatrix: readonly SgoV02Surface[] = Object.freeze
     surfaceId: "ui.export.sultan-evidence",
     surfaceKind: "EXPORT",
     owner: "CIBOTFLOW/Luzione-UI",
+    actorBoundary: "END_USER_INTEGRATION_HOLD",
     authorizationMode: "INTEGRATION_HOLD",
     runtimeState: "CROSS_REPOSITORY_READ_ONLY_EVIDENCE",
     requiredCapabilities: {},
@@ -118,8 +130,15 @@ export type SgoV02ObjectScope = {
   ownerActorId: string;
   permittedActorIds: readonly string[];
   sourceRef: string;
+  surfaceId: string;
   tenantId: string;
 };
+
+export type SgoV02CredentialActorAttestation = Readonly<{
+  actor: ApiActor;
+  contractVersion: typeof SGO_V02_CREDENTIAL_ATTESTATION_VERSION;
+  credentialFingerprint: string;
+}>;
 
 export type SgoV02CacheBinding = {
   actorId: string;
@@ -165,7 +184,7 @@ export class SgoV02AuthorizationError extends Error {
 }
 
 type AuthorizationInput = {
-  actor: ApiActor;
+  actorAttestation: unknown;
   cacheBinding?: unknown;
   cachedPayloadHash?: string;
   now: string;
@@ -181,6 +200,8 @@ const SOURCE_REF = /^(?:authorization|contract|postgres):[A-Za-z0-9][A-Za-z0-9._
 const SHA256 = /^[a-f0-9]{64}$/;
 const ISO = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z$/;
 const MAX_CACHE_AGE_MS = 5 * 60_000;
+const CREDENTIAL_ACTOR_IDS = new Set(["service:luzione-ui", "service:sultan-os"]);
+const credentialAttestations = new WeakSet<object>();
 
 function record(value: unknown): Record<string, unknown> {
   if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("Expected object.");
@@ -215,11 +236,45 @@ function parseActor(value: unknown): ApiActor {
   return input as ApiActor;
 }
 
+function parseCredentialActorAttestation(value: unknown): ApiActor {
+  const input = record(value);
+  if (!credentialAttestations.has(input)) throw new Error("Unverified credential attestation.");
+  exactKeys(input, ["actor", "contractVersion", "credentialFingerprint"]);
+  if (input.contractVersion !== SGO_V02_CREDENTIAL_ATTESTATION_VERSION
+    || typeof input.credentialFingerprint !== "string" || !SHA256.test(input.credentialFingerprint)) {
+    throw new Error("Invalid credential attestation.");
+  }
+  const actor = parseActor(input.actor);
+  if (actor.actorType !== "service" || actor.source !== "vercel-oidc" || !CREDENTIAL_ACTOR_IDS.has(actor.actorId)) {
+    throw new Error("Credential actor is outside the pinned boundary.");
+  }
+  return actor;
+}
+
+export async function resolveSgoV02CredentialActor(input: {
+  bearerToken: string;
+  loadJwks: NonNullable<Parameters<typeof resolveVercelWorkloadIdentity>[1]>;
+}): Promise<SgoV02CredentialActorAttestation | null> {
+  if (typeof input.bearerToken !== "string" || input.bearerToken.length < 32 || input.bearerToken.length > 32_768) {
+    return null;
+  }
+  const identity = await resolveVercelWorkloadIdentity(input.bearerToken, input.loadJwks);
+  if (!identity || identity.actorType !== "service" || !CREDENTIAL_ACTOR_IDS.has(identity.actorId)) return null;
+  const actor = Object.freeze(bindCredentialActor(new Headers(), "vercel-oidc", identity));
+  const attestation = Object.freeze({
+    actor,
+    contractVersion: SGO_V02_CREDENTIAL_ATTESTATION_VERSION,
+    credentialFingerprint: sha256(input.bearerToken),
+  });
+  credentialAttestations.add(attestation);
+  return attestation;
+}
+
 function parseObjectScope(value: unknown): SgoV02ObjectScope {
   const input = record(value);
   exactKeys(input, [
     "authorizationVersion", "contractVersion", "objectId", "objectVersion", "ownerActorId",
-    "permittedActorIds", "sourceRef", "tenantId",
+    "permittedActorIds", "sourceRef", "surfaceId", "tenantId",
   ]);
   if (input.contractVersion !== SGO_V02_AUTHORIZATION_SCOPE_VERSION
     || typeof input.authorizationVersion !== "string" || !ID.test(input.authorizationVersion)
@@ -228,6 +283,7 @@ function parseObjectScope(value: unknown): SgoV02ObjectScope {
     || typeof input.ownerActorId !== "string" || !ID.test(input.ownerActorId)
     || typeof input.tenantId !== "string" || !ID.test(input.tenantId)
     || typeof input.sourceRef !== "string" || !SOURCE_REF.test(input.sourceRef)
+    || typeof input.surfaceId !== "string" || !ID.test(input.surfaceId)
     || !Array.isArray(input.permittedActorIds) || input.permittedActorIds.length > 32
     || input.permittedActorIds.some((item) => typeof item !== "string" || !ID.test(item))
     || new Set(input.permittedActorIds).size !== input.permittedActorIds.length
@@ -240,6 +296,7 @@ function parseObjectScope(value: unknown): SgoV02ObjectScope {
     ownerActorId: input.ownerActorId,
     permittedActorIds: Object.freeze([...input.permittedActorIds].sort()),
     sourceRef: input.sourceRef,
+    surfaceId: input.surfaceId,
     tenantId: input.tenantId,
   }) as SgoV02ObjectScope;
 }
@@ -323,9 +380,10 @@ export function evaluateSgoV02Authorization(input: AuthorizationInput): SgoV02Au
       return decision("DENY", "INVALID_AUTHORIZATION_INPUT");
     }
     const now = timestamp(input.now);
-    const actor = parseActor(input.actor);
+    const actor = parseCredentialActorAttestation(input.actorAttestation);
     const scope = parseObjectScope(input.objectScope);
     if (scope.tenantId !== actor.tenantId) return decision("DENY", "TENANT_SCOPE_DENIED");
+    if (scope.surfaceId !== selected.surfaceId) return decision("DENY", "OBJECT_SCOPE_DENIED");
     if (scope.objectId !== input.requestedObjectId) return decision("DENY", "OBJECT_SCOPE_DENIED");
     if (scope.ownerActorId !== actor.actorId && !scope.permittedActorIds.includes(actor.actorId)) {
       return decision("DENY", "ACTOR_SCOPE_DENIED");
@@ -364,7 +422,7 @@ export function evaluateSgoV02Authorization(input: AuthorizationInput): SgoV02Au
 }
 
 export function createSgoV02CacheBinding(input: {
-  actor: ApiActor;
+  actorAttestation: unknown;
   createdAt: string;
   expiresAt: string;
   objectScope: unknown;
@@ -386,7 +444,7 @@ export function createSgoV02CacheBinding(input: {
     throw new SgoV02AuthorizationError("INVALID_CACHE_WINDOW");
   }
   const read = evaluateSgoV02Authorization({
-    actor: input.actor,
+    actorAttestation: input.actorAttestation,
     now: createdAt,
     objectScope: scope,
     operation: "READ",
@@ -394,7 +452,7 @@ export function createSgoV02CacheBinding(input: {
     surfaceId: input.surfaceId,
   });
   if (read.decision !== "ALLOW") throw new SgoV02AuthorizationError("CACHE_BINDING_DENIED");
-  const actor = parseActor(input.actor);
+  const actor = parseCredentialActorAttestation(input.actorAttestation);
   let payloadHash: string;
   try {
     payloadHash = sha256(input.payload);
@@ -418,7 +476,7 @@ export function createSgoV02CacheBinding(input: {
 }
 
 export function releaseSgoV02CachedResult<T>(input: {
-  actor: ApiActor;
+  actorAttestation: unknown;
   cacheBinding: unknown;
   cachedResult: T;
   now: string;
@@ -436,7 +494,7 @@ export function releaseSgoV02CachedResult<T>(input: {
     });
   }
   const authorization = evaluateSgoV02Authorization({
-    actor: input.actor,
+    actorAttestation: input.actorAttestation,
     cacheBinding: input.cacheBinding,
     cachedPayloadHash,
     now: input.now,
@@ -476,7 +534,17 @@ export const sgoV02CacheLaw = Object.freeze({
   denial_payload: null,
 });
 
+export const sgoV02CredentialLaw = Object.freeze({
+  attestation_contract: SGO_V02_CREDENTIAL_ATTESTATION_VERSION,
+  credential_source: "VERCEL_OIDC_PINNED_CALLERS",
+  credential_actor_ids: Object.freeze(["service:luzione-ui", "service:sultan-os"]),
+  end_user_api_actor: "INTEGRATION_HOLD_NOT_PRODUCIBLE",
+  caller_constructed_actor: "DENY",
+  runtime_mounting: false,
+});
+
 export const sgoV02IntegrationHolds = Object.freeze([
+  "end-user actor and object authorization is not producible by the pinned API credential boundary",
   "UI attachment session/object authorization",
   "UI/OS private thread ownership and resume authorization",
   "UI export object, URL, recipient and download authorization",
@@ -495,7 +563,7 @@ export function validateSgoV02AuthorizationManifest(value: unknown) {
   const input = record(value);
   exactKeys(input, [
     "base_sha", "build_program", "business_state_mutated", "cache_law", "contract_version",
-    "controller_allowlist_count", "controller_sha", "effect_authority", "evidence_pins", "grants_authority",
+    "controller_allowlist_count", "controller_sha", "credential_law", "effect_authority", "evidence_pins", "grants_authority",
     "integration_holds", "matrix", "matrix_id", "operations", "persistence", "provider_calls", "repository",
     "runtime_mounting", "schema_version", "state", "strongest_claim", "surface_kinds", "task_id",
   ]);
@@ -503,7 +571,7 @@ export function validateSgoV02AuthorizationManifest(value: unknown) {
     || input.matrix_id !== "sgo-v02-object-authorization-matrix/v1"
     || input.build_program !== "SGO-20260911-01"
     || input.task_id !== "SGO-V02"
-    || input.controller_sha !== "065c41b59887c25b96617db429f447cc8221c372"
+    || input.controller_sha !== "c8d2fa92db610cf70d88d16cb0d14337e3a8c7a2"
     || input.controller_allowlist_count !== 68
     || input.repository !== "CIBOTFLOW/Luzione-API"
     || input.base_sha !== "c6c4fa1f95649edfac120a0e796df641a9cdbbad"
@@ -519,6 +587,7 @@ export function validateSgoV02AuthorizationManifest(value: unknown) {
     || sha256(input.operations) !== sha256(sgoV02Operations)
     || sha256(input.matrix) !== sha256(sgoV02AuthorizationMatrix)
     || sha256(input.cache_law) !== sha256(sgoV02CacheLaw)
+    || sha256(input.credential_law) !== sha256(sgoV02CredentialLaw)
     || sha256(input.integration_holds) !== sha256(sgoV02IntegrationHolds)
     || sha256(input.strongest_claim) !== sha256(sgoV02StrongestClaim)) {
     throw new Error("Invalid SGO-V02 authorization manifest.");
