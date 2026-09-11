@@ -2168,6 +2168,7 @@
         "Provider acknowledgement remains explicitly non-final. Readback evidence smuggled into an earlier event type is rejected and only an exact SOURCE_CONFIRMED event can set businessFinal=true.",
         "Sixteen focused negative/recovery tests passed across send, order and other-effect fixtures, including exact replay after approval expiry, business duplicate delivery, identity conflict, out-of-order delivery, stale approval, ambiguous network outcome, false-finality denial, state-integrity corruption and C04 names-only authority denial.",
         "At implementation SHA f2643a08c85700cbf8b822884d4d75e88d1c9cf1, the repository suite passed 315/315, TypeScript passed, ESLint passed with zero warnings, seven compliance documents passed and the Next.js 16.3.4 webpack production build passed.",
+        "At evidence head eedd798e9a10f2c32e9c143217020485532ed4bb, 16/16 focused and 315/315 repository tests plus the production build passed. A concurrent standalone typecheck collided with build regeneration of .next/types, then passed serially at the same exact head without a source change.",
         "An isolated archive check at /private/tmp/sgo-v03-recovery.icDc7R reversed the exact accepted-V02-to-V03 binary diff to a byte-equal base tree and reapplied it to a byte-equal implementation tree."
       ],
       "untested_boundaries": [
@@ -2187,7 +2188,9 @@
         "engineering/execution/handoffs/SGO_V03_BUSINESS_EVENT_BOUNDARY_HANDOFF.json",
         "commit:f2643a08c85700cbf8b822884d4d75e88d1c9cf1"
       ],
-      "failure_refs": [],
+      "failure_refs": [
+        "SGO_V03_CONCURRENT_NEXT_TYPES_RACE_20260911"
+      ],
       "cross_repo_handoffs": [
         "SGO-C04 Sultan-OS capability discovery consumption remains a G1 integration hold; its manifest does not grant release or execution authority."
       ],

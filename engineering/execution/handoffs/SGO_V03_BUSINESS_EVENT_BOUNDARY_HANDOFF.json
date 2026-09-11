@@ -51,6 +51,7 @@
     "architecture/production-convergence/SGO_V03_WORKING_CONTRACT.md",
     "engineering/execution/CURRENT_HANDOFF.json",
     "engineering/execution/SGO_V03_BUSINESS_EVENT_MATRIX_V1.json",
+    "engineering/execution/SYSTEMS_ENGINEERING_FAILURE_LEDGER.json",
     "engineering/execution/SYSTEMS_ENGINEERING_PROOF_LEDGER.json",
     "engineering/execution/handoffs/SGO_V03_BUSINESS_EVENT_BOUNDARY_HANDOFF.json",
     "src/modules/business-event-boundary/sgoV03BusinessEvent.ts",
@@ -144,6 +145,14 @@
     "corrupt reducer state fails before evaluation",
     "C04 capability discovery cannot replace a release receipt or approval",
     "event-type evidence smuggling cannot create acknowledgement or readback finality"
+  ],
+  "failures": [
+    {
+      "failure_id": "SGO_V03_CONCURRENT_NEXT_TYPES_RACE_20260911",
+      "classification": "RESOLVED_LOCAL_VERIFICATION_ORCHESTRATION_RACE",
+      "symptom": "Standalone tsc read .next/types while a concurrent Next build replaced that directory.",
+      "resolution": "The build TypeScript phase passed and standalone npm run typecheck passed serially at exact head eedd798e9a10f2c32e9c143217020485532ed4bb without a source change."
+    }
   ],
   "rollback": {
     "method": "Apply the exact binary diff from accepted V02 base to V03 implementation in reverse; reapply the same diff to restore the candidate.",

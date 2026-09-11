@@ -105,7 +105,7 @@
     "Supabase Pro plan entitlement indicates daily backups should exist, but the available management surface cannot list a project-specific backup receipt or PITR window; no production DDL is safe until that exact restore evidence is recorded."
   ],
   "stop_code": null,
-  "updated_at": "2026-09-11T20:27:57Z",
+  "updated_at": "2026-09-11T20:31:59Z",
   "sgo_c01": {
     "status": "CONTROLLER_ACCEPTED_BOUNDED_G0_INTEGRATION_CANDIDATE",
     "build_program": "SGO-20260911-01",
@@ -188,6 +188,7 @@
     "matrix": "engineering/execution/SGO_V03_BUSINESS_EVENT_MATRIX_V1.json",
     "handoff": "engineering/execution/handoffs/SGO_V03_BUSINESS_EVENT_BOUNDARY_HANDOFF.json",
     "local_verification": "PASS_16_OF_16_FOCUSED_315_OF_315_REPOSITORY_TYPESCRIPT_LINT_ZERO_WARNINGS_COMPLIANCE_7_OF_7_BUILD_9_OF_9_PINS_REVERSE_REAPPLY",
+    "resolved_failure": "SGO_V03_CONCURRENT_NEXT_TYPES_RACE_20260911",
     "action_classes": ["COMMUNICATION_SEND", "ORDER_CREATE", "OTHER_EFFECT"],
     "effect_reservation_limit": 1,
     "dispatch_observation_limit": 1,

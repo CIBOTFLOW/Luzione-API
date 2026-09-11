@@ -1363,6 +1363,42 @@
         "The pinned API still cannot produce end-user identities, so UI-owned end-user authorization remains held."
       ],
       "next_action": "Publish the corrected exact head, await canonical CI and obtain controller acceptance without advancing beyond SGO-V02."
+    },
+    {
+      "failure_id": "SGO_V03_CONCURRENT_NEXT_TYPES_RACE_20260911",
+      "project_id": "SGO-V03",
+      "observed_at": "2026-09-11T20:31:59Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "eedd798e9a10f2c32e9c143217020485532ed4bb",
+      "environment": "local",
+      "layer": "verification-orchestration",
+      "symptom": "A standalone TypeScript check reported missing generated .next/types files while a production build was replacing the same .next directory concurrently.",
+      "expected": "Standalone TypeScript and Next.js build verification must use stable generated-type inputs or run serially when they share .next.",
+      "actual": "The concurrent batch allowed next build to remove and regenerate .next/types while tsc was reading those paths. The build's own TypeScript phase passed, and the same standalone typecheck passed immediately when rerun after the build completed.",
+      "classification": {
+        "domain": "PLATFORM",
+        "class": "UNAVAILABLE",
+        "retry": "IMMEDIATE",
+        "severity": "INFO"
+      },
+      "evidence_refs": [
+        "commit:eedd798e9a10f2c32e9c143217020485532ed4bb",
+        "command:npm run typecheck concurrent with npm run build",
+        "command:npm run typecheck serial after build"
+      ],
+      "repair_attempts": [
+        "Reran npm run typecheck only after the concurrent build completed; it passed with no source change.",
+        "Reran ESLint and compliance serially; both passed."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "exact-head:eedd798e9a10f2c32e9c143217020485532ed4bb:serial-typecheck-pass",
+      "remaining_uncertainty": [
+        "Concurrent local verification commands that share .next remain unsafe; canonical CI and future local runs should sequence build and standalone typecheck."
+      ],
+      "next_action": "Keep canonical exact-head CI serial dependencies authoritative and do not classify the transient generated-file race as a product code failure."
     }
   ]
 }
