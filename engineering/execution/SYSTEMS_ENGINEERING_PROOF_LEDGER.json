@@ -2145,6 +2145,82 @@
         "prove authenticated deployed readback, persisted receipt/replay and exact preview before any G1 claim",
         "do not advance L1 without a new explicit controller decision"
       ]
+    },
+    {
+      "proof_id": "SGO_V03_LOCAL_BUSINESS_EVENT_BOUNDARY_20260911",
+      "project_id": "SGO-V03",
+      "recorded_at": "2026-09-11T20:43:31Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "7ff74306a81686eccaf1977883a68a571e829a74",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The exact accepted SGO-V02 head now has an unmounted provider-free API-owned business-event reducer. For communication-send, order-create and other-effect fixtures it binds a pre-existing release receipt and exact approval to one tenant/action/operation/payload/policy/source version, requires release and first-dispatch source evidence to exist no later than the event, records at most one stable effect reservation and one first-dispatch observation, returns the original receipt for exact or business duplicate delivery, holds sequence gaps, rejects stale approval and exact-source drift, requires reconciliation after ambiguous delivery, and permits businessFinal only after exact authoritative source readback observed no later than processing time. Every reducer receipt remains NO_EFFECT and grantsAuthority=false; no route, store, provider, consumer integration or production behavior was added.",
+      "exercised_boundaries": [
+        "Controller correction decision e6c3245429dc9281ceb575835b38b1f9346170f8 was reconciled to build program SGO-20260911-01, exactly 68 admitted IDs, allowlisted SGO-V03 and the retained L1 API writer lease owned by this visible task.",
+        "The isolated non-default branch starts exactly from controller-accepted corrected SGO-V02 PR #86 head 055bdaf20536c27cb8c016cbcd33c6f1fba52785.",
+        "Nine existing API command, action, delivery, approval, order and causal-readback artifacts were pinned by exact base blob and raw SHA-256 without changing their runtime bytes.",
+        "Accepted SGO-C04 Sultan-OS head 22d09b9d06fc60c79a0bcfa0c49a2f6967574cb0 was reconciled read-only. Its manifest discoveryGrantsAuthority=false and consumer invocation/admission remain an explicit G1 hold.",
+        "The pure reducer binds both transport eventId and businessEventId, rejects changed-content reuse, consumes only the next exact sequence and leaves future or stale delivery without a state/counter change.",
+        "A fresh exact approval/source observation is required for ACTION_RELEASED and the first EFFECT_DISPATCH_STARTED event. Expired, future, missing, wrong-record, wrong-owner and wrong-version evidence creates no reservation or dispatch observation.",
+        "A dedicated controller-reproduced known-bad proves a source observed at 20:18 cannot retroactively authorize release at 20:11 or first dispatch at 20:12; both rejections preserve the exact prior state, reservation count, dispatch count and non-finality.",
+        "Ambiguous delivery moves to RECONCILIATION_REQUIRED, remains non-final, rejects a second dispatch transition and recovers only through exact source/readback owner, record, expected result version, payload and source citation.",
+        "Provider acknowledgement remains explicitly non-final. Readback evidence smuggled into an earlier event type is rejected, and an exact SOURCE_CONFIRMED readback observed in the future relative to processing now is rejected without changing state, counters or finality.",
+        "Eighteen focused negative/recovery tests passed across send, order and other-effect fixtures, including exact replay after approval expiry, business duplicate delivery, identity conflict, out-of-order delivery, stale approval, temporal source ordering, ambiguous network outcome, future-readback false-finality denial, state-integrity corruption and C04 names-only authority denial.",
+        "At corrected implementation SHA 7ff74306a81686eccaf1977883a68a571e829a74, the repository suite passed 317/317, TypeScript passed before and after build, ESLint passed with zero warnings, seven compliance documents passed and the Next.js 16.3.4 webpack production build passed.",
+        "At evidence head eedd798e9a10f2c32e9c143217020485532ed4bb, 16/16 focused and 315/315 repository tests plus the production build passed. A concurrent standalone typecheck collided with build regeneration of .next/types, then passed serially at the same exact head without a source change.",
+        "Controller exact-head probes held 43b16fbbd255993aa11eb7e23e646e0e43e815ae for two fail-open temporal cases; both are retained in failure SGO_V03_TEMPORAL_EVIDENCE_ORDERING_20260911 and corrected at 7ff74306a81686eccaf1977883a68a571e829a74.",
+        "An isolated archive check at /private/tmp/sgo-v03-correction-recovery.uKDXUd reversed the exact accepted-V02-to-corrected-V03 binary diff to a byte-equal base tree and reapplied it to a byte-equal corrected implementation tree."
+      ],
+      "untested_boundaries": [
+        "route or runtime mounting",
+        "durable transactional reducer-state persistence and multi-worker concurrency",
+        "credential-bound release and approval resolver integration",
+        "SGO-C04 runtime consumer invocation or admission integration",
+        "provider send, order creation or other business effect",
+        "authenticated deployed source readback or exact preview exercise",
+        "migration, deployment, production observation or recovery"
+      ],
+      "evidence_refs": [
+        "architecture/production-convergence/SGO_V03_WORKING_CONTRACT.md",
+        "engineering/execution/SGO_V03_BUSINESS_EVENT_MATRIX_V1.json",
+        "src/modules/business-event-boundary/sgoV03BusinessEvent.ts",
+        "src/modules/business-event-boundary/tests/sgo-v03-business-event.test.ts",
+        "engineering/execution/handoffs/SGO_V03_BUSINESS_EVENT_BOUNDARY_HANDOFF.json",
+        "commit:f2643a08c85700cbf8b822884d4d75e88d1c9cf1",
+        "commit:43b16fbbd255993aa11eb7e23e646e0e43e815ae",
+        "commit:7ff74306a81686eccaf1977883a68a571e829a74"
+      ],
+      "failure_refs": [
+        "SGO_V03_CONCURRENT_NEXT_TYPES_RACE_20260911",
+        "SGO_V03_TEMPORAL_EVIDENCE_ORDERING_20260911"
+      ],
+      "cross_repo_handoffs": [
+        "SGO-C04 Sultan-OS capability discovery consumption remains a G1 integration hold; its manifest does not grant release or execution authority."
+      ],
+      "deferred_external_infra": [
+        "durable API reducer-state store and atomic multi-worker consumption",
+        "credential-bound release/approval resolver and canonical source adapters",
+        "independent Sultan-OS C04 consumer integration",
+        "provider sandbox and production effects",
+        "authenticated exact-SHA preview and deployed readback",
+        "production recovery observation"
+      ],
+      "remaining_uncertainty": [
+        "This is an unmounted pure reducer; it proves deterministic contract behavior, not distributed durable exactly-once execution.",
+        "The input release receipt and approval are structurally exact but their credential-bound runtime resolver is not mounted or exercised by V03.",
+        "The one-reservation/one-dispatch counters are provider-free evidence outputs and grant no execution authority.",
+        "C04 proves effective capability discovery only; no exact consumer invocation chain uses this V03 boundary yet.",
+        "No provider response, order mutation, authenticated deployed source readback, preview or production evidence exists for V03."
+      ],
+      "next_proof_needed": [
+        "publish the corrected exact non-default branch head and draft PR with canonical CI",
+        "obtain controller acceptance or correction of this bounded G0 handoff",
+        "do not mount or persist the reducer without a separately authorized package and durable atomic-store design",
+        "obtain independent C04 consumer integration and credential-bound release/approval evidence before G1",
+        "do not advance L1 without a new explicit controller decision"
+      ]
     }
   ]
 }

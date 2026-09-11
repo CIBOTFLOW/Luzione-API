@@ -1,0 +1,131 @@
+{
+  "schema_version": "sgo.v03.business-event-matrix.v1",
+  "build_program": "SGO-20260911-01",
+  "task_id": "SGO-V03",
+  "allowlist_count": 68,
+  "accepted_api_base_sha": "055bdaf20536c27cb8c016cbcd33c6f1fba52785",
+  "controller_decision_sha": "e6c3245429dc9281ceb575835b38b1f9346170f8",
+  "contract_version": "luzione-business-event-boundary/v0.1-draft",
+  "effect_authority": "NO_EFFECT",
+  "grants_authority": false,
+  "source_pins": [
+    {
+      "id": "api-sultan-gateway-contracts",
+      "path": "src/modules/sultan-agent-gateway/contracts.ts",
+      "git_blob_sha1": "8787090d631add18c01a0f4b16f7d09a34fe8a8f",
+      "raw_sha256": "b95ca41eea287f2893708b761e37c91d4dea42f010dc32540c849cb28e04e9e0",
+      "observed_semantics": "Discovery, command preparation/execution, effect receipt and source readback remain distinct."
+    },
+    {
+      "id": "api-sultan-tool-registry",
+      "path": "src/modules/sultan-agent-gateway/registry.ts",
+      "git_blob_sha1": "8e464f62656f84833b56571b6eace4e97c9ecadd",
+      "raw_sha256": "41178a8150cda79678896f8d9e720925175593b2c9eedffcc621bbe7667817b3",
+      "observed_semantics": "A0 reads, A1 internal actions and the bounded A2 RFQ canary remain separate tool declarations."
+    },
+    {
+      "id": "api-sultan-gateway-service",
+      "path": "src/modules/sultan-agent-gateway/service.ts",
+      "git_blob_sha1": "d4429f02d102d0ed8277acad81a13230e3f1cfdc",
+      "raw_sha256": "20996b6d9c8db5cca61ac4f4e673c0f70c156f218e5f1d0721eaf86373fa3347",
+      "observed_semantics": "Exact Stage 5 admission, current case version and signed approval are checked before the existing command execution path."
+    },
+    {
+      "id": "api-sultan-gateway-store",
+      "path": "src/modules/sultan-agent-gateway/postgresStore.ts",
+      "git_blob_sha1": "e8c1b52cc264ff8d73e13cfdcbb132f9d007660a",
+      "raw_sha256": "4ccd8dd680505b0a55eeae07695034233281b9ff10bbe46c8c292f4b84d50054",
+      "observed_semantics": "Operation identity deduplicates reservations, executed A1 commands replay exact readback and missing readback requires reconciliation."
+    },
+    {
+      "id": "api-command-kernel",
+      "path": "src/modules/platform-guarantees/commandKernel.ts",
+      "git_blob_sha1": "08fa7906ffc458cfc2cdbe43cfd2eb86f1bb6702",
+      "raw_sha256": "2627de6bd434c22b88ac43e0bf0f6c97d833ad75cd7fd6c55da657ccef3b5630",
+      "observed_semantics": "Tenant/idempotency identity returns the original receipt and changed-payload reuse conflicts atomically."
+    },
+    {
+      "id": "api-workflow-delivery-store",
+      "path": "src/lib/platform-guarantees/postgresWorkflowDeliveryStore.ts",
+      "git_blob_sha1": "d6c66ae00c4d5df629ae3d258557756b8604c096",
+      "raw_sha256": "af063df7e80bff2121cd3c6500cf5fc296ad3eb3f3c72a904c107b836ba58923",
+      "observed_semantics": "Dispatch-start ambiguity and provider acknowledgement require reconciliation before any safe retry or source-confirmed completion."
+    },
+    {
+      "id": "api-causal-readback",
+      "path": "src/modules/platform-contracts/readbackContract.ts",
+      "git_blob_sha1": "b522977d97e51a09ed5787024733a3dda70b6046",
+      "raw_sha256": "4dce9950d4840109efbd60c303ac025ac26314fe8de79f234379b72ff58539eb",
+      "observed_semantics": "HTTP success and provider acknowledgement are non-final; fresh authoritative source readback alone supports bounded finality."
+    },
+    {
+      "id": "api-order-owner",
+      "path": "src/modules/order-fulfillment/store.ts",
+      "git_blob_sha1": "92e2ba39ef53e86aefb1f21b69d1c3dfce72f9ac",
+      "raw_sha256": "66aaf0f5d1ba40e66c71df92f158a1c906c202a6f5a7e20995400ff97a383353",
+      "observed_semantics": "Order creation is atomic, idempotent, exact accepted-Quote/economics-version bound and source-readback checked."
+    },
+    {
+      "id": "api-approval-owner",
+      "path": "src/modules/proposal-quote-approval/store.ts",
+      "git_blob_sha1": "02e900d49b9c5132927b8364118f804db119daee",
+      "raw_sha256": "174e59ee0404f6740208a1810d1eacd6efc511d590acb74512a83ef68f76843e",
+      "observed_semantics": "Quote/proposal decisions bind exact current object, economics/document and policy evidence."
+    }
+  ],
+  "accepted_c04": {
+    "repository": "CIBOTFLOW/Sultan-OS",
+    "branch": "codex/sgo-c04-effective-capabilities-20260911",
+    "accepted_exact_head": "22d09b9d06fc60c79a0bcfa0c49a2f6967574cb0",
+    "api_manifest_contract": "luzione-sultan-tool-manifest/v1",
+    "api_manifest_contract_raw_sha256": "b95ca41eea287f2893708b761e37c91d4dea42f010dc32540c849cb28e04e9e0",
+    "api_registry_raw_sha256": "41178a8150cda79678896f8d9e720925175593b2c9eedffcc621bbe7667817b3",
+    "published_runtime_contract": "sultan.agent-runtime.capabilities.v1",
+    "published_runtime_contract_raw_sha256": "36261b3d704e6ce84c40e304f03dfcaa5ca7fe39beea3c48c375ec9040472dcc",
+    "discovery_grants_authority": false,
+    "consumer_integration": "G1_HOLD_NOT_EXERCISED_BY_V03"
+  },
+  "action_class_proof": [
+    {
+      "action_kind": "COMMUNICATION_SEND",
+      "representative_surface": "luzione.supplier_rfq_email.send",
+      "proof_state": "PROVIDER_FREE_FIXTURE_ONLY",
+      "runtime_release_state": "A2_PREPARATION_ONLY_EXISTING_RUNTIME_UNCHANGED"
+    },
+    {
+      "action_kind": "ORDER_CREATE",
+      "representative_surface": "order.create_from_accepted_quote",
+      "proof_state": "PROVIDER_FREE_FIXTURE_ONLY",
+      "runtime_release_state": "TENANT_DEFAULT_OFF_EXISTING_RUNTIME_UNCHANGED"
+    },
+    {
+      "action_kind": "OTHER_EFFECT",
+      "representative_surface": "generic-canonical-domain-owner",
+      "proof_state": "PROVIDER_FREE_FIXTURE_ONLY",
+      "runtime_release_state": "NO_RUNTIME_MOUNT"
+    }
+  ],
+  "event_law": {
+    "transport_identity": "eventId",
+    "business_identity": "businessEventId",
+    "ordering": "exact monotonically increasing sequence from one",
+    "first_release_reservation_limit": 1,
+    "first_dispatch_observation_limit": 1,
+    "approval_recheck_events": ["ACTION_RELEASED", "EFFECT_DISPATCH_STARTED"],
+    "approval_source_observed_no_later_than_event": true,
+    "ambiguous_delivery_next": "RECONCILIATION_REQUIRED",
+    "provider_acknowledgement_business_final": false,
+    "source_confirmation_requires_exact_readback": true,
+    "source_readback_observed_no_later_than_processing_now": true,
+    "exact_replay_returns_original_receipt": true
+  },
+  "unexercised_boundaries": [
+    "route or runtime mounting",
+    "durable transactional event-state persistence and multi-worker concurrency",
+    "credential-bound release/approval resolver integration",
+    "SGO-C04 consumer invocation/admission integration",
+    "provider send, order creation or other business effect",
+    "authenticated exact-preview exercise",
+    "migration, deployment or production observation"
+  ]
+}

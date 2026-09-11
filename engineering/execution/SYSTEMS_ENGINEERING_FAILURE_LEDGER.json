@@ -1363,6 +1363,86 @@
         "The pinned API still cannot produce end-user identities, so UI-owned end-user authorization remains held."
       ],
       "next_action": "Publish the corrected exact head, await canonical CI and obtain controller acceptance without advancing beyond SGO-V02."
+    },
+    {
+      "failure_id": "SGO_V03_CONCURRENT_NEXT_TYPES_RACE_20260911",
+      "project_id": "SGO-V03",
+      "observed_at": "2026-09-11T20:31:59Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "eedd798e9a10f2c32e9c143217020485532ed4bb",
+      "environment": "local",
+      "layer": "verification-orchestration",
+      "symptom": "A standalone TypeScript check reported missing generated .next/types files while a production build was replacing the same .next directory concurrently.",
+      "expected": "Standalone TypeScript and Next.js build verification must use stable generated-type inputs or run serially when they share .next.",
+      "actual": "The concurrent batch allowed next build to remove and regenerate .next/types while tsc was reading those paths. The build's own TypeScript phase passed, and the same standalone typecheck passed immediately when rerun after the build completed.",
+      "classification": {
+        "domain": "PLATFORM",
+        "class": "UNAVAILABLE",
+        "retry": "IMMEDIATE",
+        "severity": "INFO"
+      },
+      "evidence_refs": [
+        "commit:eedd798e9a10f2c32e9c143217020485532ed4bb",
+        "command:npm run typecheck concurrent with npm run build",
+        "command:npm run typecheck serial after build"
+      ],
+      "repair_attempts": [
+        "Reran npm run typecheck only after the concurrent build completed; it passed with no source change.",
+        "Reran ESLint and compliance serially; both passed."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [],
+      "resolved": true,
+      "resolution_ref": "exact-head:eedd798e9a10f2c32e9c143217020485532ed4bb:serial-typecheck-pass",
+      "remaining_uncertainty": [
+        "Concurrent local verification commands that share .next remain unsafe; canonical CI and future local runs should sequence build and standalone typecheck."
+      ],
+      "next_action": "Keep canonical exact-head CI serial dependencies authoritative and do not classify the transient generated-file race as a product code failure."
+    },
+    {
+      "failure_id": "SGO_V03_TEMPORAL_EVIDENCE_ORDERING_20260911",
+      "project_id": "SGO-V03",
+      "observed_at": "2026-09-11T20:40:00Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "43b16fbbd255993aa11eb7e23e646e0e43e815ae",
+      "environment": "controller-exact-head-probe",
+      "layer": "business-event-temporal-evidence",
+      "symptom": "The V03 reducer admitted a source observation recorded after ACTION_RELEASED occurredAt and accepted an authoritative readback observed after processing now as business-final.",
+      "expected": "Release and first-dispatch source evidence must exist no later than the event it authorizes, and source readback cannot establish finality before its observation time.",
+      "actual": "At held PR #87 head 43b16fbbd255993aa11eb7e23e646e0e43e815ae, a source observed at 20:18 authorized release occurred at 20:11, while a readback observed at 21:00 set businessFinal=true when processing now was 20:19.",
+      "classification": {
+        "domain": "SECURITY",
+        "class": "INVALID",
+        "retry": "NEVER",
+        "severity": "ERROR"
+      },
+      "evidence_refs": [
+        "controller-decision:e6c3245429dc9281ceb575835b38b1f9346170f8",
+        "pull-request:CIBOTFLOW/Luzione-API#87",
+        "commit:43b16fbbd255993aa11eb7e23e646e0e43e815ae",
+        "src/modules/business-event-boundary/sgoV03BusinessEvent.ts",
+        "src/modules/business-event-boundary/tests/sgo-v03-business-event.test.ts"
+      ],
+      "repair_attempts": [
+        "Required currentSource.observedAt to be no later than event.occurredAt for ACTION_RELEASED and EFFECT_DISPATCH_STARTED in addition to the existing processing-time and approval checks.",
+        "Required exact authoritative readback observedAt to be no later than processing now in addition to being no earlier than SOURCE_CONFIRMED occurredAt.",
+        "Added dedicated known-bad coverage proving both rejected temporal cases preserve the exact input state, counters and non-finality.",
+        "Ran 18/18 focused checks, 317/317 repository tests, TypeScript before and after build, zero-warning ESLint, 7/7 compliance, production build, 9/9 source pins and isolated reverse/reapply recovery."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "deferred_external_infra": [
+        "credential-bound release and approval resolver",
+        "durable reducer persistence and multi-worker reconciliation",
+        "authenticated deployed source readback and exact preview"
+      ],
+      "resolved": true,
+      "resolution_ref": "commit:7ff74306a81686eccaf1977883a68a571e829a74",
+      "remaining_uncertainty": [
+        "The corrected proof remains an unmounted provider-free reducer and does not prove distributed clock trust, durable persistence, runtime credential resolution or deployed source readback."
+      ],
+      "next_action": "Publish the corrected exact head and obtain controller acceptance without advancing beyond SGO-V03."
     }
   ]
 }
