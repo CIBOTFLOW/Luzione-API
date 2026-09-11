@@ -2067,6 +2067,84 @@
         "obtain independent consumer integration and exact preview evidence before any G1 claim",
         "advance to SGO-V02 only after the controller explicitly retains and advances the L1 lease"
       ]
+    },
+    {
+      "proof_id": "SGO_V02_LOCAL_OBJECT_AUTHORIZATION_20260911",
+      "project_id": "SGO-V02",
+      "recorded_at": "2026-09-11T19:56:47Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "d782484519864c2bddde91d0b55cf7ebaa6ac99e",
+      "engineering_state": "CONTRACT_STABLE",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The exact accepted SGO-C03 head now has an unmounted provider-free API authorization matrix and evaluator for context, attachment, action, thread and export surfaces. The three API-owned proof rows accept only process-local attestations created after the pinned Vercel verifier cryptographically resolves service:luzione-ui or service:sultan-os, then require exact tenant, surface, object, operation capability and current server-resolved scope. Cached-result release additionally requires an exact server-internal actor-bound citation/version/payload/time binding and returns null on denial. End-user actor/object authorization is not producible by the pinned API and remains an explicit UI/OS integration hold. No route, runtime cache, persistence, provider, business effect or G1/G2 evidence was added.",
+      "exercised_boundaries": [
+        "Controller correction decision c8d2fa92db610cf70d88d16cb0d14337e3a8c7a2 was reconciled to build program SGO-20260911-01, exactly 68 admitted IDs, allowlisted SGO-V02 and the retained L1 API writer lease owned by this visible task.",
+        "The isolated branch starts exactly from controller-accepted corrected SGO-C03 PR #85 head c6c4fa1f95649edfac120a0e796df641a9cdbbad.",
+        "All 13 declared API, UI and Sultan OS commit/path/blob pins matched their exact source objects.",
+        "The strict manifest validator rejects unknown authority fields, admission drift, matrix drift, source-pin drift, runtime/effect promotion and stronger maturity claims.",
+        "The first submitted head a8ab99138f7026988e8a9273eff5aa9d706fc3a9 was held because its user_owner/vercel-oidc fixture was not producible by the pinned API credential boundary.",
+        "Corrected implementation d782484519864c2bddde91d0b55cf7ebaa6ac99e consumes the pinned signed-workload verifier and accepts only uncopyable process-local attestations for the two exact allowlisted service actors.",
+        "Locally signed tokens with exact registered claims resolve service:luzione-ui and service:sultan-os; wrong-project claims, raw fictional ApiActor objects and copied attestations fail closed.",
+        "The evaluator proves exact tenant, credential actor ownership/grant, surface-bound requested object, operation and capability checks for API-owned service rows while end-user and cross-repository rows remain unpromotable integration holds.",
+        "Server-internal cache bindings cover actor, tenant, surface, object identity/version, authorization source/version, payload hash and a maximum five-minute window; malformed, mismatched, expired and future-issued bindings release no payload.",
+        "Fifteen focused adversarial checks passed, including credential-resolved cross-tenant and second-service-actor read/resume/mutate/cache attempts, explicitly permitted cross-actor cache reuse, every binding dimension, malformed/cyclic inputs, denial non-disclosure and expiry recovery through a fresh authorized read.",
+        "At corrected implementation SHA d782484519864c2bddde91d0b55cf7ebaa6ac99e, the focused suite passed 15/15, the repository suite passed 299/299, TypeScript passed, ESLint passed with zero warnings, seven compliance documents passed and the Next.js 16.3.4 webpack production build passed.",
+        "The accepted C03 API routes, identity boundary, linked-context producer, Sultan command/readback service and store, schemas and migrations remained byte-identical.",
+        "An isolated archive check reversed the exact accepted-C03-to-V02 binary diff to a byte-equal base tree and reapplied it to a byte-equal candidate tree."
+      ],
+      "untested_boundaries": [
+        "runtime mounting, route activation or runtime object-scope adapter",
+        "authenticated deployed source readback",
+        "runtime cache storage or delivery",
+        "persisted cross-system receipt or replay",
+        "independent UI attachment/thread/export or Sultan OS resume integration",
+        "exact preview exercise",
+        "migration, deployment, production observation, provider call or business effect"
+      ],
+      "evidence_refs": [
+        "architecture/production-convergence/SGO_V02_WORKING_CONTRACT.md",
+        "engineering/execution/SGO_V02_AUTHORIZATION_MATRIX_V1.json",
+        "src/modules/authorization-proof/sgoV02Authorization.ts",
+        "src/modules/authorization-proof/tests/sgo-v02-authorization.test.ts",
+        "engineering/execution/handoffs/SGO_V02_OBJECT_AUTHORIZATION_HANDOFF.json",
+        "pull-request:CIBOTFLOW/Luzione-API#86",
+        "commit:e5a328177cea4ee21b61e88c0e9caf15fad3fa7d",
+        "commit:d782484519864c2bddde91d0b55cf7ebaa6ac99e"
+      ],
+      "failure_refs": [
+        "SGO_V02_UNPRODUCIBLE_USER_ACTOR_FIXTURE_20260911"
+      ],
+      "cross_repo_handoffs": [
+        "End-user actor/object authorization integration hold because the pinned API credential boundary produces no user actor",
+        "Luzione UI attachment, thread and export authorization integration hold",
+        "Sultan OS private-thread and resume authorization integration hold"
+      ],
+      "deferred_external_infra": [
+        "authenticated exact-SHA API, UI and Sultan OS deployments",
+        "runtime mounting and server-side object-scope adapter",
+        "persisted receipt/replay and authoritative deployed readback",
+        "runtime cache integration and consumer-owned delivery",
+        "consumer integration and exact preview exercise",
+        "production observation"
+      ],
+      "remaining_uncertainty": [
+        "The evaluator is an unmounted contract proof; it proves no deployed credential request, object-scope lookup, route enforcement or current database contents.",
+        "Local token verification uses an injected local JWK and exact registered claims; no deployed Vercel OIDC exchange or authenticated preview was exercised.",
+        "The pinned API credential boundary produces only the two credited service actors, so end-user actor/object authorization remains unproven and held.",
+        "UI-owned attachment and export authorization were reconciled read-only but were not independently integrated or modified.",
+        "UI/Sultan OS thread and resume boundaries were reconciled read-only but remain outside API runtime ownership.",
+        "No runtime cache exists; the cache binding/release proof establishes a fail-closed contract for later integration only.",
+        "No persisted receipt/replay, authenticated deployed readback, preview or production evidence exists for V02."
+      ],
+      "next_proof_needed": [
+        "obtain controller acceptance of the exact draft-PR publication head and canonical CI as bounded G0",
+        "do not mount or integrate the evaluator without a separately authorized package and exact consumer contract",
+        "obtain independent UI/Sultan authorization evidence for held surfaces",
+        "prove authenticated deployed readback, persisted receipt/replay and exact preview before any G1 claim",
+        "do not advance L1 without a new explicit controller decision"
+      ]
     }
   ]
 }

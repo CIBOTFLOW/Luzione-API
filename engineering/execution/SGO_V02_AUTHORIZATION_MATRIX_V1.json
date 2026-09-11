@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "matrix_id": "sgo-v02-object-authorization-matrix/v1",
+  "contract_version": "luzione-object-authorization/v0.1-draft",
+  "build_program": "SGO-20260911-01",
+  "task_id": "SGO-V02",
+  "controller_sha": "c8d2fa92db610cf70d88d16cb0d14337e3a8c7a2",
+  "controller_allowlist_count": 68,
+  "repository": "CIBOTFLOW/Luzione-API",
+  "base_sha": "c6c4fa1f95649edfac120a0e796df641a9cdbbad",
+  "state": "G0_UNMOUNTED_PROVIDER_FREE_AUTHORIZATION_PROOF",
+  "runtime_mounting": false,
+  "persistence": "NONE",
+  "provider_calls": false,
+  "business_state_mutated": false,
+  "grants_authority": false,
+  "effect_authority": "NO_EFFECT",
+  "surface_kinds": ["CONTEXT", "ATTACHMENT", "ACTION", "THREAD", "EXPORT"],
+  "operations": ["READ", "RESUME", "MUTATE", "RECEIVE_CACHED_RESULT"],
+  "credential_law": {
+    "attestation_contract": "luzione-object-credential-attestation/v0.1-draft",
+    "credential_source": "VERCEL_OIDC_PINNED_CALLERS",
+    "credential_actor_ids": ["service:luzione-ui", "service:sultan-os"],
+    "end_user_api_actor": "INTEGRATION_HOLD_NOT_PRODUCIBLE",
+    "caller_constructed_actor": "DENY",
+    "runtime_mounting": false
+  },
+  "matrix": [
+    {
+      "surfaceId": "api.context.linked-evidence.v0.1-draft",
+      "surfaceKind": "CONTEXT",
+      "owner": "CIBOTFLOW/Luzione-API",
+      "actorBoundary": "VERCEL_WORKLOAD_SERVICE_ONLY",
+      "authorizationMode": "API_CONTRACT_PROOF",
+      "runtimeState": "UNMOUNTED_DRAFT",
+      "requiredCapabilities": {"READ": "sultan.canonical.readback.read", "RECEIVE_CACHED_RESULT": "sultan.canonical.readback.read"},
+      "evidencePinIds": ["api-actor-boundary", "api-http-cache-default", "api-linked-evidence-context"],
+      "limitation": "C03 source-port contract is unmounted; deployed actor/object integration is not proven."
+    },
+    {
+      "surfaceId": "api.context.stage5-canonical-readback.v1",
+      "surfaceKind": "CONTEXT",
+      "owner": "CIBOTFLOW/Luzione-API",
+      "actorBoundary": "VERCEL_WORKLOAD_SERVICE_ONLY",
+      "authorizationMode": "API_CONTRACT_PROOF",
+      "runtimeState": "EXISTING_RUNTIME_UNCHANGED",
+      "requiredCapabilities": {"READ": "sultan.canonical.readback.read", "RECEIVE_CACHED_RESULT": "sultan.canonical.readback.read"},
+      "evidencePinIds": ["api-actor-boundary", "api-http-cache-default", "api-stage5-readback-route"],
+      "limitation": "Existing workload and tenant boundary is preserved; end-user object grants and V02 evaluator mounting are unproven."
+    },
+    {
+      "surfaceId": "api.action.sultan-reservation-effect.v1",
+      "surfaceKind": "ACTION",
+      "owner": "CIBOTFLOW/Luzione-API",
+      "actorBoundary": "VERCEL_WORKLOAD_SERVICE_ONLY",
+      "authorizationMode": "API_CONTRACT_PROOF",
+      "runtimeState": "EXISTING_RUNTIME_UNCHANGED",
+      "requiredCapabilities": {"READ": "sultan.effect.read", "RESUME": "sultan.command.execute", "MUTATE": "sultan.command.execute", "RECEIVE_CACHED_RESULT": "sultan.effect.read"},
+      "evidencePinIds": ["api-actor-boundary", "api-http-cache-default", "api-sultan-command-execute-route", "api-sultan-effect-readback-route", "api-sultan-gateway-service", "api-sultan-gateway-store"],
+      "limitation": "V02 executes no command and does not change existing approval, receipt or readback semantics."
+    },
+    {
+      "surfaceId": "ui.attachment.sultan-chat",
+      "surfaceKind": "ATTACHMENT",
+      "owner": "CIBOTFLOW/Luzione-UI",
+      "actorBoundary": "END_USER_INTEGRATION_HOLD",
+      "authorizationMode": "INTEGRATION_HOLD",
+      "runtimeState": "CROSS_REPOSITORY_READ_ONLY_EVIDENCE",
+      "requiredCapabilities": {},
+      "evidencePinIds": ["ui-sultan-chat-attachments"],
+      "limitation": "UI session ownership is observed but not independently integrated with this API draft."
+    },
+    {
+      "surfaceId": "ui-os.thread.sultan-chat",
+      "surfaceKind": "THREAD",
+      "owner": "CIBOTFLOW/Luzione-UI+CIBOTFLOW/Sultan-OS",
+      "actorBoundary": "END_USER_INTEGRATION_HOLD",
+      "authorizationMode": "INTEGRATION_HOLD",
+      "runtimeState": "CROSS_REPOSITORY_READ_ONLY_EVIDENCE",
+      "requiredCapabilities": {},
+      "evidencePinIds": ["ui-sultan-chat-route", "ui-sultan-chat-actions", "os-ui-workload-auth"],
+      "limitation": "Private-thread and resume authorization requires independent UI/OS consumer evidence."
+    },
+    {
+      "surfaceId": "ui.export.sultan-evidence",
+      "surfaceKind": "EXPORT",
+      "owner": "CIBOTFLOW/Luzione-UI",
+      "actorBoundary": "END_USER_INTEGRATION_HOLD",
+      "authorizationMode": "INTEGRATION_HOLD",
+      "runtimeState": "CROSS_REPOSITORY_READ_ONLY_EVIDENCE",
+      "requiredCapabilities": {},
+      "evidencePinIds": ["ui-sultan-evidence-export"],
+      "limitation": "API does not own export persistence, URLs, downloads or recipient delivery."
+    }
+  ],
+  "evidence_pins": [
+    {"pin_id":"api-actor-boundary","repository":"CIBOTFLOW/Luzione-API","commit_sha":"c6c4fa1f95649edfac120a0e796df641a9cdbbad","path":"src/lib/api/actor.ts","blob_sha":"d1e18aba31f21dfb3463136a8abd738d15a9fe7e"},
+    {"pin_id":"api-http-cache-default","repository":"CIBOTFLOW/Luzione-API","commit_sha":"c6c4fa1f95649edfac120a0e796df641a9cdbbad","path":"src/lib/api/http.ts","blob_sha":"94538ec4833afe7937351731e1bd2a702740e120"},
+    {"pin_id":"api-linked-evidence-context","repository":"CIBOTFLOW/Luzione-API","commit_sha":"c6c4fa1f95649edfac120a0e796df641a9cdbbad","path":"src/modules/linked-evidence-context/producer.ts","blob_sha":"447c313a48eebd3e435057d560b91eb5bb8ccc58"},
+    {"pin_id":"api-stage5-readback-route","repository":"CIBOTFLOW/Luzione-API","commit_sha":"c6c4fa1f95649edfac120a0e796df641a9cdbbad","path":"src/app/api/v1/sultan/canonical-readbacks/route.ts","blob_sha":"11107f37819a702604ea0c292a48f6bd124549ef"},
+    {"pin_id":"api-sultan-command-execute-route","repository":"CIBOTFLOW/Luzione-API","commit_sha":"c6c4fa1f95649edfac120a0e796df641a9cdbbad","path":"src/app/api/v1/sultan/commands/execute/route.ts","blob_sha":"5053758a960aa7ef77cb1f9d5f49ec638cc11975"},
+    {"pin_id":"api-sultan-effect-readback-route","repository":"CIBOTFLOW/Luzione-API","commit_sha":"c6c4fa1f95649edfac120a0e796df641a9cdbbad","path":"src/app/api/v1/sultan/effects/[receiptId]/readback/route.ts","blob_sha":"b231a4ca6dfd94e816ab6c02b31ff40d690ba38c"},
+    {"pin_id":"api-sultan-gateway-service","repository":"CIBOTFLOW/Luzione-API","commit_sha":"c6c4fa1f95649edfac120a0e796df641a9cdbbad","path":"src/modules/sultan-agent-gateway/service.ts","blob_sha":"d4429f02d102d0ed8277acad81a13230e3f1cfdc"},
+    {"pin_id":"api-sultan-gateway-store","repository":"CIBOTFLOW/Luzione-API","commit_sha":"c6c4fa1f95649edfac120a0e796df641a9cdbbad","path":"src/modules/sultan-agent-gateway/postgresStore.ts","blob_sha":"e8c1b52cc264ff8d73e13cfdcbb132f9d007660a"},
+    {"pin_id":"ui-sultan-chat-attachments","repository":"CIBOTFLOW/Luzione-UI","commit_sha":"84f0dcecbe5aff2d29176433967a6ae0223d9214","path":"src/app/api/sultan/chat/attachments/route.ts","blob_sha":"d37cdbdc3b2cebe6983fca689a68bab4b96fb210"},
+    {"pin_id":"ui-sultan-chat-actions","repository":"CIBOTFLOW/Luzione-UI","commit_sha":"84f0dcecbe5aff2d29176433967a6ae0223d9214","path":"src/app/api/sultan/chat/actions/route.ts","blob_sha":"6e0f98855c8b8bf66798b43723f8e698500718cc"},
+    {"pin_id":"ui-sultan-chat-route","repository":"CIBOTFLOW/Luzione-UI","commit_sha":"84f0dcecbe5aff2d29176433967a6ae0223d9214","path":"src/app/api/sultan/chat/route.ts","blob_sha":"c981a1eb7c864d7e86cbcb6d7d675a8d90caf53b"},
+    {"pin_id":"ui-sultan-evidence-export","repository":"CIBOTFLOW/Luzione-UI","commit_sha":"84f0dcecbe5aff2d29176433967a6ae0223d9214","path":"src/app/api/sultan-evidence-export/route.ts","blob_sha":"581cae2202f2baa490e4b49586a8a02d73fbfcf1"},
+    {"pin_id":"os-ui-workload-auth","repository":"CIBOTFLOW/Sultan-OS","commit_sha":"ea50caa66f09b14b1ac2bcfdfb74cdf9f4c067f0","path":"src/lib/luzioneUiWorkloadAuth.ts","blob_sha":"4f6fbdea7b44afe4359b7d13b3da608c64404de4"}
+  ],
+  "cache_law": {
+    "runtime_cache_created": false,
+    "binding_origin": "SERVER_INTERNAL_ONLY",
+    "api_object_responses_observed_default": "no-store",
+    "binding_dimensions": ["actorId", "tenantId", "surfaceId", "objectId", "objectVersion", "authorizationSourceRef", "authorizationVersion", "payloadHash", "createdAt", "expiresAt"],
+    "maximum_binding_age_ms": 300000,
+    "denial_payload": null
+  },
+  "integration_holds": [
+    "end-user actor and object authorization is not producible by the pinned API credential boundary",
+    "UI attachment session/object authorization",
+    "UI/OS private thread ownership and resume authorization",
+    "UI export object, URL, recipient and download authorization",
+    "authenticated deployed consumer exercise",
+    "exact preview exercise"
+  ],
+  "strongest_claim": {"engineering_state":"CONTRACT_STABLE","release_evidence":"LOCAL_PROVEN","effect_authority":"NO_EFFECT","finality":"BOUNDED_CLAIM"}
+}
