@@ -132,7 +132,7 @@
     "branch": "codex/sgo-c03-linked-evidence-context-20260911",
     "base_sha": "b46f35b9b21f59ec19c3537b7568a86fa7ec24aa",
     "implementation_sha": "8ecc49d85283a29b87be5ff20237f672afb0ce7d",
-    "pull_request": null,
+    "pull_request": 85,
     "manifest": "engineering/execution/SGO_C03_LINKED_EVIDENCE_CONTEXT_V1.json",
     "handoff": "engineering/execution/handoffs/SGO_C03_LINKED_EVIDENCE_CONTEXT_HANDOFF.json",
     "local_verification": "PASS_13_OF_13_FOCUSED_283_OF_283_REPOSITORY_TYPESCRIPT_LINT_ZERO_WARNINGS_COMPLIANCE_7_OF_7_BUILD_15_OF_15_PINS_REVERSE_REAPPLY",

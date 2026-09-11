@@ -2037,6 +2037,7 @@
         "src/modules/linked-evidence-context/producer.ts",
         "src/modules/linked-evidence-context/tests/linked-evidence-context.test.ts",
         "engineering/execution/handoffs/SGO_C03_LINKED_EVIDENCE_CONTEXT_HANDOFF.json",
+        "pull-request:CIBOTFLOW/Luzione-API#85",
         "commit:8ecc49d85283a29b87be5ff20237f672afb0ce7d"
       ],
       "failure_refs": [],

@@ -13,9 +13,9 @@
   "repository": "CIBOTFLOW/Luzione-API",
   "branch": "codex/sgo-c03-linked-evidence-context-20260911",
   "pull_request": {
-    "number": null,
-    "url": null,
-    "state": "PENDING_PUBLICATION",
+    "number": 85,
+    "url": "https://github.com/CIBOTFLOW/Luzione-API/pull/85",
+    "state": "OPEN_DRAFT",
     "base_branch": "codex/sgo-c01-runtime-producer-inventory-20260911"
   },
   "sha_lineage": {
@@ -97,7 +97,7 @@
     "source_pin_reconciliation": "PASS_15_OF_15",
     "accepted_c01_byte_identity": "PASS",
     "stage5_domain_route_migration_byte_identity": "PASS",
-    "canonical_ci": "PENDING_EXACT_PUBLICATION_HEAD"
+    "canonical_ci": "PENDING_EXACT_FINAL_PUBLICATION_HEAD"
   },
   "negative_checks": [
     "unknown workload identity",
