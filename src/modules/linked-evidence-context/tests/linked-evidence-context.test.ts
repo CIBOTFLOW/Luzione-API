@@ -271,14 +271,41 @@ test("forged profile, identity, version, citation and oversized claim fail close
   }
 });
 
-test("request parser rejects unknown fields, duplicates, oversized sets and calendar overflow", () => {
+test("request parser rejects unknown fields, duplicates, oversized sets, bad versions and calendar overflow", () => {
   assertError("INVALID_REQUEST", () => parseLinkedEvidenceContextRequest({ ...request([references[0]]), tenantId: "forged" }));
   assertError("INVALID_REQUEST", () => parseLinkedEvidenceContextRequest(request([references[0], references[0]])));
   assertError("INVALID_REQUEST", () => parseLinkedEvidenceContextRequest(request([
     ...references,
     { expectedVersion: null, subjectId: "task-002", subjectType: "TASK" },
   ])));
+  const malformedVersions: readonly LinkedEvidenceReference[] = [
+    { ...references[0], expectedVersion: "garbage" },
+    { ...references[1], expectedVersion: "commercial-case:elsewhere:v4" },
+    { ...references[2], expectedVersion: "quote:quote-001:e0:sdraft" },
+    { ...references[3], expectedVersion: "not-a-64-hex-source-version" },
+    { ...references[4], expectedVersion: "supplier:supplier-001@not-a-time" },
+  ];
+  for (const malformed of malformedVersions) {
+    assertError("INVALID_REQUEST", () => parseLinkedEvidenceContextRequest(request([malformed])));
+  }
   assertError("INVALID_REQUEST", () => parseLinkedEvidenceContextRequest({ ...request([references[0]]), requestedAt: "2026-02-31T12:00:00Z" }));
+});
+
+test("structurally malformed source return becomes explicit source-invalid evidence", async () => {
+  const malformed: LinkedEvidenceSource = { async read() { return null as never; } };
+  const context = await buildLinkedEvidenceContext({
+    actor,
+    now: NOW,
+    pins,
+    request: request([references[0]]),
+    source: malformed,
+  });
+  assert.equal(context.records[0].status, "SOURCE_INVALID");
+  assert.equal(context.records[0].reasonCode, "SOURCE_INVALID");
+  assert.equal(context.records[0].citation.actualRecordVersion, null);
+  assert.deepEqual(context.records[0].citation.sourceRefs, []);
+  assert.deepEqual(context.records[0].claims, []);
+  assert.ok(verifyLinkedEvidenceContext(context));
 });
 
 test("unknown workload, release mismatch, stale request and bad configuration stop before source access", async () => {

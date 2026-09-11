@@ -240,16 +240,19 @@ function timestamp(value: unknown): string {
 function parseReference(value: unknown): LinkedEvidenceReference {
   const input = record(value);
   exactKeys(input, ["expectedVersion", "subjectId", "subjectType"]);
-  if (typeof input.subjectId !== "string" || !ID.test(input.subjectId)
-    || !linkedEvidenceSubjectTypes.includes(input.subjectType as LinkedEvidenceSubjectType)
-    || (input.expectedVersion !== null && (typeof input.expectedVersion !== "string"
-      || input.expectedVersion.length < 1 || input.expectedVersion.length > 1_024))) {
+  const subjectId = input.subjectId;
+  const subjectType = input.subjectType as LinkedEvidenceSubjectType;
+  const expectedVersion = input.expectedVersion;
+  if (typeof subjectId !== "string" || !ID.test(subjectId)
+    || !linkedEvidenceSubjectTypes.includes(subjectType)
+    || (expectedVersion !== null && (typeof expectedVersion !== "string"
+      || !validVersion(subjectType, subjectId, expectedVersion)))) {
     throw new Error("Invalid reference.");
   }
   return Object.freeze({
-    expectedVersion: input.expectedVersion as string | null,
-    subjectId: input.subjectId,
-    subjectType: input.subjectType as LinkedEvidenceSubjectType,
+    expectedVersion: expectedVersion as string | null,
+    subjectId,
+    subjectType,
   });
 }
 
@@ -357,6 +360,9 @@ async function readEntry(
   } catch (error) {
     return emptyEntry(reference, isDeniedError(error) ? "DENIED" : "SOURCE_UNAVAILABLE",
       isDeniedError(error) ? "SOURCE_ACCESS_DENIED" : "SOURCE_UNAVAILABLE");
+  }
+  if (!result || typeof result !== "object" || Array.isArray(result)) {
+    return emptyEntry(reference, "SOURCE_INVALID", "SOURCE_INVALID");
   }
   const profile = linkedEvidenceSourceProfiles[reference.subjectType];
   if (result.sourceProfileId !== profile.profileId

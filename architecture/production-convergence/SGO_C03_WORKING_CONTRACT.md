@@ -36,7 +36,7 @@ The G0 producer consumes a `LinkedEvidenceSource` port. The port is server-injec
 
 ## Invariants
 
-1. The actor, tenant, deployment pins, source observations, record versions, source references, and claims cannot come from caller-provided request facts.
+1. The actor, tenant, deployment pins, source observations, actual record versions, source references, and claims cannot come from caller-provided request facts. A non-null caller expected-version precondition must match the subject-specific identity/version grammar before any source read.
 2. Only the exact UI or Sultan workload identity already admitted for `sultan.canonical.readback.read` may receive available source data. A denied workload yields explicit `DENIED` entries without source existence or fact disclosure.
 3. Requests contain 1–5 unique canonical record references; unknown fields, duplicate references, invalid IDs, invalid timestamps, and unpinned releases are rejected.
 4. `AVAILABLE` requires an exact record ID, valid subject-specific record version, valid observation timestamp, at least one allowlisted exact source reference, and bounded unique canonical claims.
@@ -57,7 +57,7 @@ The G0 producer consumes a `LinkedEvidenceSource` port. The port is server-injec
 
 - Exact source-profile identities and repository pins validate.
 - All five subject types produce an available result with exact record/version citations from trusted fixtures.
-- Missing, denied, expected-version stale, source-declared stale, unavailable, invalid-source, forged-owner/ref, duplicate-reference, unknown-field, stale-request, release-pin mismatch, oversized-claim, and tamper cases fail closed.
+- Missing, denied, expected-version stale, source-declared stale, unavailable, structurally invalid-source, malformed subject-version grammar, forged-owner/ref, duplicate-reference, unknown-field, stale-request, release-pin mismatch, oversized-claim, and tamper cases fail closed.
 - Denied/missing/unavailable/stale results do not leak claims; denied/missing/unavailable do not leak actual versions.
 - Deterministic replay and hash verification pass; isolated reverse/reapply restores exact base/candidate trees.
 - Focused tests, full repository tests, TypeScript, lint, compliance, build, exact-head CI, and CodeQL pass before handoff.
