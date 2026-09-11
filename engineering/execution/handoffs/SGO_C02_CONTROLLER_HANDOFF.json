@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "handoff_id": "SGO_C02_RECORD_CONTEXT_DRAFT_20260911",
+  "task_id": "SGO-C02",
+  "lane": "L1",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "branch": "codex/sgo-c02-record-context-20260911",
+  "controller_release_sha": "2f0d9818029cc79f1ca1058f735699fa33982b9b",
+  "writer_lease": "SGO-20260911-01-L1",
+  "writer_lease_state": "RETAINED_FOR_CONTINUOUS_SAME_REPOSITORY_G0",
+  "base_sha": "7ee5a0a53a3434c3e00969dc626a4daad33f9dc0",
+  "implementation_sha": "b60a5a8f2b6c8824c0c482760412afe9d760a6bf",
+  "evidence_head_binding": "The commit containing this handoff is an evidence-only descendant; its exact head is externally anchored by PR #82 and the controller intake.",
+  "pull_request": 82,
+  "contract_version": "luzione-sultan-record-context/v1-draft.1",
+  "source_digests": [
+    {
+      "path": "src/modules/sultan-stage5/recordContextDraft.ts",
+      "sha256": "19447590101bba9cae65e110f80f43bef2dec9672142cb7d16083682868fc00b"
+    },
+    {
+      "path": "src/modules/sultan-stage5/recordContextDraft.manifest.json",
+      "sha256": "a62757fe2615402014191fb116ad5433bcfaf142ce1922b5956b4ee58320c331"
+    },
+    {
+      "path": "src/modules/sultan-stage5/tests/sultan-stage5.test.ts",
+      "sha256": "bc825b61481dc83b080210ea5c281c9e4aaf5d2eec4294ef5e9ac116fa8949f9"
+    },
+    {
+      "path": "engineering/execution/handoffs/SGO_C02_WORKING_CONTRACT.md",
+      "sha256": "d240be31933944dcb274d751a3b2c591b3797ad89b7109dc186c54f60046b6c1"
+    }
+  ],
+  "canonical_source_pins": {
+    "api_main": "7ee5a0a53a3434c3e00969dc626a4daad33f9dc0",
+    "domain_store_blob": "6e031a10a251bae78f07c369280c3f0263a08399",
+    "stage5_contracts_blob": "3fe0dba539769a685885ac61408b9ceb24a1d5c2"
+  },
+  "consumed_versions": [
+    "luzione-lead-commercial-case/v0.1",
+    "luzione-request-identity/v1"
+  ],
+  "implemented": [
+    "Unmounted executable draft adapter over existing LeadCommercialCaseStore readLead/readCommercialCase methods.",
+    "Exact Stage5 consumer workload/tenant/capability, API/consumer release pin and request freshness checks before source access.",
+    "Strict request shape and expected source-version comparison.",
+    "Minimized immutable claim projection with canonical source object version and deterministic draft hash.",
+    "Distinct missing, unsupported, source unavailable, schema mismatch, invalid source and version mismatch states.",
+    "Explicit UNPERSISTED_DRAFT, admissionEligible=false, grantsAuthority=false and businessStateMutated=false; no receipt ID."
+  ],
+  "changed_paths": [
+    "src/modules/sultan-stage5/recordContextDraft.ts",
+    "src/modules/sultan-stage5/recordContextDraft.manifest.json",
+    "src/modules/sultan-stage5/tests/sultan-stage5.test.ts",
+    "engineering/execution/handoffs/SGO_C02_WORKING_CONTRACT.md",
+    "engineering/execution/handoffs/SGO_C02_CONTROLLER_HANDOFF.json",
+    "engineering/execution/SYSTEMS_ENGINEERING_PROOF_LEDGER.json",
+    "engineering/execution/SYSTEMS_ENGINEERING_FAILURE_LEDGER.json",
+    "engineering/execution/CURRENT_HANDOFF.json"
+  ],
+  "verification": {
+    "focused": {
+      "command": "node --import tsx --test src/modules/sultan-stage5/tests/sultan-stage5.test.ts",
+      "result": "PASS_25_OF_25",
+      "new_tests": 10,
+      "environment": "selected exact-source export, Node runtime with shared scratch tsx dependency"
+    },
+    "typecheck": {
+      "command": "node node_modules/typescript/bin/tsc --noEmit --incremental false --pretty false",
+      "result": "NOT_PASSED_PARTIAL_EXPORT",
+      "details": "Missing pg/types and omitted API dependency source. An initial fixture literal type error was repaired; the final local diagnostics do not identify errors in changed source/test files. This is not full typecheck proof.",
+      "ci_result": "PASS_EXACT_IMPLEMENTATION_CI"
+    },
+    "lint": "PASS_EXACT_IMPLEMENTATION_CI",
+    "full_test_suite": "PASS_EXACT_IMPLEMENTATION_CI",
+    "build": "PASS_EXACT_IMPLEMENTATION_CI",
+    "implementation_ci": [
+      {
+        "conclusion": "success",
+        "head_sha": "b60a5a8f2b6c8824c0c482760412afe9d760a6bf",
+        "id": 34620814805,
+        "name": "Release gate",
+        "status": "completed",
+        "url": "https://github.com/CIBOTFLOW/Luzione-API/actions/runs/34620814805"
+      },
+      {
+        "conclusion": "success",
+        "head_sha": "b60a5a8f2b6c8824c0c482760412afe9d760a6bf",
+        "id": 34620814707,
+        "name": "CodeQL",
+        "status": "completed",
+        "url": "https://github.com/CIBOTFLOW/Luzione-API/actions/runs/34620814707"
+      }
+    ],
+    "negative_sensitivity": "Malformed crm-lead:<id>@invalid version initially returned AVAILABLE and failed the new negative test; exact suffix/timestamp binding repaired, test and full focused suite pass.",
+    "rollback": "Temporarily restored original test bytes and removed new source module: baseline15/15 passed; candidate source/test bytes restored and SHA256 matched."
+  },
+  "failure_refs": [
+    "SGO_C02_PARTIAL_SOURCE_EXPORT_20260911",
+    "SGO_C02_SOURCE_VERSION_BINDING_REPAIRED_20260911"
+  ],
+  "deployment": {
+    "state": "AUTOMATIC_PREVIEW_BUILD_SUCCESS_HTTP_NOT_EXERCISED",
+    "observed_id": "8DeFgxX5AoqV7F6YufpmbecvDmZd",
+    "authenticated_readback": "NOT_EXERCISED",
+    "production": "NOT_CHANGED"
+  },
+  "engineering_state": "BOUNDED_PASS",
+  "release_evidence": "LOCAL_PROVEN",
+  "effect_authority": "NO_EFFECT",
+  "finality": "BOUNDED_CLAIM",
+  "score_effect": 0,
+  "preserved": [
+    "Stage5 v1 routes, schemas, contracts, receipt persistence/admission/outcome behavior.",
+    "Frozen A02 contract epoch and existing open draft PRs.",
+    "Current Luzione UI domain write ownership; no new migration or activation."
+  ],
+  "remaining_uncertainty": [
+    "Implementation exact-branch Release gate and CodeQL passed; evidence-only descendant requires its own exact CI state.",
+    "Source port fixture proof does not prove actual database authorization, data shape or real source readback.",
+    "Draft source is unmounted; no operator workflow or authenticated HTTP journey proven.",
+    "Task/Product/Supplier/Account research source ownership unresolved; those kinds remain unsupported.",
+    "Persisted receipt-compatible context, admission, consumer UI/OS integration and deployed value remain separate."
+  ],
+  "next": {
+    "task_id": "SGO-C01",
+    "action": "Inventory exact active context/tool/action producer paths and reconcile remaining record owners; then continue SGO-C03 bounded source extension through existing owners.",
+    "stop_gate": "Only true writer/contract conflicts or existing G1/G2 gates; unrelated G0 continues."
+  }
+}

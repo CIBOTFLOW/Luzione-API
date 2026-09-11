@@ -1,0 +1,157 @@
+{
+  "contract_version": "luzione-sultan-record-context/v1-draft.1",
+  "task_id": "SGO-C02",
+  "controller_release_sha": "2f0d9818029cc79f1ca1058f735699fa33982b9b",
+  "repository": "CIBOTFLOW/Luzione-API",
+  "state": "G0_UNMOUNTED_SOURCE_ADAPTER",
+  "entrypoint": "src/modules/sultan-stage5/recordContextDraft.ts#buildRecordContextDraft",
+  "consumed_contracts": [
+    "luzione-lead-commercial-case/v0.1",
+    "luzione-request-identity/v1"
+  ],
+  "canonical_claim_type": "src/modules/sultan-stage5/contracts.ts#CanonicalClaim",
+  "source_port": "Pick<LeadCommercialCaseStore, 'readLead' | 'readCommercialCase'>",
+  "request_schema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "context"
+    ],
+    "properties": {
+      "context": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contractVersion",
+          "consumerDeploymentSha",
+          "expectedSourceVersion",
+          "requestedAt",
+          "subjectId",
+          "subjectType"
+        ],
+        "properties": {
+          "contractVersion": {
+            "const": "luzione-sultan-record-context/v1-draft.1"
+          },
+          "consumerDeploymentSha": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{40}$"
+          },
+          "expectedSourceVersion": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1024
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "requestedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?Z$"
+          },
+          "subjectId": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 512,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:@/-]+$"
+          },
+          "subjectType": {
+            "enum": [
+              "LEAD",
+              "COMMERCIAL_CASE",
+              "TASK",
+              "PRODUCT",
+              "SUPPLIER",
+              "ACCOUNT"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "source_profiles": {
+    "LEAD": {
+      "support": "IMPLEMENTED_G0",
+      "source_ref": "postgres:public.crm_leads",
+      "method": "LeadCommercialCaseStore.readLead",
+      "current_writer": "CIBOTFLOW/Luzione-UI",
+      "object_version": "crm-lead:<id>@<exact updated_at UTC microsecond version>"
+    },
+    "COMMERCIAL_CASE": {
+      "support": "IMPLEMENTED_G0",
+      "source_ref": "postgres:public.commercial_cases",
+      "method": "LeadCommercialCaseStore.readCommercialCase",
+      "current_writer": "CIBOTFLOW/Luzione-UI",
+      "object_version": "commercial-case:<caseId>:v<version>"
+    },
+    "TASK": {
+      "support": "UNSUPPORTED_SOURCE",
+      "next": "Reconcile crm_tasks vs team_coordination_tasks source scope, identifier, tenancy, writer and readback."
+    },
+    "PRODUCT": {
+      "support": "UNSUPPORTED_SOURCE",
+      "next": "Reconcile Shopify/catalog projection ownership and tenant-scoped sellability evidence."
+    },
+    "SUPPLIER": {
+      "support": "UNSUPPORTED_SOURCE",
+      "next": "Reconcile supplier identity/relationship and acknowledgment producers; preserve procurement PR #81."
+    },
+    "ACCOUNT": {
+      "support": "UNSUPPORTED_SOURCE",
+      "next": "Reconcile generic accounts with crm_accounts and crm_account_research_projects; do not equate alternate identifiers without evidence."
+    }
+  },
+  "output_contract": {
+    "type": "RecordContextDraft",
+    "definition": "src/modules/sultan-stage5/recordContextDraft.ts",
+    "statuses": [
+      "AVAILABLE",
+      "NOT_FOUND",
+      "UNSUPPORTED_SOURCE",
+      "SOURCE_UNAVAILABLE",
+      "SCHEMA_MISMATCH",
+      "SOURCE_INVALID",
+      "VERSION_MISMATCH"
+    ],
+    "persistence": "UNPERSISTED_DRAFT",
+    "admissionEligible": false,
+    "grantsAuthority": false,
+    "businessStateMutated": false,
+    "receipt_id_present": false,
+    "hash": "sha256 of canonical JSON excluding draftHash",
+    "freshness": "Server read observation window; expectedSourceVersion mismatch exposes no claims. Business updatedAt remains a separate claim."
+  },
+  "compatibility": {
+    "v1_endpoints_changed": false,
+    "v1_schemas_changed": false,
+    "v1_admission_changed": false,
+    "new_database_schema": false,
+    "new_business_write": false,
+    "source_port_uses_existing_domain_owner": true
+  },
+  "consumer_requirements": [
+    "Pin exact producer commit and manifest digest.",
+    "Treat output as draft context only; never as a Stage5 canonical receipt or outcome proof.",
+    "Do not promote unsupported/missing/unavailable outcomes to empty successful business records.",
+    "Do not call unmounted adapter from a UI route with client-supplied actor/source data.",
+    "Future persisted integration must preserve existing workload authorization, tenant scope, source version, claim lineage and explicit receipt schema version."
+  ],
+  "source_pins": {
+    "api_main": "7ee5a0a53a3434c3e00969dc626a4daad33f9dc0",
+    "domain_store_blob": "6e031a10a251bae78f07c369280c3f0263a08399",
+    "stage5_contracts_blob": "3fe0dba539769a685885ac61408b9ceb24a1d5c2"
+  },
+  "unproven": [
+    "real authenticated HTTP request",
+    "actual database rows/read authorization",
+    "consumer integration",
+    "durable receipt persistence",
+    "deployment and user value"
+  ]
+}
