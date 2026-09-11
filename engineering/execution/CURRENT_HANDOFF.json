@@ -244,15 +244,21 @@
     "production_observation": "NOT_RUN"
   },
   "sgo_20260911_active_build": {
-    "controller_release_sha": "2f0d9818029cc79f1ca1058f735699fa33982b9b",
+    "build_program": "SGO-20260911-01",
+    "controller_release_sha": "0e4810b4fef6ed69b252c397b92edc043238260d",
     "task_id": "SGO-C02",
-    "branch": "codex/sgo-c02-record-context-20260911",
-    "implementation_sha": "b60a5a8f2b6c8824c0c482760412afe9d760a6bf",
-    "handoff": "engineering/execution/handoffs/SGO_C02_CONTROLLER_HANDOFF.json",
-    "state": "BOUNDED_G0_DRAFT_PR_OPEN",
+    "branch": "codex/sgo-c02-receipt-integration-20260911",
+    "predecessor_final_sha": "a543da02c91d72057c67712890fd2fe1dce50ecc",
+    "implementation_sha": "20038b5f792216ecb896745315d31fdafa33b723",
+    "handoff": "engineering/execution/handoffs/SGO_C02_RECEIPT_INTEGRATION_HANDOFF.json",
+    "state": "BOUNDED_RECEIPT_PREPARATION_LOCAL_PASS_PUBLICATION_PENDING",
     "effect_authority": "NO_EFFECT",
     "next_task": "SGO-C01",
     "writer_lease": "SGO-20260911-01-L1",
-    "production_holds": "PRESERVED"
+    "writer_lease_owner": "01a0916a-b5c4-79c3-b299-d26e1a6fd79f",
+    "writer_lease_expires_at": "2026-09-11T19:08:29Z",
+    "next_write_gate": "CONTROLLER_ACCEPTANCE_AND_COMPATIBLE_TASK_SCOPE_REQUIRED",
+    "production_holds": "PRESERVED",
+    "updated_at": "2026-09-11T17:28:40Z"
   }
 }

@@ -11,7 +11,7 @@ export type RecordContextSubject = (typeof recordContextSubjects)[number];
 export type RecordContextSource = Pick<LeadCommercialCaseStore, "readLead" | "readCommercialCase">;
 type Pins = Pick<Stage5Pins, "apiDeploymentSha" | "uiDeploymentSha" | "sultanDeploymentSha" | "maximumEvidenceAgeMs">;
 type Status = "AVAILABLE" | "NOT_FOUND" | "UNSUPPORTED_SOURCE" | "SOURCE_UNAVAILABLE" | "SCHEMA_MISMATCH" | "SOURCE_INVALID" | "VERSION_MISMATCH";
-type Request = {
+export type RecordContextDraftRequest = {
   contractVersion: typeof RECORD_CONTEXT_DRAFT_VERSION;
   consumerDeploymentSha: string;
   expectedSourceVersion: string | null;
@@ -74,7 +74,7 @@ function timestamp(value: unknown): string {
   return normalized;
 }
 
-export function parseRecordContextDraftRequest(value: unknown): Request {
+export function parseRecordContextDraftRequest(value: unknown): RecordContextDraftRequest {
   try {
     const envelope = object(value);
     exactKeys(envelope, ["context"]);

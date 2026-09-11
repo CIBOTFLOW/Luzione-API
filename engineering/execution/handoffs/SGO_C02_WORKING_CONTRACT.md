@@ -28,3 +28,15 @@ Prove exact workload and tenant checks before source reads; caller authority rej
 ## Rollback
 
 The adapter is unmounted and read-only. Reverting only this additive candidate restores the source tree; no data or external state restoration is required. Prove inverse patch/content restoration locally before publication.
+
+## Successor slice — source-owner and receipt-compatible integration
+
+- Capability outcome: expose the existing authorized draft producer through the Stage 5 service and bind its exact draft hash, source version, consumer release, tenant and idempotency identity into deterministic receipt material.
+- Actor/system entrypoint and end state: an in-process, unmounted `SultanStage5Service` method accepts the existing draft request plus a bounded idempotency key and the existing `LeadCommercialCaseStore` read port; it returns immutable receipt preparation, never a persisted receipt.
+- Authoritative truth/write owner/readback: the same tenant-scoped `crm_leads` / `commercial_cases` reads remain authoritative; Luzione UI remains current writer; no mutation or alternate source is added.
+- Consumed/published contracts: consume `luzione-sultan-record-context/v1-draft.1`, `luzione-lead-commercial-case/v0.1` and Stage 5 v1 receipt semantics; publish an additive `luzione-sultan-record-context-receipt-preparation/v1-draft.1` in source and the existing manifest only.
+- Compatibility boundary: `luzione-canonical-business-readback/v1` and its database constraint do not admit `LEAD` or `COMMERCIAL_CASE`. The preparation must state that exact incompatibility and the need for a separately versioned receipt/storage change. It must not alter v1 types, parser, schema, persistence or admission.
+- Mutation cone: `src/modules/sultan-stage5`, its focused tests, and SGO-C02 repository-local handoff/proof accounting only. No route, contract registry, SQL/migration, source table, provider, deployment or current-client changes.
+- Invariants: source authorization precedes reads; only verified draft hashes can be prepared; receipt material exists only for statuses representable by canonical receipt semantics; unavailable or incompatible status carries no claims; the request hash is stable for exact replay; changed source evidence cannot redefine an existing idempotency identity and recovery requires a new key; `readbackReceiptId` remains absent and `admissionEligible=false`.
+- Acceptance proof: exact Lead and Commercial Case material; identity/release/freshness denial before reads; corrupt draft rejection; unsupported/version-mismatch/source-invalid fail closed; deterministic replay material; changed-source recovery requires a new idempotency identity; Stage 5 v1 source/schema/parser bytes remain unchanged.
+- Irreversible effects: none. Rollback is source-only removal of the additive service method/preparation module and tests.

@@ -127,6 +127,33 @@
     "hash": "sha256 of canonical JSON excluding draftHash",
     "freshness": "Server read observation window; expectedSourceVersion mismatch exposes no claims. Business updatedAt remains a separate claim."
   },
+  "receipt_preparation": {
+    "contract_version": "luzione-sultan-record-context-receipt-preparation/v1-draft.1",
+    "entrypoint": "src/modules/sultan-stage5/service.ts#SultanStage5Service.prepareRecordContext",
+    "implementation": "src/modules/sultan-stage5/recordContextIntegration.ts",
+    "current_stage5_receipt_contract": "luzione-canonical-business-readback/v1",
+    "current_stage5_v1_persistence_compatible": false,
+    "reason": "Stage 5 v1 and its durable table constraint do not admit LEAD or COMMERCIAL_CASE subject types.",
+    "prepared_material": [
+      "server-derived tenant and consumer actor",
+      "consumer and API deployment pins",
+      "subject identity and compatible status",
+      "canonical source version and refs",
+      "bounded fact claims",
+      "idempotency identity and exact request hash",
+      "source draft and material hashes"
+    ],
+    "persistence": "UNPERSISTED_PREPARATION",
+    "admissionEligible": false,
+    "readback_receipt_id_present": false,
+    "required_evolution": "NEW_VERSION_AND_ADDITIVE_STORAGE_MIGRATION",
+    "excluded": [
+      "HTTP route mounting",
+      "Stage 5 v1 parser/schema/type changes",
+      "database migration or receipt persistence",
+      "admission or outcome use"
+    ]
+  },
   "compatibility": {
     "v1_endpoints_changed": false,
     "v1_schemas_changed": false,

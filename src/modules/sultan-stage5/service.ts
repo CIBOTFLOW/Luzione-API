@@ -8,6 +8,8 @@ import {
 } from "./contracts";
 import { evaluateStage5Admission } from "./policy";
 import { PostgresSultanStage5Store, SultanStage5StoreError } from "./postgresStore";
+import { prepareRecordContextReceipt } from "./recordContextIntegration";
+import type { RecordContextSource } from "./recordContextDraft";
 import { verifyOutcomeObservationReceipt } from "./runtime";
 import { isExactStage5ConsumerWorkload } from "./workload";
 
@@ -37,6 +39,22 @@ export class SultanStage5Service {
     const now = this.now().toISOString();
     this.assertFreshRequest(request.requestedAt, now);
     return this.store.createCanonicalReadback({ actor, now, pins: this.pins, request });
+  }
+
+  /** Unmounted G0 seam. It prepares receipt material but cannot persist or enter Stage 5 admission. */
+  async prepareRecordContext(actor: ApiActor, input: {
+    idempotencyKey: string;
+    request: unknown;
+    source: RecordContextSource;
+  }) {
+    return prepareRecordContextReceipt({
+      actor,
+      idempotencyKey: input.idempotencyKey,
+      now: this.now().toISOString(),
+      pins: this.pins,
+      request: input.request,
+      source: input.source,
+    });
   }
 
   async observeOutcome(actor: ApiActor, request: OutcomeObservationRequest) {
