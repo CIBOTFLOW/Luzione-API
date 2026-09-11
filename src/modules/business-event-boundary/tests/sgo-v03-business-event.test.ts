@@ -270,6 +270,53 @@ test("approval freshness is rechecked before first dispatch but not used to bloc
   assert.equal(replay.deliveryDisposition, "EXACT_REPLAY");
 });
 
+test("source evidence observed after release or first dispatch cannot authorize either event", () => {
+  const released = action();
+  const initial = createBusinessEventBoundaryState(released);
+  const releaseEvent = event(released, "ACTION_RELEASED", 1);
+  const postReleaseSource = {
+    ...source(released),
+    observedAt: "2026-09-11T20:18:00.000Z",
+  };
+  const rejectedRelease = evaluateBusinessEvent({
+    action: released,
+    currentSource: postReleaseSource,
+    event: releaseEvent,
+    now: "2026-09-11T20:19:00.000Z",
+    state: initial,
+  });
+  assert.equal(rejectedRelease.receipt.rejectionCode, "STALE_APPROVAL");
+  assert.equal(rejectedRelease.state, initial);
+  assert.equal(rejectedRelease.state.effectReservationCount, 0);
+  assert.equal(rejectedRelease.state.dispatchObservationCount, 0);
+  assert.equal(rejectedRelease.state.businessFinal, false);
+
+  const acceptedRelease = evaluateBusinessEvent({
+    action: released,
+    currentSource: source(released),
+    event: releaseEvent,
+    now: FRESH_NOW,
+    state: initial,
+  });
+  const dispatchEvent = event(released, "EFFECT_DISPATCH_STARTED", 2);
+  const postDispatchSource = {
+    ...source(released),
+    observedAt: "2026-09-11T20:18:00.000Z",
+  };
+  const rejectedDispatch = evaluateBusinessEvent({
+    action: released,
+    currentSource: postDispatchSource,
+    event: dispatchEvent,
+    now: "2026-09-11T20:19:00.000Z",
+    state: acceptedRelease.state,
+  });
+  assert.equal(rejectedDispatch.receipt.rejectionCode, "STALE_APPROVAL");
+  assert.equal(rejectedDispatch.state, acceptedRelease.state);
+  assert.equal(rejectedDispatch.state.effectReservationCount, 1);
+  assert.equal(rejectedDispatch.state.dispatchObservationCount, 0);
+  assert.equal(rejectedDispatch.state.businessFinal, false);
+});
+
 test("ambiguous network outcome requires reconciliation and cannot admit a second effect attempt", () => {
   const released = action();
   const { state } = advance(released, [event(released, "ACTION_RELEASED", 1), event(released, "EFFECT_DISPATCH_STARTED", 2)]);
@@ -326,6 +373,37 @@ test("exact source confirmation recovers an ambiguous outcome without a new rese
   assert.equal(recovered.dispatchObservationDelta, 0);
   assert.equal(recovered.state.effectReservationCount, 1);
   assert.equal(recovered.state.dispatchObservationCount, 1);
+});
+
+test("future-dated authoritative readback cannot create business finality", () => {
+  const released = action();
+  const { state } = advance(released, [event(released, "ACTION_RELEASED", 1), event(released, "EFFECT_DISPATCH_STARTED", 2)]);
+  const ambiguous = evaluateBusinessEvent({ action: released, currentSource: null, event: event(released, "DELIVERY_AMBIGUOUS", 3), now: "2026-09-11T20:19:00.000Z", state });
+  const sourceConfirmed = event(released, "SOURCE_CONFIRMED", 4);
+  const futureReadback = {
+    ...sourceConfirmed,
+    evidence: {
+      ...sourceConfirmed.evidence,
+      readback: {
+        ...sourceConfirmed.evidence.readback!,
+        observedAt: "2026-09-11T21:00:00.000Z",
+      },
+    },
+  };
+  const rejected = evaluateBusinessEvent({
+    action: released,
+    currentSource: null,
+    event: futureReadback,
+    now: "2026-09-11T20:19:00.000Z",
+    state: ambiguous.state,
+  });
+  assert.equal(rejected.receipt.rejectionCode, "SOURCE_READBACK_INVALID");
+  assert.equal(rejected.receipt.businessFinal, false);
+  assert.equal(rejected.state, ambiguous.state);
+  assert.equal(rejected.state.effectReservationCount, 1);
+  assert.equal(rejected.state.dispatchObservationCount, 1);
+  assert.equal(rejected.state.finality, "RECONCILING");
+  assert.equal(rejected.state.businessFinal, false);
 });
 
 test("state integrity corruption fails before delivery evaluation", () => {

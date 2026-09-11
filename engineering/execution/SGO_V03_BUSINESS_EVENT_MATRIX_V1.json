@@ -4,7 +4,7 @@
   "task_id": "SGO-V03",
   "allowlist_count": 68,
   "accepted_api_base_sha": "055bdaf20536c27cb8c016cbcd33c6f1fba52785",
-  "controller_decision_sha": "015add7d1aa68ec58835893f29e5204f4cca2ce9",
+  "controller_decision_sha": "e6c3245429dc9281ceb575835b38b1f9346170f8",
   "contract_version": "luzione-business-event-boundary/v0.1-draft",
   "effect_authority": "NO_EFFECT",
   "grants_authority": false,
@@ -112,9 +112,11 @@
     "first_release_reservation_limit": 1,
     "first_dispatch_observation_limit": 1,
     "approval_recheck_events": ["ACTION_RELEASED", "EFFECT_DISPATCH_STARTED"],
+    "approval_source_observed_no_later_than_event": true,
     "ambiguous_delivery_next": "RECONCILIATION_REQUIRED",
     "provider_acknowledgement_business_final": false,
     "source_confirmation_requires_exact_readback": true,
+    "source_readback_observed_no_later_than_processing_now": true,
     "exact_replay_returns_original_receipt": true
   },
   "unexercised_boundaries": [

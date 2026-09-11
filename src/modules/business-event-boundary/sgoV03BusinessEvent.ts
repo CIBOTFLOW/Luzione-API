@@ -241,7 +241,7 @@ export function evaluateBusinessEvent(input: {
   }
   const transition = transitionFor(input.state.phase, input.event.eventType);
   if (!transition) return reject(input, "INVALID_TRANSITION");
-  if (input.event.eventType === "SOURCE_CONFIRMED" && !readbackIsExact(input.action, input.event)) {
+  if (input.event.eventType === "SOURCE_CONFIRMED" && !readbackIsExact(input.action, input.event, now)) {
     return reject(input, "SOURCE_READBACK_INVALID");
   }
   if (input.event.eventType === "EFFECT_DISPATCH_STARTED" && !input.event.evidence.attemptRef) {
@@ -324,13 +324,14 @@ function approvalIsCurrent(
   const expires = Date.parse(action.approval.expiresAt);
   return sourceBindingEquals(currentSource, action.source)
     && Number.isFinite(observedAt)
+    && observedAt <= occurred
     && observedAt <= processing
     && approved <= occurred
     && occurred <= processing
     && processing < expires;
 }
 
-function readbackIsExact(action: ReleasedBusinessAction, event: BusinessEvent) {
+function readbackIsExact(action: ReleasedBusinessAction, event: BusinessEvent, now: string) {
   const readback = event.evidence.readback;
   return Boolean(readback
     && readback.sourceReadbackRef.trim()
@@ -341,7 +342,8 @@ function readbackIsExact(action: ReleasedBusinessAction, event: BusinessEvent) {
     && readback.version === action.authoritativeReadback.expectedResultVersion
     && readback.payloadHash === action.payloadHash
     && Number.isFinite(Date.parse(readback.observedAt))
-    && Date.parse(readback.observedAt) >= Date.parse(event.occurredAt));
+    && Date.parse(readback.observedAt) >= Date.parse(event.occurredAt)
+    && Date.parse(readback.observedAt) <= Date.parse(now));
 }
 
 function sourceBindingEquals(left: SourceVersionBinding, right: SourceVersionBinding) {
