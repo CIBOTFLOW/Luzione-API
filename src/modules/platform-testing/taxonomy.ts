@@ -13,6 +13,7 @@ export type TestSuiteDescriptor = {
 };
 
 export const testSuiteTaxonomy: readonly TestSuiteDescriptor[] = Object.freeze([
+  { suitePath: "src/modules/business-event-boundary/tests/sgo-v03-business-event.test.ts", primaryClass: "RELIABILITY", secondaryClasses: ["CONTRACT", "SECURITY"], evidenceScope: "provider-free released-action event deduplication, ordering, stale approval, ambiguity, exact replay and source-finality proof" },
   { suitePath: "src/lib/tests/api-actor.test.ts", primaryClass: "SECURITY", secondaryClasses: ["CONTRACT"], evidenceScope: "workload identity and protected route admission" },
   { suitePath: "src/lib/tests/databaseConnection.test.ts", primaryClass: "SECURITY", secondaryClasses: ["UNIT"], evidenceScope: "database TLS and connection posture" },
   { suitePath: "src/lib/tests/sultan-runtime-status.test.ts", primaryClass: "INTEGRATION", secondaryClasses: ["CONTRACT"], evidenceScope: "aggregate Sultan/provider/database status readback" },
