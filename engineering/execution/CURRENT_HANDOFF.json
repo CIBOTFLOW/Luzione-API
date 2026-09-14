@@ -4,10 +4,7 @@
   "repository": "CIBOTFLOW/Luzione-API",
   "program_state": "API_STAGE5_EXACT_SOURCE_AND_MANAGED_RECOVERY_PROVEN_PUBLICATION_PENDING_PRODUCTION_BLOCKED_NO_EFFECT",
   "current_project": "API_STAGE5_001",
-  "next_projects": [
-    "API_STAGE5_001",
-    "A02"
-  ],
+  "next_projects": ["API_STAGE5_001", "A02"],
   "next_action": "Publish the exact API Stage 5 implementation and machine handoff in a new pull request from merged main, run real-branch CI, repair any failure, and merge only the green exact head. Preserve draft PR #58 independently. Keep production DDL and deployment claims blocked until a named accessible backup/PITR and restore receipt, exact principal authority, writer exclusion, merged main SHA, and exact deployed readbacks all exist.",
   "canonical_program": "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md",
   "failure_ledger": "engineering/execution/SYSTEMS_ENGINEERING_FAILURE_LEDGER.json",
