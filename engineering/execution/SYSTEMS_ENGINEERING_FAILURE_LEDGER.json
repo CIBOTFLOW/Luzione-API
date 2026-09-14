@@ -1270,6 +1270,36 @@
         "The code defect is locally and independently repaired, but production remains on the old SHA and can still reproduce it."
       ],
       "next_action": "After the managed recovery and Vercel access gates pass, canary and promote exact candidate 0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a, then prove repeated readyz=200 through the production pooler."
+    },
+    {
+      "failure_id": "SULTAN_ARCHIVE_TAXONOMY_20260913",
+      "project_id": "SULTAN_INTERNAL_ARCHIVE_V1",
+      "observed_at": "2026-09-13T12:00:00.000Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "62783cc0f2986fd8b7683428cbcf0b5a038fbf33",
+      "environment": "local",
+      "layer": "test-taxonomy",
+      "symptom": "Initial broad suite rejected the newly added archive suite because its taxonomy entry was missing.",
+      "expected": "Every admitted suite registered exactly once.",
+      "actual": "Resolved by registering the archive reliability/security suite; final 269/269 pass.",
+      "classification": {
+        "domain": "PLATFORM",
+        "class": "INVALID",
+        "retry": "NEVER",
+        "severity": "INFO"
+      },
+      "evidence_refs": [
+        "src/modules/platform-testing/taxonomy.ts",
+        "engineering/execution/readiness/SULTAN_INTERNAL_ARCHIVE_LOCAL_20260913.json"
+      ],
+      "repair_attempts": [
+        "Register new suite in existing taxonomy."
+      ],
+      "strategy_reset": null,
+      "quarantine_scope": [],
+      "external_infrastructure": false,
+      "remaining_uncertainty": [],
+      "resolution_ref": "62783cc0f2986fd8b7683428cbcf0b5a038fbf33"
     }
   ]
 }

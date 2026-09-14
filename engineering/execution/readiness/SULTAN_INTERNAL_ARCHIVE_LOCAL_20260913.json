@@ -1,0 +1,12 @@
+{
+  "candidate_sha": "62783cc0f2986fd8b7683428cbcf0b5a038fbf33",
+  "environment": "local-disposable",
+  "tests": "PASS_269_OF_269",
+  "typecheck": "PASS",
+  "lint": "PASS",
+  "postgres": "PASS_SIGNED_EXECUTE_SIGNATURE_DENIAL_SEPARATE_ARCHIVE_RECEIPT_IDEMPOTENT_REPLAY_ORIGINAL_ARCHIVED_READBACK_ROLLBACK_TENANT_QUERY_SCOPE_IMMUTABLE_EVIDENCE",
+  "deployment": "NOT_RUN",
+  "managed_migration": "NOT_APPLIED",
+  "effect_authority": "SANDBOX_ONLY",
+  "proof_command": "bash scripts/validation/run-sultan-archive-proof.sh"
+}

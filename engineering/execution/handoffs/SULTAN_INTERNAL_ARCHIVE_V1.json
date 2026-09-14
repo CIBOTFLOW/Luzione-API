@@ -1,0 +1,36 @@
+{
+  "handoff_id": "SULTAN_INTERNAL_ARCHIVE_V1",
+  "producer_repository": "CIBOTFLOW/Luzione-API",
+  "producer_sha": "62783cc0f2986fd8b7683428cbcf0b5a038fbf33",
+  "contract_name": "luzione.internal_action.archive",
+  "contract_version": "v1",
+  "published_path": "src/modules/sultan-agent-gateway/registry.ts",
+  "consumer_repository": [
+    "CIBOTFLOW/Sultan-OS",
+    "CIBOTFLOW/Luzione-UI"
+  ],
+  "required_consumer_behavior": [
+    "Use existing command prepare/execute routes; retain Stage5 admission, critic, current COMMERCIAL case version and signed per-command approval.",
+    "Pass campaignId,targetReceiptId,targetObjectVersion,targetPayloadHash. Target hash is sha256(original preparation.preview); target version is original preparation.caseRef.expectedVersion. The archival caseRef binds the CURRENT case version independently.",
+    "Successful archive records a new receipt v1/source-confirmed archive evidence row. Verify the ORIGINAL receipt readback: readback/v2 state ARCHIVED, providerRef null, businessFinal false, deliveryProven false.",
+    "Original execution replay after archival uses command-execution/v2 state ARCHIVED and readback/v2; its historical effect receipt remains v1 SOURCE_CONFIRMED. Do not present historical execution receipt as an active action.",
+    "Do not treat v2 as compatible v1 silently; consume the new versions before activating archival for consumers."
+  ],
+  "compatibility_expectation": "Active v1 responses remain unchanged; archived state introduces explicit v2.",
+  "acceptance_proof_needed": [
+    "Independent Sultan/UI exact-version preparation, signed approval, archival and original source readback journey."
+  ],
+  "producer_evidence_refs": [
+    "scripts/validation/run-sultan-archive-proof.sh",
+    "engineering/execution/readiness/SULTAN_INTERNAL_ARCHIVE_LOCAL_20260913.json"
+  ],
+  "known_limitations": [
+    "Only case-linked internal task/proposal/test-draft rows; no Gmail provider draft or send. Notes and archive evidence are immutable.",
+    "Disposable fixture seeds an already-admitted reservation; it does not prove deployed Stage5 issuance, workload authentication, or live consumer journeys.",
+    "Postgres fixture runs as disposable superuser; query tenant scoping is exercised but runtime-role RLS requires the existing separate security suite.",
+    "Migration and code are local commits only; no deployment or managed migration applied."
+  ],
+  "remaining_uncertainty": [
+    "Release readiness, deployed admission/approval and independent consumer integration remain unproven."
+  ]
+}

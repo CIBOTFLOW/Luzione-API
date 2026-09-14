@@ -1939,6 +1939,48 @@
         "promote exact candidate 0d4fa2587b85f6cd50db7f713bf919d6bc7f8f6a and record production readbacks",
         "exercise the approved rollback path and submit the resulting evidence to the controller"
       ]
+    },
+    {
+      "proof_id": "SULTAN_INTERNAL_ARCHIVE_LOCAL_20260913",
+      "project_id": "SULTAN_INTERNAL_ARCHIVE_V1",
+      "recorded_at": "2026-09-13T12:00:00.000Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "62783cc0f2986fd8b7683428cbcf0b5a038fbf33",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "LOCAL_PROVEN",
+      "effect_authority": "SANDBOX_ONLY",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "Existing internal-action ledger supports authorized archive with exact target validation, separate receipt and v2 source readback.",
+      "exercised_boundaries": [
+        "269 unit/contract/security/reliability tests",
+        "typecheck and lint",
+        "Disposable Postgres: signed execute and signature denial, duplicate replay, archived source readback, rollback, tenant query scope, immutable SQL trigger"
+      ],
+      "untested_boundaries": [
+        "Only case-linked internal task/proposal/test-draft rows; no Gmail provider draft or send. Notes and archive evidence are immutable.",
+        "Disposable fixture seeds an already-admitted reservation; it does not prove deployed Stage5 issuance, workload authentication, or live consumer journeys.",
+        "Postgres fixture runs as disposable superuser; query tenant scoping is exercised but runtime-role RLS requires the existing separate security suite.",
+        "Migration and code are local commits only; no deployment or managed migration applied."
+      ],
+      "evidence_refs": [
+        "scripts/validation/run-sultan-archive-proof.sh",
+        "engineering/execution/readiness/SULTAN_INTERNAL_ARCHIVE_LOCAL_20260913.json"
+      ],
+      "failure_refs": [
+        "SULTAN_ARCHIVE_TAXONOMY_20260913"
+      ],
+      "cross_repo_handoffs": [
+        "engineering/execution/handoffs/SULTAN_INTERNAL_ARCHIVE_V1.json"
+      ],
+      "deferred_external_infra": [
+        "Deployed API/consumer/migration verification"
+      ],
+      "remaining_uncertainty": [
+        "Release readiness, deployed admission/approval and independent consumer integration remain unproven."
+      ],
+      "next_proof_needed": [
+        "Independent Sultan/UI exact-version preparation, signed approval, archival and original source readback journey."
+      ]
     }
   ]
 }

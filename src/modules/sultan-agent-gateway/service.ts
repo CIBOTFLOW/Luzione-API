@@ -296,6 +296,7 @@ function parseA1Arguments(toolId: string, value: Readonly<Record<string, unknown
   const specs: Record<string, { allowed: readonly string[]; required: readonly string[] }> = {
     "luzione.proposal_revision.create": { allowed: ["campaignId", "title", "revisionSummary", "contentMarkdown"], required: ["campaignId", "title", "revisionSummary", "contentMarkdown"] },
     "luzione.task.create": { allowed: ["campaignId", "title", "description", "priority", "dueAt"], required: ["campaignId", "title", "description", "priority", "dueAt"] },
+    "luzione.internal_action.archive": { allowed: ["campaignId", "targetReceiptId", "targetObjectVersion", "targetPayloadHash"], required: ["campaignId", "targetReceiptId", "targetObjectVersion", "targetPayloadHash"] },
     "luzione.note.append": { allowed: ["campaignId", "note"], required: ["campaignId", "note"] },
     "luzione.gmail_draft.create": { allowed: ["campaignId", "recipient", "subject", "bodyText"], required: ["campaignId", "recipient", "subject", "bodyText"] },
   };
@@ -305,7 +306,12 @@ function parseA1Arguments(toolId: string, value: Readonly<Record<string, unknown
   const campaignId = bounded(value.campaignId, "campaignId", 100);
   if (!/^sultan-campaign-[a-z0-9][a-z0-9-]{2,80}$/.test(campaignId)) throw new SultanAgentGatewayError("CAMPAIGN_SCOPE_REQUIRED", "A bounded synthetic Sultan campaign identity is required.", 422);
   const parsed: Record<string, unknown> & { campaignId: string } = { campaignId };
-  if (toolId === "luzione.proposal_revision.create") {
+  if (toolId === "luzione.internal_action.archive") {
+    parsed.targetReceiptId = bounded(value.targetReceiptId, "targetReceiptId", 512);
+    parsed.targetObjectVersion = bounded(value.targetObjectVersion, "targetObjectVersion", 512);
+    parsed.targetPayloadHash = bounded(value.targetPayloadHash, "targetPayloadHash", 64);
+    if (!/^[a-f0-9]{64}$/.test(String(parsed.targetPayloadHash))) throw new SultanAgentGatewayError("COMMAND_ARGUMENTS_INVALID", "Target payload hash must be a SHA-256 digest.", 422);
+  } else if (toolId === "luzione.proposal_revision.create") {
     parsed.title = bounded(value.title, "title", 180);
     parsed.revisionSummary = bounded(value.revisionSummary, "revisionSummary", 2_000);
     parsed.contentMarkdown = bounded(value.contentMarkdown, "contentMarkdown", 12_000);

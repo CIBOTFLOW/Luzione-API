@@ -239,5 +239,15 @@
     "live_http_journey": "DEPLOYED_SIGNED_OIDC_NOT_RUN",
     "business_receipt_readback": "NOT_APPLICABLE_NO_EFFECT",
     "production_observation": "NOT_RUN"
+  },
+  "sultan_internal_archive": {
+    "status": "BOUNDED_PASS_LOCAL_ONLY",
+    "implementation_sha": "62783cc0f2986fd8b7683428cbcf0b5a038fbf33",
+    "handoff": "engineering/execution/handoffs/SULTAN_INTERNAL_ARCHIVE_V1.json",
+    "next_action": "Consume readback/execution v2 ARCHIVED in Sultan/UI, then independently verify exact deployed admission/approval/archival/readback before activating the tool.",
+    "proof_remaining": [
+      "Independent Sultan/UI exact-version preparation, signed approval, archival and original source readback journey."
+    ],
+    "deployment": "NOT_RUN"
   }
 }

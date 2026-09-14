@@ -24,7 +24,9 @@
     "sultanCommandExecution": "contracts/sultan/command-execution-v1.schema.json",
     "sultanApiAdmission": "contracts/sultan/api-admission-v1.schema.json",
     "sultanCanonicalBusinessReadback": "contracts/sultan/canonical-business-readback-v1.schema.json",
-    "sultanOutcomeObservation": "contracts/sultan/outcome-observation-v1.schema.json"
+    "sultanOutcomeObservation": "contracts/sultan/outcome-observation-v1.schema.json",
+    "sultanEffectReadbackV2": "contracts/sultan/readback-v2.schema.json",
+    "sultanCommandExecutionV2": "contracts/sultan/command-execution-v2.schema.json"
   },
   "components": [
     "api-http-response/1.0",
@@ -57,7 +59,9 @@
     "luzione-platform-failure/v1",
     "luzione-readiness-evidence/v1",
     "luzione-release-identity/v0.1",
-    "luzione-receipt-reference/v0.1"
+    "luzione-receipt-reference/v0.1",
+    "luzione-sultan-readback/v2",
+    "luzione-sultan-command-execution/v2"
   ],
   "consumerRules": [
     "Consumers ignore unknown optional fields without changing known meanings.",
