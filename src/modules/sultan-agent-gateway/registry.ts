@@ -121,6 +121,7 @@ const TOOL_REGISTRY: readonly SultanToolDescriptor[] = Object.freeze([
   readTool("luzione.catalog_evidence.read", "Read the current Shopify catalog projection and freshness evidence."),
   actionTool("luzione.proposal_revision.create", "Prepare and record a versioned internal proposal revision without send authority.", proposalRevisionSchema),
   actionTool("luzione.task.create", "Prepare and record a reversible internal task for the exact case.", taskSchema),
+  actionTool("luzione.internal_action.archive", "Archive an exact internal draft, task or proposal; preserve its evidence and never dispatch providers.", { type: "object", properties: { campaignId, targetReceiptId: boundedText(512), targetObjectVersion: boundedText(512), targetPayloadHash: { type: "string", pattern: "^[a-f0-9]{64}$" } }, required: ["campaignId", "targetReceiptId", "targetObjectVersion", "targetPayloadHash"], additionalProperties: false }),
   actionTool("luzione.note.append", "Prepare and append a campaign-labelled internal case note.", noteSchema),
   actionTool("luzione.gmail_draft.create", "Prepare and record an internal test Gmail draft without provider dispatch.", gmailDraftSchema),
   Object.freeze({

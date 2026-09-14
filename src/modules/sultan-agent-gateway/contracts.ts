@@ -118,10 +118,10 @@ export type SultanEffectReceipt = {
 };
 
 export type SultanEffectReadback = {
-  contractVersion: typeof LUZIONE_SULTAN_READBACK_V1;
+  contractVersion: typeof LUZIONE_SULTAN_READBACK_V1 | "luzione-sultan-readback/v2";
   receiptId: string;
   observedAt: string;
-  state: "NOT_DISPATCHED" | "PROVIDER_ACCEPTED" | "SOURCE_CONFIRMED" | "RECONCILIATION_REQUIRED" | "BLOCKED" | "FAILED";
+  state: "ARCHIVED" | "NOT_DISPATCHED" | "PROVIDER_ACCEPTED" | "SOURCE_CONFIRMED" | "RECONCILIATION_REQUIRED" | "BLOCKED" | "FAILED";
   providerRef: string | null;
   sourceReadbackRef: string | null;
   authoritativeSource: string;
@@ -166,11 +166,11 @@ export type SultanApprovalAdmission = {
 };
 
 export type SultanCommandExecution = {
-  contractVersion: typeof LUZIONE_SULTAN_COMMAND_EXECUTION_V1;
+  contractVersion: typeof LUZIONE_SULTAN_COMMAND_EXECUTION_V1 | "luzione-sultan-command-execution/v2";
   reservationId: string;
   operationId: string;
   commandHash: string;
-  state: "SOURCE_CONFIRMED" | "RECONCILIATION_REQUIRED";
+  state: "ARCHIVED" | "SOURCE_CONFIRMED" | "RECONCILIATION_REQUIRED";
   receipt: SultanEffectReceipt;
   readback: SultanEffectReadback;
   idempotentReplay: boolean;

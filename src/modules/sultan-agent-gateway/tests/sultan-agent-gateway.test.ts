@@ -371,3 +371,21 @@ function providerMessage(): ProviderMessage {
     resultingObjectVersion: "commercial-case:case-canary-001:v7", tenantId: "luzione",
   };
 }
+
+test("archive preparation retains Stage5, actor, critic and exact current case gates", async () => {
+  const args = { campaignId: "sultan-campaign-pilot-001", targetReceiptId: "receipt-original", targetObjectVersion: "commercial-case:case-canary-001:v6", targetPayloadHash: "a".repeat(64) };
+  const archive = call("luzione.internal_action.archive", args);
+  archive.controlEvidence = { criticEventId: "event-critic-001", criticPayloadHash: "a".repeat(64), criticVerdict: "AFFIRM" };
+  const store = new FakeStore();
+  const service = new SultanAgentGatewayService(store, () => new Date(NOW), APPROVAL_SECRET);
+  const prepared = await service.prepare({ actor: actor(), call: archive });
+  assert.equal(prepared.approvalMode, "PER_COMMAND_HUMAN");
+  assert.equal(store.admissionChecks, 1);
+  assert.deepEqual((prepared.preview.payload as Record<string, unknown>).targetReceiptId, "receipt-original");
+  await assert.rejects(service.prepare({ actor: { ...actor(), actorId: "other" }, call: archive }));
+  await assert.rejects(service.prepare({ actor: { ...actor(), tenantId: "other" }, call: archive }));
+  await assert.rejects(service.prepare({ actor: actor(), call: { ...archive, controlEvidence: null } }), { code: "CRITIC_PASS_REQUIRED" });
+  await assert.rejects(service.prepare({ actor: actor(), call: { ...archive, caseRef: { ...archive.caseRef, expectedVersion: "stale" } } }), { code: "EXACT_OBJECT_VERSION_REQUIRED" });
+  await assert.rejects(new SultanAgentGatewayService(new DenyingAdmissionStore(), () => new Date(NOW), APPROVAL_SECRET).prepare({ actor: actor(), call: archive }), { code: "STAGE5_ADMISSION_DENIED" });
+  assert.equal(store.executions, 0);
+});

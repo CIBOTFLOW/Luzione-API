@@ -1,4 +1,5 @@
 import "server-only";
+import { archiveInternalActionTx } from "./internalActionArchive";
 
 import type { Pool, PoolClient } from "pg";
 
@@ -234,6 +235,10 @@ export class PostgresSultanAgentGatewayStore implements SultanAgentGatewayStore 
       }
       if (reservation.state !== "PREPARED") throw new SultanAgentGatewayError("COMMAND_STATE_INVALID", "The command reservation is not executable.", 409);
 
+      if (reservation.tool_id === "luzione.internal_action.archive") {
+        await archiveInternalActionTx(client, input.actor.tenantId, reservation, input.now);
+      }
+
       const actionId = `sultan-action-${sha256([input.actor.tenantId, reservation.reservation_id]).slice(0, 32)}`;
       const receiptId = `sultan-receipt-${sha256([input.actor.tenantId, actionId]).slice(0, 32)}`;
       await client.query(
@@ -373,16 +378,16 @@ export class PostgresSultanAgentGatewayStore implements SultanAgentGatewayStore 
     );
     if (!result.rows[0]) return null;
     return {
-      contractVersion: LUZIONE_SULTAN_READBACK_V1,
+      contractVersion: result.rows[0].state === "ARCHIVED" ? "luzione-sultan-readback/v2" : LUZIONE_SULTAN_READBACK_V1,
       receiptId,
       observedAt: now,
-      state: "SOURCE_CONFIRMED",
+      state: result.rows[0].state === "ARCHIVED" ? "ARCHIVED" : "SOURCE_CONFIRMED",
       providerRef: null,
       sourceReadbackRef: `postgres:${INTERNAL_ACTION_SOURCE}/${String(result.rows[0].action_id)}`,
       authoritativeSource: INTERNAL_ACTION_SOURCE,
       businessFinal: false,
       deliveryProven: false,
-      nextSafeAction: "Review the reversible internal action. No external provider effect occurred.",
+      nextSafeAction: result.rows[0].state === "ARCHIVED" ? "This internal action is archived. Its evidence is retained; do not execute it." : "Review the internal action. No external provider effect occurred.",
     };
   }
 }
@@ -513,11 +518,11 @@ function executionFromReadback(reservation: ReservationRow, readback: SultanEffe
     businessFinal: false,
   };
   return {
-    contractVersion: LUZIONE_SULTAN_COMMAND_EXECUTION_V1,
+    contractVersion: readback.state === "ARCHIVED" ? "luzione-sultan-command-execution/v2" : LUZIONE_SULTAN_COMMAND_EXECUTION_V1,
     reservationId: reservation.reservation_id,
     operationId: reservation.operation_id,
     commandHash: reservation.command_hash,
-    state: "SOURCE_CONFIRMED",
+    state: readback.state === "ARCHIVED" ? "ARCHIVED" : "SOURCE_CONFIRMED",
     receipt,
     readback,
     idempotentReplay,
