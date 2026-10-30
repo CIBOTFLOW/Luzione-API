@@ -13,6 +13,34 @@ const ADMISSION = /^s5admit_[a-f0-9]{32}$/;
 const MAX_OBSERVATION_AGE_MS = 48 * 60 * 60 * 1000;
 const TTL_MS = 4 * 60 * 1000;
 const CLOCK_SKEW_MS = 30_000;
+const READBACK_PREFIX = "api:canonical-readback/";
+const READBACK_ID = /^[A-Za-z0-9][A-Za-z0-9._:@\/-]{1,511}$/;
+const CONTEXT_FIELDS = ["sourceRef", "sourceVersion", "integrityHash", "observedAt", "freshness"];
+
+/**
+ * Stage 5's database gate checks these exact context refs against canonical
+ * readback receipts. The signer must not reject that legitimate evidence, nor
+ * accept unbound, stale, duplicated or authority-bearing context references.
+ * This local check does NOT replace the gateway's Stage 5 database proof.
+ */
+function validStage5ReadbackContext(refs: SultanToolCall["contextRefs"], now: Date): boolean {
+  if (!Array.isArray(refs) || refs.length > 50) return false;
+  const seen = new Set<string>();
+  return refs.every((ref) => {
+    if (!ref || typeof ref !== "object" || Array.isArray(ref) ||
+        Object.keys(ref).sort().join(",") !== [...CONTEXT_FIELDS].sort().join(",") ||
+        typeof ref.sourceRef !== "string" ||
+        !ref.sourceRef.startsWith(READBACK_PREFIX) ||
+        !READBACK_ID.test(ref.sourceRef.slice(READBACK_PREFIX.length)) ||
+        !SHA256.test(ref.integrityHash) || ref.sourceVersion !== ref.integrityHash ||
+        ref.freshness !== "FRESH" || !validTime(ref.observedAt) ||
+        Date.parse(ref.observedAt) > now.getTime() + CLOCK_SKEW_MS ||
+        now.getTime() - Date.parse(ref.observedAt) > MAX_OBSERVATION_AGE_MS ||
+        seen.has(ref.sourceRef)) return false;
+    seen.add(ref.sourceRef);
+    return true;
+  });
+}
 
 export type A0SignedReceiptEnvelope = Readonly<{
   schemaVersion: typeof SULTAN_A0_RECEIPT_ENVELOPE_V2;
@@ -78,7 +106,7 @@ export function signA0ReceiptEnvelope(input: {
       call.purpose !== "sultan-shadow-case-read" ||
       call.caseRef.expectedVersion === null ||
       call.controlEvidence !== null ||
-      call.contextRefs.length !== 0 ||
+      !validStage5ReadbackContext(call.contextRefs, now) ||
       Object.keys(call.arguments).length !== 0 ||
       call.argumentsHash !== sha256({}) ||
       manifest.contractVersion !== "luzione-sultan-tool-manifest/v1" ||
