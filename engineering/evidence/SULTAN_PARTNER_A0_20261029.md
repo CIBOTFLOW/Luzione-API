@@ -7,7 +7,7 @@ Date: 2026-10-29. Project: SULTAN_PARTNER_A0_001 (user-directed, additive to the
 - Actor: exact `service:sultan-os` workload, tenant `luzione`, `sultan.case.read` capability, Stage 5 admission before each A0 read.
 - Logical owner: `agent.luzione.partner-network-steward` for `PARTNER_RELATIONSHIP` cases.
 - Source of truth: tenant-bound `public.crm_accounts` plus aggregate relationship coverage from `crm_people`, `crm_leads`, and `crm_opportunities`; Luzione API is read owner, not CRM mutation owner.
-- Canonical identity: `crm_accounts.account_id` UUID, not legacy `crm_accounts.id` alias. Unknown/foreign identities return no case.
+- Canonical identity: `crm_accounts.account_id` UUID, not legacy `crm_accounts.id` alias. Unknown/foreign identities return no case. After tenant-verifying the canonical account, relationship counts include either its canonical UUID or its legacy `id` alias, avoiding undercounted linked leads.
 - Effect authority: A0 only. No CRM writes, sends, drafts, approvals, or paid inference.
 
 ## Implemented boundary
