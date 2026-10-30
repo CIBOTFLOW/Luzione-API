@@ -29,12 +29,26 @@ const fixture = (): Parameters<typeof projectPartnerCase>[0] => ({
   observedAt: NOW,
 });
 
-function fakePool(options: { missing?: boolean; failPeople?: boolean } = {}) {
+function fakePool(options: {
+  missing?: boolean;
+  failPeople?: boolean;
+  rlsInactive?: "accounts" | "people" | "leads" | "opportunities";
+  rlsMissing?: boolean;
+} = {}) {
   const queries: { sql: string; params: readonly unknown[] }[] = [];
   let released = false;
   const client = {
     async query(sql: string, params: readonly unknown[] = []) {
       queries.push({ sql, params });
+      if (sql.includes("row_security_active(")) {
+        if (options.rlsMissing) return { rows: [] };
+        return { rows: [{
+          accounts: options.rlsInactive !== "accounts",
+          people: options.rlsInactive !== "people",
+          leads: options.rlsInactive !== "leads",
+          opportunities: options.rlsInactive !== "opportunities",
+        }] };
+      }
       if (sql.includes("from public.crm_accounts")) {
         return { rows: options.missing ? [] : [{
           account_id: ID, id: "legacy-partner-alias", account_name: "Synthetic Design Studio", account_type: "design_firm",
@@ -117,6 +131,9 @@ test("partner store reads one tenant-scoped repeatable-read snapshot without wri
   assert.equal(result.observedAt, NOW);
   assert.equal(fake.queries[0].sql.toLowerCase(), "begin transaction isolation level repeatable read read only");
   assert.ok(fake.queries.some((q) => q.sql.includes("set_config('app.tenant_id'")));
+  const rlsIndex = fake.queries.findIndex((q) => q.sql.includes("row_security_active("));
+  const accountIndex = fake.queries.findIndex((q) => q.sql.includes("from public.crm_accounts"));
+  assert.ok(rlsIndex > 1 && accountIndex > rlsIndex, "RLS role check precedes all CRM reads");
   const selects = fake.queries.filter((q) => q.sql.includes("from public."));
   assert.equal(selects.length, 4);
   assert.ok(selects.every((q) => q.sql.includes("tenant_id=$1")));
@@ -125,6 +142,26 @@ test("partner store reads one tenant-scoped repeatable-read snapshot without wri
   assert.ok(selects.every((q) => q.params[0] === "luzione" && q.params[1] === ID));
   assert.ok(selects.slice(1).every((q) => q.params[2] === "legacy-partner-alias"));
   assert.equal(fake.queries.at(-1)?.sql, "commit");
+  assert.ok(fake.wasReleased());
+});
+
+test("partner read fails closed for each source with inactive RLS before reading CRM rows", async () => {
+  for (const source of ["accounts", "people", "leads", "opportunities"] as const) {
+    const fake = fakePool({ rlsInactive: source });
+    await assert.rejects(() => readPartnerCase(fake.pool, actor(), ID),
+      (error: unknown) => error instanceof SultanAgentGatewayError && error.code === "PARTNER_RLS_NOT_ACTIVE");
+    assert.equal(fake.queries.some((q) => q.sql.includes("from public.")), false);
+    assert.equal(fake.queries.at(-1)?.sql, "rollback");
+    assert.ok(fake.wasReleased());
+  }
+});
+
+test("partner read fails closed if database does not return an RLS status row", async () => {
+  const fake = fakePool({ rlsMissing: true });
+  await assert.rejects(() => readPartnerCase(fake.pool, actor(), ID),
+    (error: unknown) => error instanceof SultanAgentGatewayError && error.code === "PARTNER_RLS_NOT_ACTIVE");
+  assert.equal(fake.queries.some((q) => q.sql.includes("from public.")), false);
+  assert.equal(fake.queries.at(-1)?.sql, "rollback");
   assert.ok(fake.wasReleased());
 });
 

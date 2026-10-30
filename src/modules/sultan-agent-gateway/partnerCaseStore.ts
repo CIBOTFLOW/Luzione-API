@@ -54,6 +54,25 @@ export async function readPartnerCase(
   try {
     await client.query("begin transaction isolation level repeatable read read only");
     await client.query("select set_config('app.tenant_id',$1,true)", [actor.tenantId]);
+    // An explicit tenant WHERE clause is necessary but insufficient if the
+    // deployed database credential owns these tables or has BYPASSRLS.
+    // PostgreSQL evaluates row_security_active for the *current session role*.
+    // Fail closed before reading any CRM rows if any source bypasses RLS.
+    const rls = await client.query<{
+      accounts: boolean; people: boolean; leads: boolean; opportunities: boolean;
+    }>(`select row_security_active('public.crm_accounts'::regclass) as accounts,
+              row_security_active('public.crm_people'::regclass) as people,
+              row_security_active('public.crm_leads'::regclass) as leads,
+              row_security_active('public.crm_opportunities'::regclass) as opportunities`);
+    const protection = rls.rows[0];
+    if (!protection || protection.accounts !== true || protection.people !== true
+      || protection.leads !== true || protection.opportunities !== true) {
+      throw new SultanAgentGatewayError(
+        "PARTNER_RLS_NOT_ACTIVE",
+        "Partner read denied: active row security is required on every CRM source for this database role.",
+        503,
+      );
+    }
     const account = await client.query<AccountRow>(
       `select account_id::text as account_id,id,account_name,account_type,status,
               partner_iq,partner_iq_version,partner_iq_confidence,updated_at
