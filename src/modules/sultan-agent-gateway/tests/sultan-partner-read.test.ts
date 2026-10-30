@@ -92,7 +92,8 @@ test("partner evidence flags missing IQ/lead data and denies unsupported tools",
 test("Partner Network manifest contains only three A0 read tools", () => {
   const agent = deriveSultanLogicalAgent("PARTNER_RELATIONSHIP");
   assert.ok(agent);
-  const tools = toolsForAgent(agent);
+  assert.deepEqual(toolsForAgent(agent), []); // production default is OFF until RLS proof
+  const tools = toolsForAgent(agent, true);
   assert.deepEqual(tools.map((tool) => tool.toolId), [
     "luzione.case_context.read", "luzione.missing_evidence.read", "luzione.partner_relationship.read",
   ]);
@@ -170,7 +171,14 @@ test("partner gateway requires exact version and Stage 5 before A0 evidence", as
       return partnerEvidence(snapshot, toolId);
     },
   } as unknown as SultanAgentGatewayStore;
-  const service = new SultanAgentGatewayService(store, () => new Date(NOW));
+  const service = new SultanAgentGatewayService(store, () => new Date(NOW), undefined, true);
+  const disabled = new SultanAgentGatewayService(store, () => new Date(NOW));
+  const disabledManifest = disabled.manifest({
+    actor: actor(), assertedAgent: call(observed).agent, caseRef: call(observed).caseRef,
+  });
+  assert.deepEqual(disabledManifest.tools, []);
+  await assert.rejects(() => disabled.invoke({ actor: actor(), call: call(observed) }),
+    (error: unknown) => error instanceof SultanAgentGatewayError && error.code === "TOOL_NOT_AVAILABLE");
   const ready = await service.invoke({ actor: actor(), call: call(observed) });
   assert.equal(ready.status, "READY");
   assert.equal(ready.effectClass, "A0");
