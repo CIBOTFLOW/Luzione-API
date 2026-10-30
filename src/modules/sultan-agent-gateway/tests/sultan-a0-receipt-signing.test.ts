@@ -118,3 +118,20 @@ test("effectful or non-ready results, stale evidence and mismatched case cannot 
   assert.throws(() => sign({ manifest: { ...base.manifest, caseRef: { ...caseRef, expectedVersion: "v8" } } }), /A0_RECEIPT_SIGNING_DENIED/);
   assert.throws(() => sign({ toolResult: { ...base.toolResult, resultHash: "0".repeat(64) } }), /A0_RECEIPT_SIGNING_DENIED/);
 });
+
+test("Sultan consumer cross-repository golden v2 receipt parity", () => {
+  // Synthetic fixture mirrored in Sultan-OS/agent-lab/fixtures/a0-api-v2-golden.json.
+  // This assertion runs the ACTUAL API signer, not a reconstructed HMAC signer.
+  const { manifest, toolResult } = fixture();
+  const signed = sign();
+  assert.equal(manifest.manifestHash,
+    "9338fc925ef0d6a08c171275bbd38026e8b18e7e613e96ac31381e4aaf8f07a1");
+  assert.equal(toolResult.resultHash,
+    "d53a88cf51d334195347241b95edf1d80279e94b2a33a3ded4ecf7fba2a30d20");
+  assert.equal(signed.callHash,
+    "232ca6f61989731e82cec2875fb21f342d86e0cda9e6d8388ef2924341548566");
+  assert.equal(signed.signature,
+    "cd87157872d4a56bf684372ba9583eddf70e9f6b4c73393fd65262c89d5e39bf");
+  assert.equal(signed.issuedAt, "2026-10-30T09:26:00.000Z");
+  assert.equal(signed.expiresAt, "2026-10-30T09:30:00.000Z");
+});
