@@ -155,6 +155,11 @@ export class SultanAgentGatewayService {
       requestedCapability: descriptor.capability,
     });
 
+    if (input.call.caseRef.caseType === "PARTNER_RELATIONSHIP"
+      && input.call.toolId !== "luzione.case_context.read"
+      && input.call.caseRef.expectedVersion === null) {
+      return buildToolResult(blocked(input.call, "A0", "EXACT_OBJECT_VERSION_REQUIRED", "Read the partner case context first, then bind the evidence read to its exact version."));
+    }
     const observedCase = await this.store.readCase(input.actor, input.call.caseRef);
     if (!observedCase) return buildToolResult(blocked(input.call, "A0", "CASE_NOT_FOUND", "Verify the canonical case identity before retrying."));
     if (input.call.caseRef.expectedVersion !== null && input.call.caseRef.expectedVersion !== observedCase.objectVersion) {
