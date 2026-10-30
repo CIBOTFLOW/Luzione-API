@@ -25,6 +25,7 @@ Date: 2026-10-29. Project: SULTAN_PARTNER_A0_001 (user-directed, additive to the
 - Managed PostgreSQL catalog inspection found `relrowsecurity=true` but `relforcerowsecurity=false` for all four CRM tables. `pg_policies` counts: `crm_accounts=0`, `crm_people=0`, `crm_leads=1`, `crm_opportunities=0`. With a non-owner, non-bypass role, RLS may deny reads even when tenant predicates are present; an owner/bypass role would need separate security review. **Do not equate tenant SQL filters with proven RLS isolation.**
 - Named roles `luzione_api_runtime`, `luzione_api`, and `luzione_provider_worker` were not present in the inspected `pg_roles` result. This does not identify the actual deployed API credential. No role/grant/policy modifications were made.
 - **Gate:** no production enablement or promotion until the deployed API credential is identified and a disposable or otherwise authorized tenant-isolated test proves permitted in-tenant reads and denied cross-tenant reads without bypass. Keep this PR draft.
+- Implemented fail-closed feature gate: `LUZIONE_SULTAN_PARTNER_A0_ENABLED` defaults to OFF; when unset, the Partner Network manifest is empty and tool invocation is denied. Only explicitly enable after the preceding RLS/credential proof. This gate does not weaken Stage 5 or grant any write authority.
 
 ## Tests and evidence
 - Local Node v22.16.0 experimental type-stripping run: **9/9** pure projection tests passed against `partnerCase.ts` (version binding, stable digest, altered coverage, invalid input, missing evidence, unknown tool).
