@@ -6,7 +6,12 @@ import {
   canonicalClaimEvidenceBinding, stage5EvidenceRefsHash,
   type CanonicalReadbackReceipt, type Stage5AdmissionReceipt,
 } from "./contracts";
-import { SultanStage5StoreError } from "./postgresStore";
+export class Stage5ReadbackTransportError extends Error {
+  constructor(readonly code: string, readonly status: number) {
+    super("Stage 5 readback unavailable or not verified.");
+    this.name = "Stage5ReadbackTransportError";
+  }
+}
 import { verifyCanonicalReadbackReceiptIntegrity, verifyStage5AdmissionReceiptIntegrity } from "./runtime";
 import { isExactStage5ConsumerWorkload } from "./workload";
 
@@ -19,7 +24,7 @@ const READBACK_ID = /^s5read_[a-f0-9]{32}$/;
 const MAX_AGE_MS = 5 * 60_000;
 const CLOCK_SKEW_MS = 30_000;
 function deny(code: string, status = 503): never {
-  throw new SultanStage5StoreError(code, "Stage 5 readback unavailable or not verified.", status);
+  throw new Stage5ReadbackTransportError(code, status);
 }
 function validAdmission(receipt: Stage5AdmissionReceipt, tenantId: string, nowMs: number) {
   try {
