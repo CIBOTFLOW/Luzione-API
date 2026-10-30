@@ -37,7 +37,7 @@ function fakePool(options: { missing?: boolean; failPeople?: boolean } = {}) {
       queries.push({ sql, params });
       if (sql.includes("from public.crm_accounts")) {
         return { rows: options.missing ? [] : [{
-          account_id: ID, account_name: "Synthetic Design Studio", account_type: "design_firm",
+          account_id: ID, id: "legacy-partner-alias", account_name: "Synthetic Design Studio", account_type: "design_firm",
           status: "TARGET", partner_iq: 77, partner_iq_version: "v2", partner_iq_confidence: "HIGH", updated_at: NOW,
         }] };
       }
@@ -109,8 +109,11 @@ test("partner store reads one tenant-scoped repeatable-read snapshot without wri
   assert.ok(fake.queries.some((q) => q.sql.includes("set_config('app.tenant_id'")));
   const selects = fake.queries.filter((q) => q.sql.includes("from public."));
   assert.equal(selects.length, 4);
-  assert.ok(selects.every((q) => q.sql.includes("tenant_id=$1") && q.sql.includes("account_id::text=$2")));
+  assert.ok(selects.every((q) => q.sql.includes("tenant_id=$1")));
+  assert.ok(selects[0].sql.includes("account_id=$2::uuid"));
+  assert.ok(selects.slice(1).every((q) => q.sql.includes("account_id::text in ($2,$3)")));
   assert.ok(selects.every((q) => q.params[0] === "luzione" && q.params[1] === ID));
+  assert.ok(selects.slice(1).every((q) => q.params[2] === "legacy-partner-alias"));
   assert.equal(fake.queries.at(-1)?.sql, "commit");
   assert.ok(fake.wasReleased());
 });
