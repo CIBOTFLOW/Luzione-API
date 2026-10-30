@@ -52,7 +52,7 @@ test("flag OFF returns null without inspecting signing credentials", () => {
     LUZIONE_SULTAN_A0_RECEIPT_HMAC_KEY_B64: "malformed",
   }), null);
 });
-test("valid A0 read signs exact canonical v1 envelope with no raw customer snapshot", () => {
+test("valid A0 read signs exact canonical v2 envelope with no raw customer snapshot", () => {
   const envelope = sign();
   const { signature, ...unsigned } = envelope;
   assert.equal(signature, createHmac("sha256", KEY).update(canonicalJson(unsigned)).digest("hex"));
