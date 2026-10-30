@@ -21,3 +21,7 @@ The new deterministic regression exercises an admitted synthetic Stage 5 case, a
 ## Next
 
 After the readback PR passes security review, build a default-off Sultan OIDC transport adapter with exact response schema, bounded timeouts and independently verified workload identity; test it against a disposable two-tenant PostgreSQL deployment, then verify deployed role/policy and key custody before any production activation. No paid APIs, customer sends, business mutations, or live agents.
+
+## CI learning and correction
+
+Initial PR-head Release gate at `5ba0b408f317e0f1ec53b3dcd8a9a6f59356c801` failed 3 of 282 tests, **not** the new Stage 5 positive regression (that test passed). Two failures were topology inventory drift from the new route and feature flag; the third was the exact OIDC capability allowlist fixture. The route, environment variable, and expected capability are now explicitly inventoried/tested. The topology scanner and identity boundary were not weakened. Re-run the entire Release gate and CodeQL on the final corrected head; do not merge a failed or pending head.
