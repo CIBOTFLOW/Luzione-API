@@ -37,6 +37,8 @@ function validAdmission(receipt: Stage5AdmissionReceipt, tenantId: string, nowMs
       && receipt.admittedEffectClass === "A0"
       && receipt.requestedEffectClass === "A0"
       && receipt.requestedCapability === "sultan.case.read"
+      && receipt.purpose === "sultan-shadow-case-read"
+      && receipt.phase === "SIMULATION"
       && receipt.effectAuthority === "NO_EFFECT"
       && receipt.authorizesInference === false
       && receipt.externalEffectsAuthorized === false
