@@ -72,7 +72,11 @@ test("signed v2 call hash binds exact Stage 5 ID and invocation identity", () =>
     { runId: "synthetic-other-run" },
     { toolCallId: "synthetic-other-call" },
   ]) {
-    const changed = sign({ call: { ...call, ...change } });
+    const changedCall = { ...call, ...change };
+    const changed = sign({ call: changedCall, toolResult: {
+      ...fixture().toolResult, operationId: changedCall.operationId,
+      toolCallId: changedCall.toolCallId,
+    } });
     assert.notEqual(changed.callHash, original.callHash);
     assert.notEqual(changed.signature, original.signature);
   }
