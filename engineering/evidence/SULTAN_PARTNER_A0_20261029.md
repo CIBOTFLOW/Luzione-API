@@ -23,6 +23,10 @@ Date: 2026-10-29. Project: SULTAN_PARTNER_A0_001 (user-directed, additive to the
 - Added API `sultan-partner-read.test.ts` to exercise the real module with fake Postgres pool, read-only transaction, tenant/workload denials, rollback/release, manifest A0-only, Stage 5 gate, and exact/stale version behavior.
 - Full repository `npm run verify`, hosted CI, disposable Postgres with the actual Luzione CRM schema, signed authenticated Sultan→API journey, and production readback: **NOT YET VERIFIED**. Do not infer these from local pure tests.
 
+## Failure and repair evidence
+- Initial exact-head GitHub Release gate run `40986723153` failed two tests: canonical taxonomy did not include the new suite; the Revenue steward inherited the new partner tool because its existing manifest used a denylist. The latter was an authorization-scope defect discovered by regression.
+- Repair: register the suite in `platform-testing/taxonomy.ts`, change Revenue manifest to an explicit allowlist, and add a cross-steward regression. Preserve this failure history; final head CI is a separate gate.
+
 ## Unresolved and next
 1. Verify `crm_accounts.partner_iq*` and `crm_opportunities.account_id` columns against the actual managed schema; source-level evidence comes from Luzione UI's `relationshipCrmStore.ts` and `targetPartnerAccountService.ts`.
 2. Run GitHub CI at the exact PR SHA and repair any type/lint/test/build failures.
