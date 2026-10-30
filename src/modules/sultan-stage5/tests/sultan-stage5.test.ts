@@ -39,6 +39,7 @@ import {
   verifyStage5AdmissionReceiptIntegrity,
 } from "@/modules/sultan-stage5/runtime";
 import { isExactStage5ConsumerWorkload } from "@/modules/sultan-stage5/workload";
+import { readStage5AdmissionBundle, Stage5ReadbackTransportError } from "@/modules/sultan-stage5/admissionReadbackTransport";
 
 const NOW = "2026-09-02T12:00:00.000Z";
 const API_SHA = "a".repeat(40);
@@ -803,3 +804,105 @@ function canonicalReceipt(status: string): CanonicalReadbackReceipt {
     },
   });
 }
+
+
+test("default-off independent Stage 5 A0 readback transport binds real synthetic admission and canonical receipt", async () => {
+  const uiActor = actor("service:luzione-ui");
+  const row = buildCanonicalReadbackReceipt({
+    actor: uiActor, apiDeploymentSha: API_SHA,
+    request: {
+      contractVersion: SULTAN_STAGE5_CANONICAL_READBACK_CONTRACT_VERSION,
+      consumerDeploymentSha: UI_SHA, idempotencyKey: "readback-transport-synthetic",
+      requestedAt: "2026-09-02T11:59:30.000Z",
+      subjectId: "opportunity-001", subjectType: "OPPORTUNITY",
+    },
+    derived: {
+      claims: [{ claimId: "opportunity.stage", kind: "FACT", unit: null,
+        value: "qualified", valueType: "STRING" }],
+      freshUntil: "2026-09-02T12:05:00.000Z",
+      observedAt: "2026-09-02T11:59:00.000Z",
+      sourceRefs: ["postgres:public.opportunities"],
+      sourceVersion: "opportunity:opportunity-001:v1:squalified",
+      status: "AVAILABLE",
+    },
+  });
+  const evidence = readbackRef({
+    readbackReceiptId: row.readbackReceiptId, readbackHash: row.readbackHash,
+    observedAt: row.observedAt, freshUntil: row.freshUntil,
+    sourceRefs: row.provenance.sourceRefs, sourceVersion: row.provenance.sourceVersion,
+    claimEvidence: row.claims.map(claim => canonicalClaimEvidenceBinding(row, claim)),
+  });
+  const base = assertion();
+  const scoped = bindAssertionToReadbacks({
+    ...base, purpose: "sultan-shadow-case-read", requestedCapability: "sultan.case.read",
+  }, [evidence], base.outcomeExpectation);
+  const authenticated = {
+    ...actor(), capabilities: [...actor().capabilities, "sultan.case.read", "sultan.stage5.admission.read"],
+  };
+  const admission = evaluateStage5Admission({
+    actor: authenticated, assertion: scoped, decidedAt: NOW, pins: pins(),
+    readbacks: [evidence], requestHash: sha256(scoped),
+  }).receipt;
+  assert.equal(admission.status, "ADMITTED_NO_EFFECT", admission.reasonCodes.join(","));
+  let admissionsRead = 0, readbacksRead = 0;
+  const store = {
+    async readAdmission(tenantId: string, id: string) {
+      admissionsRead++;
+      assert.equal(tenantId, "luzione"); assert.equal(id, admission.admissionReceiptId);
+      return admission;
+    },
+    async readCanonicalReadback(tenantId: string, id: string) {
+      readbacksRead++;
+      assert.equal(tenantId, "luzione"); assert.equal(id, row.readbackReceiptId);
+      return row;
+    },
+  };
+  const call = (overrides: Record<string, unknown> = {}) => readStage5AdmissionBundle({
+    actor: authenticated, admissionReceiptId: admission.admissionReceiptId,
+    store, enabled: true, now: new Date(NOW), ...overrides,
+  });
+  const success = await call();
+  assert.equal(success.admission.receiptHash, admission.receiptHash);
+  assert.equal(success.readbacks[0].readbackHash, row.readbackHash);
+  assert.equal(admissionsRead, 1); assert.equal(readbacksRead, 1);
+  const denied = async (overrides: Record<string, unknown>, code: string) => {
+    await assert.rejects(call(overrides), (error: unknown) =>
+      error instanceof Stage5ReadbackTransportError && error.code === code);
+  };
+  await denied({ enabled: false }, "STAGE5_READBACK_DISABLED");
+  await denied({ actor: { ...authenticated, tenantId: "foreign" } }, "STAGE5_READBACK_IDENTITY_DENIED");
+  await denied({ actor: { ...authenticated, source: "service-token" } }, "STAGE5_READBACK_IDENTITY_DENIED");
+  await denied({ actor: { ...authenticated, actorId: "service:luzione-ui" } }, "STAGE5_READBACK_IDENTITY_DENIED");
+  await denied({ actor: { ...authenticated, capabilities: ["sultan.stage5.admission.request"] } }, "STAGE5_READBACK_IDENTITY_DENIED");
+  await denied({ admissionReceiptId: "invalid" }, "STAGE5_READBACK_ID_INVALID");
+  assert.equal(admissionsRead, 1); assert.equal(readbacksRead, 1);
+
+  const malformedStore = {
+    ...store, async readCanonicalReadback(_tenantId: string, _id: string) {
+      return { ...row, claims: [{ ...row.claims[0], value: "tampered" }] };
+    },
+  };
+  await denied({ store: malformedStore }, "STAGE5_READBACK_NOT_VERIFIED");
+  await denied({ store: { ...store, async readCanonicalReadback() { return { ...row, tenantId: "foreign" }; } } },
+    "STAGE5_READBACK_NOT_VERIFIED");
+  await denied({ store: { ...store, async readCanonicalReadback() { return null; } } },
+    "STAGE5_READBACK_NOT_VERIFIED");
+  await denied({ store: { ...store, async readAdmission() { return null; } } },
+    "STAGE5_ADMISSION_NOT_FOUND");
+  await denied({ now: new Date("2026-09-02T12:07:00.000Z") },
+    "STAGE5_ADMISSION_NOT_VERIFIED");
+
+  for (const bad of [
+    { phase: "EXECUTION" as const },
+    { requestedEffectClass: "A1" as const },
+    { requestedCapability: "analysis.read" },
+  ]) {
+    const candidate = { ...scoped, ...bad };
+    const receipt = evaluateStage5Admission({
+      actor: authenticated, assertion: candidate, decidedAt: NOW, pins: pins(),
+      readbacks: [evidence], requestHash: sha256(candidate),
+    }).receipt;
+    assert.equal(receipt.status, "DENIED");
+    assert.ok(receipt.reasonCodes.includes("SHADOW_CASE_READ_PURPOSE_SCOPE_MISMATCH"));
+  }
+});
