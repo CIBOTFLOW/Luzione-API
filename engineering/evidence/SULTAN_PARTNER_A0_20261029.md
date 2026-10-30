@@ -18,6 +18,9 @@ Date: 2026-10-29. Project: SULTAN_PARTNER_A0_001 (user-directed, additive to the
 - Explicit evidence gaps for unverified partner type, absent current Partner IQ, or no linked professional/lead evidence.
 - Existing `readEvidence` receives the admitted snapshot from PR #89; no second case read.
 
+## Read-only managed schema inspection
+- Supabase project `cfwkqhenhnvnnwpxdjns`, public table metadata inspected without row reads or mutations on 2026-10-29. Confirmed: `crm_accounts.account_id` UUID, `crm_accounts.id` text, `account_name/account_type/status` text, `partner_iq` numeric, `partner_iq_version/partner_iq_confidence` text, `updated_at` timestamptz; `crm_people.account_id` text, `crm_leads.account_id` text, `crm_opportunities.account_id` text, and all three `updated_at` timestamptz. All four tables report RLS enabled. This does **not** prove FORCE RLS, deployed runtime role permissions, tenant-denial behavior or SQL execution against a disposable database.
+
 ## Tests and evidence
 - Local Node v22.16.0 experimental type-stripping run: **9/9** pure projection tests passed against `partnerCase.ts` (version binding, stable digest, altered coverage, invalid input, missing evidence, unknown tool).
 - Added API `sultan-partner-read.test.ts` to exercise the real module with fake Postgres pool, read-only transaction, tenant/workload denials, rollback/release, manifest A0-only, Stage 5 gate, and exact/stale version behavior.
@@ -28,7 +31,7 @@ Date: 2026-10-29. Project: SULTAN_PARTNER_A0_001 (user-directed, additive to the
 - Repair: register the suite in `platform-testing/taxonomy.ts`, change Revenue manifest to an explicit allowlist, and add a cross-steward regression. Preserve this failure history; final head CI is a separate gate.
 
 ## Unresolved and next
-1. Verify `crm_accounts.partner_iq*` and `crm_opportunities.account_id` columns against the actual managed schema; source-level evidence comes from Luzione UI's `relationshipCrmStore.ts` and `targetPartnerAccountService.ts`.
+1. Managed schema columns have been inspected read-only; still verify query plans, RLS policies and the exact API runtime role against a disposable tenant-isolated database.
 2. Run GitHub CI at the exact PR SHA and repair any type/lint/test/build failures.
 3. Exercise a disposable tenant-isolated Postgres fixture, including RLS and cross-tenant negative reads.
 4. Produce a trusted, signed A0 manifest/read receipt and verify it in Sultan's shadow projector. No customer payloads in Git.
