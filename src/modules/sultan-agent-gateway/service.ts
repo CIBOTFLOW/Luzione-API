@@ -78,7 +78,7 @@ export type SultanAgentGatewayStore = {
     requestedCapability: string;
   }): Promise<Stage5AdmissionReceipt>;
   readCase(actor: ApiActor, caseRef: SultanCaseRef): Promise<AuthoritativeCaseSnapshot | null>;
-  readEvidence(actor: ApiActor, caseRef: SultanCaseRef, toolId: string): Promise<BoundEvidence>;
+  readEvidence(actor: ApiActor, caseRef: SultanCaseRef, toolId: string, observed: AuthoritativeCaseSnapshot): Promise<BoundEvidence>;
   prepareCommand(input: {
     actor: ApiActor;
     call: SultanToolCall;
@@ -161,7 +161,14 @@ export class SultanAgentGatewayService {
       return buildToolResult(blocked(input.call, "A0", "STALE_OBJECT_VERSION", "Refresh the authoritative case version and reconsider the recommendation."));
     }
     if (input.call.toolId === "luzione.case_context.read") return readyRead(input.call, observedCase.sourceRefs, { snapshot: observedCase });
-    const evidence = await this.store.readEvidence(input.actor, input.call.caseRef, input.call.toolId);
+    const evidence = await this.store.readEvidence(input.actor, input.call.caseRef, input.call.toolId, observedCase);
+    if (evidence.freshness !== "FRESH") {
+      return buildToolResult({
+        ...blocked(input.call, "A0", "EVIDENCE_NOT_FRESH", "Refresh the canonical evidence and obtain a new Stage 5 admission before retrying."),
+        sourceFreshness: evidence.freshness,
+        sourceRefs: evidence.sourceRefs,
+      });
+    }
     return readyRead(input.call, evidence.sourceRefs, {
       evidence: evidence.evidence,
       missingEvidence: evidence.missingEvidence,
