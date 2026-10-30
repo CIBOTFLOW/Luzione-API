@@ -162,6 +162,9 @@ export class SultanAgentGatewayService {
     }
     if (input.call.toolId === "luzione.case_context.read") return readyRead(input.call, observedCase.sourceRefs, { snapshot: observedCase });
     const evidence = await this.store.readEvidence(input.actor, input.call.caseRef, input.call.toolId, observedCase);
+    if (!observedCase.sourceRefs.every((reference) => evidence.sourceRefs.includes(reference))) {
+      return buildToolResult(blocked(input.call, "A0", "EVIDENCE_CASE_BINDING_MISMATCH", "Discard unbound evidence and re-read the exact authoritative case."));
+    }
     if (evidence.freshness !== "FRESH") {
       return buildToolResult({
         ...blocked(input.call, "A0", "EVIDENCE_NOT_FRESH", "Refresh the canonical evidence and obtain a new Stage 5 admission before retrying."),
