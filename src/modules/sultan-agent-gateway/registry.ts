@@ -119,6 +119,7 @@ const TOOL_REGISTRY: readonly SultanToolDescriptor[] = Object.freeze([
   readTool("luzione.supplier_facts.read", "Read supplier evidence already bound to the commercial case."),
   readTool("luzione.order_fulfillment.read", "Read the authoritative order and latest no-effect fulfillment intent."),
   readTool("luzione.catalog_evidence.read", "Read the current Shopify catalog projection and freshness evidence."),
+  readTool("luzione.partner_relationship.read", "Read tenant-bound Partner Network account and relationship coverage."),
   actionTool("luzione.proposal_revision.create", "Prepare and record a versioned internal proposal revision without send authority.", proposalRevisionSchema),
   actionTool("luzione.task.create", "Prepare and record a reversible internal task for the exact case.", taskSchema),
   actionTool("luzione.internal_action.archive", "Archive an exact internal draft, task or proposal; preserve its evidence and never dispatch providers.", { type: "object", properties: { campaignId, targetReceiptId: boundedText(512), targetObjectVersion: boundedText(512), targetPayloadHash: { type: "string", pattern: "^[a-f0-9]{64}$" } }, required: ["campaignId", "targetReceiptId", "targetObjectVersion", "targetPayloadHash"], additionalProperties: false }),
@@ -147,6 +148,9 @@ export function toolsForAgent(agent: SultanLogicalAgent) {
   }
   if (agent.agentId === "agent.luzione.fulfillment-steward") {
     return TOOL_REGISTRY.filter((descriptor) => ["luzione.case_context.read", "luzione.missing_evidence.read", "luzione.order_fulfillment.read"].includes(descriptor.toolId));
+  }
+  if (agent.agentId === "agent.luzione.partner-network-steward") {
+    return TOOL_REGISTRY.filter((descriptor) => ["luzione.case_context.read", "luzione.missing_evidence.read", "luzione.partner_relationship.read"].includes(descriptor.toolId));
   }
   if (agent.agentId === "agent.luzione.catalog-steward") {
     return TOOL_REGISTRY.filter((descriptor) => ["luzione.case_context.read", "luzione.missing_evidence.read", "luzione.catalog_evidence.read"].includes(descriptor.toolId));
