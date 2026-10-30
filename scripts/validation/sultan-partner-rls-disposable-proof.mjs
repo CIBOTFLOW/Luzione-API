@@ -99,6 +99,7 @@ async function main() {
     if (setupStarted) {
       // This cleanup is only reachable after the database-name, emptiness and role checks.
       for (const table of [...SOURCE_TABLES].reverse()) await admin.query(`drop table if exists public.${table}`);
+      await admin.query(`revoke usage on schema public from ${ROLE}`);
       await admin.query(`drop role if exists ${ROLE}`);
     }
     await admin.end();
