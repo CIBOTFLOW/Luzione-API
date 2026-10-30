@@ -14,6 +14,7 @@ const CANONICAL_UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]
 type CountRow = { total: number | string; latest_at: Date | string | null };
 type AccountRow = {
   account_id: string;
+  id: string;
   account_name: string;
   account_type: string;
   status: string | null;
@@ -54,10 +55,10 @@ export async function readPartnerCase(
     await client.query("begin transaction isolation level repeatable read read only");
     await client.query("select set_config('app.tenant_id',$1,true)", [actor.tenantId]);
     const account = await client.query<AccountRow>(
-      `select account_id::text as account_id,account_name,account_type,status,
+      `select account_id::text as account_id,id,account_name,account_type,status,
               partner_iq,partner_iq_version,partner_iq_confidence,updated_at
          from public.crm_accounts
-        where tenant_id=$1 and account_id::text=$2
+        where tenant_id=$1 and account_id=$2::uuid
         limit 1`,
       [actor.tenantId, caseId],
     );
@@ -66,18 +67,20 @@ export async function readPartnerCase(
       await client.query("commit");
       return null;
     }
-    const params = [actor.tenantId, caseId];
+    // CRM legacy writers may link people/leads to crm_accounts.id instead of account_id.
+    // Resolve that alias only after the canonical account is tenant-verified.
+    const params = [actor.tenantId, caseId, row.id];
     const professionals = await client.query<CountRow>(
       `select count(*)::int as total,max(updated_at) as latest_at
-         from public.crm_people where tenant_id=$1 and account_id::text=$2`, params,
+         from public.crm_people where tenant_id=$1 and account_id::text in ($2,$3)`, params,
     );
     const leads = await client.query<CountRow>(
       `select count(*)::int as total,max(updated_at) as latest_at
-         from public.crm_leads where tenant_id=$1 and account_id::text=$2`, params,
+         from public.crm_leads where tenant_id=$1 and account_id::text in ($2,$3)`, params,
     );
     const opportunities = await client.query<CountRow>(
       `select count(*)::int as total,max(updated_at) as latest_at
-         from public.crm_opportunities where tenant_id=$1 and account_id::text=$2`, params,
+         from public.crm_opportunities where tenant_id=$1 and account_id::text in ($2,$3)`, params,
     );
     const result = projectPartnerCase({
       account: {
