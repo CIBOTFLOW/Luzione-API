@@ -25,13 +25,8 @@
       "owner_repository": "CIBOTFLOW/Luzione-API",
       "runtime": "Next.js 16 Node.js runtime",
       "hosting_target": "Vercel",
-      "region_configuration": [
-        "iad1"
-      ],
-      "entrypoint_paths": [
-        "src/app",
-        "instrumentation.ts"
-      ],
+      "region_configuration": ["iad1"],
+      "entrypoint_paths": ["src/app", "instrumentation.ts"],
       "deployment_configuration": "vercel.json",
       "release_identity_source": "VERCEL_GIT_COMMIT_SHA",
       "state": "IMPLEMENTED_ON_MAIN",
@@ -47,33 +42,22 @@
       "name": "Luzione API additive Postgres migration bundle",
       "owner_repository": "CIBOTFLOW/Luzione-API",
       "runtime": "PostgreSQL migration artifacts",
-      "entrypoint_paths": [
-        "supabase/migrations"
-      ],
+      "entrypoint_paths": ["supabase/migrations"],
       "deployment_configuration": null,
       "release_identity_source": "repository filename and checksum; no main-branch migration runner",
       "state": "ARTIFACT_ONLY_ON_MAIN",
-      "dependencies": [
-        "canonical-postgres"
-      ]
+      "dependencies": ["canonical-postgres"]
     },
     {
       "deployable_id": "luzione-provider-worker",
       "name": "Luzione P110 provider delivery and reconciliation worker",
       "owner_repository": "CIBOTFLOW/Luzione-API",
       "runtime": "Node.js 20 one-shot or continuous worker",
-      "entrypoint_paths": [
-        "scripts/run-provider-worker.ts",
-        "src/modules/provider-runtime",
-        "src/lib/platform-guarantees/postgresWorkflowDeliveryStore.ts"
-      ],
+      "entrypoint_paths": ["scripts/run-provider-worker.ts", "src/modules/provider-runtime", "src/lib/platform-guarantees/postgresWorkflowDeliveryStore.ts"],
       "deployment_configuration": null,
       "release_identity_source": "repository SHA; no deployed worker release is configured",
       "state": "IMPLEMENTED_NOT_DEPLOYED_SANDBOX_AND_LIVE_DEFAULT_OFF",
-      "dependencies": [
-        "canonical-postgres",
-        "approved-provider-adapters"
-      ]
+      "dependencies": ["canonical-postgres", "approved-provider-adapters"]
     }
   ],
   "consumers": [
@@ -505,9 +489,7 @@
       "tenant_workflow_pack_settings",
       "workflow_pack_registry"
     ],
-    "repo_migration_extended": [
-      "policy_evaluations"
-    ],
+    "repo_migration_extended": ["policy_evaluations"],
     "preexisting_runtime_dependencies": [
       "luzione_sultan_runtime_status_v1",
       "p107_product_manufacturer_mappings",
@@ -541,84 +523,40 @@
     {
       "provider_id": "postgres-supabase",
       "kind": "DIRECT_RUNTIME_DEPENDENCY",
-      "capabilities_on_main": [
-        "read",
-        "bounded internal projection write",
-        "catalog/security readback"
-      ],
-      "authoritative_for": [
-        "canonical application and platform records named in database_relations"
-      ],
-      "health_source": [
-        "/api/v1/readyz",
-        "/api/v1/healthz",
-        "/api/v1/security/rls-readiness"
-      ]
+      "capabilities_on_main": ["read", "bounded internal projection write", "catalog/security readback"],
+      "authoritative_for": ["canonical application and platform records named in database_relations"],
+      "health_source": ["/api/v1/readyz", "/api/v1/healthz", "/api/v1/security/rls-readiness"]
     },
     {
       "provider_id": "vercel",
       "kind": "DIRECT_RUNTIME_AND_IDENTITY_DEPENDENCY",
-      "capabilities_on_main": [
-        "hosting",
-        "release metadata",
-        "OIDC JWKS verification"
-      ],
-      "authoritative_for": [
-        "deployment identity",
-        "workload-token signature and claims"
-      ],
-      "health_source": [
-        "/api/v1/livez",
-        "GitHub checks and Vercel deployment evidence outside main runtime"
-      ]
+      "capabilities_on_main": ["hosting", "release metadata", "OIDC JWKS verification"],
+      "authoritative_for": ["deployment identity", "workload-token signature and claims"],
+      "health_source": ["/api/v1/livez", "GitHub checks and Vercel deployment evidence outside main runtime"]
     },
     {
       "provider_id": "luzione-deterministic-simulator",
       "kind": "LOCAL_SANDBOX_ADAPTER_ONLY",
-      "capabilities_on_main": [
-        "typed prepare/execute/observe/reconcile/compensate boundary",
-        "deterministic acknowledgement, ambiguity, rate-limit, permanent-failure and source-readback scenarios"
-      ],
+      "capabilities_on_main": ["typed prepare/execute/observe/reconcile/compensate boundary", "deterministic acknowledgement, ambiguity, rate-limit, permanent-failure and source-readback scenarios"],
       "authoritative_for": [],
-      "health_source": [
-        "tenant-scoped /api/v1/provider-operations P110 aggregate"
-      ],
-      "limitations": [
-        "not a real external provider",
-        "sandbox and live modes remain default-off",
-        "no deployed worker or production observation"
-      ]
+      "health_source": ["tenant-scoped /api/v1/provider-operations P110 aggregate"],
+      "limitations": ["not a real external provider", "sandbox and live modes remain default-off", "no deployed worker or production observation"]
     },
     {
       "provider_id": "shopify",
       "kind": "INDIRECT_SOURCE_BOUNDARY",
-      "capabilities_on_main": [
-        "catalog observations accepted from an authenticated caller and projected into Postgres"
-      ],
-      "authoritative_for": [
-        "Shopify product and variant source counts/versions"
-      ],
-      "health_source": [
-        "P113 cursor/count reconciliation",
-        "Sultan aggregate sync status"
-      ],
-      "limitations": [
-        "no direct Shopify adapter, credential use or provider request exists on main"
-      ]
+      "capabilities_on_main": ["catalog observations accepted from an authenticated caller and projected into Postgres"],
+      "authoritative_for": ["Shopify product and variant source counts/versions"],
+      "health_source": ["P113 cursor/count reconciliation", "Sultan aggregate sync status"],
+      "limitations": ["no direct Shopify adapter, credential use or provider request exists on main"]
     },
     {
       "provider_id": "gmail-google-drive-airtable",
       "kind": "OBSERVED_THROUGH_POSTGRES_AGGREGATE_ONLY",
-      "capabilities_on_main": [
-        "connection counts and selected historical evidence only"
-      ],
+      "capabilities_on_main": ["connection counts and selected historical evidence only"],
       "authoritative_for": [],
-      "health_source": [
-        "public.luzione_sultan_runtime_status_v1()"
-      ],
-      "limitations": [
-        "stored connection counts do not prove current reachability or readback"
-      ]
+      "health_source": ["public.luzione_sultan_runtime_status_v1()"],
+      "limitations": ["stored connection counts do not prove current reachability or readback"]
     },
     {
       "provider_id": "ai-and-other-documented-vendors",
@@ -626,9 +564,7 @@
       "capabilities_on_main": [],
       "authoritative_for": [],
       "health_source": [],
-      "limitations": [
-        "vendor/compliance and autonomy policy references are not runtime adapters"
-      ]
+      "limitations": ["vendor/compliance and autonomy policy references are not runtime adapters"]
     }
   ],
   "health_and_evidence_sources": [
@@ -695,9 +631,12 @@
     "DATABASE_POOL_MAX",
     "DATABASE_POOL_MAX_USES",
     "DATABASE_URL",
-    "GMAIL_SULTAN_RFQ_ACCESS_TOKEN",
     "LUZIONE_API_DOMAIN_COMMAND_TENANTS",
     "LUZIONE_API_INTERNAL_PROJECTIONS_ENABLED",
+    "LUZIONE_API_SERVICE_ACTOR_ID",
+    "LUZIONE_API_SERVICE_ACTOR_TYPE",
+    "LUZIONE_API_SERVICE_CAPABILITIES",
+    "LUZIONE_BUILD_TIME",
     "LUZIONE_API_MUTATIONS_ENABLED",
     "LUZIONE_API_PROVIDER_LIVE_DESTINATIONS",
     "LUZIONE_API_PROVIDER_LIVE_ENABLED",
@@ -705,30 +644,27 @@
     "LUZIONE_API_PROVIDER_SANDBOX_DESTINATIONS",
     "LUZIONE_API_PROVIDER_SANDBOX_ENABLED",
     "LUZIONE_API_PROVIDER_SANDBOX_TENANTS",
-    "LUZIONE_API_SERVICE_ACTOR_ID",
-    "LUZIONE_API_SERVICE_ACTOR_TYPE",
-    "LUZIONE_API_SERVICE_CAPABILITIES",
-    "LUZIONE_API_SERVICE_TENANT_ID",
     "LUZIONE_API_SERVICE_TOKEN",
+    "LUZIONE_API_SERVICE_TENANT_ID",
     "LUZIONE_API_VERCEL_OIDC_ENABLED",
-    "LUZIONE_BUILD_TIME",
     "LUZIONE_CANONICAL_TENANT_CODE",
     "LUZIONE_PROVIDER_WORKER_ID",
     "LUZIONE_PROVIDER_WORKER_TENANT_ID",
-    "LUZIONE_SULTAN_A0_RECEIPT_HMAC_KEY_B64",
-    "LUZIONE_SULTAN_A0_RECEIPT_KEY_ID",
     "LUZIONE_SULTAN_A0_RECEIPT_SIGNING_ENABLED",
+    "LUZIONE_SULTAN_A0_RECEIPT_KEY_ID",
+    "LUZIONE_SULTAN_A0_RECEIPT_HMAC_KEY_B64",
     "LUZIONE_SULTAN_APPROVAL_SECRET",
     "LUZIONE_UI_DEPLOYMENT_SHA",
-    "NEXT_RUNTIME",
-    "NODE_ENV",
-    "PLATFORM_CONTINUATION_SECRET",
+    "GMAIL_SULTAN_RFQ_ACCESS_TOKEN",
     "SULTAN_RFQ_CANARY_SENDER",
     "SULTAN_STAGE5_DEPLOYMENT_SHA",
     "SULTAN_STAGE5_MAX_EVIDENCE_AGE_MS",
     "SULTAN_STAGE5_PARTICIPATION_CONTRACT_SHA",
-    "VERCEL_DEPLOYMENT_ID",
+    "NEXT_RUNTIME",
+    "NODE_ENV",
+    "PLATFORM_CONTINUATION_SECRET",
     "VERCEL_ENV",
+    "VERCEL_DEPLOYMENT_ID",
     "VERCEL_GIT_COMMIT_SHA",
     "VERCEL_REGION",
     "VERCEL_URL"
@@ -761,11 +697,7 @@
       "severity": "HIGH",
       "status": "OPEN",
       "subject": "business-object semantic ownership",
-      "evidence": [
-        "src/lib/platformCatalog.ts",
-        "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md",
-        "open PR #31 docs/production/SYSTEM_ARCHITECTURE.md"
-      ],
+      "evidence": ["src/lib/platformCatalog.ts", "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md", "open PR #31 docs/production/SYSTEM_ARCHITECTURE.md"],
       "finding": "The public catalog describes API-owned canonical business objects and deterministic truth, while the systems program assigns business truth to Postgres/providers and the pending control plane preserves existing UI object ownership until explicit transfer.",
       "required_convergence": "API_SE_003 must assign store, mutation owner and readback per object; API_SE_002 must keep the public catalog from expressing stronger ownership than that registry."
     },
@@ -774,11 +706,7 @@
       "severity": "HIGH",
       "status": "OPEN",
       "subject": "P110/P111 ownership transfer",
-      "evidence": [
-        "docs/ARCHITECTURE.md",
-        "src/lib/platform-guarantees/readService.ts",
-        "open PR #31 supabase/migrations/20260829010607_platform_control_plane_v2.sql"
-      ],
+      "evidence": ["docs/ARCHITECTURE.md", "src/lib/platform-guarantees/readService.ts", "open PR #31 supabase/migrations/20260829010607_platform_control_plane_v2.sql"],
       "finding": "Main reads P110/P111 as canonical but deliberately does not carry their migration or completed ownership transfer; PR #31 proposes a transfer registry but is unmerged.",
       "required_convergence": "Do not claim API migration ownership until migration history and production ownership evidence are reconciled."
     },
@@ -787,11 +715,7 @@
       "severity": "MEDIUM",
       "status": "OPEN",
       "subject": "workflow-pack duplicate definitions",
-      "evidence": [
-        "src/modules/workflows/catalog.ts",
-        "supabase/migrations/20260828210000_tenant_ai_governance_and_workflow_packs.sql",
-        "src/modules/workflows/tests/workflow-catalog.test.ts"
-      ],
+      "evidence": ["src/modules/workflows/catalog.ts", "supabase/migrations/20260828210000_tenant_ai_governance_and_workflow_packs.sql", "src/modules/workflows/tests/workflow-catalog.test.ts"],
       "finding": "Nine workflow packs are independently defined in TypeScript and SQL; tests validate TypeScript against capabilities but do not prove parity with the SQL seed.",
       "required_convergence": "Select one canonical definition or add generated/checksummed parity before either surface is treated as authoritative."
     },
@@ -800,10 +724,7 @@
       "severity": "HIGH",
       "status": "OPEN",
       "subject": "readiness semantic split",
-      "evidence": [
-        "src/app/api/v1/readyz/route.ts",
-        "src/app/api/v1/healthz/route.ts"
-      ],
+      "evidence": ["src/app/api/v1/readyz/route.ts", "src/app/api/v1/healthz/route.ts"],
       "finding": "readyz can return READY after select 1 and configuration checks while healthz returns 503 unless the RLS posture also passes.",
       "required_convergence": "API_SE_007 and API_SE_011 must name these as distinct observations or converge one readiness rule."
     },
@@ -812,10 +733,7 @@
       "severity": "HIGH",
       "status": "OPEN",
       "subject": "provider connected status",
-      "evidence": [
-        "src/modules/sultan-runtime/runtimeStatus.ts",
-        "src/lib/sultan-runtime/readService.ts"
-      ],
+      "evidence": ["src/modules/sultan-runtime/runtimeStatus.ts", "src/lib/sultan-runtime/readService.ts"],
       "finding": "Gmail, Google Drive and Airtable are labelled CONNECTED from stored connection counts without current provider reachability/readback.",
       "required_convergence": "API_SE_007 must separate desired/configured, credential-ready, observed and reconciled provider state."
     },
@@ -824,11 +742,7 @@
       "severity": "HIGH",
       "status": "OPEN",
       "subject": "identity and tenant transition",
-      "evidence": [
-        "src/lib/api/actor.ts",
-        "docs/ARCHITECTURE.md",
-        "open PR #31 control-plane identity files"
-      ],
+      "evidence": ["src/lib/api/actor.ts", "docs/ARCHITECTURE.md", "open PR #31 control-plane identity files"],
       "finding": "The service-token boundary accepts tenant/actor headers; Vercel OIDC pins only the Luzione UI workload and tenant. Canonical membership resolution is pending in PR #31.",
       "required_convergence": "API_SE_004 must preserve current compatibility without allowing caller-supplied authority to become canonical identity."
     },
@@ -837,10 +751,7 @@
       "severity": "MEDIUM",
       "status": "OPEN",
       "subject": "mutation endpoint overlap",
-      "evidence": [
-        "src/app/api/v1/platform-guarantees/route.ts",
-        "open PR #31 src/app/api/v1/commands/route.ts"
-      ],
+      "evidence": ["src/app/api/v1/platform-guarantees/route.ts", "open PR #31 src/app/api/v1/commands/route.ts"],
       "finding": "Main exposes an unauthenticated, fail-closed POST placeholder while PR #31 introduces the governed command path.",
       "required_convergence": "Retire or explicitly compatibility-map the placeholder when the command contract is adopted."
     },
@@ -849,10 +760,7 @@
       "severity": "MEDIUM",
       "status": "OPEN",
       "subject": "catalog evidence labels",
-      "evidence": [
-        "src/lib/platformCatalog.ts",
-        "src/app/api/v1/catalog/route.ts"
-      ],
+      "evidence": ["src/lib/platformCatalog.ts", "src/app/api/v1/catalog/route.ts"],
       "finding": "The catalog labels developer/OpenAPI and other planned concepts as foundation even though main has no OpenAPI route or shared compatibility registry.",
       "required_convergence": "API_SE_002 must publish explicit contract versions and evidence maturity instead of broad foundation labels."
     },
@@ -861,10 +769,7 @@
       "severity": "MEDIUM",
       "status": "OPEN",
       "subject": "canonical object inventory completeness",
-      "evidence": [
-        "src/lib/platformCatalog.ts",
-        "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md"
-      ],
+      "evidence": ["src/lib/platformCatalog.ts", "docs/platform-engineering/SYSTEMS_ENGINEERING_PROGRAM_V1.md"],
       "finding": "The current object list omits Supplier, Quote, Product, Task, Approval, Decision, Workflow, Memory and AI Generation from the program's required initial truth inventory.",
       "required_convergence": "API_SE_003 must inventory these without inventing owners where repository evidence is absent."
     }
