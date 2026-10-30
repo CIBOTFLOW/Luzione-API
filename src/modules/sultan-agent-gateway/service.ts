@@ -104,13 +104,14 @@ export class SultanAgentGatewayService {
     private readonly store: SultanAgentGatewayStore,
     private readonly now: () => Date = () => new Date(),
     private readonly approvalSecret: string | undefined = process.env.LUZIONE_SULTAN_APPROVAL_SECRET,
+    private readonly partnerReadEnabled: boolean = process.env.LUZIONE_SULTAN_PARTNER_A0_ENABLED === "true",
   ) {}
 
   manifest(input: { actor: ApiActor; assertedAgent: SultanLogicalAgent; caseRef: SultanCaseRef }) {
     assertSultanActor(input.actor, "sultan.tool.manifest.read");
     const agent = deriveRequiredAgent(input.caseRef);
     assertAgentBinding(agent, input.assertedAgent);
-    const tools = toolsForAgent(agent).filter((descriptor) => input.actor.capabilities.includes(descriptor.capability));
+    const tools = toolsForAgent(agent, this.partnerReadEnabled).filter((descriptor) => input.actor.capabilities.includes(descriptor.capability));
     return buildToolManifest({
       generatedAt: this.now().toISOString(),
       tenantId: "luzione",
@@ -155,6 +156,11 @@ export class SultanAgentGatewayService {
       requestedCapability: descriptor.capability,
     });
 
+    if (input.call.caseRef.caseType === "PARTNER_RELATIONSHIP"
+      && input.call.toolId !== "luzione.case_context.read"
+      && input.call.caseRef.expectedVersion === null) {
+      return buildToolResult(blocked(input.call, "A0", "EXACT_OBJECT_VERSION_REQUIRED", "Read the partner case context first, then bind the evidence read to its exact version."));
+    }
     const observedCase = await this.store.readCase(input.actor, input.call.caseRef);
     if (!observedCase) return buildToolResult(blocked(input.call, "A0", "CASE_NOT_FOUND", "Verify the canonical case identity before retrying."));
     if (input.call.caseRef.expectedVersion !== null && input.call.caseRef.expectedVersion !== observedCase.objectVersion) {
@@ -241,7 +247,7 @@ export class SultanAgentGatewayService {
   private admitTool(actor: ApiActor, call: SultanToolCall) {
     const agent = deriveRequiredAgent(call.caseRef);
     assertAgentBinding(agent, call.agent);
-    const descriptor = registeredToolForAgent(agent, call.toolId);
+    const descriptor = registeredToolForAgent(agent, call.toolId, this.partnerReadEnabled);
     if (!descriptor || descriptor.toolVersion !== call.toolVersion) throw new SultanAgentGatewayError("TOOL_NOT_AVAILABLE", "The requested tool and version are not available to this logical agent.", 404);
     if (!actor.capabilities.includes(descriptor.capability)) throw new SultanAgentGatewayError("TOOL_CAPABILITY_DENIED", "The authenticated workload lacks the exact tool capability.", 403);
     return descriptor;

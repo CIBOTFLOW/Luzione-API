@@ -9,6 +9,8 @@ import { LeadCommercialCaseStore } from "@/modules/lead-commercial-case/store";
 import { OrderFulfillmentStore } from "@/modules/order-fulfillment/store";
 import { listP113CatalogProjections } from "@/modules/catalog-projection/store";
 import { sha256 } from "@/modules/platform-guarantees/eventContract";
+import { partnerEvidence } from "@/modules/sultan-agent-gateway/partnerCase";
+import { readPartnerCase } from "@/modules/sultan-agent-gateway/partnerCaseStore";
 import {
   SULTAN_STAGE5_ADMISSION_CONTRACT_VERSION,
   canonicalClaimEvidenceBinding,
@@ -162,6 +164,9 @@ export class PostgresSultanAgentGatewayStore implements SultanAgentGatewayStore 
         snapshot: { selection, coverage: catalog.coverage, readback: catalog.readback, latestRun: catalog.latestRun },
       };
     }
+    if (caseRef.caseType === "PARTNER_RELATIONSHIP") {
+      return readPartnerCase(this.pool, actor, caseRef.caseId);
+    }
     return null;
   }
 
@@ -174,6 +179,7 @@ export class PostgresSultanAgentGatewayStore implements SultanAgentGatewayStore 
     if (caseRef.caseType === "COMMERCIAL") return await this.readCommercialEvidence(actor, observed, toolId);
     if (caseRef.caseType === "FULFILLMENT") return fulfillmentEvidence(observed);
     if (caseRef.caseType === "CATALOG_QUALITY") return catalogEvidence(observed);
+    if (caseRef.caseType === "PARTNER_RELATIONSHIP") return partnerEvidence(observed, toolId);
     return { freshness: "UNKNOWN", sourceRefs: observed.sourceRefs, evidence: observed.snapshot, missingEvidence: ["supported pilot evidence adapter"] };
   }
 
