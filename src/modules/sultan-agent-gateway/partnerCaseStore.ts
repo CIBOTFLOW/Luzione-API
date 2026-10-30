@@ -1,4 +1,5 @@
-import "server-only";
+// Only invoked by the server-only PostgresSultanAgentGatewayStore.
+// Keep this dependency-injected module importable by offline regression tests.
 
 import type { Pool } from "pg";
 
