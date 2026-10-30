@@ -1,0 +1,10 @@
+# A0 signed receipt v2 — exact invocation and admission binding
+
+- Date: 2026-10-30. Repository: CIBOTFLOW/Luzione-API.
+- Baseline: main 7c5888708d7cf49eecbfb46a9b022b02cb09561d (signed A0 v1).
+- Problem: v1 HMAC authenticated only the manifest and result payload hashes. The Stage 5 admissionReceiptId, operationId, runId and toolCallId were not inside the MAC. A signed unconsumed receipt could be paired with a different asserted admission ID for the same case if the consumer did not independently bind the call.
+- Correction: default-OFF v2 envelope adds `callHash = sha256(call)` inside the canonical HMAC payload. The call contains the Stage 5 admissionReceiptId, operationId, runId, toolCallId, tool, agent, caseRef, purpose and arguments hash. The existing API gateway still checks the actual Stage 5 admission before invoking this signer. The signer itself does NOT independently verify the Stage 5 receipt content or its production database role.
+- Safety: No keys, network requests, schema changes, business writes, customer sends, feature activation or paid inference. A v1-only Sultan consumer must fail closed; matching Sultan v2 verifier is required before opt-in. Existing receipt-signing environment flag stays OFF.
+- Tests: API deterministic signer tests verify v2 MAC, changed call hash and signature under altered admission/operation/run/call IDs, and existing OIDC/tenant/effect restrictions. Sultan consumer must additionally reject a validly signed v1 envelope in the acquisition path and reject a re-signed v2 envelope with a call hash that disagrees with the requested tool call.
+- Limitations: This proves integrity of the asserted admission ID only after the authenticated gateway has validated Stage 5. It does not cryptographically sign the full Stage 5 receipt content, authenticate the sender independently of provisioned key custody, or verify deployed tenant policies. Partner Network remains OFF; Sultan remains SHADOW.
+- Next: cross-repository v2 synthetic interoperability, exact-head CI/CodeQL, then independent deployment identity and Stage 5 receipt readback proof before live acquisition.

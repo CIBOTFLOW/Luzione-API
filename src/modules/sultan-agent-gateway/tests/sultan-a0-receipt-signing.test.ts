@@ -52,22 +52,42 @@ test("flag OFF returns null without inspecting signing credentials", () => {
     LUZIONE_SULTAN_A0_RECEIPT_HMAC_KEY_B64: "malformed",
   }), null);
 });
-test("valid A0 read signs exact canonical v1 envelope with no raw customer snapshot", () => {
+test("valid A0 read signs exact canonical v2 envelope with no raw customer snapshot", () => {
   const envelope = sign();
   const { signature, ...unsigned } = envelope;
   assert.equal(signature, createHmac("sha256", KEY).update(canonicalJson(unsigned)).digest("hex"));
   assert.equal(envelope.manifestHash, fixture().manifest.manifestHash);
   assert.equal(envelope.resultHash, fixture().toolResult.resultHash);
+  assert.equal(envelope.callHash, sha256(call));
   assert.equal(envelope.nonce, NONCE.toString("hex"));
   assert.equal(envelope.expiresAt, "2026-10-30T09:30:00.000Z");
   assert.equal(JSON.stringify(envelope).includes("synthetic@example.test"), false);
 });
+test("signed v2 call hash binds exact Stage 5 ID and invocation identity", () => {
+  const original = sign();
+  assert.equal(original.schemaVersion, "sultan.luzione-a0-transport-envelope.v2");
+  for (const change of [
+    { admissionReceiptId: "s5admit_" + "b".repeat(32) },
+    { operationId: "synthetic-other-op" },
+    { runId: "synthetic-other-run" },
+    { toolCallId: "synthetic-other-call" },
+  ]) {
+    const changedCall = { ...call, ...change };
+    const changed = sign({ call: changedCall, toolResult: {
+      ...fixture().toolResult, operationId: changedCall.operationId,
+      toolCallId: changedCall.toolCallId,
+    } });
+    assert.notEqual(changed.callHash, original.callHash);
+    assert.notEqual(changed.signature, original.signature);
+  }
+});
+
 test("enabled flag requires canonical base64 key and bounded key ID", () => {
   const env = { LUZIONE_SULTAN_A0_RECEIPT_SIGNING_ENABLED: "true",
     LUZIONE_SULTAN_A0_RECEIPT_KEY_ID: "synthetic-v1",
     LUZIONE_SULTAN_A0_RECEIPT_HMAC_KEY_B64: KEY.toString("base64") };
   assert.equal(maybeSignA0Receipt(fixture(), env)?.schemaVersion,
-    "sultan.luzione-a0-transport-envelope.v1");
+    "sultan.luzione-a0-transport-envelope.v2");
   for (const change of [
     { LUZIONE_SULTAN_A0_RECEIPT_HMAC_KEY_B64: "not base64!!" },
     { LUZIONE_SULTAN_A0_RECEIPT_HMAC_KEY_B64: Buffer.alloc(16).toString("base64") },
