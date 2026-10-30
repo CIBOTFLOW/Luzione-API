@@ -99,6 +99,15 @@ test("Partner Network manifest contains only three A0 read tools", () => {
   assert.ok(tools.every((tool) => tool.effectClass === "A0" && tool.approvalMode === "BLOCKED"));
 });
 
+test("Revenue steward cannot inherit Partner Network reads", () => {
+  const revenue = deriveSultanLogicalAgent("COMMERCIAL");
+  assert.ok(revenue);
+  const ids = toolsForAgent(revenue).map((tool) => tool.toolId);
+  assert.equal(ids.includes("luzione.partner_relationship.read"), false);
+  assert.ok(ids.includes("luzione.proposal_evidence.read"));
+  assert.ok(ids.includes("luzione.supplier_rfq_email.send"));
+});
+
 test("partner store reads one tenant-scoped repeatable-read snapshot without writes", async () => {
   const fake = fakePool();
   const result = await readPartnerCase(fake.pool, actor(), ID, () => new Date(NOW));
