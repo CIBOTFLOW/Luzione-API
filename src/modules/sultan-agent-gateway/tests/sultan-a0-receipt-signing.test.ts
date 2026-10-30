@@ -135,3 +135,27 @@ test("Sultan consumer cross-repository golden v2 receipt parity", () => {
   assert.equal(signed.issuedAt, "2026-10-30T09:26:00.000Z");
   assert.equal(signed.expiresAt, "2026-10-30T09:30:00.000Z");
 });
+
+test("canonical Stage 5 readback context is accepted and cryptographically call-bound", () => {
+  const ref = {
+    sourceRef: "api:canonical-readback/s5readback_" + "c".repeat(32),
+    sourceVersion: "d".repeat(64), integrityHash: "d".repeat(64),
+    observedAt: "2026-10-30T09:25:00.000Z", freshness: "FRESH" as const,
+  };
+  const boundCall = { ...call, contextRefs: [ref] };
+  const signed = sign({ call: boundCall });
+  assert.equal(signed.callHash, sha256(boundCall));
+  assert.notEqual(signed.signature, sign().signature);
+  const invalid = [
+    [{ ...ref, sourceVersion: "e".repeat(64) }],
+    [{ ...ref, freshness: "STALE" as const }],
+    [{ ...ref, observedAt: "2026-10-27T09:25:00.000Z" }],
+    [{ ...ref, sourceRef: "postgres:public.sultan_api_admission_receipts/foreign" }],
+    [{ ...ref, tenantId: "foreign" }],
+    [ref, { ...ref }],
+  ];
+  for (const contextRefs of invalid) {
+    assert.throws(() => sign({ call: { ...call, contextRefs } as SultanToolCall }),
+      /A0_RECEIPT_SIGNING_DENIED/);
+  }
+});
