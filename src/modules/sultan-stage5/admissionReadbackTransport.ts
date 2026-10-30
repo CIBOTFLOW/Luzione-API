@@ -6,14 +6,15 @@ import {
   canonicalClaimEvidenceBinding, stage5EvidenceRefsHash,
   type CanonicalReadbackReceipt, type Stage5AdmissionReceipt,
 } from "./contracts";
+import { verifyCanonicalReadbackReceiptIntegrity, verifyStage5AdmissionReceiptIntegrity } from "./runtime";
+import { isExactStage5ConsumerWorkload } from "./workload";
+
 export class Stage5ReadbackTransportError extends Error {
   constructor(readonly code: string, readonly status: number) {
     super("Stage 5 readback unavailable or not verified.");
     this.name = "Stage5ReadbackTransportError";
   }
 }
-import { verifyCanonicalReadbackReceiptIntegrity, verifyStage5AdmissionReceiptIntegrity } from "./runtime";
-import { isExactStage5ConsumerWorkload } from "./workload";
 
 type ReadStore = {
   readAdmission(tenantId: string, receiptId: string): Promise<Stage5AdmissionReceipt | null>;
@@ -23,6 +24,11 @@ const ADMISSION_ID = /^s5admit_[a-f0-9]{32}$/;
 const READBACK_ID = /^s5read_[a-f0-9]{32}$/;
 const MAX_AGE_MS = 5 * 60_000;
 const CLOCK_SKEW_MS = 30_000;
+const CASE_AGENTS: Readonly<Record<string, string>> = Object.freeze({
+  COMMERCIAL: "agent.luzione.revenue-steward",
+  FULFILLMENT: "agent.luzione.fulfillment-steward",
+  CATALOG_QUALITY: "agent.luzione.catalog-steward",
+});
 function deny(code: string, status = 503): never {
   throw new Stage5ReadbackTransportError(code, status);
 }
@@ -38,6 +44,9 @@ function validAdmission(receipt: Stage5AdmissionReceipt, tenantId: string, nowMs
       && receipt.requestedEffectClass === "A0"
       && receipt.requestedCapability === "sultan.case.read"
       && receipt.purpose === "sultan-shadow-case-read"
+      && receipt.logicalAgent.agentId === CASE_AGENTS[receipt.caseRef.caseType]
+      && receipt.logicalAgent.agentVersion === "v1"
+      && receipt.caseRef.expectedVersion !== null
       && receipt.phase === "SIMULATION"
       && receipt.effectAuthority === "NO_EFFECT"
       && receipt.authorizesInference === false
