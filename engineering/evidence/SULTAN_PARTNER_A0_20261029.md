@@ -21,6 +21,11 @@ Date: 2026-10-29. Project: SULTAN_PARTNER_A0_001 (user-directed, additive to the
 ## Read-only managed schema inspection
 - Supabase project `cfwkqhenhnvnnwpxdjns`, public table metadata inspected without row reads or mutations on 2026-10-29. Confirmed: `crm_accounts.account_id` UUID, `crm_accounts.id` text, `account_name/account_type/status` text, `partner_iq` numeric, `partner_iq_version/partner_iq_confidence` text, `updated_at` timestamptz; `crm_people.account_id` text, `crm_leads.account_id` text, `crm_opportunities.account_id` text, and all three `updated_at` timestamptz. All four tables report RLS enabled. This does **not** prove FORCE RLS, deployed runtime role permissions, tenant-denial behavior or SQL execution against a disposable database.
 
+## Production authorization blocker discovered (read-only catalog query)
+- Managed PostgreSQL catalog inspection found `relrowsecurity=true` but `relforcerowsecurity=false` for all four CRM tables. `pg_policies` counts: `crm_accounts=0`, `crm_people=0`, `crm_leads=1`, `crm_opportunities=0`. With a non-owner, non-bypass role, RLS may deny reads even when tenant predicates are present; an owner/bypass role would need separate security review. **Do not equate tenant SQL filters with proven RLS isolation.**
+- Named roles `luzione_api_runtime`, `luzione_api`, and `luzione_provider_worker` were not present in the inspected `pg_roles` result. This does not identify the actual deployed API credential. No role/grant/policy modifications were made.
+- **Gate:** no production enablement or promotion until the deployed API credential is identified and a disposable or otherwise authorized tenant-isolated test proves permitted in-tenant reads and denied cross-tenant reads without bypass. Keep this PR draft.
+
 ## Tests and evidence
 - Local Node v22.16.0 experimental type-stripping run: **9/9** pure projection tests passed against `partnerCase.ts` (version binding, stable digest, altered coverage, invalid input, missing evidence, unknown tool).
 - Added API `sultan-partner-read.test.ts` to exercise the real module with fake Postgres pool, read-only transaction, tenant/workload denials, rollback/release, manifest A0-only, Stage 5 gate, and exact/stale version behavior.
