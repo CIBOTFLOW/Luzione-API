@@ -6,7 +6,7 @@ import type { ApiActor } from "@/lib/api/actor";
 import { canonicalJson, sha256 } from "@/modules/platform-guarantees/eventContract";
 import type { SultanToolCall, SultanToolManifest, SultanToolResult } from "./contracts";
 
-export const SULTAN_A0_RECEIPT_ENVELOPE_V1 = "sultan.luzione-a0-transport-envelope.v1" as const;
+export const SULTAN_A0_RECEIPT_ENVELOPE_V1 = "sultan.luzione-a0-transport-envelope.v2" as const;
 const KEY_ID = /^[A-Za-z0-9._-]{1,64}$/;
 const SHA256 = /^[a-f0-9]{64}$/;
 const ADMISSION = /^s5admit_[a-f0-9]{32}$/;
@@ -26,6 +26,7 @@ export type A0SignedReceiptEnvelope = Readonly<{
   nonce: string;
   manifestHash: string;
   resultHash: string;
+  callHash: string;
   signature: string;
 }>;
 
@@ -125,6 +126,9 @@ export function signA0ReceiptEnvelope(input: {
     workloadActorId: "service:sultan-os" as const,
     keyId, issuedAt, expiresAt: new Date(now.getTime() + TTL_MS).toISOString(),
     nonce: nonce.toString("hex"), manifestHash, resultHash: toolResult.resultHash,
+    // Binds the exact Stage 5 admission ID, operation, run, call, agent and case.
+    // Stage 5 admission is still verified by the gateway BEFORE this signer runs.
+    callHash: sha256(call),
   };
   return Object.freeze({
     ...unsigned,
