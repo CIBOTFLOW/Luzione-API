@@ -4,6 +4,7 @@ import { bindAuthenticatedRequestIdentity } from "@/modules/platform-contracts/r
 import { SultanAgentGatewayError } from "@/modules/sultan-agent-gateway/contracts";
 import { parseToolCallEnvelope } from "@/modules/sultan-agent-gateway/parser";
 import { PostgresSultanAgentGatewayStore } from "@/modules/sultan-agent-gateway/postgresStore";
+import { maybeSignA0Receipt } from "@/modules/sultan-agent-gateway/a0ReceiptSigning";
 import { SultanAgentGatewayService } from "@/modules/sultan-agent-gateway/service";
 
 export const dynamic = "force-dynamic";
@@ -35,9 +36,20 @@ export async function POST(request: Request) {
       throw new SultanAgentGatewayError("INVALID_TOOL_CALL", "The tool call body must be valid JSON.");
     }
     const call = parseToolCallEnvelope(body);
-    const toolResult = await new SultanAgentGatewayService(new PostgresSultanAgentGatewayStore()).invoke({ actor, call });
+    const service = new SultanAgentGatewayService(new PostgresSultanAgentGatewayStore());
+    const toolResult = await service.invoke({ actor, call });
+    // Default OFF. Only READY A0 case reads can receive a signed manifest and
+    // envelope. No new network calls, database writes, or effect permissions.
+    const signingRequested = process.env.LUZIONE_SULTAN_A0_RECEIPT_SIGNING_ENABLED === "true"
+      && call.toolId === "luzione.case_context.read" && toolResult.status === "READY";
+    const signed = signingRequested ? {
+      manifest: service.manifest({ actor, assertedAgent: call.agent, caseRef: call.caseRef }),
+    } : null;
+    const envelope = signed ? maybeSignA0Receipt({ actor, call, manifest: signed.manifest, toolResult }) : null;
     logRequestCompletion({ method: "POST", requestIdentity: identity, route: "/api/v1/sultan/tool-invocations", status, startedAt });
-    return apiResponse({ ok: true, toolResult }, { requestIdentity: identity, status, startedAt });
+    return apiResponse({ ok: true, toolResult, ...(signed && envelope ? {
+      manifest: signed.manifest, envelope,
+    } : {}) }, { requestIdentity: identity, status, startedAt });
   } catch (error) {
     status = error instanceof SultanAgentGatewayError ? error.status : 503;
     logRequestCompletion({ method: "POST", requestIdentity: identity, route: "/api/v1/sultan/tool-invocations", status, startedAt });
