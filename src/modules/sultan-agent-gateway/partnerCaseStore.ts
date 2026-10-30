@@ -73,6 +73,29 @@ export async function readPartnerCase(
         503,
       );
     }
+    // Active RLS with zero applicable SELECT policies silently returns no rows.
+    // Detect this misconfiguration before reading customer data; a policy's
+    // presence is necessary, NOT sufficient, for cross-tenant isolation.
+    const requiredTables = ["crm_accounts", "crm_people", "crm_leads", "crm_opportunities"];
+    const policies = await client.query<{ tablename: string; policy_count: number | string }>(
+      `select tablename, count(*)::int as policy_count
+         from pg_policies
+        where schemaname = 'public'
+          and tablename = any($1::text[])
+          and cmd in ('SELECT', 'ALL')
+        group by tablename`,
+      [requiredTables],
+    );
+    const covered = new Set(policies.rows.filter((row) =>
+      Number.isSafeInteger(Number(row.policy_count)) && Number(row.policy_count) > 0,
+    ).map((row) => row.tablename));
+    if (requiredTables.some((table) => !covered.has(table))) {
+      throw new SultanAgentGatewayError(
+        "PARTNER_RLS_SELECT_POLICY_MISSING",
+        "Partner read denied: every CRM source requires an explicit SELECT-capable RLS policy.",
+        503,
+      );
+    }
     const account = await client.query<AccountRow>(
       `select account_id::text as account_id,id,account_name,account_type,status,
               partner_iq,partner_iq_version,partner_iq_confidence,updated_at

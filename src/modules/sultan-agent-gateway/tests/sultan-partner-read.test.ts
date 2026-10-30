@@ -34,6 +34,9 @@ function fakePool(options: {
   failPeople?: boolean;
   rlsInactive?: "accounts" | "people" | "leads" | "opportunities";
   rlsMissing?: boolean;
+  policyMissing?: "crm_accounts" | "crm_people" | "crm_leads" | "crm_opportunities";
+  policiesEmpty?: boolean;
+  policyCountZero?: boolean;
 } = {}) {
   const queries: { sql: string; params: readonly unknown[] }[] = [];
   let released = false;
@@ -48,6 +51,12 @@ function fakePool(options: {
           leads: options.rlsInactive !== "leads",
           opportunities: options.rlsInactive !== "opportunities",
         }] };
+      }
+      if (sql.includes("from pg_policies")) {
+        const tables = ["crm_accounts", "crm_people", "crm_leads", "crm_opportunities"];
+        return { rows: options.policiesEmpty ? [] : tables
+          .filter((tablename) => tablename !== options.policyMissing)
+          .map((tablename) => ({ tablename, policy_count: options.policyCountZero ? 0 : 1 })) };
       }
       if (sql.includes("from public.crm_accounts")) {
         return { rows: options.missing ? [] : [{
@@ -132,8 +141,10 @@ test("partner store reads one tenant-scoped repeatable-read snapshot without wri
   assert.equal(fake.queries[0].sql.toLowerCase(), "begin transaction isolation level repeatable read read only");
   assert.ok(fake.queries.some((q) => q.sql.includes("set_config('app.tenant_id'")));
   const rlsIndex = fake.queries.findIndex((q) => q.sql.includes("row_security_active("));
+  const policyIndex = fake.queries.findIndex((q) => q.sql.includes("from pg_policies"));
   const accountIndex = fake.queries.findIndex((q) => q.sql.includes("from public.crm_accounts"));
-  assert.ok(rlsIndex > 1 && accountIndex > rlsIndex, "RLS role check precedes all CRM reads");
+  assert.ok(rlsIndex > 1 && policyIndex > rlsIndex && accountIndex > policyIndex,
+    "RLS role and policy checks precede all CRM reads");
   const selects = fake.queries.filter((q) => q.sql.includes("from public."));
   assert.equal(selects.length, 4);
   assert.ok(selects.every((q) => q.sql.includes("tenant_id=$1")));
@@ -163,6 +174,29 @@ test("partner read fails closed if database does not return an RLS status row", 
   assert.equal(fake.queries.some((q) => q.sql.includes("from public.")), false);
   assert.equal(fake.queries.at(-1)?.sql, "rollback");
   assert.ok(fake.wasReleased());
+});
+
+test("partner read fails closed for missing SELECT policies on each CRM source", async () => {
+  for (const table of ["crm_accounts", "crm_people", "crm_leads", "crm_opportunities"] as const) {
+    const fake = fakePool({ policyMissing: table });
+    await assert.rejects(() => readPartnerCase(fake.pool, actor(), ID),
+      (error: unknown) => error instanceof SultanAgentGatewayError
+        && error.code === "PARTNER_RLS_SELECT_POLICY_MISSING");
+    assert.equal(fake.queries.some((q) => q.sql.includes("from public.")), false);
+    assert.equal(fake.queries.at(-1)?.sql, "rollback");
+    assert.ok(fake.wasReleased());
+  }
+});
+
+test("partner read rejects empty or zero-count RLS policy coverage", async () => {
+  for (const options of [{ policiesEmpty: true }, { policyCountZero: true }]) {
+    const fake = fakePool(options);
+    await assert.rejects(() => readPartnerCase(fake.pool, actor(), ID),
+      (error: unknown) => error instanceof SultanAgentGatewayError
+        && error.code === "PARTNER_RLS_SELECT_POLICY_MISSING");
+    assert.equal(fake.queries.some((q) => q.sql.includes("from public.")), false);
+    assert.ok(fake.wasReleased());
+  }
 });
 
 test("partner store rejects foreign workload, aliases and missing accounts", async () => {
