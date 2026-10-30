@@ -142,7 +142,7 @@ export function deriveSultanLogicalAgent(caseType: SultanCaseType) {
   return AGENT_BY_CASE_TYPE[caseType] ?? null;
 }
 
-export function toolsForAgent(agent: SultanLogicalAgent) {
+export function toolsForAgent(agent: SultanLogicalAgent, partnerReadEnabled = false) {
   if (agent.agentId === "agent.luzione.revenue-steward") {
     return TOOL_REGISTRY.filter((descriptor) => [
       "luzione.case_context.read", "luzione.missing_evidence.read",
@@ -155,6 +155,7 @@ export function toolsForAgent(agent: SultanLogicalAgent) {
     return TOOL_REGISTRY.filter((descriptor) => ["luzione.case_context.read", "luzione.missing_evidence.read", "luzione.order_fulfillment.read"].includes(descriptor.toolId));
   }
   if (agent.agentId === "agent.luzione.partner-network-steward") {
+    if (!partnerReadEnabled) return [];
     return TOOL_REGISTRY.filter((descriptor) => ["luzione.case_context.read", "luzione.missing_evidence.read", "luzione.partner_relationship.read"].includes(descriptor.toolId));
   }
   if (agent.agentId === "agent.luzione.catalog-steward") {
@@ -163,8 +164,8 @@ export function toolsForAgent(agent: SultanLogicalAgent) {
   return [];
 }
 
-export function registeredToolForAgent(agent: SultanLogicalAgent, toolId: string) {
-  return toolsForAgent(agent).find((descriptor) => descriptor.toolId === toolId) ?? null;
+export function registeredToolForAgent(agent: SultanLogicalAgent, toolId: string, partnerReadEnabled = false) {
+  return toolsForAgent(agent, partnerReadEnabled).find((descriptor) => descriptor.toolId === toolId) ?? null;
 }
 
 function readTool(toolId: string, description: string): SultanToolDescriptor {
