@@ -91,6 +91,7 @@ class FakeStore implements SultanAgentGatewayStore {
   admissionChecks = 0;
   readCaseCalls = 0;
   evidenceFreshness: "FRESH" | "STALE" | "UNKNOWN" = "FRESH";
+  evidenceRefs: readonly string[] = [CASE_SOURCE];
   evidenceObserved: AuthoritativeCaseSnapshot | null = null;
   preparations = 0;
   executions = 0;
@@ -105,7 +106,7 @@ class FakeStore implements SultanAgentGatewayStore {
   async readCase() { this.readCaseCalls += 1; return this.observed; }
   async readEvidence(_actor: ApiActor, _caseRef: Parameters<SultanAgentGatewayStore["readEvidence"]>[1], _toolId: string, observed: AuthoritativeCaseSnapshot) {
     this.evidenceObserved = observed;
-    return { freshness: this.evidenceFreshness, sourceRefs: [CASE_SOURCE], evidence: { activityCount: 2 }, missingEvidence: [] };
+    return { freshness: this.evidenceFreshness, sourceRefs: this.evidenceRefs, evidence: { activityCount: 2 }, missingEvidence: [] };
   }
   async prepareCommand(input: Parameters<SultanAgentGatewayStore["prepareCommand"]>[0]) {
     this.preparations += 1;
@@ -254,6 +255,17 @@ for (const freshness of ["STALE", "UNKNOWN"] as const) {
     assert.equal(store.admissionChecks, 1);
   });
 }
+
+test("A0 evidence without the admitted case/version reference is rejected", async () => {
+  const store = new FakeStore();
+  store.evidenceRefs = ["postgres:public.commercial_cases/case-canary-001@commercial-case:case-canary-001:v8"];
+  const service = new SultanAgentGatewayService(store, () => new Date(NOW), APPROVAL_SECRET);
+  const result = await service.invoke({ actor: actor(), call: call("luzione.account_activity.read") });
+  assert.equal(result.status, "BLOCKED");
+  assert.equal(result.failureCode, "EVIDENCE_CASE_BINDING_MISMATCH");
+  assert.equal(result.result, null);
+  assert.deepEqual(result.sourceRefs, []);
+});
 
 test("no Sultan read or command preparation can bypass exact Stage 5 admission", async () => {
   const store = new DenyingAdmissionStore();
