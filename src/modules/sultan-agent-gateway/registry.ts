@@ -144,7 +144,12 @@ export function deriveSultanLogicalAgent(caseType: SultanCaseType) {
 
 export function toolsForAgent(agent: SultanLogicalAgent) {
   if (agent.agentId === "agent.luzione.revenue-steward") {
-    return TOOL_REGISTRY.filter((descriptor) => !["luzione.order_fulfillment.read", "luzione.catalog_evidence.read"].includes(descriptor.toolId));
+    return TOOL_REGISTRY.filter((descriptor) => [
+      "luzione.case_context.read", "luzione.missing_evidence.read",
+      "luzione.account_activity.read", "luzione.proposal_evidence.read", "luzione.supplier_facts.read",
+      "luzione.proposal_revision.create", "luzione.task.create", "luzione.internal_action.archive",
+      "luzione.note.append", "luzione.gmail_draft.create", "luzione.supplier_rfq_email.send",
+    ].includes(descriptor.toolId));
   }
   if (agent.agentId === "agent.luzione.fulfillment-steward") {
     return TOOL_REGISTRY.filter((descriptor) => ["luzione.case_context.read", "luzione.missing_evidence.read", "luzione.order_fulfillment.read"].includes(descriptor.toolId));
