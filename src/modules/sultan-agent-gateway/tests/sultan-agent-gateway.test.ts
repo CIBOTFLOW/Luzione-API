@@ -89,6 +89,9 @@ function call(toolId = "luzione.case_context.read", args: Record<string, unknown
 
 class FakeStore implements SultanAgentGatewayStore {
   admissionChecks = 0;
+  readCaseCalls = 0;
+  evidenceFreshness: "FRESH" | "STALE" | "UNKNOWN" = "FRESH";
+  evidenceObserved: AuthoritativeCaseSnapshot | null = null;
   preparations = 0;
   executions = 0;
   observed: AuthoritativeCaseSnapshot | null = authoritativeSnapshot();
@@ -99,9 +102,10 @@ class FakeStore implements SultanAgentGatewayStore {
     return { admissionReceiptId: "s5admit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" } as never;
   }
 
-  async readCase() { return this.observed; }
-  async readEvidence() {
-    return { freshness: "FRESH" as const, sourceRefs: [CASE_SOURCE], evidence: { activityCount: 2 }, missingEvidence: [] };
+  async readCase() { this.readCaseCalls += 1; return this.observed; }
+  async readEvidence(_actor: ApiActor, _caseRef: Parameters<SultanAgentGatewayStore["readEvidence"]>[1], _toolId: string, observed: AuthoritativeCaseSnapshot) {
+    this.evidenceObserved = observed;
+    return { freshness: this.evidenceFreshness, sourceRefs: [CASE_SOURCE], evidence: { activityCount: 2 }, missingEvidence: [] };
   }
   async prepareCommand(input: Parameters<SultanAgentGatewayStore["prepareCommand"]>[0]) {
     this.preparations += 1;
