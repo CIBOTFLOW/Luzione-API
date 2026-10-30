@@ -165,9 +165,12 @@ export class PostgresSultanAgentGatewayStore implements SultanAgentGatewayStore 
     return null;
   }
 
-  async readEvidence(actor: ApiActor, caseRef: Parameters<SultanAgentGatewayStore["readEvidence"]>[1], toolId: string): Promise<BoundEvidence> {
-    const observed = await this.readCase(actor, caseRef);
-    if (!observed) return { freshness: "UNKNOWN", sourceRefs: [], evidence: {}, missingEvidence: ["authoritative case"] };
+  async readEvidence(actor: ApiActor, caseRef: Parameters<SultanAgentGatewayStore["readEvidence"]>[1], toolId: string, observed: AuthoritativeCaseSnapshot): Promise<BoundEvidence> {
+    // Use the exact snapshot admitted and version-checked by the service.
+    // A second readCase here could silently mix evidence from a newer version.
+    if (observed.caseType !== caseRef.caseType || !observed.sourceRefs.length) {
+      return { freshness: "UNKNOWN", sourceRefs: [], evidence: {}, missingEvidence: ["case snapshot binding"] };
+    }
     if (caseRef.caseType === "COMMERCIAL") return await this.readCommercialEvidence(actor, observed, toolId);
     if (caseRef.caseType === "FULFILLMENT") return fulfillmentEvidence(observed);
     if (caseRef.caseType === "CATALOG_QUALITY") return catalogEvidence(observed);
