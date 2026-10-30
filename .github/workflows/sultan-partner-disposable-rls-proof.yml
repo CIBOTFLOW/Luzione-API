@@ -1,0 +1,56 @@
+name: Sultan Partner disposable PostgreSQL isolation proof
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/sultan-partner-disposable-rls-proof.yml'
+      - 'scripts/validation/rls-proof-contract.mjs'
+      - 'scripts/validation/rls-proof-contract.test.mjs'
+      - 'scripts/validation/sultan-partner-rls-disposable-proof.mjs'
+      - 'src/modules/sultan-agent-gateway/**'
+      - 'package.json'
+      - 'package-lock.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sultan-disposable-rls-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  disposable-rls:
+    # Never execute untrusted fork PR code with a privileged PostgreSQL service.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: sultan_rls_disposable_ci
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d sultan_rls_disposable_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Check disposable proof contract
+        run: node --test scripts/validation/rls-proof-contract.test.mjs
+      - name: Run two-tenant PostgreSQL RLS and real adapter proof
+        env:
+          # Ephemeral GitHub Actions service ONLY. No production credentials or secrets.
+          SULTAN_RLS_PROOF_DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/sultan_rls_disposable_ci
+          SULTAN_RLS_PROOF_CONFIRM: I_CONFIRM_DISPOSABLE_ONLY
+        run: node --import tsx scripts/validation/sultan-partner-rls-disposable-proof.mjs

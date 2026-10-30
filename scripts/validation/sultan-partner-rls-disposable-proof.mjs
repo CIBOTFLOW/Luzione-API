@@ -83,6 +83,22 @@ async function main() {
         throw error;
       } finally { client.release(); }
     }
+    // The same pooled connection must not retain transaction-local tenant scope.
+    // This catches accidental conversion of set_config(..., true) into session scope.
+    const unscoped = await rolePool.connect();
+    try {
+      await unscoped.query('begin transaction read only');
+      const tenantSetting = await unscoped.query("select current_setting('app.tenant_id', true) as tenant");
+      assert.ok([null, ''].includes(tenantSetting.rows[0]?.tenant), 'TENANT_SCOPE_LEAKED_BETWEEN_READS');
+      for (const table of SOURCE_TABLES) {
+        const rows = await unscoped.query(`select count(*)::int as n from public.${table}`);
+        assert.equal(rows.rows[0]?.n, 0, `UNSCOPED_RLS_LEAK:${table}`);
+      }
+      await unscoped.query('rollback');
+    } catch (error) {
+      await unscoped.query('rollback').catch(() => undefined);
+      throw error;
+    } finally { unscoped.release(); }
     const actor = { tenantId: 'luzione', actorId: 'service:sultan-os', actorType: 'service', source: 'vercel-oidc', capabilities: ['sultan.case.read'] };
     const own = await readPartnerCase(rolePool, actor, OWN_ID);
     assert.equal(own?.caseType, 'PARTNER_RELATIONSHIP');
@@ -93,7 +109,7 @@ async function main() {
     await admin.query('drop policy sultan_disposable_tenant_select on public.crm_people');
     await assert.rejects(() => readPartnerCase(rolePool, actor, OWN_ID), error => error?.code === 'PARTNER_RLS_SELECT_POLICY_MISSING');
     console.log(JSON.stringify({ status: 'PASS', scope: 'DISPOSABLE_SYNTHETIC_ONLY', tables: SOURCE_TABLES.length,
-      ownCase: 'VISIBLE', foreignCase: 'DENIED', missingPolicy: 'DENIED', productionRoleVerified: false }));
+      ownCase: 'VISIBLE', foreignCase: 'DENIED', missingPolicy: 'DENIED', unscopedSession: 'DENIED', productionRoleVerified: false }));
   } finally {
     if (pool) await pool.end();
     if (setupStarted) {
