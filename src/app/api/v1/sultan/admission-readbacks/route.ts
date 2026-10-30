@@ -3,7 +3,7 @@
 import { requireServiceActor } from "@/lib/api/actor";
 import { apiResponse, createRequestIdentity, logRequestCompletion } from "@/lib/api/http";
 import { bindAuthenticatedRequestIdentity } from "@/modules/platform-contracts/requestIdentity";
-import { readStage5AdmissionBundle } from "@/modules/sultan-stage5/admissionReadbackTransport";
+import { readStage5AdmissionBundle, Stage5ReadbackTransportError } from "@/modules/sultan-stage5/admissionReadbackTransport";
 import { PostgresSultanStage5Store, SultanStage5StoreError } from "@/modules/sultan-stage5/postgresStore";
 
 export const dynamic = "force-dynamic";
@@ -45,11 +45,11 @@ export async function POST(request: Request) {
     }, { requestIdentity: identity, status, startedAt });
   } catch (error) {
     const message = error instanceof Error ? error.message : "";
-    status = error instanceof SultanStage5StoreError ? error.status
+    status = error instanceof SultanStage5StoreError || error instanceof Stage5ReadbackTransportError ? error.status
       : /authentication|credential|capability/i.test(message) ? 401 : 503;
     logRequestCompletion({ method: "POST", requestIdentity: identity, route: ROUTE, status, startedAt });
     return apiResponse({ ok: false,
-      code: error instanceof SultanStage5StoreError ? error.code : "STAGE5_READBACK_FAILED",
+      code: error instanceof SultanStage5StoreError || error instanceof Stage5ReadbackTransportError ? error.code : "STAGE5_READBACK_FAILED",
       message: "Stage 5 readback unavailable.",
       grantsAuthority: false, executionAuthorized: false, externalEffectsAuthorized: false,
     }, { requestIdentity: identity, status, startedAt });
