@@ -6,7 +6,7 @@ import type { ApiActor } from "@/lib/api/actor";
 import { canonicalJson, sha256 } from "@/modules/platform-guarantees/eventContract";
 import type { SultanToolCall, SultanToolManifest, SultanToolResult } from "./contracts";
 
-export const SULTAN_A0_RECEIPT_ENVELOPE_V1 = "sultan.luzione-a0-transport-envelope.v2" as const;
+export const SULTAN_A0_RECEIPT_ENVELOPE_V2 = "sultan.luzione-a0-transport-envelope.v2" as const;
 const KEY_ID = /^[A-Za-z0-9._-]{1,64}$/;
 const SHA256 = /^[a-f0-9]{64}$/;
 const ADMISSION = /^s5admit_[a-f0-9]{32}$/;
@@ -15,7 +15,7 @@ const TTL_MS = 4 * 60 * 1000;
 const CLOCK_SKEW_MS = 30_000;
 
 export type A0SignedReceiptEnvelope = Readonly<{
-  schemaVersion: typeof SULTAN_A0_RECEIPT_ENVELOPE_V1;
+  schemaVersion: typeof SULTAN_A0_RECEIPT_ENVELOPE_V2;
   issuer: "luzione-api";
   audience: "sultan-os";
   tenantId: "luzione";
@@ -119,7 +119,7 @@ export function signA0ReceiptEnvelope(input: {
 
   const issuedAt = now.toISOString();
   const unsigned = {
-    schemaVersion: SULTAN_A0_RECEIPT_ENVELOPE_V1,
+    schemaVersion: SULTAN_A0_RECEIPT_ENVELOPE_V2,
     issuer: "luzione-api" as const,
     audience: "sultan-os" as const,
     tenantId: "luzione" as const,
