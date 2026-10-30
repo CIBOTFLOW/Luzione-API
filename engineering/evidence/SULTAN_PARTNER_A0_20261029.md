@@ -35,6 +35,7 @@ Date: 2026-10-29. Project: SULTAN_PARTNER_A0_001 (user-directed, additive to the
 ## Failure and repair evidence
 - Initial exact-head GitHub Release gate run `40986723153` failed two tests: canonical taxonomy did not include the new suite; the Revenue steward inherited the new partner tool because its existing manifest used a denylist. The latter was an authorization-scope defect discovered by regression.
 - Repair: register the suite in `platform-testing/taxonomy.ts`, change Revenue manifest to an explicit allowlist, and add a cross-steward regression. Preserve this failure history; final head CI is a separate gate.
+- Second exact-head Release gate run `40987294675` failed the topology inventory test because the new default-off environment flag was not registered in `LUZIONE_API_TOPOLOGY_INVENTORY_V1.json`. Registered the flag and kept the negative test intact; the final-head gate must be rerun.
 
 ## Unresolved and next
 1. Managed schema columns have been inspected read-only; still verify query plans, RLS policies and the exact API runtime role against a disposable tenant-isolated database.
