@@ -229,6 +229,32 @@ test("read tools return exact authoritative version and stale calls fail closed"
   assert.equal(blocked.failureCode, "STALE_OBJECT_VERSION");
 });
 
+test("A0 evidence reads use the exact admitted snapshot without a second case fetch", async () => {
+  const store = new FakeStore();
+  const service = new SultanAgentGatewayService(store, () => new Date(NOW), APPROVAL_SECRET);
+  const result = await service.invoke({ actor: actor(), call: call("luzione.account_activity.read") });
+  assert.equal(result.status, "READY");
+  assert.equal(result.result?.objectVersion, "commercial-case:case-canary-001:v7");
+  assert.equal(store.readCaseCalls, 1);
+  assert.equal(store.evidenceObserved, store.observed);
+});
+
+for (const freshness of ["STALE", "UNKNOWN"] as const) {
+  test(`A0 evidence with ${freshness} freshness fails closed without disclosing payload`, async () => {
+    const store = new FakeStore();
+    store.evidenceFreshness = freshness;
+    const service = new SultanAgentGatewayService(store, () => new Date(NOW), APPROVAL_SECRET);
+    const result = await service.invoke({ actor: actor(), call: call("luzione.account_activity.read") });
+    assert.equal(result.status, "BLOCKED");
+    assert.equal(result.policyDecision, "BLOCK");
+    assert.equal(result.failureCode, "EVIDENCE_NOT_FRESH");
+    assert.equal(result.sourceFreshness, freshness);
+    assert.equal(result.result, null);
+    assert.equal(store.readCaseCalls, 1);
+    assert.equal(store.admissionChecks, 1);
+  });
+}
+
 test("no Sultan read or command preparation can bypass exact Stage 5 admission", async () => {
   const store = new DenyingAdmissionStore();
   const service = new SultanAgentGatewayService(store, () => new Date(NOW), APPROVAL_SECRET);
