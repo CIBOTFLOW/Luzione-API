@@ -39,7 +39,7 @@ import {
   verifyStage5AdmissionReceiptIntegrity,
 } from "@/modules/sultan-stage5/runtime";
 import { isExactStage5ConsumerWorkload } from "@/modules/sultan-stage5/workload";
-import { readStage5AdmissionBundle, Stage5ReadbackTransportError } from "@/modules/sultan-stage5/admissionReadbackTransport";
+import { readBoundedStage5RequestText, readStage5AdmissionBundle, Stage5ReadbackTransportError } from "@/modules/sultan-stage5/admissionReadbackTransport";
 
 const NOW = "2026-09-02T12:00:00.000Z";
 const API_SHA = "a".repeat(40);
@@ -905,4 +905,34 @@ test("default-off independent Stage 5 A0 readback transport binds real synthetic
     assert.equal(receipt.status, "DENIED");
     assert.ok(receipt.reasonCodes.includes("SHADOW_CASE_READ_PURPOSE_SCOPE_MISMATCH"));
   }
+});
+
+test("Stage 5 request reader bounds streamed bytes before parsing, even without Content-Length", async () => {
+  const request = (body: BodyInit) =>
+    new Request("https://example.invalid/readback", { method: "POST", body });
+  const exact = "x".repeat(256);
+  assert.equal(await readBoundedStage5RequestText(request(exact)), exact);
+  const rejects = async (body: BodyInit, code: string) => {
+    await assert.rejects(readBoundedStage5RequestText(request(body)), (error: unknown) =>
+      error instanceof Stage5ReadbackTransportError && error.code === code);
+  };
+  await rejects("x".repeat(257), "STAGE5_READBACK_REQUEST_TOO_LARGE");
+  await rejects("é".repeat(129), "STAGE5_READBACK_REQUEST_TOO_LARGE");
+  await rejects(new Uint8Array([0xff]) as unknown as BodyInit, "STAGE5_READBACK_REQUEST_INVALID");
+
+  const chunked = new Request("https://example.invalid/readback", {
+    method: "POST",
+    body: new ReadableStream<Uint8Array>({
+      start(controller) {
+        controller.enqueue(new TextEncoder().encode("a".repeat(200)));
+        controller.enqueue(new TextEncoder().encode("b".repeat(80)));
+        controller.close();
+      },
+    }),
+    duplex: "half",
+  } as RequestInit & { duplex: "half" });
+  assert.equal(chunked.headers.get("content-length"), null);
+  await assert.rejects(readBoundedStage5RequestText(chunked), (error: unknown) =>
+    error instanceof Stage5ReadbackTransportError &&
+    error.code === "STAGE5_READBACK_REQUEST_TOO_LARGE");
 });
