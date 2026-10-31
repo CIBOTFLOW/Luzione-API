@@ -474,6 +474,15 @@
       "authentication": "public cached",
       "canonical_readback": "in-process workflows/catalog.ts",
       "effect": "NO_EFFECT"
+    },
+    {
+      "route_id": "sultan-stage5-independent-admission-readback",
+      "method": "POST",
+      "path": "/api/v1/sultan/admission-readbacks",
+      "source_path": "src/app/api/v1/sultan/admission-readbacks/route.ts",
+      "authentication": "default-off; exact signed Sultan OS Vercel OIDC workload with dedicated sultan.stage5.admission.read capability; tenant derived from credential",
+      "canonical_readback": "read-only tenant-bound Stage 5 admission and every canonical evidence receipt; exact hash, freshness, lineage and no-effect verification",
+      "effect": "NO_EFFECT_DEFAULT_OFF"
     }
   ],
   "database_relations": {
@@ -651,6 +660,7 @@
     "LUZIONE_PROVIDER_WORKER_ID",
     "LUZIONE_PROVIDER_WORKER_TENANT_ID",
     "LUZIONE_SULTAN_A0_RECEIPT_SIGNING_ENABLED",
+    "LUZIONE_SULTAN_STAGE5_READBACK_ENABLED",
     "LUZIONE_SULTAN_A0_RECEIPT_KEY_ID",
     "LUZIONE_SULTAN_A0_RECEIPT_HMAC_KEY_B64",
     "LUZIONE_SULTAN_APPROVAL_SECRET",
