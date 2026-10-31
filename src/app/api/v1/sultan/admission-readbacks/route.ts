@@ -3,7 +3,7 @@
 import { requireServiceActor } from "@/lib/api/actor";
 import { apiResponse, createRequestIdentity, logRequestCompletion } from "@/lib/api/http";
 import { bindAuthenticatedRequestIdentity } from "@/modules/platform-contracts/requestIdentity";
-import { readStage5AdmissionBundle, Stage5ReadbackTransportError } from "@/modules/sultan-stage5/admissionReadbackTransport";
+import { readBoundedStage5RequestText, readStage5AdmissionBundle, Stage5ReadbackTransportError } from "@/modules/sultan-stage5/admissionReadbackTransport";
 import { PostgresSultanStage5Store, SultanStage5StoreError } from "@/modules/sultan-stage5/postgresStore";
 
 export const dynamic = "force-dynamic";
@@ -26,9 +26,7 @@ export async function POST(request: Request) {
     const declared = Number(request.headers.get("content-length") ?? "0");
     if (Number.isFinite(declared) && declared > MAX_REQUEST_BYTES)
       throw new SultanStage5StoreError("STAGE5_READBACK_REQUEST_TOO_LARGE", "Invalid Stage 5 readback request.", 413);
-    const raw = await request.text();
-    if (Buffer.byteLength(raw, "utf8") > MAX_REQUEST_BYTES)
-      throw new SultanStage5StoreError("STAGE5_READBACK_REQUEST_TOO_LARGE", "Invalid Stage 5 readback request.", 413);
+    const raw = await readBoundedStage5RequestText(request);
     let parsed: unknown;
     try { parsed = JSON.parse(raw); } catch { parsed = null; }
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)
