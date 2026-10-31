@@ -32,6 +32,37 @@ const CASE_AGENTS: Readonly<Record<string, string>> = Object.freeze({
 function deny(code: string, status = 503): never {
   throw new Stage5ReadbackTransportError(code, status);
 }
+
+/** Bound request memory before JSON parsing, including chunked bodies with no
+ * Content-Length. This performs no database or network operations.
+ */
+export async function readBoundedStage5RequestText(request: Request): Promise<string> {
+  const maxBytes = 256;
+  const reader = request.body?.getReader();
+  if (!reader) return "";
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      if (!(value instanceof Uint8Array)) deny("STAGE5_READBACK_REQUEST_INVALID", 400);
+      total += value.byteLength;
+      if (total > maxBytes) deny("STAGE5_READBACK_REQUEST_TOO_LARGE", 413);
+      chunks.push(value);
+    }
+    const bytes = new Uint8Array(total);
+    let offset = 0;
+    for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
+    return new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+  } catch (error) {
+    if (error instanceof Stage5ReadbackTransportError) throw error;
+    deny("STAGE5_READBACK_REQUEST_INVALID", 400);
+  } finally {
+    try { await reader.cancel(); } catch { /* best effort, no authority */ }
+    try { reader.releaseLock(); } catch { /* no authority */ }
+  }
+}
 function validAdmission(receipt: Stage5AdmissionReceipt, tenantId: string, nowMs: number) {
   try {
     return verifyStage5AdmissionReceiptIntegrity(receipt)
