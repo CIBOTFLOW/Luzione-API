@@ -57,7 +57,7 @@ export async function readBoundedStage5RequestText(request: Request): Promise<st
     return new TextDecoder("utf-8", { fatal: true }).decode(bytes);
   } catch (error) {
     if (error instanceof Stage5ReadbackTransportError) throw error;
-    deny("STAGE5_READBACK_REQUEST_INVALID", 400);
+    return deny("STAGE5_READBACK_REQUEST_INVALID", 400);
   } finally {
     try { await reader.cancel(); } catch { /* best effort, no authority */ }
     try { reader.releaseLock(); } catch { /* no authority */ }
