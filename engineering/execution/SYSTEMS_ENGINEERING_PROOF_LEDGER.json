@@ -1981,6 +1981,61 @@
       "next_proof_needed": [
         "Independent Sultan/UI exact-version preparation, signed approval, archival and original source readback journey."
       ]
+    },
+    {
+      "proof_id": "GE_F01_SOURCE_INVENTORY_20261103",
+      "project_id": "GE-F01",
+      "recorded_at": "2026-11-03T05:08:08Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "132ab24f2337675250d7cf014277f49a13e6c44a",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "NOT_ASSESSED",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "GE-F01 records a bounded source-level inventory of runtime producer code and ownership boundaries for CRM, tasks, catalog, notifications, jobs and actions at the exact API, UI and Sultan main commits cited by the handoff. Conflicting and unavailable owners are explicit. This is not task acceptance, integration proof, or deployed-runtime evidence.",
+      "exercised_boundaries": [
+        "Inspected current API main 30d509ef2f2612af170103e8a9c6e200a6422784, UI main 9fc3aab54738ae57fd72241c3089738e1a88f701 and Sultan main 30181d838aa085f82b672b127b9ea5227f4befc4 as read-only source trees.",
+        "Reused the bounded G0 SGO-C01 producer inventory and documented its older source pins and explicit limits.",
+        "Recorded UI-owned service/workflow paths separately from API command, workflow, delivery and catalog projections and Sultan agent-runtime records.",
+        "Validated the inventory JSON and verified that all 42 cited current-source evidence paths exist.",
+        "Made no runtime, route, contract, provider, database, migration, deployment or production mutation."
+      ],
+      "untested_boundaries": [
+        "No live/deployed route reachability, current consumer invocation or tenant/authenticated end-to-end journey was observed.",
+        "No runtime database schema, configured storage/fallback selection, current record state or authoritative source readback was queried.",
+        "No current canonical CRM writer/readback was selected across UI relationshipCrmStore, canonicalCrmRepository, composite crmCommand and the API's feature-gated lead command.",
+        "No enterprise-wide task owner or continuity among team_coordination_tasks, CRM/SLA task records, legacy sales tasks and P111 human-task references was verified.",
+        "No deployed Shopify projection freshness, Vercel cron registration/run, notification sender/provider, API worker scheduler/caller, provider credentials or action-executor enablement was observed.",
+        "No durable cross-system receipt/replay, source confirmation, compensation/recovery, exact preview exercise or production outcome was exercised.",
+        "No controller decision accepting this inventory or any GE-F04 integration/readiness claim is recorded."
+      ],
+      "evidence_refs": [
+        "engineering/execution/handoffs/GE_F01_DOMAIN_OWNERSHIP_INVENTORY_20261103.json",
+        "commit:132ab24f2337675250d7cf014277f49a13e6c44a",
+        "API-main:30d509ef2f2612af170103e8a9c6e200a6422784",
+        "UI-main:9fc3aab54738ae57fd72241c3089738e1a88f701",
+        "Sultan-main:30181d838aa085f82b672b127b9ea5227f4befc4",
+        "CIBOTFLOW/Luzione-API PR #84: bounded G0 SGO-C01 handoff and prior inventory"
+      ],
+      "failure_refs": [],
+      "cross_repo_handoffs": [
+        "engineering/execution/handoffs/GE_F01_DOMAIN_OWNERSHIP_INVENTORY_20261103.json (source-owner handoff covering CIBOTFLOW/Luzione-UI, CIBOTFLOW/Sultan-OS and the API/controller GE-F04 dependency)"
+      ],
+      "deferred_external_infra": [
+        "Authenticated deployed source/readback and cross-repository consumer journey",
+        "Live Postgres/source configuration and provider/credential enablement",
+        "Deployed cron/worker registration, execution history and provider delivery/readback"
+      ],
+      "remaining_uncertainty": [
+        "CRM and generic Task remain globally unresolved due to parallel UI producer paths and a feature-gated API lead writer.",
+        "Notification delivery ownership and deployed scheduled-job execution are unavailable.",
+        "Shopify is the product source, but UI/API projection freshness and the non-provider catalog content owner remain unresolved.",
+        "Action effect ownership is specific to each action/provider and is not proven by API or Sultan action receipts."
+      ],
+      "next_proof_needed": [
+        "Controller review of this bounded source inventory; this ledger entry does not accept GE-F01 or promote release evidence.",
+        "Resolve the listed object-level source owners and obtain authenticated deployed source/readback, receipt/replay, exact consumer pinning, preview exercise and recovery evidence before integration or G1 claims."
+      ]
     }
   ]
 }

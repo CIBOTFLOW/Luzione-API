@@ -1,0 +1,384 @@
+{
+  "schema_version": 1,
+  "handoff_id": "GE-F01-DOMAIN-OWNERSHIP-INVENTORY-20261103",
+  "observed_at": "2026-11-03T05:05:27Z",
+  "build_program": "SGO-20260911-01",
+  "task_id": "GE-F01",
+  "status": "SOURCE_INVENTORY_COMPLETE_WITH_UNRESOLVED_OWNERSHIP",
+  "effect_authority": "NO_EFFECT",
+  "scope": {
+    "included": [
+      "Current main source paths and ownership boundaries for CRM, tasks, catalog, notifications, jobs and actions across Luzione-API, Luzione-UI and Sultan-OS.",
+      "Reconciliation of current source evidence with the accepted bounded G0 SGO-C01 inventory.",
+      "Unavailable runtime, deployment, provider and cross-repository ownership evidence recorded explicitly."
+    ],
+    "excluded": [
+      "Runtime or production queries, provider calls, route activation, migrations, source code changes, contract changes, deployment, or business mutations.",
+      "Claims of deployed reachability, active schedules, provider availability, authenticated cross-system readback, durable receipt/replay, or production outcome."
+    ]
+  },
+  "repository_heads": [
+    {
+      "repository": "CIBOTFLOW/Luzione-API",
+      "branch": "main",
+      "commit_sha": "30d509ef2f2612af170103e8a9c6e200a6422784",
+      "access": "READ_ONLY_SOURCE_EVIDENCE"
+    },
+    {
+      "repository": "CIBOTFLOW/Luzione-UI",
+      "branch": "main",
+      "commit_sha": "9fc3aab54738ae57fd72241c3089738e1a88f701",
+      "access": "READ_ONLY_SOURCE_EVIDENCE"
+    },
+    {
+      "repository": "CIBOTFLOW/Sultan-OS",
+      "branch": "main",
+      "commit_sha": "30181d838aa085f82b672b127b9ea5227f4befc4",
+      "access": "READ_ONLY_SOURCE_EVIDENCE"
+    }
+  ],
+  "prior_evidence": {
+    "task_id": "SGO-C01",
+    "pull_request": "https://github.com/CIBOTFLOW/Luzione-API/pull/84",
+    "handoff_path": "engineering/execution/handoffs/SGO_C01_RUNTIME_PRODUCER_INVENTORY_HANDOFF.json",
+    "inventory_path": "engineering/execution/SGO_C01_ACTIVE_SULTAN_PATH_INVENTORY_V1.json",
+    "inventory_commit_sha": "8e8cfbc7779f003f2804469a3f05358c4c1d6461",
+    "accepted_claim": "Bounded G0 source-path inventory of visible chat, quote review, task assist, simulation, memory and command surfaces, with exact source pins at the then-current API/UI/Sultan commits.",
+    "known_limitations": [
+      "The inventory pins API 7ee5a0a53a3434c3e00969dc626a4daad33f9dc0, UI 84f0dcecbe5aff2d29176433967a6ae0223d9214 and Sultan ea50caa66f09b14b1ac2bcfdfb74cdf9f4c067f0, not the current heads listed above.",
+      "Its handoff explicitly leaves authenticated deployed source/readback, persisted cross-system receipt/replay, consumer integration, exact preview exercise, provider/configuration availability and production observation unproven.",
+      "This GE-F01 report updates source findings from current main trees; it does not upgrade SGO-C01 or GE-F01 beyond source-inventory evidence."
+    ]
+  },
+  "evidence_model": {
+    "basis": "Repository source, checked-in configuration and migrations only; references below are pinned to the repository_heads commit for their repository.",
+    "live_runtime_observation": "NOT_PERFORMED",
+    "deployed_source_readback": "UNAVAILABLE",
+    "provider_configuration_and_enablement": "UNAVAILABLE",
+    "production_effects": "NOT_PERFORMED",
+    "negative_search_claims": "A missing call site in a source-tree search is not proof that a deployed or external consumer does not exist."
+  },
+  "findings": [
+    {
+      "domain": "crm",
+      "ownership_state": "PARTIAL_UI_RUNTIME_OWNER_WITH_CONFLICTING_SOURCE_PATHS",
+      "authoritative_owner": null,
+      "owner_assignment": {
+        "current_ui_surface_owner": "CIBOTFLOW/Luzione-UI",
+        "global_business_truth_owner": null,
+        "api_candidate_writer": "CIBOTFLOW/Luzione-API, feature-gated command path; not established as active",
+        "external_provider_owner": null
+      },
+      "runtime_producers": [
+        {
+          "repository": "CIBOTFLOW/Luzione-UI",
+          "surface": "Sales leads",
+          "producer": "GET /api/sales/leads calls listLeadsWithScore; POST calls createLeadAtomically.",
+          "persistence": "The lead-create service writes PostgreSQL crm_lead_create_receipts, crm_people and crm_leads with a readback check.",
+          "role": "Visible UI-owned route and write service; lead reads are a composite projection, not a single-source read."
+        },
+        {
+          "repository": "CIBOTFLOW/Luzione-UI",
+          "surface": "Accounts, people and opportunities",
+          "producer": "Sales routes use relationshipCrmStore for account/person/opportunity reads and writes; the account route also calls canonicalAccountService.",
+          "persistence": "PostgreSQL crm_accounts, crm_people, crm_opportunities and crm_relationship_activities.",
+          "role": "UI service ownership is visible; parallel relationship and canonical service paths make a single canonical writer/reconciliation policy unclear."
+        },
+        {
+          "repository": "CIBOTFLOW/Luzione-UI",
+          "surface": "Canonical CRM services",
+          "producer": "canonicalCrmRepository through canonical account/contact/lead/opportunity/task services; referenced by signal, project, intelligence and commercial-intake code.",
+          "persistence": "PostgreSQL CRM tables when configured, with a local JSON fallback in the repository implementation.",
+          "role": "A second CRM service family exists; actual production use and reconciliation with relationshipCrmStore are unavailable."
+        },
+        {
+          "repository": "CIBOTFLOW/Luzione-API",
+          "surface": "Lead command/read route",
+          "producer": "GET/POST /api/v1/commands/leads uses LeadCommercialCaseStore; POST requires domainCommandsEnabledForTenant and returns DOMAIN_MUTATIONS_DISABLED when the tenant cutover is not enabled.",
+          "persistence": "API command and receipt path targets API CRM tables, including crm_leads.",
+          "role": "Potential overlapping writer exists in source. Current deployment flag, route reachability and any successful writes are not observed."
+        }
+      ],
+      "conflicts_and_unknowns": [
+        "The current API truthRegistry still sets Account, Contact, Lead and Opportunity mutationOwner to null and ownershipState to UNRESOLVED.",
+        "Luzione-UI has relationshipCrmStore, canonicalCrmRepository and composite crmCommand read paths; no current evidence establishes one global CRM source of truth or a reconciliation contract among them.",
+        "Luzione-API has a command writer for crm_leads but its tenant cutover state and deployed use are unavailable; do not promote it to active ownership.",
+        "The exact source and authoritative owner for CRM records outside the named PostgreSQL paths are unavailable."
+      ],
+      "evidence": [
+        { "repository": "CIBOTFLOW/Luzione-UI", "path": "src/app/api/sales/leads/route.ts", "symbols": ["GET", "POST"] },
+        { "repository": "CIBOTFLOW/Luzione-UI", "path": "src/lib/server/crmLeadCreateService.ts", "symbols": ["createLeadAtomically"] },
+        { "repository": "CIBOTFLOW/Luzione-UI", "path": "src/lib/server/crmCommand.ts", "symbols": ["listLeadsWithScore"] },
+        { "repository": "CIBOTFLOW/Luzione-UI", "path": "src/app/api/sales/accounts/route.ts", "symbols": ["GET", "POST", "createRelationshipAccount", "createCanonicalAccount"] },
+        { "repository": "CIBOTFLOW/Luzione-UI", "path": "src/lib/server/relationshipCrmStore.ts", "symbols": ["createRelationshipPerson", "createRelationshipAccount", "createRelationshipOpportunity"] },
+        { "repository": "CIBOTFLOW/Luzione-UI", "path": "src/lib/crm/canonicalCrmRepository.ts", "symbols": ["CanonicalCrmRepository", "canonicalCrmRepository"] },
+        { "repository": "CIBOTFLOW/Luzione-API", "path": "src/app/api/v1/commands/leads/route.ts", "symbols": ["GET", "POST", "domainCommandsEnabledForTenant"] },
+        { "repository": "CIBOTFLOW/Luzione-API", "path": "src/modules/platform-contracts/truthRegistry.ts", "symbols": ["sourceOfTruthRegistry"] }
+      ]
+    },
+    {
+      "domain": "tasks",
+      "ownership_state": "SCOPED_UI_OWNER_WITH_MULTIPLE_TASK_STORES",
+      "authoritative_owner": null,
+      "owner_assignment": {
+        "company_task_workspace": "CIBOTFLOW/Luzione-UI owns the team-coordination route/store implementation for team_coordination_tasks.",
+        "generic_task_domain": null,
+        "api_workflow_task_reference": "CIBOTFLOW/Luzione-API owns P111 human_task_refs as workflow references, not as the task record itself.",
+        "sultan_task_assistance": "CIBOTFLOW/Sultan-OS owns no Luzione task truth; task-assist output is advisory."
+      },
+      "runtime_producers": [
+        {
+          "repository": "CIBOTFLOW/Luzione-UI",
+          "surface": "Company task workspace",
+          "producer": "GET/POST /api/team-coordination plus task-specific routes call teamCoordinationStore.",
+          "persistence": "PostgreSQL team_coordination_tasks and related task events when configured; local JSON fallback is present in source.",
+          "role": "Primary source-code owner for the company task workspace, but live persistence mode is unknown."
+        },
+        {
+          "repository": "CIBOTFLOW/Luzione-UI",
+          "surface": "Sales task API",
+          "producer": "GET /api/sales/tasks reads salesOpsStore; POST is guarded by requireLegacyRouteMutation and is blocked in production runtime.",
+          "persistence": "salesOpsStore implementation.",
+          "role": "Legacy/parallel task path; not the production task writer according to its own quarantine guard."
+        },
+        {
+          "repository": "CIBOTFLOW/Luzione-UI",
+          "surface": "CRM task automation",
+          "producer": "canonicalTaskService is invoked by canonical lead/SLA workflows.",
+          "persistence": "canonicalCrmRepository task records, distinct from the team-coordination task store at the service boundary.",
+          "role": "Additional task record path; linkage and owner continuity are not established."
+        },
+        {
+          "repository": "CIBOTFLOW/Luzione-API",
+          "surface": "Workflow human-task reference",
+          "producer": "P111 workflow delivery store and p111_human_task_refs.",
+          "role": "Workflow reference/continuation evidence only; not proof that API creates, updates or owns the underlying UI task."
+        }
+      ],
+      "conflicts_and_unknowns": [
+        "The current API truthRegistry still sets Task mutationOwner to null and ownershipState to UNRESOLVED.",
+        "Task workspace, legacy sales tasks and CRM/SLA tasks are separate producer paths; one enterprise-wide task owner is not established.",
+        "Whether the UI JSON fallback or Postgres is serving deployed tasks, and whether P111 references are linked to those records, are unavailable."
+      ],
+      "evidence": [
+        { "repository": "CIBOTFLOW/Luzione-UI", "path": "src/app/api/team-coordination/route.ts", "symbols": ["GET", "POST", "createTeamCoordinationTask", "listTeamCoordinationTaskPageForActor"] },
+        { "repository": "CIBOTFLOW/Luzione-UI", "path": "src/lib/server/teamCoordinationStore.ts", "symbols": ["createTeamCoordinationTask", "updateTeamCoordinationTask", "team_coordination_tasks"] },
+        { "repository": "CIBOTFLOW/Luzione-UI", "path": "src/app/api/sales/tasks/route.ts", "symbols": ["GET", "POST", "requireLegacyRouteMutation"] },
+        { "repository": "CIBOTFLOW/Luzione-UI", "path": "src/lib/crm/canonicalTaskService.ts", "symbols": ["createLeadIqSlaTask"] },
+        { "repository": "CIBOTFLOW/Luzione-API", "path": "supabase/migrations/20260831030000_p110_p111_workflow_delivery_baseline.sql", "symbols": ["p111_human_task_refs"] },
+        { "repository": "CIBOTFLOW/Luzione-API", "path": "src/modules/platform-contracts/truthRegistry.ts", "symbols": ["sourceOfTruthRegistry"] }
+      ]
+    },
+    {
+      "domain": "catalog",
+      "ownership_state": "PROVIDER_SOURCE_CONFIRMED_WITH_PARALLEL_PROJECTIONS",
+      "authoritative_owner": "Shopify for Shopify product and variant source records",
+      "owner_assignment": {
+        "source_record_owner": "Shopify",
+        "ui_integration_and_ui_read_model_owner": "CIBOTFLOW/Luzione-UI",
+        "api_p113_projection_contract_and_store_owner": "CIBOTFLOW/Luzione-API",
+        "catalog_business_content_owner": null
+      },
+      "runtime_producers": [
+        {
+          "repository": "CIBOTFLOW/Luzione-UI",
+          "surface": "Shopify product sync and read model",
+          "producer": "Shopify sync routes and the configured /api/cron/shopify-catalog handler call Shopify integration code and update the UI read model.",
+          "persistence": "shopify_products_read_model and shopify_sync_runs when UI database configuration is present; fallback/local state exists in the store implementation.",
+          "role": "UI integration and projection; product source remains Shopify."
+        },
+        {
+          "repository": "CIBOTFLOW/Luzione-API",
+          "surface": "P113 catalog projection",
+          "producer": "GET /api/v1/catalog and /api/v1/catalog/shopify/projections expose API catalog projection surfaces.",
+          "persistence": "public.p113_catalog_search_projections and public.p113_catalog_sync_runs.",
+          "role": "API-owned contract/projection, not the Shopify product source."
+        }
+      ],
+      "conflicts_and_unknowns": [
+        "API truthRegistry marks Product as Shopify-authoritative and P113 projection-confirmed, while mutationOwner and catalog business owner remain null/unresolved.",
+        "UI and API maintain distinct catalog projections. No current source evidence establishes shared projection freshness, a single cross-repository sync producer, or deployed projection equivalence.",
+        "UI vercel.json lists a Shopify catalog cron schedule, but registration, secrets, execution history and current source readback in the deployed environment were not observed.",
+        "Ownership of non-provider editorial/catalog content and product lead-time metadata is not resolved by this inventory."
+      ],
+      "evidence": [
+        { "repository": "CIBOTFLOW/Luzione-UI", "path": "vercel.json", "symbols": ["crons", "/api/cron/shopify-catalog"] },
+        { "repository": "CIBOTFLOW/Luzione-UI", "path": "src/app/api/cron/shopify-catalog/route.ts", "symbols": ["GET"] },
+        { "repository": "CIBOTFLOW/Luzione-UI", "path": "src/lib/server/shopifyReadModelStore.ts", "symbols": ["syncShopifyProducts", "listSyncedShopifyProducts", "shopify_products_read_model"] },
+        { "repository": "CIBOTFLOW/Luzione-API", "path": "src/modules/platform-contracts/truthRegistry.ts", "symbols": ["Product", "sourceOfTruthRegistry"] },
+        { "repository": "CIBOTFLOW/Luzione-API", "path": "src/modules/catalog-projection/runtime.ts", "symbols": ["P113 projection runtime"] },
+        { "repository": "CIBOTFLOW/Luzione-API", "path": "src/app/api/v1/catalog/shopify/projections/route.ts", "symbols": ["GET"] }
+      ]
+    },
+    {
+      "domain": "notifications",
+      "ownership_state": "COMMUNICATION_RECORD_OWNER_VISIBLE_DELIVERY_OWNER_UNRESOLVED",
+      "authoritative_owner": null,
+      "owner_assignment": {
+        "communication_record_and_approval_queue_implementation": "CIBOTFLOW/Luzione-UI",
+        "generic_command_delivery_ledger_and_contract": "CIBOTFLOW/Luzione-API",
+        "notification_policy_and_provider_delivery_owner": null
+      },
+      "runtime_producers": [
+        {
+          "repository": "CIBOTFLOW/Luzione-UI",
+          "surface": "Communications timeline, SLA, follow-up and outbound approval endpoints",
+          "producer": "CommunicationsService delegates to CommunicationsRepository; routes persist messages, links, classifications, SLA clocks, follow-ups and outbound approval requests.",
+          "persistence": "communication_threads, communication_messages, communication_entity_links, communication_classifications, communication_sla_clocks, communication_follow_up_queue and communication_outbound_approval_queue.",
+          "role": "Communication record/work queue implementation; outbound approval queue is not evidence of a sent notification."
+        },
+        {
+          "repository": "CIBOTFLOW/Luzione-API",
+          "surface": "P110 command outbox/provider delivery framework",
+          "producer": "P110 command store writes generic outbox messages; ProviderWorkerRuntime plus PostgresWorkflowDeliveryStore define dispatch and reconciliation mechanics.",
+          "role": "Shared delivery reliability ledger/runtime code; source tree has no ProviderWorkerRuntime construction/call site or notification-specific domain producer."
+        }
+      ],
+      "conflicts_and_unknowns": [
+        "No notification-specific producer, notification source-of-truth contract, or outbound sender owner is established across the three current source trees.",
+        "API outbox/provider machinery is generic and does not make API the owner of notification content or delivery policy.",
+        "Current worker registration, provider enablement, delivery receipts and source readback are unavailable."
+      ],
+      "evidence": [
+        { "repository": "CIBOTFLOW/Luzione-UI", "path": "src/modules/communications/services/CommunicationsService.ts", "symbols": ["ingest", "queueOutboundApproval", "timeline"] },
+        { "repository": "CIBOTFLOW/Luzione-UI", "path": "src/modules/communications/repositories/CommunicationsRepository.ts", "symbols": ["ingestMessage", "queueOutboundApproval", "communication_outbound_approval_queue"] },
+        { "repository": "CIBOTFLOW/Luzione-UI", "path": "src/app/admin/communications/outbound-approvals/route.ts", "symbols": ["POST"] },
+        { "repository": "CIBOTFLOW/Luzione-API", "path": "supabase/migrations/20260831022000_p110_command_ledger_baseline.sql", "symbols": ["p110_outbox_messages"] },
+        { "repository": "CIBOTFLOW/Luzione-API", "path": "src/modules/provider-runtime/runtime.ts", "symbols": ["ProviderWorkerRuntime"] },
+        { "repository": "CIBOTFLOW/Luzione-API", "path": "src/lib/platform-guarantees/postgresWorkflowDeliveryStore.ts", "symbols": ["PostgresWorkflowDeliveryStore"] }
+      ]
+    },
+    {
+      "domain": "jobs",
+      "ownership_state": "UI_SCHEDULE_CONFIGURATION_VISIBLE_DEPLOYED_JOB_STATE_UNAVAILABLE",
+      "authoritative_owner": null,
+      "owner_assignment": {
+        "source_configured_business_cron_handlers": "CIBOTFLOW/Luzione-UI",
+        "generic_provider_delivery_and_workflow_contracts": "CIBOTFLOW/Luzione-API",
+        "agent_run_and_agent_memory_runtime": "CIBOTFLOW/Sultan-OS",
+        "deployed_scheduler_registration_and_run_state": null
+      },
+      "runtime_producers": [
+        {
+          "repository": "CIBOTFLOW/Luzione-UI",
+          "surface": "Vercel cron configuration",
+          "producer": "vercel.json declares growth-signals, property-signals, target-partner-enrichment, shopify-catalog, partner-order-automation and room-planner-portfolio schedules; handlers are under src/app/api/cron.",
+          "role": "Source-configured schedule and business-job handler owner. Deployed schedule activation, last run, credentials and results are not observed."
+        },
+        {
+          "repository": "CIBOTFLOW/Luzione-API",
+          "surface": "P110/P111 delivery and workflow mechanics",
+          "producer": "ProviderWorkerRuntime and PostgresWorkflowDeliveryStore expose batch claim/dispatch/reconcile methods; /api/v1/workflows is a static GET catalog endpoint.",
+          "role": "API owns shared delivery/workflow mechanics and state contracts; no scheduler registration or ProviderWorkerRuntime call site was found in current API source."
+        },
+        {
+          "repository": "CIBOTFLOW/Sultan-OS",
+          "surface": "Sultan agent runs",
+          "producer": "POST /api/system/agent-runtime-v2/runs invokes persisted Sultan run logic with SHADOW admitted and ASSISTED/CANARY requiring explicit environment and case admission; run/event/receipt persistence is defined in Sultan source and migrations.",
+          "role": "Sultan agent execution, not a generic Luzione business-job scheduler. Current UI main has no source call to this Runtime V2 route in the searched tree; SGO-C01's older pinned inventory also rejected promotion of shadow paths to visible producers."
+        }
+      ],
+      "conflicts_and_unknowns": [
+        "No single owner or registry for all Luzione scheduled jobs is established.",
+        "Checked-in Vercel schedules do not prove deployment registration or successful runtime execution.",
+        "API batch worker code has no current source-tree invocation site; any external scheduler/worker is unavailable.",
+        "Sultan agent runtime schedule/trigger ownership and deployed caller are unavailable; do not equate agent run receipts with Luzione job completion."
+      ],
+      "evidence": [
+        { "repository": "CIBOTFLOW/Luzione-UI", "path": "vercel.json", "symbols": ["crons"] },
+        { "repository": "CIBOTFLOW/Luzione-UI", "path": "src/app/api/cron/shopify-catalog/route.ts", "symbols": ["GET"] },
+        { "repository": "CIBOTFLOW/Luzione-API", "path": "src/modules/provider-runtime/runtime.ts", "symbols": ["runDeliveryBatch", "runReconciliationBatch"] },
+        { "repository": "CIBOTFLOW/Luzione-API", "path": "src/app/api/v1/workflows/route.ts", "symbols": ["GET"] },
+        { "repository": "CIBOTFLOW/Luzione-API", "path": "src/lib/platform-guarantees/postgresWorkflowDeliveryStore.ts", "symbols": ["PostgresWorkflowDeliveryStore"] },
+        { "repository": "CIBOTFLOW/Sultan-OS", "path": "src/app/api/system/agent-runtime-v2/runs/route.ts", "symbols": ["POST", "assertServerAdmittedRunMode"] },
+        { "repository": "CIBOTFLOW/Sultan-OS", "path": "src/lib/agentRuntimeV2Persistence.ts", "symbols": ["runPersistedSultanAgentRuntimeV2"] },
+        { "repository": "CIBOTFLOW/Sultan-OS", "path": "supabase/migrations/20260901120000_agent_runtime_v2_ledger.sql", "symbols": ["agent_runs_v2", "agent_events_v1", "agent_tool_receipts_v1"] }
+      ]
+    },
+    {
+      "domain": "actions",
+      "ownership_state": "UI_ACTION_INTENT_IMPLEMENTATION_VISIBLE_EFFECT_OWNER_DEPENDS_ON_ACTION_AND_PROVIDER",
+      "authoritative_owner": null,
+      "owner_assignment": {
+        "visible_luzione_action_intent_lifecycle": "CIBOTFLOW/Luzione-UI",
+        "specific_business_object_mutation_owner": null,
+        "provider_delivery_receipt_and_reconciliation_contract": "CIBOTFLOW/Luzione-API for P110-backed API commands only",
+        "agent_reasoning_and_run_receipts": "CIBOTFLOW/Sultan-OS"
+      },
+      "runtime_producers": [
+        {
+          "repository": "CIBOTFLOW/Luzione-UI",
+          "surface": "Governed action intents",
+          "producer": "POST /api/action-intents stages supported intents; the action-intent worker applies policy, approvals, executor selection, execution record and failure/dead-letter handling.",
+          "role": "UI owns this action-intent lifecycle implementation. A separate /execute legacy route is blocked in production by requireLegacyRouteMutation; current executor/provider enablement is not observed."
+        },
+        {
+          "repository": "CIBOTFLOW/Luzione-UI",
+          "surface": "Sultan chat action drawer",
+          "producer": "POST /api/sultan/chat/actions stages and routes action intents through UI approval/execution services.",
+          "role": "Sultan can propose/assist through the UI surface; UI governance and configured executor own any admitted business/provider effect."
+        },
+        {
+          "repository": "CIBOTFLOW/Luzione-API",
+          "surface": "P110 command and Sultan internal action journal",
+          "producer": "P110 persists command receipts/events/outbox; sultan_agent_internal_actions records the API's admitted internal tool-action lifecycle.",
+          "role": "API owns these command and internal-action records/contracts; they are not a universal business action executor or proof of source-system effect."
+        },
+        {
+          "repository": "CIBOTFLOW/Sultan-OS",
+          "surface": "Runtime tool/action request and receipt",
+          "producer": "Sultan Runtime V2 records agent runs, events, tool receipts and approval-bound resumptions.",
+          "role": "Sultan owns reasoning/runtime records; this does not transfer CRM, task, catalog or other Luzione business-object ownership."
+        }
+      ],
+      "conflicts_and_unknowns": [
+        "Action authority is action-type/provider specific; this inventory cannot assign one owner to all business effects.",
+        "API action journals, P110 receipts and Sultan tool receipts must not be treated as source-system readback or business outcome.",
+        "The deployed UI route, executor map, provider credentials/flags, and per-action authoritative source/readback are unavailable.",
+        "The older SGO-C01 source inventory found the visible chat drawer's nine action types resolving to UI plan/action-intent executors, while the current UI tree does not establish a live current consumer of Sultan Runtime V2."
+      ],
+      "evidence": [
+        { "repository": "CIBOTFLOW/Luzione-UI", "path": "src/app/api/action-intents/route.ts", "symbols": ["GET", "POST", "createActionIntent"] },
+        { "repository": "CIBOTFLOW/Luzione-UI", "path": "src/lib/governance/actionIntentExecutionWorker.ts", "symbols": ["executeActionIntent"] },
+        { "repository": "CIBOTFLOW/Luzione-UI", "path": "src/lib/governance/actionIntentExecutorRegistry.ts", "symbols": ["defaultActionIntentExecutorRegistry"] },
+        { "repository": "CIBOTFLOW/Luzione-UI", "path": "src/app/api/action-intents/[intentId]/execute/route.ts", "symbols": ["POST", "requireLegacyRouteMutation"] },
+        { "repository": "CIBOTFLOW/Luzione-UI", "path": "src/app/api/sultan/chat/actions/route.ts", "symbols": ["POST", "createActionIntent", "approveActionIntent", "executeActionIntent"] },
+        { "repository": "CIBOTFLOW/Luzione-API", "path": "src/modules/sultan-agent-gateway/postgresStore.ts", "symbols": ["sultan_agent_internal_actions", "readEffect"] },
+        { "repository": "CIBOTFLOW/Luzione-API", "path": "supabase/migrations/20260901130000_sultan_agent_internal_actions.sql", "symbols": ["sultan_agent_internal_actions"] },
+        { "repository": "CIBOTFLOW/Sultan-OS", "path": "src/lib/agentRuntimeV2Persistence.ts", "symbols": ["agent_tool_receipts_v1", "runPersistedSultanAgentRuntimeV2"] }
+      ]
+    }
+  ],
+  "cross_domain_owner_map": {
+    "CIBOTFLOW/Luzione-UI": "Owns human-facing workflows and the named UI route/service implementations in this report. This does not by itself prove UI as authoritative business-data owner for every CRM/task/catalog/effect entity.",
+    "CIBOTFLOW/Luzione-API": "Owns shared API contracts, P110 command/outbox reliability mechanics, P111 workflow state/reference mechanics and P113 catalog projection contract/store. The current truth registry leaves the business mutation owner unresolved for CRM and Task and marks Workflow transfer pending.",
+    "CIBOTFLOW/Sultan-OS": "Owns Sultan reasoning/runtime and agent-run/tool/memory records. It is not the owner of Luzione operational business truth."
+  },
+  "remaining_gates": [
+    "Controller acceptance or rejection of this bounded GE-F01 G0 source inventory.",
+    "Resolve the canonical CRM writer/readback and overlap among UI relationship, canonical and composite read paths; reconcile with the API default-off lead command candidate.",
+    "Name task owners by task subtype and establish continuity among team_coordination_tasks, CRM/SLA tasks, sales task paths and P111 references.",
+    "Name a cross-repository catalog projection/freshness contract and verify the deployed Shopify sync registration and readback.",
+    "Identify the notification sender/policy owner and connect communication records/approval queue to an actual provider delivery and source readback path.",
+    "Identify deployed job scheduler registrations and current run/readback state; establish whether API worker code has an external caller.",
+    "Assign business-object and source-readback ownership per action type/provider before treating any receipt as completed business state.",
+    "For any later G1 claim, obtain authenticated deployed source/readback, durable receipt/replay, exact consumer pinning, preview runtime exercise and recovery evidence."
+  ],
+  "handoff_for_ge_f04": {
+    "usable_now": "Exact source-level producer and ownership-boundary map at the three current main commits above.",
+    "not_established": [
+      "One global authoritative CRM or Task owner.",
+      "A notification delivery owner.",
+      "Deployed runtime use of any route, worker, cron, provider or cross-repository consumer.",
+      "Integration, source readback, receipt/replay, preview or production outcome."
+    ],
+    "recommended_gate": "Use this inventory to choose a narrowly scoped owner/path for GE-F04 planning; require the controller to resolve listed ownership conflicts and runtime evidence before any integration or G1 promotion."
+  },
+  "branch_and_worktree": {
+    "repository": "CIBOTFLOW/Luzione-API",
+    "branch": "codex/recovery-ge-f01-inventory-20261103",
+    "base_sha": "30d509ef2f2612af170103e8a9c6e200a6422784",
+    "worktree": "/private/tmp/luzione-api-admin-recovery",
+    "preserved_unrelated_work": ["SGO-C02 branch", "Luzione-API PR #82"]
+  }
+}
