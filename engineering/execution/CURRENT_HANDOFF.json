@@ -47,6 +47,30 @@
       ]
     }
   ],
+  "cross_repo_handoffs": [
+    {
+      "handoff_id": "GE-F01-DOMAIN-OWNERSHIP-INVENTORY-20261103",
+      "task_id": "GE-F01",
+      "state": "SOURCE_INVENTORY_READY_FOR_CONTROLLER_REVIEW_NOT_ACCEPTED",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "branch": "codex/recovery-ge-f01-inventory-20261103",
+      "artifact_commit": "132ab24f2337675250d7cf014277f49a13e6c44a",
+      "artifact_path": "engineering/execution/handoffs/GE_F01_DOMAIN_OWNERSHIP_INVENTORY_20261103.json",
+      "source_heads": {
+        "CIBOTFLOW/Luzione-API": "30d509ef2f2612af170103e8a9c6e200a6422784",
+        "CIBOTFLOW/Luzione-UI": "9fc3aab54738ae57fd72241c3089738e1a88f701",
+        "CIBOTFLOW/Sultan-OS": "30181d838aa085f82b672b127b9ea5227f4befc4"
+      },
+      "release_evidence": "NOT_ASSESSED",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "summary": "Source-owner handoff for CRM, tasks, catalog, notifications, jobs and actions. CRM/task ownership conflicts and unavailable deployed/provider evidence remain explicit; no integration or task acceptance is claimed.",
+      "next": [
+        "Controller review the source inventory for GE-F01.",
+        "Use its exact source paths for GE-F04 planning only after resolving any required owner choice; retain authenticated runtime/readback and release gates."
+      ]
+    }
+  ],
   "open_quarantines": [
     "A01_PRODUCTION_RLS_CREDENTIAL_GATE_20260902: the deployed principal is now reviewed, but no exact managed backup/PITR receipt or Vercel owner access is available; production migration, exact-SHA canary, promotion and rollback remain unexercised",
     "A01_PRODUCTION_READINESS_PREPARED_STATEMENT_20260902: production readyz intermittently fails on the old SHA because the named readiness-v1 statement collides through Supavisor; candidate 0d4fa258 repairs it but is not canary-accessible or promoted",
@@ -105,7 +129,7 @@
     "Supabase Pro plan entitlement indicates daily backups should exist, but the available management surface cannot list a project-specific backup receipt or PITR window; no production DDL is safe until that exact restore evidence is recorded."
   ],
   "stop_code": "S1_IRREVERSIBLE_EXTERNAL_EFFECT",
-  "updated_at": "2026-09-03T02:36:33.000Z",
+  "updated_at": "2026-11-03T05:08:08.000Z",
   "api_stage5_001": {
     "status": "EXACT_IMPLEMENTATION_AND_MANAGED_RECOVERY_PASS_PUBLICATION_PENDING_PRODUCTION_BLOCKED",
     "branch": "codex/stage5-authority-outcomes-v2",
