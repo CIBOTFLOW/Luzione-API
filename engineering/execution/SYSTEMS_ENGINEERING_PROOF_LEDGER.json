@@ -2036,6 +2036,67 @@
         "Controller review of this bounded source inventory; this ledger entry does not accept GE-F01 or promote release evidence.",
         "Resolve the listed object-level source owners and obtain authenticated deployed source/readback, receipt/replay, exact consumer pinning, preview exercise and recovery evidence before integration or G1 claims."
       ]
+    },
+    {
+      "proof_id": "GE_F01_RUNTIME_RECONCILIATION_20261104",
+      "project_id": "GE-F01",
+      "recorded_at": "2026-11-04T02:13:29Z",
+      "repository": "CIBOTFLOW/Luzione-API",
+      "exact_sha": "ce1e4b85bde2ec6255f5d5d18aa98522284000dc",
+      "engineering_state": "BOUNDED_PASS",
+      "release_evidence": "NOT_ASSESSED",
+      "effect_authority": "NO_EFFECT",
+      "finality": "BOUNDED_CLAIM",
+      "claim": "The existing GE-F01 source-owner inventory was reconciled against current API/UI/Sultan main heads and augmented with ready-production deployment provenance, limited seven-day requestPath aggregates, connected Supabase table metadata and exact named-owner evidence gates. It does not accept GE-F01, prove integration, assign human owners, or support G1.",
+      "exercised_boundaries": [
+        "Reconciled the original 42 source evidence entries (35 paths, 78 symbol references) against current API, UI and Sultan main heads; verified all 47 resulting evidence entries and 38 unique cited paths exist in the three checkouts.",
+        "Verified Vercel production deployment metadata is READY and source-SHA matched for exact API, UI and Sultan deployments listed in the handoff.",
+        "Read seven-day production requestPath aggregates: UI partner-order-automation 67, growth-signals 56, property-signals 19; API returned only root path count 2; Sultan returned no grouped paths.",
+        "Read Supabase table metadata only: connected UI/API project cfwkqhenhnvnnwpxdjns reports CRM/task/catalog/notification/action/P110/P111 counts; connected Sultan project gdyqfcxnquraivxukfja lists 29 public tables and no source-declared Runtime V2 agent table names.",
+        "Recorded owner roles, exact candidate paths/records, evidence limits and minimum proof needed without inventing a person or contacting an owner.",
+        "Ran JSON parsing, bounded scope assertions and git diff --check only; no tests or business/provider effects were run."
+      ],
+      "untested_boundaries": [
+        "Vercel requestPath aggregates do not expose HTTP method, status, request caller, Vercel Cron attribution, handler result or business completion.",
+        "No business row contents, record IDs, lineage, latest timestamps, writer identity or authoritative database readback were inspected.",
+        "Vercel-to-Supabase environment binding for API/UI/Sultan was not inspected; Sultan V2 table-name difference therefore remains unresolved.",
+        "No provider credentials/configuration, Gmail acceptance, action executor enablement, scheduled-job registration, external API worker caller or notification insert producer was verified.",
+        "No named owner decision, cross-repository integration, durable receipt/replay, preview exercise, recovery proof, G1 evidence or controller acceptance was obtained."
+      ],
+      "evidence_refs": [
+        "engineering/execution/handoffs/GE_F01_DOMAIN_OWNERSHIP_INVENTORY_20261103.json",
+        "commit:ce1e4b85bde2ec6255f5d5d18aa98522284000dc",
+        "API-main:43143e74b5069b0104e5c9c21348210724df3aae",
+        "UI-main:9fc3aab54738ae57fd72241c3089738e1a88f701",
+        "Sultan-main:30181d838aa085f82b672b127b9ea5227f4befc4",
+        "Vercel production deployment metadata: exact project/deployment IDs, READY state and Git SHA recorded in handoff",
+        "Vercel production runtime logs: seven-day requestPath aggregates for exact deployment IDs recorded in handoff",
+        "Supabase list_tables: project cfwkqhenhnvnnwpxdjns, public metadata only",
+        "Supabase list_tables: project gdyqfcxnquraivxukfja, public metadata only",
+        "CIBOTFLOW/Luzione-UI:src/app/api/cron/partner-order-automation/route.ts",
+        "CIBOTFLOW/Luzione-UI:src/lib/portal/partnerNotificationDispatcher.ts",
+        "CIBOTFLOW/Luzione-API:src/modules/catalog-projection/store.ts"
+      ],
+      "failure_refs": [],
+      "cross_repo_handoffs": [
+        "engineering/execution/handoffs/GE_F01_DOMAIN_OWNERSHIP_INVENTORY_20261103.json (current source-owner/runtime-evidence handoff; no acceptance implied)"
+      ],
+      "deferred_external_infra": [
+        "Named accountable domain-owner decisions and owner-approved canonical writer/readback/reconciliation policy.",
+        "Vercel-to-Supabase binding, route status/caller attribution and durable job/notification/action receipts.",
+        "Provider configuration/readback, external worker registration and source-system business readback."
+      ],
+      "remaining_uncertainty": [
+        "CRM and task truth ownership remains unresolved across parallel UI paths and the API feature-gated lead command.",
+        "Catalog source is Shopify for Shopify records; UI/API projection freshness and the non-provider content owner remain unresolved.",
+        "UI partner notification dispatcher exists and its deployed route received requests, but notification record creation and recipient/content policy owners remain unknown; send success is unobserved.",
+        "API P110/P111 runtime invocation is unobserved; Sultan V2 storage binding is unproven.",
+        "Action effect ownership remains specific to each action type and provider; receipts are not source-system outcomes."
+      ],
+      "next_proof_needed": [
+        "Controller records named CRM and task owners and selects one canonical writer/store/readback per exact record subtype with an owner-approved conflict/reconciliation rule; keep SGO-V02 queued.",
+        "Only after ownership selection, gather exact route caller/status, durable receipts and authoritative readback for a narrowly scoped GE-F04 candidate; do not claim G1 from source or aggregate logs."
+      ]
     }
   ]
 }
