@@ -23,10 +23,10 @@ type AgentPolicy = {
 
 export const stage5AgentRegistry: readonly AgentPolicy[] = Object.freeze([
   agentPolicy("agent.sultan.supervisor", ["PORTFOLIO"], ["analysis.read"], ["agent-case-post-inference"]),
-  agentPolicy("agent.luzione.revenue-steward", ["COMMERCIAL"], ["analysis.read"], ["agent-case-post-inference"]),
-  agentPolicy("agent.luzione.fulfillment-steward", ["FULFILLMENT"], ["analysis.read"], ["agent-case-post-inference"]),
+  agentPolicy("agent.luzione.revenue-steward", ["COMMERCIAL"], ["analysis.read", "sultan.case.read"], ["agent-case-post-inference", "sultan-shadow-case-read"]),
+  agentPolicy("agent.luzione.fulfillment-steward", ["FULFILLMENT"], ["analysis.read", "sultan.case.read"], ["agent-case-post-inference", "sultan-shadow-case-read"]),
   agentPolicy("agent.luzione.partner-network-steward", ["PARTNER_RELATIONSHIP"], ["analysis.read"], ["agent-case-post-inference"]),
-  agentPolicy("agent.luzione.catalog-steward", ["CATALOG_QUALITY"], ["analysis.read"], ["agent-case-post-inference"]),
+  agentPolicy("agent.luzione.catalog-steward", ["CATALOG_QUALITY"], ["analysis.read", "sultan.case.read"], ["agent-case-post-inference", "sultan-shadow-case-read"]),
   agentPolicy("agent.luzione.account-relationship-steward", ["ACCOUNT_RELATIONSHIP"], ["analysis.read"], ["agent-case-post-inference"]),
   agentPolicy("agent.luzione.economic-integrity-steward", ["ECONOMIC_REVIEW"], ["analysis.read"], ["agent-case-post-inference"]),
   agentPolicy("agent.fep.case-steward", ["FEP_CASE"], ["analysis.read"], ["agent-case-post-inference"]),
@@ -199,6 +199,17 @@ export function evaluateStage5Admission(input: {
     reasons.push("OUTCOME_EXPECTATION_CLAIM_NOT_EXACTLY_CONSUMED");
   }
 
+  // A separate, narrowly-scoped A0 case read may bind the same exact Stage 5
+  // admission as the tool gateway. This is NOT permission to run inference or
+  // execute an effect, and cannot extend to Partner Network or other agents.
+  if (assertion.purpose === "sultan-shadow-case-read"
+    && (assertion.phase !== "SIMULATION"
+      || assertion.requestedCapability !== "sultan.case.read"
+      || assertion.requestedEffectClass !== "A0"
+      || !["COMMERCIAL", "FULFILLMENT", "CATALOG_QUALITY"].includes(assertion.caseRef.caseType)
+      || assertion.interactionReceipt.surface !== "AGENT_CASE")) {
+    reasons.push("SHADOW_CASE_READ_PURPOSE_SCOPE_MISMATCH");
+  }
   if (assertion.purpose === "agent-case-post-inference"
     && (assertion.phase !== "SIMULATION"
       || assertion.requestedCapability !== "analysis.read"

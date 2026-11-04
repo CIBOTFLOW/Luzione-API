@@ -79,6 +79,8 @@ const PRODUCTION_VERCEL_CALLERS: readonly VercelCaller[] = Object.freeze([
       "partner.network.evaluate",
       "sultan.agent.intent.evaluate",
       "sultan.stage5.admission.request",
+      // Dedicated A0 retrieval capability: only the exact Sultan OIDC workload.
+      "sultan.stage5.admission.read",
       "sultan.canonical.readback.read",
       "sultan.outcome.observe",
       "sultan.tool.manifest.read",
