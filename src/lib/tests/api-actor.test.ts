@@ -84,6 +84,7 @@ test("accepts only registered signed production workload identities", async () =
       "partner.network.evaluate",
       "sultan.agent.intent.evaluate",
       "sultan.stage5.admission.request",
+      "sultan.stage5.admission.read",
       "sultan.canonical.readback.read",
       "sultan.outcome.observe",
       "sultan.tool.manifest.read",
